@@ -71,7 +71,7 @@
     "class-variance-authority": "0.7.0",
     "clsx": "2.1.0",
     "cmdk": "1.0.0",
-    "cookie": "^0.6.0",
+    "cookie": "^0.7.0",
     "dayjs": "1.11.10",
     "express": "^4.21.0",
     "framer-motion": "^11.10.0",
