@@ -41,7 +41,7 @@
 
 <p align="center">
   <a href="https://www.producthunt.com/posts/lomi?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-lomi" target="_blank">
-    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=720260&theme=light&t=1736800231403" 
+    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=720260&theme=dark&t=1736800231403" 
     alt="lomi. - Simplifying payments across francophone West Africa | Product Hunt"
     width="250" height="54" />
   </a>
@@ -52,7 +52,7 @@
 
 ## About lomi.
 
-lomi. is a unified, scalable payment orchestration platform that integrates multiple payment service providers and provides a seamless experience for merchants and end-users across West Africa and beyond. Our platform simplifies payment management while ensuring the highest levels of security, reliability, and compliance.
+lomi. is a unified payment orchestration platform that integrates multiple payment service providers and provides a seamless experience for merchants and their customers across West Africa and beyond. Our platform simplifies product and subscriptions billing while ensuring the highest levels of security, reliability, and compliance.
 
 ## Features
 
@@ -108,29 +108,19 @@ lomi. is a unified, scalable payment orchestration platform that integrates mult
 We are progressively open-sourcing the entire lomi. project:
 
 - **Currently Open Source**:
-  - Merchant dashboard
-  - Documentation website
+  - Merchant dashboard : **[apps/website](https://github.com/lomiafrica/website)**
+  - Documentation website: **[apps/developers](https://github.com/lomiafrica/developers.lomi.africa)**
 
 - **Opening Soon**:
-  - Boilerplate templates (Medusa + Nextjs / Medusa / Vite)
-  - Shopify extension
-  - WooCommerce extension
-  - CLI tool
-  - API service
-  - Jumbo online IDE (Online IDE)
+  - API service:  **[apps/api](https://github.com/lomiafrica/api.lomi.africa)** - API service – Node.js / TypeScript / Express
+  - Boilerplate templates: **[apps/store](https://github.com/lomiafrica/store.lomi.africa)** – Medusa + Next.js / TypeScript; **[apps/commerce](https://github.com/lomiafrica/commerce.lomi.africa)** – Boilerplate - Medusa + Vite / TypeScript
 
-Everything will be made available in the coming weeks. Stay tuned for updates!
+  - Shopify extension: **[apps/shopify](https://github.com/lomiafrica/shopify.lomi.africa)** – Vite / TypeScript
+  - CLI tool: **[apps/cli](https://github.com/lomiafrica/cli.lomi.africa)** - Node.js
 
-## Repository Structure
+  - Jumbo online IDE (Online IDE) * **[apps/jumbo](https://github.com/lomiafrica/jumbo.lomi.africa)** - Remix + Vite + Expo / TypeScript 
 
-* **[apps/api](https://github.com/lomiafrica/api.lomi.africa)** – Node.js / TypeScript / Express
-* **[apps/cli](https://github.com/lomiafrica/cli.lomi.africa)** - Node.js
-* **[apps/shopify](https://github.com/lomiafrica/shopify.lomi.africa)** – Shopify Application – Vite / TypeScript
-* **[apps/website](https://github.com/lomiafrica/website)** – Merchant Dashboard – Vite / React / TypeScript
-* **[apps/developers](https://github.com/lomiafrica/developers.lomi.africa)** – Documentation Website – Nextjs / TypeScript
-* **[apps/store](https://github.com/lomiafrica/store.lomi.africa)** – Boilerplate - Medusa + Next.js / TypeScript
-* **[apps/commerce](https://github.com/lomiafrica/commerce.lomi.africa)** – Boilerplate - Medusa + Vite / TypeScript
-* **[apps/jumbo](https://github.com/lomiafrica/jumbo.lomi.africa)** – Online IDE - Remix + Vite + Expo / TypeScript
+Everything will be made available in the coming weeks and all separate repositories will be merge in the monorepo. Stay tuned for updates!
 
 ## Core Infrastructure
 
@@ -149,7 +139,7 @@ Everything will be made available in the coming weeks. Stay tuned for updates!
 - Infobip
 - Tailwind CSS
 
-## Payment Infrastructure
+## Payment Service Providers (PSPs)
 - Wave
 - Orange
 - Crypto via NP
@@ -165,7 +155,7 @@ Everything will be made available in the coming weeks. Stay tuned for updates!
 - Bun
 - Supabase
 
-### Local Development
+### Local development (via merchant dashboard)
 ```bash
 # Clone the repository
 git clone https://github.com/lomiafrica/website.git
@@ -209,7 +199,7 @@ We welcome contributions to lomi. ! This document outlines how to submit changes
 - You've read the [documentation](https://developers.lomi.africa)
 - You've already set up your local instance with `git clone https://github.com/lomiafrica/website` or via `bun install lomi.cli`
 
-### Contribution Process
+### Contribution process
 
 1. **Issues First**: Before working on a change, make sure there's an issue for it. Find an [existing issue](https://github.com/lomiafrica/lomi./issues) or [open a new one](https://github.com/lomiafrica/lomi./issues/new).
 
