@@ -1,0 +1,129 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.changes.outputs.api }}
+      cli: ${{ steps.changes.outputs.cli }}
+      docs: ${{ steps.changes.outputs.docs }}
+      sdks: ${{ steps.changes.outputs.sdks }}
+      dashboard: ${{ steps.changes.outputs.dashboard }}
+      admin: ${{ steps.changes.outputs.admin }}
+      shopify: ${{ steps.changes.outputs.shopify }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            api:
+              - 'apps/api/**'
+            cli:
+              - 'apps/cli/**'
+            docs:
+              - 'apps/docs/**'
+            sdks:
+              - 'apps/sdks/**'
+            dashboard:
+              - 'apps/dashboard/**'
+            admin:
+              - 'apps/admin/**'
+            shopify:
+              - 'apps/shopify/**'
+
+  build-api:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run build
+      - run: bun test
+
+  build-cli:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.cli == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/cli
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "./apps/cli/pnpm-lock.yaml"
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
+
+  build-docs:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/docs
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "./apps/docs/pnpm-lock.yaml"
+      - run: pnpm install
+      - run: pnpm build
+
+  build-sdks:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.sdks == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/sdks
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "./apps/sdks/pnpm-lock.yaml"
+      - run: pnpm install
+      - run: pnpm build
+      - run: echo "No tests configured for SDKs"
+
+  deploy:
+    needs: [detect-changes, build-api, build-cli, build-docs, build-sdks]
+    if: github.ref == 'refs/heads/main' && success()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Deploy to production
+        run: |
+          echo "Deploying affected applications to production..."
