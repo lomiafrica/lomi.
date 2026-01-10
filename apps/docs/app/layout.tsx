@@ -6,6 +6,7 @@ import { Body } from '@/app/layout.client';
 import { Provider } from './provider';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ApolloTracker } from '@/components/analytics/apollo-tracker';
 import { StructuredData } from '@/components/structured-data';
 
@@ -189,6 +190,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <Body>
         <Provider>{children}</Provider>
         <Analytics />
+        <SpeedInsights />
         <ApolloTracker />
       </Body>
     </html>

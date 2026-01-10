@@ -14,8 +14,6 @@ jobs:
       docs: ${{ steps.changes.outputs.docs }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -27,7 +25,7 @@ jobs:
 
   deploy-api:
     needs: detect-changes
-    if: needs.detect-changes.outputs.api == 'true'
+    if: needs.detect-changes.outputs.api == 'true' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,12 +35,12 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_API }}
-          working-directory: ./apps/api
+          working-directory: ./
           vercel-args: '--prod'
 
   deploy-docs:
     needs: detect-changes
-    if: needs.detect-changes.outputs.docs == 'true'
+    if: needs.detect-changes.outputs.docs == 'true' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,8 +50,5 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_DOCS }}
-          working-directory: ./apps/docs
+          working-directory: ./
           vercel-args: '--prod'
-
-
-
