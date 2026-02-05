@@ -56,7 +56,7 @@
     "lucide-react": "^0.542.0",
     "mermaid": "^11.12.2",
     "mixpanel-browser": "^2.73.0",
-    "next": "^16.1.1",
+    "next": "^16.1.5",
     "next-sanity": "^11.6.12",
     "next-themes": "^0.4.6",
     "react": "^19.2.3",
