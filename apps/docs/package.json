@@ -7,7 +7,9 @@
       "fast-xml-parser": "^5.3.4",
       "@isaacs/brace-expansion": "^5.0.1",
       "undici": "^5.28.4",
-      "lodash": "^4.17.21"
+      "lodash": "4.17.23",
+      "lodash-es@<=4.17.23": "4.17.23",
+      "chevrotain@<=11.1.1": "11.1.1"
     }
   },
   "scripts": {
