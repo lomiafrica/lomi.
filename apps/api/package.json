@@ -50,17 +50,17 @@
     "overrides": {
       "@isaacs/brace-expansion": "^5.0.1",
       "diff": "^5.2.0",
-      "lodash": "^4.17.21"
+      "lodash": "4.17.23"
     }
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.12",
-    "@nestjs/config": "^4.0.2",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.12",
     "@nestjs/event-emitter": "^3.0.1",
     "@nestjs/platform-express": "^11.1.12",
-    "@nestjs/swagger": "^11.2.5",
+    "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
     "@supabase/supabase-js": "^2.90.1",
     "axios": "^1.13.2",
