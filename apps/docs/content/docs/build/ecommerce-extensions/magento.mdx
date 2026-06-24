@@ -28,7 +28,7 @@ php bin/magento cache:flush
 
 Manual install: copy package under `app/code/Lomi/Payments/` then run the same `module:enable` / `setup:upgrade` steps.
 
-Full instructions: [Magento plugin README](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/magento/README.md)
+Full instructions: [Magento plugin README](https://github.com/lomiafrica/magento/blob/main/README.md)
 
 ## Configuration
 
@@ -50,7 +50,7 @@ Full instructions: [Magento plugin README](https://github.com/lomiafrica/lomi./b
 
 `GET /rest/V1/lomi/verify/{checkoutSessionId}`, verifies the checkout session for the checkout session’s **last real order**; path segment must match **`lomi_checkout_session_id`** on that order.
 
-Defined in [`etc/webapi.xml`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/magento/etc/webapi.xml).
+Defined in [`etc/webapi.xml`](https://github.com/lomiafrica/magento/blob/main/etc/webapi.xml).
 
 ## Webhooks
 
@@ -58,8 +58,8 @@ Same contract as other PHP plugins: HMAC-SHA256 hex on **raw** JSON body; subscr
 
 ## Shared docs
 
-- [Platform plugins integration contract](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
-- [Integration QA checklist](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
+- [Shared technical contract](/build/ecommerce-extensions#shared-technical-contract)
+- [Verify payments](/build/guides/verify-payments)
 
 ## More docs
 

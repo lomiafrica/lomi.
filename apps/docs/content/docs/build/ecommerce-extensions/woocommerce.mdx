@@ -16,13 +16,11 @@ WordPress plugin that redirects shoppers to **lomi. hosted checkout** and confir
 - Store currency **XOF**, **USD**, or **EUR** (gateway validates supported currencies)
 - HTTPS recommended for production
 
-Source: [plugin header / readme](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/woo-lomi.php)
+Source: [plugin header / readme](https://github.com/lomiafrica/woo/blob/main/woo-lomi.php)
 
 ## Install
 
-Download the latest plugin zip from GitHub Releases:
-
-[Download woo-lomi.zip](https://github.com/lomiafrica/lomi./releases/latest/download/woo-lomi.zip)
+Download from [lomiafrica/woo releases](https://github.com/lomiafrica/woo/releases) when published, or build locally from the [woo repository](https://github.com/lomiafrica/woo) (`npm run release` → `dist/woo-lomi-*.zip`).
 
 1. **WordPress Admin → Plugins → Add New → Upload Plugin**: choose `woo-lomi.zip` and activate.
 2. Releases are published on `woo-v*` tags (for example `woo-v1.002.0`). The asset name is always **`woo-lomi.zip`** so the `latest/download` URL stays stable.
@@ -48,7 +46,7 @@ To build locally from the monorepo: `cd apps/plugins/woo && npm run release`.
 5. **Webhook** `PAYMENT_SUCCEEDED` can finalize the order if the return URL is delayed; signature verified with `X-Lomi-Signature` over the raw body.
 6. On success the plugin stores **`_lomi_transaction_id`**, **`_lomi_subscription_id`** (subscriptions), and **`_lomi_price_id`** on the Woo order.
 
-Implementation reference: [`class-wc-gateway-lomi.php`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/includes/class-wc-gateway-lomi.php)
+Implementation reference: [`class-wc-gateway-lomi.php`](https://github.com/lomiafrica/woo/blob/main/includes/class-wc-gateway-lomi.php)
 
 ## Refunds
 
@@ -76,13 +74,10 @@ Always verify on the **exact raw bytes** received, do not re-stringify JSON.
 
 Use the shared checklist before production:
 
-- [Integration QA checklist](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
-
-Technical contract (aligned with Magento / Presta):
-
-- [Platform plugins integration contract](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
+- [Verify payments](/build/guides/verify-payments)
+- [Shared technical contract](/build/ecommerce-extensions#shared-technical-contract)
 
 ## More docs
 
 - [E‑commerce hub](/build/ecommerce-extensions)
-- Merchant-facing readme (WordPress.org format): [readme.txt](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/readme.txt)
+- Merchant-facing readme (WordPress.org format): [readme.txt](https://github.com/lomiafrica/woo/blob/main/readme.txt)

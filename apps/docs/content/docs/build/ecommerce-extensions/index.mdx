@@ -26,10 +26,10 @@ WooCommerce, Magento 2, and PrestaShop talk only to lomi.’s **public REST API*
 | Paid state | Session `status` **`completed`**, with amount/currency checked against the cart/order |
 | Webhooks | `X-Lomi-Event` (e.g. `PAYMENT_SUCCEEDED`), `X-Lomi-Signature`, **HMAC-SHA256 hex** over the **raw** JSON body |
 
-For the canonical wording maintained next to source code, see the repo docs:
+For the canonical wording maintained next to source code, see:
 
-- [Platform plugins integration contract](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
-- [Integration QA checklist](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
+- [Shared technical contract](#shared-technical-contract) (this page)
+- [Verify payments](/build/guides/verify-payments) and [Handling webhooks](/build/advanced-guides/handling-webhooks)
 
 Before going live, also read [API integration](/start/first-payment), [Authentication](/api/authentication), and [Webhooks](/build/webhooks) for outbound subscription management.
 

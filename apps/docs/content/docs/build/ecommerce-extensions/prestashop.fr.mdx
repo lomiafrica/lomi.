@@ -16,12 +16,12 @@ Module dans le dossier **`lomi/`** du monorepo : checkout hébergé via `POST /
 
 ## Installation
 
-1. Zipper le dossier **`lomi`** depuis [`apps/plugins/prestashop/lomi`](https://github.com/lomiafrica/lomi./tree/master/apps/plugins/prestashop/lomi).
+1. Zipper le dossier **`lomi`** depuis le [dépôt prestashop](https://github.com/lomiafrica/prestashop/tree/main/lomi).
 2. **Back office → Modules → Importer un module**.
 3. Configurer les **clés secrètes** test / production, le **secret de signature webhook** et le **mode test**.
 4. L’URL webhook est affichée sur la page de configuration du module.
 
-Détails : [README du module PrestaShop](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/prestashop/lomi/README.md)
+Détails : [README du module PrestaShop](https://github.com/lomiafrica/prestashop/blob/main/lomi/README.md)
 
 ## URL webhook
 
@@ -36,12 +36,12 @@ Une **URL simplifiée** peut exposer le même contrôleur frontal du module.
 1. Le client choisit **Payer avec lomi.** → le contrôleur **validation** crée la session et redirige vers lomi. Checkout.
 2. Le contrôleur **callback** vérifie la session (id panier + secure key client), puis valide la commande PrestaShop si le statut est `completed` et que montant / devise correspondent.
 
-Sources : [`validation.php`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/prestashop/lomi/controllers/front/validation.php), [`callback.php`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/prestashop/lomi/controllers/front/callback.php), [`webhook.php`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/prestashop/lomi/controllers/front/webhook.php)
+Sources : [`validation.php`](https://github.com/lomiafrica/prestashop/blob/main/lomi/controllers/front/validation.php), [`callback.php`](https://github.com/lomiafrica/prestashop/blob/main/lomi/controllers/front/callback.php), [`webhook.php`](https://github.com/lomiafrica/prestashop/blob/main/lomi/controllers/front/webhook.php)
 
 ## Docs partagées
 
-- [Contrat d’intégration des plugins](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
-- [Liste de contrôle QA d’intégration](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
+- [Contrat technique partagé](/build/ecommerce-extensions#shared-technical-contract)
+- [Vérifier les paiements](/build/guides/verify-payments)
 
 ## Autres docs
 
