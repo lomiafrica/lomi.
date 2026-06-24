@@ -62,14 +62,24 @@ Every serious integration should include:
 - Webhook handling for final reconciliation.
 - Idempotency for create-style payment operations when retries are possible.
 
+Before go-live, run [Simulate errors](/build/guides/simulate-errors) in sandbox to exercise failure and pending states.
+
 ## Next steps
 
+**Onboarding**
+
 - [Integration journey](/start/integration-journey)
-- [Payment channels](/build/payment-channels)
+- [Make a test payment](/start/first-payment)
+- [Sandbox payments](/start/sandbox-payments)
+- [Simulate errors](/build/guides/simulate-errors)
+
+**Build**
+
+- [Hosted checkout](/build/checkout) · [Products](/build/products) · [Payment channels](/build/payment-channels)
+- [Webhooks](/build/webhooks) · [Verify payments](/build/guides/verify-payments)
+
+**Reference apps & API**
+
 - [Hosted checkout reference app](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/payment-integration-sdk-reference)
 - [Direct charge reference app](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/direct-charge-integration-reference)
-- [Make a test payment](/start/first-payment)
-- [Verify payments](/build/guides/verify-payments)
-- [Hosted checkout](/build/checkout)
-- [Webhooks](/build/webhooks)
 - [API reference](/api)
