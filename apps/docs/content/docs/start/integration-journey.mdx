@@ -34,11 +34,16 @@ lomi. supports multiple integration options depending on your stack:
 | If you need | Start with |
 | --- | --- |
 | A complete checkout page | [Hosted checkout](/build/checkout) |
+| Checkout embedded on your site | [Embed checkout widget](/build/embed-widget) |
 | A shareable URL | [Payment links](/build/payment-links) |
+| A backend-created payment request | [Payment requests](/build/payment-requests) |
 | Server-initiated mobile money or embedded cards | [Direct charges](/build/direct-charges) |
 | Recurring billing | [Subscriptions](/build/subscriptions) via checkout or links |
+| Store plugin (WooCommerce, Shopify, etc.) | [E-commerce extensions](/build/ecommerce-extensions) |
 
-Most teams should start with **hosted checkout**. Use [Which payment integration should I choose?](/build/choose-integration) and the [payment methods hub](/build/guides/payment-methods) to confirm Wave, MTN, and card coverage for your markets.
+Define what you sell in [Products](/build/products) before you create checkout sessions or subscription plans.
+
+Most teams should start with **hosted checkout**. Use [Which payment integration should I choose?](/build/choose-integration) and the [payment methods hub](/build/guides/payment-methods) to confirm Wave, MTN, and card coverage for your markets. For a country × channel matrix, see [Payment channels](/build/payment-channels).
 
 ## Step 3: Test end-to-end
 
@@ -46,7 +51,9 @@ Test your integration thoroughly using sandbox credentials:
 
 1. [Make a test payment](/start/first-payment): CLI or API checkout session.
 2. Use [Sandbox payments](/start/sandbox-payments) for test cards, Wave, and MTN behavior.
-3. Fix issues using [Error handling](/build/advanced-guides/error-handling) and [Idempotency keys](/build/advanced-guides/idempotency-keys).
+3. Exercise failure paths with [Simulate errors](/build/guides/simulate-errors).
+4. Fix issues using [Error handling](/build/advanced-guides/error-handling) and [Idempotency keys](/build/advanced-guides/idempotency-keys).
+5. For checkout edge cases (subscriptions, trials, pending mobile money), see [Checkout behavior](/build/payments/checkout-behavior) and per-method guides under [Payment methods](/build/payment-methods).
 
 ## Step 4: Configure webhooks
 
@@ -68,7 +75,26 @@ When sandbox flows pass your checklist:
 
 ## Next steps
 
+### Confirm payments in production
+
 - [Verify payments](/build/guides/verify-payments)
 - [Payment lifecycle](/build/guides/payment-lifecycle)
-- [CLI quickstart](/start/cli-quickstart)
 - [Payment state machine](/api/payment-state-machine)
+
+### Operate after go-live
+
+- [Transactions](/build/transactions) · [Refunds](/build/refunds) · [Payouts](/build/payouts) · [Disputes](/build/disputes)
+- [Balance and settlement](/build/balance-and-settlement) · [Radar (fraud)](/build/radar)
+
+### Catalog, billing, and customers
+
+- [Products](/build/products) · [Usage billing](/build/usage-billing) · [Discount coupons](/build/discount-coupons)
+- [Customer portal](/build/customer-portal) · [Customers](/build/platform/customers)
+- [Merchants](/build/platform/merchants) · [Organizations](/build/platform/organizations)
+
+### Tools and hardening
+
+- [SDKs](/build/sdks) · [CLI](/build/cli) · [MCP](/build/mcp) · [lomi. UI](/build/lomi-ui)
+- [E-commerce extensions](/build/ecommerce-extensions) (WooCommerce, Shopify, Magento, PrestaShop)
+- [Advanced guides](/build/advanced-guides) (error handling, testing, CI/CD, webhook reliability)
+- [CLI quickstart](/start/cli-quickstart)

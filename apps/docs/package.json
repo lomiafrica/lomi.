@@ -23,6 +23,7 @@
     "dev": "NODE_OPTIONS='--max-old-space-size=8192' next dev --turbo",
     "lint": "fumadocs-mdx && bun ./lib/scripts/lint.ts && bun ./lib/scripts/check-mdx-sdk-snippets.ts && pnpm exec tsx lib/scripts/manual-api/verify-en-operation-overrides.ts && eslint .",
     "docs:drift": "pnpm exec tsx lib/scripts/docs-drift.ts",
+    "docs:audit-spine": "node lib/scripts/audit-spine-links.mjs",
     "api:bootstrap": "pnpm exec tsx lib/scripts/bootstrap-manual-api-reference.ts",
     "api:regenerate-rest-reference": "pnpm exec tsx lib/scripts/bootstrap-manual-api-reference.ts",
     "knip": "knip",

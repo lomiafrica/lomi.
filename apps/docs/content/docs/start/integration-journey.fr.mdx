@@ -32,17 +32,24 @@ Voir [Créer votre compte](/start/create-account) et [Clés API](/start/api-keys
 | Besoin | Commencez par |
 | --- | --- |
 | Page checkout complète | [Checkout hébergé](/build/checkout) |
+| Checkout intégré sur votre site | [Widget checkout](/build/embed-widget) |
 | URL partageable | [Liens de paiement](/build/payment-links) |
+| Demande de paiement créée côté backend | [Demandes de paiement](/build/payment-requests) |
 | Mobile money ou cartes côté serveur | [Charges directes](/build/direct-charges) |
 | Facturation récurrente | [Abonnements](/build/subscriptions) |
+| Plugin boutique (WooCommerce, Shopify, etc.) | [Extensions ecommerce](/build/ecommerce-extensions) |
 
-La plupart des équipes commencent par le **checkout hébergé**. Consultez [Quelle intégration choisir ?](/build/choose-integration) et [Canaux de paiement](/build/payment-channels).
+Définissez ce que vous vendez dans [Produits](/build/products) avant de créer des sessions checkout ou des plans d’abonnement.
+
+La plupart des équipes commencent par le **checkout hébergé**. Consultez [Quelle intégration choisir ?](/build/choose-integration) et le [hub moyens de paiement](/build/guides/payment-methods). Pour une matrice pays × canal, voir [Canaux de paiement](/build/payment-channels).
 
 ## Étape 3: Tester de bout en bout
 
 1. [Faire un paiement de test](/start/first-payment)
 2. [Paiements sandbox](/start/sandbox-payments): cartes, Wave, MTN
-3. [Gestion des erreurs](/build/advanced-guides/error-handling) et [idempotence](/build/advanced-guides/idempotency-keys)
+3. Tester les échecs avec [Simuler des erreurs](/build/guides/simulate-errors)
+4. [Gestion des erreurs](/build/advanced-guides/error-handling) et [idempotence](/build/advanced-guides/idempotency-keys)
+5. Cas limites checkout (abonnements, essais, mobile money en attente) : [Comportement checkout](/build/payments/checkout-behavior) et guides par moyen sous [Moyens de paiement](/build/payment-methods)
 
 ## Étape 4: Configurer les webhooks
 
@@ -62,7 +69,26 @@ Les webhooks sont essentiels pour les moyens de paiement et les événements hor
 
 ## Étapes suivantes
 
+### Confirmer les paiements en production
+
 - [Vérifier les paiements](/build/guides/verify-payments)
 - [Cycle de vie des paiements](/build/guides/payment-lifecycle)
-- [Démarrer avec le CLI](/start/cli-quickstart)
 - [Machine à états des paiements](/api/payment-state-machine)
+
+### Exploiter après le go-live
+
+- [Transactions](/build/transactions) · [Remboursements](/build/refunds) · [Reversements](/build/payouts) · [Litiges](/build/disputes)
+- [Solde et règlement](/build/balance-and-settlement) · [Radar (fraude)](/build/radar)
+
+### Catalogue, facturation et clients
+
+- [Produits](/build/products) · [Facturation à l’usage](/build/usage-billing) · [Coupons](/build/discount-coupons)
+- [Portail client](/build/customer-portal) · [Clients](/build/platform/customers)
+- [Marchands](/build/platform/merchants) · [Organisations](/build/platform/organizations)
+
+### Outils et durcissement
+
+- [SDKs](/build/sdks) · [CLI](/build/cli) · [MCP](/build/mcp) · [lomi. UI](/build/lomi-ui)
+- [Extensions ecommerce](/build/ecommerce-extensions) (WooCommerce, Shopify, Magento, PrestaShop)
+- [Guides avancés](/build/advanced-guides) (erreurs, tests, CI/CD, fiabilité webhooks)
+- [Démarrer avec le CLI](/start/cli-quickstart)
