@@ -13,7 +13,7 @@ import { Callout } from '@/components/docs/docs-callout';
 
 Install lomi. on your store without writing checkout plumbing yourself. These modules create **hosted checkout sessions**, redirect shoppers to lomi. Checkout, then confirm payment via **return URLs** and **merchant webhooks**.
 
-<h2 id="shared-technical-contract">Shared technical contract</h2>
+## Shared technical contract
 
 WooCommerce, Magento 2, and PrestaShop talk only to lomi.’s **public REST API** (`/v1/checkout-sessions`). They do **not** call Supabase RPC or internal-only Nest endpoints.
 

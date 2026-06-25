@@ -13,7 +13,7 @@ import { Callout } from '@/components/docs/docs-callout';
 
 Installez lomi. sur votre boutique sans recoder le tunnel de paiement. Ces modules créent des **sessions de paiement hébergées**, envoient le client vers la **page lomi. Checkout**, puis confirment le paiement via les **URL de retour** et les **webhooks marchands**.
 
-<h2 id="shared-technical-contract">Contrat technique partagé</h2>
+## Contrat technique partagé
 
 WooCommerce, Magento 2 et PrestaShop n’utilent que l’**API REST publique** lomi. (`/v1/checkout-sessions`). Ils **n’appellent pas** les RPC Supabase ni les endpoints internes Nest.
 
@@ -28,7 +28,7 @@ WooCommerce, Magento 2 et PrestaShop n’utilent que l’**API REST publique** 
 
 Formulation canonique à côté du code :
 
-- [Contrat technique partagé](#shared-technical-contract) (cette page)
+- [Contrat technique partagé](#contrat-technique-partagé) (cette page)
 - [Vérifier les paiements](/build/guides/verify-payments) et [Traiter les webhooks](/build/advanced-guides/handling-webhooks)
 
 Avant la mise en production : [Intégration API](/start/first-payment), [Authentification](/api/authentication) et [Webhooks](/build/webhooks).

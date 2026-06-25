@@ -15,24 +15,6 @@ const SPINE_FILES = [
 
 const linkRe = /\]\(\/(start|build|resources)\/([^)\s#]+)/g;
 
-function walk(dir, acc = []) {
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, ent.name);
-    if (ent.isDirectory()) walk(p, acc);
-    else if (
-      ent.name.endsWith('.mdx') &&
-      !/\.(fr|es|zh)\.mdx$/.test(ent.name)
-    ) {
-      acc.push(p);
-    }
-  }
-  return acc;
-}
-
-function slugFromAbs(abs) {
-  return path.relative(CONTENT, abs).split(path.sep).join('/').replace(/\.mdx$/, '');
-}
-
 function expandSidebar(pages, prefix) {
   const out = [];
   for (const p of pages) {
