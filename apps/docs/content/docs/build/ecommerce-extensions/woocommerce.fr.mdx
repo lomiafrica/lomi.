@@ -16,13 +16,20 @@ Extension WordPress qui envoie les acheteurs vers le **checkout hébergé lomi.*
 - Devise de la boutique **XOF**, **USD** ou **EUR**
 - HTTPS recommandé en production
 
-Source : [en-tête du plugin / readme](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/woo-lomi.php)
+Source : [en-tête du plugin / readme](https://github.com/lomiafrica/woo/blob/main/woo-lomi.php)
 
 ## Installation
 
-1. Téléchargez ou clonez le plugin depuis [`apps/plugins/woo`](https://github.com/lomiafrica/lomi./tree/master/apps/plugins/woo).
-2. Placez le dossier dans `wp-content/plugins/` et activez **lomi. WooCommerce Payment Gateway** dans WordPress.
-3. Activez **WooCommerce** si ce n’est pas déjà fait.
+Téléchargez la dernière archive depuis les releases GitHub :
+
+[Télécharger woo-lomi.zip](https://github.com/lomiafrica/lomi./releases/latest/download/woo-lomi.zip)
+
+Les sources et les outils de build sont dans le [dépôt woo](https://github.com/lomiafrica/woo). Les releases pourront aussi y être publiées à terme.
+
+1. **Extensions WordPress → Ajouter → Téléverser** : choisissez `woo-lomi.zip` et activez.
+2. Les releases sont publiées sur les tags `woo-v*` (par ex. `woo-v1.002.0`). Le nom de l’asset reste **`woo-lomi.zip`** pour garder une URL `latest/download` stable.
+
+Pour compiler localement : clonez [lomiafrica/woo](https://github.com/lomiafrica/woo) puis `npm run release` (sortie dans `dist/woo-lomi-*.zip`).
 
 ## Liste de configuration
 
@@ -40,7 +47,7 @@ Source : [en-tête du plugin / readme](https://github.com/lomiafrica/lomi./blob/
 4. L’**URL de retour** appelle l’écouteur API WooCommerce, qui fait `GET /v1/checkout-sessions/{id}` et finalise la commande si le statut est `completed`.
 5. Le **webhook** `PAYMENT_SUCCEEDED` peut finaliser la commande si le retour navigateur est retardé ; signature vérifiée avec `X-Lomi-Signature` sur le corps brut.
 
-Référence code : [`class-wc-gateway-lomi.php`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/includes/class-wc-gateway-lomi.php)
+Référence code : [`class-wc-gateway-lomi.php`](https://github.com/lomiafrica/woo/blob/main/includes/class-wc-gateway-lomi.php)
 
 ## Remboursements
 
@@ -63,13 +70,10 @@ Vérifier toujours les **octets bruts** reçus, ne pas re-sérialiser le JSON.
 
 Avant la prod :
 
-- [Liste de contrôle QA d’intégration](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
-
-Contrat technique (aligné Magento / Presta) :
-
-- [Contrat d’intégration des plugins](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
+- [Vérifier les paiements](/build/guides/verify-payments)
+- [Contrat technique partagé](/build/ecommerce-extensions#shared-technical-contract)
 
 ## Autres docs
 
 - [Hub extensions e‑commerce](/build/ecommerce-extensions)
-- Readme marchand (format WordPress.org) : [readme.txt](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/woo/readme.txt)
+- Readme marchand (format WordPress.org) : [readme.txt](https://github.com/lomiafrica/woo/blob/main/readme.txt)

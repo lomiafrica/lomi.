@@ -28,7 +28,7 @@ php bin/magento cache:flush
 
 Installation manuelle : copier le paquet sous `app/code/Lomi/Payments/` puis les mêmes commandes `module:enable` / `setup:upgrade`.
 
-Détails : [README du plugin Magento](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/magento/README.md)
+Détails : [README du plugin Magento](https://github.com/lomiafrica/magento/blob/main/README.md)
 
 ## Configuration
 
@@ -50,7 +50,7 @@ Détails : [README du plugin Magento](https://github.com/lomiafrica/lomi./blob/
 
 `GET /rest/V1/lomi/verify/{checkoutSessionId}`, vérifie la session pour la **dernière commande réelle** de la session checkout navigateur ; le segment d’URL doit correspondre à **`lomi_checkout_session_id`** sur cette commande.
 
-Défini dans [`etc/webapi.xml`](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/magento/etc/webapi.xml).
+Défini dans [`etc/webapi.xml`](https://github.com/lomiafrica/magento/blob/main/etc/webapi.xml).
 
 ## Webhooks
 
@@ -58,8 +58,8 @@ Même contrat que les autres plugins PHP : HMAC-SHA256 hex sur le JSON **brut**
 
 ## Docs partagées
 
-- [Contrat d’intégration des plugins](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_CONTRACT.md)
-- [Liste de contrôle QA d’intégration](https://github.com/lomiafrica/lomi./blob/master/apps/plugins/INTEGRATION_QA_CHECKLIST.md)
+- [Contrat technique partagé](/build/ecommerce-extensions#shared-technical-contract)
+- [Vérifier les paiements](/build/guides/verify-payments)
 
 ## Autres docs
 
