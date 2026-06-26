@@ -16,17 +16,23 @@ Extension **Lomi_Payments** for Magento Open Source / Adobe Commerce. Payment me
 
 ## Installation
 
-Composer (typical):
+`lomi/magento2-payments` is **not published on Packagist**. Register the GitHub repository, then install with Composer:
 
 ```bash
+composer config repositories.lomi-magento vcs https://github.com/lomiafrica/magento
 composer require lomi/magento2-payments
 php bin/magento module:enable Lomi_Payments
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy -f
 php bin/magento cache:flush
 ```
 
-Manual install: copy package under `app/code/Lomi/Payments/` then run the same `module:enable` / `setup:upgrade` steps.
+### Manual install
+
+1. Clone or download [lomiafrica/magento](https://github.com/lomiafrica/magento).
+2. Copy the package to `app/code/Lomi/Payments/` on your Magento root (the directory that contains `registration.php`).
+3. Run the same `module:enable`, `setup:upgrade`, `setup:di:compile`, and `cache:flush` commands as above.
 
 Full instructions: [Magento plugin README](https://github.com/lomiafrica/magento/blob/main/README.md)
 

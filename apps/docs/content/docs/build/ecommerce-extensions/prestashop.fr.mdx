@@ -16,10 +16,12 @@ Module du dépôt [`lomiafrica/prestashop`](https://github.com/lomiafrica/presta
 
 ## Installation
 
-1. Zipper le dossier **`lomi`** depuis le [dépôt prestashop](https://github.com/lomiafrica/prestashop/tree/main/lomi).
-2. **Back office → Modules → Importer un module**.
-3. Configurer les **clés secrètes** test / production, le **secret de signature webhook** et le **mode test**.
-4. L’URL webhook est affichée sur la page de configuration du module.
+1. Ouvrez le dossier **`lomi`** dans [lomiafrica/prestashop](https://github.com/lomiafrica/prestashop/tree/main/lomi) — la racine de l’archive doit être `lomi/` avec `lomi.php` à l’intérieur.
+2. Zippez **uniquement** ce dossier (pas le répertoire parent).
+3. **Back office → Modules → Importer un module** → installez, puis **Activez** si besoin.
+4. **International → Localisation → Devises** — activez **EUR**, **USD** ou **XOF** selon votre boutique.
+5. **Paiement → Préférences** (ou **Moyens de paiement**) — autorisez **lomi.** pour ces devises.
+6. **Modules → lomi. → Configurer** — collez les clés secrètes et secrets webhook test / production ; copiez l’**URL webhook** dans [dashboard.lomi.africa](https://dashboard.lomi.africa) → **Développeurs → Webhooks** (au minimum **`PAYMENT_SUCCEEDED`**).
 
 Détails : [README du module PrestaShop](https://github.com/lomiafrica/prestashop/blob/main/lomi/README.md)
 

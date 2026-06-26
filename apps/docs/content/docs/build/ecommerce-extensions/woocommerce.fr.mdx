@@ -20,24 +20,42 @@ Source : [en-tête du plugin / readme](https://github.com/lomiafrica/woo/blob/ma
 
 ## Installation
 
-Téléchargez la dernière archive depuis les releases GitHub :
+### Release GitHub (recommandé)
 
-[Télécharger woo-lomi.zip](https://github.com/lomiafrica/lomi./releases/latest/download/woo-lomi.zip)
+Les archives officielles sont publiées sur les [releases du monorepo lomi.](https://github.com/lomiafrica/lomi./releases) lorsqu’un tag **`woo-v*`** est poussé (par ex. `woo-v1.002.0`). L’asset s’appelle toujours **`woo-lomi.zip`**.
 
-Les sources et les outils de build sont dans le [dépôt woo](https://github.com/lomiafrica/woo). Les releases pourront aussi y être publiées à terme.
+- Parcourez les [releases `woo-v*`](https://github.com/lomiafrica/lomi./releases?q=woo-v&expanded=true) et téléchargez `woo-lomi.zip`.
+- URL directe : `https://github.com/lomiafrica/lomi./releases/download/<tag>/woo-lomi.zip` (ex. `.../woo-v1.002.0/woo-lomi.zip`).
 
-1. **Extensions WordPress → Ajouter → Téléverser** : choisissez `woo-lomi.zip` et activez.
-2. Les releases sont publiées sur les tags `woo-v*` (par ex. `woo-v1.002.0`). Le nom de l’asset reste **`woo-lomi.zip`** pour garder une URL `latest/download` stable.
+S’il n’y a pas encore de release `woo-v*`, compilez depuis les sources ci-dessous ou contactez votre référent lomi.
 
-Pour compiler localement : clonez [lomiafrica/woo](https://github.com/lomiafrica/woo) puis `npm run release` (sortie dans `dist/woo-lomi-*.zip`).
+Les sources et le script de release sont dans le [dépôt woo](https://github.com/lomiafrica/woo) ; la CI produit le zip lors d’un tag `woo-v*` sur `lomiafrica/lomi.`.
+
+### Compiler depuis les sources
+
+```bash
+git clone https://github.com/lomiafrica/woo.git
+cd woo
+npm ci
+npm run release
+```
+
+Téléversez `dist/woo-lomi.zip` (ou `dist/woo-lomi-{version}.zip`).
+
+### Téléversement WordPress
+
+1. **Extensions → Ajouter → Téléverser** → choisissez `woo-lomi.zip`.
+2. **Activez** lomi. for WooCommerce.
 
 ## Liste de configuration
 
-1. Installer **lomi. WooCommerce Payment Gateway** et activer WooCommerce.
-2. Aller dans **WooCommerce → Réglages → Paiements → lomi.**.
-3. Activer la passerelle ; utiliser le **mode test** pendant l’intégration.
-4. Coller les **clés secrètes** test / production et les **secrets de signature webhook** correspondants depuis [dashboard.lomi.africa](https://dashboard.lomi.africa).
-5. Copier l’**URL webhook** affichée en rouge en haut des réglages dans le tableau de bord lomi. (**Développeur / Webhooks**), avec le même secret que dans Woo.
+1. Installer **lomi. for WooCommerce** et activer WooCommerce.
+2. Aller dans **WooCommerce → Réglages → Paiements → lomi.** (ou **Configurer**).
+3. Consulter le panneau **Setup health** (clé API, devise, secret webhook, HTTPS, mode test, `GET /me`).
+4. Activer la passerelle ; utiliser le **mode test** pendant l’intégration.
+5. Coller les **clés secrètes** test / production et les **secrets de signature webhook** depuis [dashboard.lomi.africa](https://dashboard.lomi.africa).
+6. Copier l’**URL webhook** affichée en haut des réglages dans **Tableau de bord → Webhooks** (même secret que dans Woo).
+7. Activer les événements **`PAYMENT_SUCCEEDED`** et **`REFUND_COMPLETED`**.
 
 ## Flux de paiement
 

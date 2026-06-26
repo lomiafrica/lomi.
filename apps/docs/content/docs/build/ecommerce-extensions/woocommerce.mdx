@@ -20,16 +20,32 @@ Source: [plugin header / readme](https://github.com/lomiafrica/woo/blob/main/woo
 
 ## Install
 
-Download the latest plugin zip from GitHub Releases:
+### GitHub release (recommended)
 
-[Download woo-lomi.zip](https://github.com/lomiafrica/lomi./releases/latest/download/woo-lomi.zip)
+Official zips are published on the [lomi. monorepo releases](https://github.com/lomiafrica/lomi./releases) when maintainers push a **`woo-v*`** tag (for example `woo-v1.002.0`). The asset name is always **`woo-lomi.zip`**.
 
-Source and build tooling live in the [woo repository](https://github.com/lomiafrica/woo). Future releases may also be published from that repo.
+- Browse [releases tagged `woo-v*`](https://github.com/lomiafrica/lomi./releases?q=woo-v&expanded=true) and download `woo-lomi.zip` from the release you need.
+- Direct URL pattern: `https://github.com/lomiafrica/lomi./releases/download/<tag>/woo-lomi.zip` (example: `.../woo-v1.002.0/woo-lomi.zip`).
 
-1. **WordPress Admin → Plugins → Add New → Upload Plugin**: choose `woo-lomi.zip` and activate.
-2. Releases are published on `woo-v*` tags (for example `woo-v1.002.0`). The asset name is always **`woo-lomi.zip`** so the `latest/download` URL stays stable.
+If no `woo-v*` release is listed yet, use **build from source** below or contact your lomi. representative for a current zip.
 
-To build locally: clone [lomiafrica/woo](https://github.com/lomiafrica/woo) and run `npm run release` (output in `dist/woo-lomi-*.zip`).
+Source and release tooling live in the [woo repository](https://github.com/lomiafrica/woo); CI packages the zip from that repo when a `woo-v*` tag is pushed on `lomiafrica/lomi.`.
+
+### Build from source
+
+```bash
+git clone https://github.com/lomiafrica/woo.git
+cd woo
+npm ci
+npm run release
+```
+
+Upload `dist/woo-lomi.zip` (versioned copy: `dist/woo-lomi-{version}.zip`).
+
+### Upload in WordPress
+
+1. **Plugins → Add New → Upload Plugin** → choose `woo-lomi.zip`.
+2. **Activate** lomi. for WooCommerce.
 
 ## Setup checklist
 

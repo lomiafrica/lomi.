@@ -16,10 +16,12 @@ Module in the [`lomiafrica/prestashop`](https://github.com/lomiafrica/prestashop
 
 ## Install
 
-1. Zip the **`lomi`** folder from the [prestashop repository](https://github.com/lomiafrica/prestashop/tree/main/lomi).
-2. **Back office → Modules → Upload a module**.
-3. Configure **test/live secret keys**, **webhook signing secret**, and **test mode** switch.
-4. Webhook URL is displayed on the module configuration page.
+1. Open the **`lomi`** folder in [lomiafrica/prestashop](https://github.com/lomiafrica/prestashop/tree/main/lomi) — the archive root must be `lomi/` and include `lomi.php`.
+2. Zip **only** that folder (not a parent directory).
+3. **Back office → Modules → Module Manager → Upload a module** → install, then **Enable** if needed.
+4. **International → Localization → Currencies** — activate **EUR**, **USD**, or **XOF** for your shop.
+5. **Payment → Preferences** (or **Payment methods**, depending on version) — allow **lomi.** for those currencies.
+6. **Modules → lomi. → Configure** — paste test/live secret keys and webhook signing secrets; copy the **webhook URL** into [dashboard.lomi.africa](https://dashboard.lomi.africa) → **Developers → Webhooks** (subscribe to **`PAYMENT_SUCCEEDED`** at minimum).
 
 Detailed steps: [PrestaShop module README](https://github.com/lomiafrica/prestashop/blob/main/lomi/README.md)
 
