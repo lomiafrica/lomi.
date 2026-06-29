@@ -21,9 +21,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Run plugin parity checks
-        run: apps/plugins/scripts/verify-lomi-plugins.sh
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -34,10 +31,5 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/plugins/woo/pnpm-lock.yaml
 
-      - name: Install Woo build dependencies
-        working-directory: apps/plugins/woo
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Woo assets
-        working-directory: apps/plugins/woo
-        run: pnpm run build
+      - name: Run automated plugin test suite
+        run: apps/plugins/scripts/run-plugin-tests.sh
