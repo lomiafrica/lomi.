@@ -226,11 +226,12 @@ export class WaveWebhookService {
         providedSecret = parts[1];
       }
 
-      this.logger.debug(
-        `Authorization check with secret ending in: ${providedSecret.slice(-4)}`,
-      );
-
-      return providedSecret === this.webhookSecret;
+      const providedBuffer = Buffer.from(providedSecret);
+      const expectedBuffer = Buffer.from(this.webhookSecret);
+      if (providedBuffer.length !== expectedBuffer.length) {
+        return false;
+      }
+      return crypto.timingSafeEqual(providedBuffer, expectedBuffer);
     } catch (error) {
       this.logger.error('Error verifying Authorization header:', error);
       return process.env.NODE_ENV !== 'production';
