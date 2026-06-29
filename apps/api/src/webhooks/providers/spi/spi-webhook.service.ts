@@ -165,10 +165,10 @@ export class SpiWebhookService {
   ): boolean {
     const webhookSecret = process.env.SPI_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      this.logger.warn(
-        'SPI_WEBHOOK_SECRET not set — accepting webhooks (dev only)',
+      this.logger.error(
+        'SPI_WEBHOOK_SECRET not set — rejecting request',
       );
-      return process.env.NODE_ENV !== 'production';
+      return false;
     }
 
     const signature =

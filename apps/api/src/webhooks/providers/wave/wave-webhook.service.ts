@@ -133,7 +133,6 @@ export class WaveWebhookService {
     body: any,
     rawBody: string,
   ): boolean {
-    // Log all headers for debugging (mask sensitive values)
     this.logger.debug('Webhook headers received');
     for (const [key, value] of Object.entries(headers)) {
       const maskedValue =
@@ -145,36 +144,31 @@ export class WaveWebhookService {
       this.logger.debug(`  ${key}: ${maskedValue}`);
     }
 
-    // In dev mode without webhook secret, accept all requests
     if (!this.webhookSecret) {
-      this.logger.warn(
-        'Wave webhook secret not configured - ACCEPTING ALL REQUESTS IN DEV MODE',
+      this.logger.error(
+        'Wave webhook secret not configured — rejecting request',
       );
-      return process.env.NODE_ENV !== 'production';
+      return false;
     }
 
-    // Try Wave-Signature header first (new method)
     const waveSignature =
       headers['wave-signature'] || headers['Wave-Signature'];
 
     if (waveSignature) {
       this.logger.debug('Found Wave-Signature header, verifying signature');
       try {
-        // Parse signature header: t=timestamp,v1=signature
         const [timeStamp, signature] = waveSignature.split(',');
         const eventTime = timeStamp.split('=')[1];
         const eventSignature = signature.split('=')[1];
 
-        // Verify timestamp is recent (within 5 minutes)
         const now = Math.floor(Date.now() / 1000);
         const fiveMinutesAgo = now - 5 * 60;
 
         if (parseInt(eventTime, 10) < fiveMinutesAgo) {
           this.logger.warn('Wave signature timestamp is too old');
-          return process.env.NODE_ENV !== 'production';
+          return false;
         }
 
-        // Compute expected signature
         const bodyString = typeof body === 'string' ? body : rawBody;
         const expectedSignature = crypto
           .createHmac('sha256', this.webhookSecret)
@@ -189,19 +183,16 @@ export class WaveWebhookService {
         if (signatureMatches) {
           this.logger.log('Wave signature verification successful');
           return true;
-        } else {
-          this.logger.warn(
-            'Wave signature verification failed - ACCEPTING IN DEV MODE',
-          );
-          return process.env.NODE_ENV !== 'production';
         }
+
+        this.logger.warn('Wave signature verification failed');
+        return false;
       } catch (error) {
         this.logger.error('Error verifying Wave signature:', error);
-        return process.env.NODE_ENV !== 'production';
+        return false;
       }
     }
 
-    // Fallback to Authorization header (old method)
     const authHeader =
       headers.authorization ||
       headers.Authorization ||
@@ -209,31 +200,31 @@ export class WaveWebhookService {
       headers['Wave-Authorization'];
 
     if (!authHeader) {
-      this.logger.warn('Missing authorization headers - ACCEPTING IN DEV MODE');
-      return process.env.NODE_ENV !== 'production';
+      this.logger.warn('Missing Wave authorization headers');
+      return false;
     }
 
     try {
-      // Extract secret from "Bearer {secret}" format
       let providedSecret = authHeader;
 
       if (authHeader.toLowerCase().startsWith('bearer ')) {
         const parts = authHeader.split(' ');
         if (parts.length !== 2) {
           this.logger.warn('Invalid Authorization header format');
-          return process.env.NODE_ENV !== 'production';
+          return false;
         }
         providedSecret = parts[1];
       }
 
-      this.logger.debug(
-        `Authorization check with secret ending in: ${providedSecret.slice(-4)}`,
-      );
-
-      return providedSecret === this.webhookSecret;
+      const bufA = Buffer.from(providedSecret);
+      const bufB = Buffer.from(this.webhookSecret);
+      if (bufA.length !== bufB.length) {
+        return false;
+      }
+      return crypto.timingSafeEqual(bufA, bufB);
     } catch (error) {
       this.logger.error('Error verifying Authorization header:', error);
-      return process.env.NODE_ENV !== 'production';
+      return false;
     }
   }
 

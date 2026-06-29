@@ -160,18 +160,6 @@ export class StripeWebhookService {
       });
       return event;
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        this.logger.warn(
-          'Stripe webhook secret verification failed - ACCEPTING PARSED BODY IN DEV MODE',
-        );
-        try {
-          const bodyString = rawBody.toString();
-          return JSON.parse(bodyString) as Stripe.Event;
-        } catch {
-          // fall through
-        }
-      }
-
       this.logger.error('Stripe signature verification failed:', error);
       const message =
         error instanceof Error ? error.message : 'Verification failed';
