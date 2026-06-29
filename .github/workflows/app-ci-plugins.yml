@@ -18,8 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          submodules: recursive
+
+      - name: Initialize plugin submodules
+        run: |
+          git submodule update --init apps/plugins
+          git -C apps/plugins submodule update --init woo prestashop magento
 
       - uses: pnpm/action-setup@v4
         with:
