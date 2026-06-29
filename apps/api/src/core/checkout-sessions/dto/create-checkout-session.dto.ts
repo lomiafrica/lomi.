@@ -1,5 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 /**
  * Line item for multi-product checkout
@@ -11,6 +26,7 @@ export class LineItemDto {
     description:
       'Price ID for the product. The price contains product reference and amount.',
   })
+  @IsUUID()
   price_id: string;
 
   @ApiProperty({
@@ -19,6 +35,9 @@ export class LineItemDto {
     default: 1,
     required: false,
   })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
   quantity?: number;
 
   @ApiProperty({
@@ -26,7 +45,9 @@ export class LineItemDto {
     description: 'Optional metadata for this line item',
     required: false,
   })
-  metadata?: Record<string, any>;
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, unknown>;
 }
 
 export class CreateCheckoutSessionDto {
@@ -36,6 +57,8 @@ export class CreateCheckoutSessionDto {
       'Product subtotal (unit price × quantity, excluding fees). Optional if product_id is provided (defaults to catalog price). For standard prices: must match the configured price. For pay_what_you_want: unit amount must be within [minimum_amount, maximum_amount]; total = unit × quantity.',
     required: false,
   })
+  @IsOptional()
+  @IsNumber()
   amount?: number;
 
   @ApiProperty({
@@ -43,6 +66,9 @@ export class CreateCheckoutSessionDto {
     description: 'Currency code',
     enum: ['XOF', 'USD', 'EUR'],
   })
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['XOF', 'USD', 'EUR'])
   currency_code: string;
 
   @ApiProperty({
@@ -50,6 +76,8 @@ export class CreateCheckoutSessionDto {
     description: 'Title of the checkout session',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   title?: string;
 
   @ApiProperty({
@@ -57,6 +85,8 @@ export class CreateCheckoutSessionDto {
     description: 'Description of what the customer is buying',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   description?: string;
 
   @ApiProperty({
@@ -64,6 +94,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer ID (if existing customer)',
     required: false,
   })
+  @IsOptional()
+  @IsUUID()
   customer_id?: string;
 
   @ApiProperty({
@@ -71,6 +103,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer email (required if no customer_id)',
     required: false,
   })
+  @IsOptional()
+  @IsEmail()
   customer_email?: string;
 
   @ApiProperty({
@@ -78,6 +112,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer name',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_name?: string;
 
   @ApiProperty({
@@ -85,6 +121,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer phone number',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_phone?: string;
 
   @ApiProperty({
@@ -92,6 +130,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer city',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_city?: string;
 
   @ApiProperty({
@@ -99,6 +139,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer country',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_country?: string;
 
   @ApiProperty({
@@ -106,6 +148,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer address',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_address?: string;
 
   @ApiProperty({
@@ -113,6 +157,8 @@ export class CreateCheckoutSessionDto {
     description: 'Customer postal code',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   customer_postal_code?: string;
 
   @ApiProperty({
@@ -121,6 +167,8 @@ export class CreateCheckoutSessionDto {
       'Product ID. When set with amount, pay_what_you_want bounds on the linked price are enforced.',
     required: false,
   })
+  @IsOptional()
+  @IsUUID()
   product_id?: string;
 
   @ApiProperty({
@@ -129,6 +177,8 @@ export class CreateCheckoutSessionDto {
       'Specific price ID (if product has multiple prices). PWYW validation uses this price row minimum_amount and maximum_amount.',
     required: false,
   })
+  @IsOptional()
+  @IsUUID()
   price_id?: string;
 
   @ApiProperty({
@@ -136,6 +186,8 @@ export class CreateCheckoutSessionDto {
     description: 'Subscription ID (if renewing/modifying subscription)',
     required: false,
   })
+  @IsOptional()
+  @IsUUID()
   subscription_id?: string;
 
   @ApiProperty({
@@ -144,6 +196,8 @@ export class CreateCheckoutSessionDto {
     default: false,
     required: false,
   })
+  @IsOptional()
+  @IsBoolean()
   allow_quantity?: boolean;
 
   @ApiProperty({
@@ -152,6 +206,9 @@ export class CreateCheckoutSessionDto {
     default: 1,
     required: false,
   })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
   quantity?: number;
 
   @ApiProperty({
@@ -159,6 +216,8 @@ export class CreateCheckoutSessionDto {
     description: 'URL to redirect to on successful payment',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   success_url?: string;
 
   @ApiProperty({
@@ -166,6 +225,8 @@ export class CreateCheckoutSessionDto {
     description: 'URL to redirect to if payment is cancelled',
     required: false,
   })
+  @IsOptional()
+  @IsString()
   cancel_url?: string;
 
   @ApiProperty({
@@ -174,6 +235,8 @@ export class CreateCheckoutSessionDto {
     default: false,
     required: false,
   })
+  @IsOptional()
+  @IsBoolean()
   allow_coupon_code?: boolean;
 
   @ApiProperty({
@@ -182,6 +245,8 @@ export class CreateCheckoutSessionDto {
     default: false,
     required: false,
   })
+  @IsOptional()
+  @IsBoolean()
   require_billing_address?: boolean;
 
   @ApiProperty({
@@ -189,6 +254,8 @@ export class CreateCheckoutSessionDto {
     description: 'Payment link ID (if creating from payment link)',
     required: false,
   })
+  @IsOptional()
+  @IsUUID()
   payment_link_id?: string;
 
   @ApiProperty({
@@ -223,7 +290,9 @@ export class CreateCheckoutSessionDto {
     description: 'Additional metadata',
     required: false,
   })
-  metadata?: Record<string, any>;
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, unknown>;
 
   /**
    * Line items for multi-product checkout.
@@ -258,5 +327,9 @@ Example:
       { price_id: '987e6543-e89b-12d3-a456-426614174000', quantity: 1 },
     ],
   })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LineItemDto)
   line_items?: LineItemDto[];
 }
