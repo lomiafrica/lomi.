@@ -2617,26 +2617,7 @@
                     "type": "boolean"
                   },
                   "require_billing_address": {
-                    "type": "boolean",
-                    "description": "When true, show and require billing address on checkout."
-                  },
-                  "require_email": {
-                    "type": "boolean",
-                    "description": "When true, show and require customer email. Default true when unset.",
-                    "default": true
-                  },
-                  "require_phone": {
-                    "type": "boolean",
-                    "description": "When true, show and require customer phone. Default false when unset.",
-                    "default": false
-                  },
-                  "fields": {
-                    "type": "array",
-                    "description": "Optional ordered checkout field schema. When provided, overrides require_* booleans.",
-                    "items": {
-                      "type": "object",
-                      "additionalProperties": true
-                    }
+                    "type": "boolean"
                   },
                   "payment_link_id": {
                     "type": "string",
@@ -2893,26 +2874,7 @@
                     "type": "boolean"
                   },
                   "require_billing_address": {
-                    "type": "boolean",
-                    "description": "When true, show and require billing address on checkout."
-                  },
-                  "require_email": {
-                    "type": "boolean",
-                    "description": "When true, show and require customer email. Default true when unset.",
-                    "default": true
-                  },
-                  "require_phone": {
-                    "type": "boolean",
-                    "description": "When true, show and require customer phone. Default false when unset.",
-                    "default": false
-                  },
-                  "fields": {
-                    "type": "array",
-                    "description": "Optional ordered checkout field schema. When provided, overrides require_* booleans.",
-                    "items": {
-                      "type": "object",
-                      "additionalProperties": true
-                    }
+                    "type": "boolean"
                   },
                   "expires_at": {
                     "type": "string",
@@ -4092,6 +4054,55 @@
           }
         ],
         "summary": "Create MTN MoMo charge",
+        "tags": [
+          "Advanced Direct Charges"
+        ]
+      }
+    },
+    "/charge/gim": {
+      "post": {
+        "description": "Charges a card via GIM Pay PayByCard. May return a redirect URL for 3DS or signal retry_other_rail for Stripe fallback.",
+        "operationId": "ChargesController_createGimCharge",
+        "parameters": [
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGimChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "GIM charge created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GimChargeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create GIM Pay card charge (direct PayByCard)",
         "tags": [
           "Advanced Direct Charges"
         ]
@@ -7344,6 +7355,126 @@
         "required": [
           "success",
           "data"
+        ]
+      },
+      "CreateGimChargeDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 10000,
+            "description": "Amount in XOF francs"
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "enum": [
+              "XOF"
+            ]
+          },
+          "pan": {
+            "type": "string",
+            "example": "4221941234569109"
+          },
+          "expiry": {
+            "type": "string",
+            "example": "06/25",
+            "description": "MM/YY or YYMM"
+          },
+          "cvv": {
+            "type": "string",
+            "example": "123"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "customer_email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "customer_name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "customer_phone": {
+            "type": "string",
+            "example": "+221771234567"
+          },
+          "description": {
+            "type": "string"
+          },
+          "payment_reference": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "subscription_id": {
+            "type": "string"
+          },
+          "checkout_session_id": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "default": 1
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "ecom_ip": {
+            "type": "string",
+            "description": "Customer IP for EComIp"
+          }
+        },
+        "required": [
+          "amount",
+          "pan",
+          "expiry",
+          "cvv"
+        ]
+      },
+      "GimChargeResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "declined",
+              "redirect_3ds",
+              "retry_other_rail"
+            ]
+          },
+          "system_reference": {
+            "type": "number"
+          },
+          "merchant_reference": {
+            "type": "string"
+          },
+          "action_code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "auth_code": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "next_action": {
+            "$ref": "#/components/schemas/ChargeNextActionDto"
+          }
+        },
+        "required": [
+          "success"
         ]
       },
       "CreateCardChargeDto": {
