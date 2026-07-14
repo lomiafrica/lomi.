@@ -1,6 +1,7 @@
 name: lomi · security · dependency audit
 
 # Full installs are expensive: run on lockfile changes, weekly, or manually.
+# dashboard/checkout live in private submodule repos — check them out explicitly.
 on:
   push:
     branches: [main, develop]
@@ -50,6 +51,13 @@ jobs:
         working-directory: apps/dashboard
     steps:
       - uses: actions/checkout@v5
+      - name: Checkout dashboard submodule
+        uses: actions/checkout@v5
+        with:
+          repository: lomiafrica/dashboard
+          ref: main
+          token: ${{ secrets.REPO_CHECKOUT_PAT }}
+          path: apps/dashboard
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -69,6 +77,13 @@ jobs:
         working-directory: apps/checkout
     steps:
       - uses: actions/checkout@v5
+      - name: Checkout checkout submodule
+        uses: actions/checkout@v5
+        with:
+          repository: lomiafrica/checkout
+          ref: main
+          token: ${{ secrets.REPO_CHECKOUT_PAT }}
+          path: apps/checkout
       - uses: pnpm/action-setup@v4
         with:
           version: 9

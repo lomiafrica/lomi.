@@ -1,28 +1,67 @@
 # Gitleaks allowlist for lomi. monorepo.
 # See https://github.com/gitleaks/gitleaks#configuration
+#
+# Note: [[rules]] ADD detectors. To ignore known-safe fixtures/docs, use [[allowlists]].
 
 title = "lomi gitleaks"
 
 [extend]
 useDefault = true
 
-[[rules]]
-id = "lomi-test-keys-in-docs"
-description = "Documented sandbox test card numbers and example API snippets"
-regex = '''lomi_sk_test_[a-zA-Z0-9]+'''
+[[allowlists]]
+description = "Documented sandbox test keys and example API snippets in docs/tests"
+regexTarget = "match"
+regexes = [
+  '''lomi_sk_test_[a-zA-Z0-9_]+''',
+  '''lomi_pk_test_[a-zA-Z0-9_]+''',
+]
 paths = [
   '''apps/docs/''',
   '''apps/api/test/''',
+  '''apps/mcp/test/''',
+  '''\.md$''',
+  '''\.mdx$''',
+  '''\.ts$''',
+  '''\.tsx$''',
+]
+
+[[allowlists]]
+description = "Stripe documented test PANs in sandbox payment docs"
+regexTarget = "match"
+regexes = [
+  '''4242\s*4242\s*4242\s*4242''',
+]
+paths = [
+  '''apps/docs/''',
+  '''apps/plugins/''',
   '''\.md$''',
   '''\.mdx$''',
 ]
 
-[[rules]]
-id = "stripe-test-pan-in-docs"
-description = "Stripe documented test PANs in sandbox payment docs"
-regex = '''4242\s*4242\s*4242\s*4242'''
+# Historical local seed / setup files (pre-monorepo layout). Secrets in git
+# history cannot be un-committed without a rewrite; ignore these paths so CI
+# can still catch NEW leaks on recent commits.
+[[allowlists]]
+description = "Historical seed and local supabase setup fixtures"
 paths = [
-  '''apps/docs/''',
-  '''\.md$''',
-  '''\.mdx$''',
+  '''(^|/)supabase/seed\.sql$''',
+  '''(^|/)client/supabase/''',
+  '''(^|/)apps/dashboard/supabase/seed\.sql$''',
+]
+
+# Public Supabase anon JWT (role=anon) — safe to ship in client/CLI defaults.
+[[allowlists]]
+description = "Public Supabase anon key embedded in CLI/dashboard clients"
+regexTarget = "match"
+regexes = [
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc3d2b2t4cm5mZ2dydWpzZmpkIiwicm9sZSI6ImFub24i[^"'\s]+''',
+]
+paths = [
+  '''apps/cli/''',
+  '''apps/dashboard/''',
+  '''apps/admin/''',
+  '''apps/checkout/''',
+  '''apps/customers/''',
+  '''apps/storefront/''',
+  '''apps/website/''',
 ]

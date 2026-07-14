@@ -26,24 +26,91 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # GitHub runners are IPv4-only; Supabase pooler is flaky (EAUTHQUERY).
+      # Direct db.<ref>.supabase.co is IPv6-only — WARP provides IPv6 egress.
       - name: Set up IPv6 egress (Cloudflare WARP)
         uses: fscarmen/warp-on-actions@v1.4
         with:
           stack: ipv6
           mode: wireguard
 
+      - name: Verify IPv6 connectivity
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if curl -6 -fsS -m 10 https://api64.ipify.org >/dev/null 2>&1; then
+              echo "IPv6 egress is up."
+              exit 0
+            fi
+            echo "IPv6 not ready yet (attempt ${attempt}); waiting..."
+            sleep 5
+          done
+          echo "::error::IPv6 egress is not available after WARP setup."
+          exit 2
+
       - name: Install PostgreSQL client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Resolve direct database URL
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SUPABASE_DB_URL:-}" ]; then
+            echo "::error::SUPABASE_DB_URL secret is not set"
+            exit 2
+          fi
+
+          url="$(printf '%s' "$SUPABASE_DB_URL" | tr -d '\r\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+          rest="${url#*://}"
+          userinfo="${rest%%@*}"
+          hostpath="${rest#*@}"
+          user="${userinfo%%:*}"
+          pass="${userinfo#*:}"
+          hostport="${hostpath%%/*}"
+          dbname="${hostpath#*/}"
+          dbname="${dbname%%\?*}"
+          host="${hostport%%:*}"
+          [ -n "$dbname" ] || dbname="postgres"
+
+          case "$host" in
+            *.pooler.supabase.com)
+              ref="${user#*.}"
+              db_url="postgresql://postgres:${pass}@db.${ref}.supabase.co:5432/${dbname}"
+              echo "::notice::Pooler host detected; using direct IPv6 connection db.${ref}.supabase.co:5432."
+              ;;
+            *)
+              db_url="$url"
+              echo "::notice::Using SUPABASE_DB_URL host ${host} as-is."
+              ;;
+          esac
+
+          echo "::add-mask::$pass"
+          echo "::add-mask::$db_url"
+          printf 'SUPABASE_DB_URL=%s\n' "$db_url" >> "$GITHUB_ENV"
 
       - name: Check anon/PUBLIC cannot execute admin RPCs
-        run: node .github/scripts/check-anon-admin-rpc-execute.mjs
+        id: admin_rpc
+        run: |
+          set -euo pipefail
+          set +e
+          node .github/scripts/check-anon-admin-rpc-execute.mjs
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
 
       - name: Notify Slack on drift
-        if: failure()
+        if: failure() && steps.admin_rpc.outputs.exit_code == '1'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          if [ -z "$SLACK_WEBHOOK_URL" ]; then exit 0; fi
+          if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification"
+            exit 0
+          fi
           curl -sS -X POST "$SLACK_WEBHOOK_URL" \
             -H 'Content-Type: application/json' \
             -d "{\"text\":\"Supabase admin RPC EXECUTE drift on ${GITHUB_REPOSITORY} (${GITHUB_REF_NAME}). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
