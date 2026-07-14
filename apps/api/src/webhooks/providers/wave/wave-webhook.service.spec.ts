@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as crypto from 'crypto';
 import { WaveWebhookService } from './wave-webhook.service';
@@ -10,11 +11,7 @@ describe('WaveWebhookService', () => {
   const rpcMock = jest.fn();
   const notifyOrganizationMock = jest.fn();
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
-    delete process.env.WAVE_WEBHOOK_SECRET;
-    process.env.NODE_ENV = 'development';
-
+  async function compileService() {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WaveWebhookService,
@@ -37,6 +34,18 @@ describe('WaveWebhookService', () => {
     }).compile();
 
     service = module.get(WaveWebhookService);
+  }
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    delete process.env.WAVE_WEBHOOK_SECRET;
+    process.env.NODE_ENV = 'development';
+
+    await compileService();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('accepts webhook without secret in development', async () => {
@@ -176,5 +185,94 @@ describe('WaveWebhookService', () => {
       'PAYMENT_FAILED',
       expect.any(Object),
     );
+  });
+
+  it('accepts legacy Authorization Bearer secret in production', async () => {
+    process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
+    process.env.NODE_ENV = 'production';
+    await compileService();
+    rpcMock.mockResolvedValueOnce({ data: true, error: null });
+
+    const result = await service.handleWebhook(
+      { authorization: 'Bearer wave-secret' },
+      { type: 'test.test_event' },
+      '{}',
+    );
+
+    expect(result).toEqual({ message: 'Test event received' });
+    expect(rpcMock).toHaveBeenCalledWith(
+      'claim_inbound_provider_webhook_event',
+      expect.objectContaining({
+        p_provider: 'WAVE',
+        p_provider_event_id: expect.stringContaining('test.test_event:'),
+      }),
+    );
+  });
+
+  it('accepts the Wave-Authorization alias and raw legacy secret in production', async () => {
+    process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
+    process.env.NODE_ENV = 'production';
+    await compileService();
+    rpcMock.mockResolvedValueOnce({ data: true, error: null });
+
+    const result = await service.handleWebhook(
+      { 'Wave-Authorization': 'wave-secret' },
+      { type: 'test.test_event' },
+      '{}',
+    );
+
+    expect(result).toEqual({ message: 'Test event received' });
+  });
+
+  it('rejects wrong-length legacy Bearer secrets before claiming the event', async () => {
+    process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
+    process.env.NODE_ENV = 'production';
+    await compileService();
+
+    await expect(
+      service.handleWebhook(
+        { authorization: 'Bearer wave-secre' },
+        { type: 'test.test_event' },
+        '{}',
+      ),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+
+    expect(rpcMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects malformed legacy Bearer headers in production', async () => {
+    process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
+    process.env.NODE_ENV = 'production';
+    await compileService();
+
+    await expect(
+      service.handleWebhook(
+        { authorization: 'Bearer wave-secret extra' },
+        { type: 'test.test_event' },
+        '{}',
+      ),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+
+    expect(rpcMock).not.toHaveBeenCalled();
+  });
+
+  it('does not fall back to legacy Bearer auth when Wave-Signature is invalid', async () => {
+    process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
+    process.env.NODE_ENV = 'production';
+    await compileService();
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    await expect(
+      service.handleWebhook(
+        {
+          'wave-signature': `t=${timestamp},v1=bad-signature`,
+          authorization: 'Bearer wave-secret',
+        },
+        { type: 'test.test_event' },
+        '{}',
+      ),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+
+    expect(rpcMock).not.toHaveBeenCalled();
   });
 });
