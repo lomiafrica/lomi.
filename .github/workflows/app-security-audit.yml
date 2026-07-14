@@ -1,0 +1,82 @@
+name: lomi · security · dependency audit
+
+# Full installs are expensive: run on lockfile changes, weekly, or manually.
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "apps/api/pnpm-lock.yaml"
+      - "apps/dashboard/pnpm-lock.yaml"
+      - "apps/checkout/pnpm-lock.yaml"
+      - ".github/workflows/app-security-audit.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/api/pnpm-lock.yaml"
+      - "apps/dashboard/pnpm-lock.yaml"
+      - "apps/checkout/pnpm-lock.yaml"
+      - ".github/workflows/app-security-audit.yml"
+  schedule:
+    - cron: "30 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: pnpm audit (high and critical)
+        run: pnpm audit --audit-level high
+
+  audit-dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/dashboard
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/dashboard/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: pnpm audit (high and critical)
+        run: pnpm audit --audit-level high
+
+  audit-checkout:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/checkout
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/checkout/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: pnpm audit (high and critical)
+        run: pnpm audit --audit-level high

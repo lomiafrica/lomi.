@@ -1,0 +1,49 @@
+name: lomi · check · supabase · admin rpc
+
+# Daily drift check (same cadence as grants). Also on migration PRs.
+on:
+  schedule:
+    - cron: "15 7 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - "apps/dashboard/supabase/migrations/**"
+      - ".github/scripts/check-anon-admin-rpc-execute.mjs"
+      - ".github/workflows/app-check-supabase-admin-rpc.yml"
+  pull_request:
+    paths:
+      - "apps/dashboard/supabase/migrations/**"
+      - ".github/scripts/check-anon-admin-rpc-execute.mjs"
+      - ".github/workflows/app-check-supabase-admin-rpc.yml"
+
+jobs:
+  admin-rpc-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up IPv6 egress (Cloudflare WARP)
+        uses: fscarmen/warp-on-actions@v1.4
+        with:
+          stack: ipv6
+          mode: wireguard
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Check anon/PUBLIC cannot execute admin RPCs
+        run: node .github/scripts/check-anon-admin-rpc-execute.mjs
+
+      - name: Notify Slack on drift
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then exit 0; fi
+          curl -sS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{\"text\":\"Supabase admin RPC EXECUTE drift on ${GITHUB_REPOSITORY} (${GITHUB_REF_NAME}). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"

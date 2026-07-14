@@ -1,0 +1,55 @@
+name: lomi · synthetics · edge
+
+on:
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  synthetics:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run edge function synthetics
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: pnpm synthetics:edge
+
+      - name: Upload edge synthetics report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edge-synthetics-report
+          path: apps/api/test/edge-synthetics/last-run.json
+          if-no-files-found: ignore
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification"
+            exit 0
+          fi
+          curl -sS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{\"text\":\"Edge function synthetics failed on ${GITHUB_REPOSITORY} (${GITHUB_REF_NAME}). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"

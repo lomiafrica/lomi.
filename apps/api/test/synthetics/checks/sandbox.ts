@@ -22,6 +22,7 @@ import {
   createAgentProvisioningFlowChecks,
   createPartnerFlowChecks,
 } from './agent';
+import { createSecuritySandboxChecks } from './security-sandbox';
 
 function includeFullProvisioningSynthetics(): boolean {
   return process.env.LOMI_SYNTHETICS_FULL_PROVISIONING === '1';
@@ -56,6 +57,7 @@ function futureExpiry(): string {
 export function createSandboxChecks(): CheckDefinition[] {
   return [
     ...createSandboxAgentChecks(),
+    ...createSecuritySandboxChecks(),
     // --- Identity / infra ---
     {
       name: 'health liveness',

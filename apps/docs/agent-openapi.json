@@ -11,7 +11,9 @@
           }
         },
         "summary": "Négociation des capacités de l'agent (surface de découverte non authentifiée)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/events": {
@@ -29,7 +31,9 @@
           }
         ],
         "summary": "Flux Server-Sent Events (limité à l'organisation, signaux de maintien de connexion)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/subscriptions": {
@@ -47,7 +51,9 @@
           }
         ],
         "summary": "S'inscrire aux notifications adaptées à l'agent (persistant + relais SSE Redis)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       },
       "get": {
         "operationId": "AgentSubscriptionsController_list",
@@ -63,7 +69,9 @@
           }
         ],
         "summary": "Lister les abonnements de l'agent",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/subscriptions/{id}": {
@@ -92,7 +100,9 @@
           }
         ],
         "summary": "Supprimer un abonnement",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/workflows": {
@@ -120,7 +130,9 @@
           }
         ],
         "summary": "Démarrer un workflow multi-étapes (idempotence sur idempotency_key, persistant)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/workflows/{runId}": {
@@ -145,7 +157,9 @@
           }
         ],
         "summary": "Obtenir l'état d'une exécution de workflow",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/workflows/{runId}/steps/{stepId}": {
@@ -186,7 +200,9 @@
           }
         ],
         "summary": "Faire avancer une étape du workflow (primitive d'orchestration)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/handoff": {
@@ -214,7 +230,9 @@
           }
         ],
         "summary": "Transfert inter-services / inter-agents (contexte + enveloppe de tâche)",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/agent/handoff/{id}": {
@@ -239,7 +257,9 @@
           }
         ],
         "summary": "Récupérer un enregistrement de transfert",
-        "tags": ["Agent"]
+        "tags": [
+          "Agent"
+        ]
       }
     },
     "/provisioning/v1/accounts": {
@@ -258,7 +278,9 @@
           }
         ],
         "summary": "Create a merchant account for agent-driven onboarding",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/onboarding/documents": {
@@ -286,7 +308,9 @@
           }
         ],
         "summary": "Upload a KYC document for onboarding",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/onboarding/extract": {
@@ -314,7 +338,9 @@
           }
         ],
         "summary": "Extract onboarding data from website or uploaded documents",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/onboarding/complete": {
@@ -343,7 +369,9 @@
           }
         ],
         "summary": "Complete merchant onboarding and submit KYC",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/onboarding/status": {
@@ -371,7 +399,9 @@
           }
         ],
         "summary": "Get onboarding, KYC, and verification status",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/api-keys": {
@@ -400,7 +430,9 @@
           }
         ],
         "summary": "Retrieve provisioned test API keys for the merchant",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/live-activation/request": {
@@ -429,7 +461,9 @@
           }
         ],
         "summary": "Request live mode activation (requires merchant approval)",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/provisioning/v1/merchants/{merchantId}/live-activation/status": {
@@ -458,7 +492,9 @@
           }
         ],
         "summary": "Get live activation request status",
-        "tags": ["Provisioning"]
+        "tags": [
+          "Provisioning"
+        ]
       }
     },
     "/partners/v1/provisioning-keys": {
@@ -477,7 +513,9 @@
           }
         ],
         "summary": "Mint a per-user provisioning key",
-        "tags": ["Partners"]
+        "tags": [
+          "Partners"
+        ]
       },
       "get": {
         "operationId": "PartnersController_listProvisioningKeys",
@@ -493,7 +531,9 @@
           }
         ],
         "summary": "List provisioning keys minted by this partner",
-        "tags": ["Partners"]
+        "tags": [
+          "Partners"
+        ]
       }
     },
     "/partners/v1/provisioning-keys/{provisioningKeyId}": {
@@ -521,7 +561,9 @@
           }
         ],
         "summary": "Revoke a provisioning key",
-        "tags": ["Partners"]
+        "tags": [
+          "Partners"
+        ]
       }
     },
     "/partners/v1/usage": {
@@ -539,7 +581,9 @@
           }
         ],
         "summary": "Partner provisioning usage summary",
-        "tags": ["Partners"]
+        "tags": [
+          "Partners"
+        ]
       }
     }
   },

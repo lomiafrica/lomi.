@@ -224,7 +224,7 @@
           "body": {
             "type": "object",
             "required": [
-              "currency_code"
+              "amount"
             ],
             "properties": {
               "allow_coupon_code": {
@@ -248,7 +248,8 @@
                   "USD",
                   "EUR"
                 ],
-                "example": "XOF"
+                "example": "XOF",
+                "description": "Optional. Falls back to organization default_currency when omitted."
               },
               "customer_address": {
                 "type": "string"
@@ -330,7 +331,8 @@
               },
               "require_billing_address": {
                 "type": "boolean",
-                "description": "When true, show and require billing address on checkout."
+                "description": "When true, show and require billing address on checkout. Default false when unset.",
+                "default": false
               },
               "require_email": {
                 "type": "boolean",
@@ -344,8 +346,8 @@
               },
               "require_phone": {
                 "type": "boolean",
-                "description": "When true, show and require customer phone. Default false when unset.",
-                "default": false
+                "description": "When true, show and require customer phone. Default true when unset.",
+                "default": true
               },
               "subscription_id": {
                 "type": "string",
@@ -602,7 +604,8 @@
               },
               "require_billing_address": {
                 "type": "boolean",
-                "description": "When true, show and require billing address on checkout."
+                "description": "When true, show and require billing address on checkout. Default false when unset.",
+                "default": false
               },
               "require_email": {
                 "type": "boolean",
@@ -616,8 +619,8 @@
               },
               "require_phone": {
                 "type": "boolean",
-                "description": "When true, show and require customer phone. Default false when unset.",
-                "default": false
+                "description": "When true, show and require customer phone. Default true when unset.",
+                "default": true
               },
               "success_url": {
                 "type": "string",

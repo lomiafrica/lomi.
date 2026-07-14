@@ -16,7 +16,9 @@ const SENSITIVE_KEYS = new Set([
 
 const HEAVY_PAYLOAD_PREFIXES = [
   '/checkout-sessions',
+  '/checkout/v1/gim',
   '/charge/card',
+  '/charge/switch',
   '/webhooks',
 ];
 

@@ -29,6 +29,7 @@ const LEAK_PATTERNS: Array<{ pattern: RegExp; label: string }> = [
     pattern: /Could not find the function public\./i,
     label: 'RPC signature leak',
   },
+  { pattern: /\b4[0-9]{12,15}\b/, label: 'PAN-like sequence in error' },
 ];
 
 function collectErrorStrings(data: unknown): string[] {

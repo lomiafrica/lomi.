@@ -1,0 +1,28 @@
+# Gitleaks allowlist for lomi. monorepo.
+# See https://github.com/gitleaks/gitleaks#configuration
+
+title = "lomi gitleaks"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "lomi-test-keys-in-docs"
+description = "Documented sandbox test card numbers and example API snippets"
+regex = '''lomi_sk_test_[a-zA-Z0-9]+'''
+paths = [
+  '''apps/docs/''',
+  '''apps/api/test/''',
+  '''\.md$''',
+  '''\.mdx$''',
+]
+
+[[rules]]
+id = "stripe-test-pan-in-docs"
+description = "Stripe documented test PANs in sandbox payment docs"
+regex = '''4242\s*4242\s*4242\s*4242'''
+paths = [
+  '''apps/docs/''',
+  '''\.md$''',
+  '''\.mdx$''',
+]

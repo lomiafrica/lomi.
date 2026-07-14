@@ -223,7 +223,7 @@
     },
     "/merchants/{id}": {
       "get": {
-        "description": "Returns merchant profile and organization metrics (MRR, ARR, LTV). Metrics are refreshed daily and on subscription changes.",
+        "description": "Returns merchant profile and metrics (MRR, ARR, predicted per-customer LTV) for the organization linked to the API key. Metrics are refreshed daily and on subscription changes.",
         "operationId": "MerchantsController_getDetails",
         "parameters": [
           {
@@ -265,6 +265,7 @@
     },
     "/merchants/{id}/mrr": {
       "get": {
+        "description": "Monthly Recurring Revenue for the organization linked to the API key (org default currency). Scoped to that org even if the merchant belongs to multiple organizations.",
         "operationId": "MerchantsController_getMrr",
         "parameters": [
           {
@@ -300,6 +301,7 @@
     },
     "/merchants/{id}/arr": {
       "get": {
+        "description": "Annual Recurring Revenue (MRR × 12) for the organization linked to the API key (org default currency). Scoped to that org even if the merchant belongs to multiple organizations.",
         "operationId": "MerchantsController_getArr",
         "parameters": [
           {
@@ -2444,7 +2446,7 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "currency_code"
+                  "amount"
                 ],
                 "properties": {
                   "amount": {
@@ -2458,7 +2460,8 @@
                       "USD",
                       "EUR"
                     ],
-                    "example": "XOF"
+                    "example": "XOF",
+                    "description": "Optional. Falls back to organization default_currency when omitted."
                   },
                   "title": {
                     "type": "string"
@@ -2523,7 +2526,8 @@
                   },
                   "require_billing_address": {
                     "type": "boolean",
-                    "description": "When true, show and require billing address on checkout."
+                    "description": "When true, show and require billing address on checkout. Default false when unset.",
+                    "default": false
                   },
                   "require_email": {
                     "type": "boolean",
@@ -2532,8 +2536,8 @@
                   },
                   "require_phone": {
                     "type": "boolean",
-                    "description": "When true, show and require customer phone. Default false when unset.",
-                    "default": false
+                    "description": "When true, show and require customer phone. Default true when unset.",
+                    "default": true
                   },
                   "require_name": {
                     "type": "boolean",
@@ -2804,7 +2808,8 @@
                   },
                   "require_billing_address": {
                     "type": "boolean",
-                    "description": "When true, show and require billing address on checkout."
+                    "description": "When true, show and require billing address on checkout. Default false when unset.",
+                    "default": false
                   },
                   "require_email": {
                     "type": "boolean",
@@ -2813,8 +2818,8 @@
                   },
                   "require_phone": {
                     "type": "boolean",
-                    "description": "When true, show and require customer phone. Default false when unset.",
-                    "default": false
+                    "description": "When true, show and require customer phone. Default true when unset.",
+                    "default": true
                   },
                   "require_name": {
                     "type": "boolean",
@@ -5151,8 +5156,8 @@
           },
           "merchant_lifetime_value": {
             "type": "number",
-            "example": 150000,
-            "description": "Average Customer Lifetime Value"
+            "example": 14250,
+            "description": "Predicted per-customer lifetime value (Customer Value x Avg Lifespan), org default currency"
           },
           "employee_number": {
             "type": "string",
@@ -5298,15 +5303,18 @@
           },
           "mrr": {
             "type": "number",
-            "example": 50000
+            "example": 50000,
+            "description": "Monthly Recurring Revenue for the organization linked to the API key, in org default currency"
           },
           "arr": {
             "type": "number",
-            "example": 600000
+            "example": 600000,
+            "description": "Annual Recurring Revenue (MRR × 12) for the organization linked to the API key, in org default currency"
           },
           "merchant_lifetime_value": {
             "type": "number",
-            "example": 1200000
+            "example": 14250,
+            "description": "Predicted per-customer lifetime value (Customer Value x Avg Lifespan) for the linked organization, in org default currency"
           },
           "retry_payment_every": {
             "type": "number",
@@ -5344,7 +5352,9 @@
             "type": "string"
           },
           "mrr": {
-            "type": "number"
+            "type": "number",
+            "example": 50000,
+            "description": "Monthly Recurring Revenue for the organization linked to the API key, in org default currency"
           },
           "currency_code": {
             "type": "string",
@@ -5368,7 +5378,9 @@
             "type": "string"
           },
           "arr": {
-            "type": "number"
+            "type": "number",
+            "example": 600000,
+            "description": "Annual Recurring Revenue (MRR × 12) for the organization linked to the API key, in org default currency"
           },
           "currency_code": {
             "type": "string",
