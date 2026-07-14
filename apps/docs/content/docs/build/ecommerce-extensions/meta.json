@@ -1,6 +1,6 @@
 {
   "title": "E‑commerce",
-  "description": "Hosted checkout plugins for WooCommerce, Magento, PrestaShop, and Shopify.",
+  "description": "Hosted checkout plugins for WooCommerce, Magento, PrestaShop, Shopify, and Bubble.",
   "icon": "Store",
-  "pages": ["index", "woocommerce", "magento", "prestashop", "shopify"]
+  "pages": ["index", "woocommerce", "magento", "prestashop", "shopify", "bubble"]
 }

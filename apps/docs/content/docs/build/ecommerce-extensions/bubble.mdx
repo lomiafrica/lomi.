@@ -1,0 +1,115 @@
+---
+title: Bubble
+description:
+  Add the lomi. plugin to your Bubble.io app and accept hosted checkout
+  payments, no code required.
+---
+
+import { Callout } from '@/components/docs/docs-callout';
+
+# Bubble
+
+Connect your **Bubble.io** app to **lomi. hosted checkout**. Shoppers pay on a secure lomi. page (redirect or embedded modal); your Bubble Things update automatically when payment succeeds.
+
+<Callout type="info" title="Who this guide is for">
+  **No-code makers**: you only need a Bubble app, a lomi. account, and this page. Server actions pick the correct API host from your key, so there is no base URL to configure.
+</Callout>
+
+## Before you start
+
+| Requirement | Details |
+| --- | --- |
+| Bubble app | Any paid plan that supports installed plugins |
+| Plugin API version | **4** (set in the plugin **Shared** tab) |
+| Store currency | **XOF**, **USD**, or **EUR** |
+| lomi. account | [Create one free](https://dashboard.lomi.africa/onboarding) |
+| HTTPS | Bubble apps are HTTPS by default (required for webhooks and return URLs) |
+
+## Step 1, Get your lomi. API keys
+
+1. Sign in to [dashboard.lomi.africa](https://dashboard.lomi.africa).
+2. Open **Settings → Access tokens** (or **Developers → API keys**).
+3. Copy your **Test secret key** (`lomi_sk_test_…`); you will paste it into Bubble in step 3.
+4. From **Developers → Webhooks**, you will also copy a **signing secret** (`whsec_…`) in step 6.
+
+Keep **Test mode** on while integrating. See [API keys](/start/api-keys) for details.
+
+## Step 2, Add the lomi. plugin in Bubble
+
+1. In the Bubble editor, open the **Plugins** tab → **Add plugins**.
+2. Install **lomi.** (or, for a private build, sync the [`lomiafrica/bubble`](https://github.com/lomiafrica/bubble) repo from **Plugins → Version → Synchronize with GitHub**).
+3. Open the plugin **Shared** tab and confirm **Plugin API version** is **4**.
+
+## Step 3, Enter your keys
+
+Open **Plugins → lomi.** in your app and fill the environment-specific fields:
+
+| Field | Development (test) | Production (live) |
+| --- | --- | --- |
+| API secret key | `lomi_sk_test_…` | `lomi_sk_live_…` |
+| Webhook secret | `whsec_…` (test endpoint) | `whsec_…` (live endpoint) |
+
+Server actions select `sandbox.api.lomi.africa` or `api.lomi.africa` from the key prefix automatically, there is no host to set.
+
+## Step 4, Build the checkout workflow
+
+On your **Pay** button, run these actions in order:
+
+1. **Create checkout session** (server): set `amount` (XOF whole francs; USD/EUR major units), `currency_code`, and your `success_url` / `cancel_url`. Set `bubble_thing_type` and `bubble_thing_id` so the webhook can find the right Thing later.
+2. **Mark checkout redirect** (client): call before redirecting (the **lomi. Pay button** element does this for you).
+3. **Redirect to checkout** (client) with the `checkout_url` returned in step 1, **or** drop the **lomi. Pay button** element and bind its **Checkout URL** to that result.
+
+Every session created this way is tagged with `integration_source: bubble` automatically.
+
+## Step 5, Complete or abandon on the success page
+
+On your `success_url` page:
+
+1. Read `session_id` from the page URL (**Get data from page URL**).
+2. Run **Complete if paid** with that `session_id`.
+3. If `paid` is **yes**, mark your Thing paid and show confirmation.
+4. If `paid` is **no**, run **Abandon checkout**. A browser back after redirect also fires `lomi:checkout-abandon` (handled out of the box), so no extra configuration is needed for cart recovery.
+
+## Step 6, Connect webhooks
+
+Webhooks confirm payment even if the shopper closes the tab before returning.
+
+1. Expose a backend workflow as a **POST API** endpoint in Bubble.
+2. In that workflow, run **Verify and parse webhook** with the **raw** body and the `X-Lomi-Signature` header.
+3. Branch on **`PAYMENT_SUCCEEDED`** → mark the Thing paid (make it idempotent so a duplicate event is safe).
+4. Branch on **`REFUND_COMPLETED`** → mark the Thing refunded.
+5. In [dashboard.lomi.africa](https://dashboard.lomi.africa) → **Developers → Webhooks**, add your Bubble endpoint URL, enable **`PAYMENT_SUCCEEDED`** and **`REFUND_COMPLETED`**, and paste the **signing secret** back into **Plugins → lomi.**.
+
+## Step 7, Run a test payment
+
+1. Preview your app and click the **Pay** button.
+2. You are sent to **lomi. Checkout** (sandbox while your test key is set).
+3. Pay with test card **`4242 4242 4242 4242`** (any future expiry, any CVC). See [Sandbox payments](/start/sandbox-payments).
+4. Confirm the success page shows `paid = yes` and your Thing is marked paid.
+5. If the Thing stays unpaid, check that the webhook secret matches and **`PAYMENT_SUCCEEDED`** is enabled on your dashboard endpoint.
+
+## Go live
+
+When you are ready for real payments:
+
+1. Switch your app to its **live** version and use the **Production** key fields.
+2. Paste your **Live secret key** and **Live webhook secret** (create a **live** webhook endpoint in the dashboard pointing at your live Bubble URL).
+3. Run one small real payment and confirm the Thing completes.
+
+See also [Verify payments](/build/guides/verify-payments).
+
+## Refunds, embed mode, and reference
+
+**Refunds**: issue from the [dashboard](https://dashboard.lomi.africa); the `REFUND_COMPLETED` webhook updates your Thing.
+
+**Embed mode**: set the **lomi. Pay button** (or **Open checkout embed**) to `embed` to keep shoppers in your app; listen for `oncomplete` or the `lomi:checkout-complete` window event. This reuses the [embed widget](/build/embed-widget).
+
+**Webhook headers**: `X-Lomi-Event`, `X-Lomi-Signature` (HMAC-SHA256 hex of the raw body). Details: [Handling webhooks](/build/advanced-guides/handling-webhooks) and [Webhooks](/build/webhooks).
+
+## For developers
+
+GitHub, embed asset builds, and API internals are documented separately:
+
+- [E‑commerce hub](/build/ecommerce-extensions), shared API contract
+- [bubble repository](https://github.com/lomiafrica/bubble), plugin source and `docs/SETUP.md`
+- Embed asset chain: build `@lomi./embed` IIFE, then run `scripts/build-assets.mjs` (contributors only)

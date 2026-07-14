@@ -1,0 +1,115 @@
+---
+title: Bubble
+description:
+  Ajoutez l’extension lomi. à votre application Bubble.io et acceptez les
+  paiements par checkout hébergé, sans code.
+---
+
+import { Callout } from '@/components/docs/docs-callout';
+
+# Bubble
+
+Connectez votre application **Bubble.io** au **checkout hébergé lomi.**. Le client paie sur une page lomi. sécurisée (redirection ou fenêtre intégrée) ; vos Things Bubble se mettent à jour automatiquement quand le paiement réussit.
+
+<Callout type="info" title="Pour qui est ce guide">
+  **Créateurs no-code** : il vous faut seulement une application Bubble, un compte lomi. et cette page. Les actions serveur choisissent le bon hôte d’API à partir de votre clé ; aucune URL de base à configurer.
+</Callout>
+
+## Avant de commencer
+
+| Prérequis | Détails |
+| --- | --- |
+| Application Bubble | Tout plan payant qui prend en charge les extensions installées |
+| Version d’API du plugin | **4** (dans l’onglet **Shared** du plugin) |
+| Devise de la boutique | **XOF**, **USD** ou **EUR** |
+| Compte lomi. | [En créer un gratuitement](https://dashboard.lomi.africa/onboarding) |
+| HTTPS | Les applications Bubble sont en HTTPS par défaut (requis pour les webhooks et les URL de retour) |
+
+## Étape 1, Récupérer vos clés d’API lomi.
+
+1. Connectez-vous à [dashboard.lomi.africa](https://dashboard.lomi.africa).
+2. Ouvrez **Paramètres → Jetons d’accès** (ou **Développeurs → Clés d’API**).
+3. Copiez votre **clé secrète de test** (`lomi_sk_test_…`) ; vous la collerez dans Bubble à l’étape 3.
+4. Depuis **Développeurs → Webhooks**, vous copierez aussi un **secret de signature** (`whsec_…`) à l’étape 6.
+
+Gardez le **mode Test** activé pendant l’intégration. Voir [Clés d’API](/start/api-keys).
+
+## Étape 2, Ajouter l’extension lomi. dans Bubble
+
+1. Dans l’éditeur Bubble, ouvrez l’onglet **Plugins** → **Add plugins**.
+2. Installez **lomi.** (ou, pour une version privée, synchronisez le dépôt [`lomiafrica/bubble`](https://github.com/lomiafrica/bubble) depuis **Plugins → Version → Synchronize with GitHub**).
+3. Ouvrez l’onglet **Shared** du plugin et vérifiez que la **version d’API** est **4**.
+
+## Étape 3, Saisir vos clés
+
+Ouvrez **Plugins → lomi.** dans votre application et remplissez les champs par environnement :
+
+| Champ | Développement (test) | Production (live) |
+| --- | --- | --- |
+| Clé secrète d’API | `lomi_sk_test_…` | `lomi_sk_live_…` |
+| Secret de webhook | `whsec_…` (endpoint de test) | `whsec_…` (endpoint live) |
+
+Les actions serveur choisissent `sandbox.api.lomi.africa` ou `api.lomi.africa` selon le préfixe de la clé ; aucun hôte à définir.
+
+## Étape 4, Construire le workflow de paiement
+
+Sur votre bouton **Payer**, exécutez ces actions dans l’ordre :
+
+1. **Create checkout session** (serveur) : renseignez `amount` (XOF en francs entiers ; USD/EUR en unités majeures), `currency_code`, et vos `success_url` / `cancel_url`. Renseignez `bubble_thing_type` et `bubble_thing_id` pour que le webhook retrouve le bon Thing ensuite.
+2. **Mark checkout redirect** (client) : à appeler avant la redirection (l’élément **lomi. Pay button** le fait pour vous).
+3. **Redirect to checkout** (client) avec le `checkout_url` renvoyé à l’étape 1, **ou** placez l’élément **lomi. Pay button** et liez son **Checkout URL** à ce résultat.
+
+Chaque session créée ainsi est marquée `integration_source: bubble` automatiquement.
+
+## Étape 5, Compléter ou abandonner sur la page de succès
+
+Sur votre page `success_url` :
+
+1. Lisez `session_id` depuis l’URL de la page (**Get data from page URL**).
+2. Exécutez **Complete if paid** avec ce `session_id`.
+3. Si `paid` vaut **yes**, marquez votre Thing comme payé et affichez la confirmation.
+4. Si `paid` vaut **no**, exécutez **Abandon checkout**. Un retour navigateur après redirection déclenche aussi `lomi:checkout-abandon` (géré nativement) ; aucune configuration supplémentaire n’est nécessaire pour la récupération de panier.
+
+## Étape 6, Connecter les webhooks
+
+Les webhooks confirment le paiement même si le client ferme l’onglet avant de revenir.
+
+1. Exposez un workflow backend en tant qu’endpoint **POST API** dans Bubble.
+2. Dans ce workflow, exécutez **Verify and parse webhook** avec le corps **brut** et l’en-tête `X-Lomi-Signature`.
+3. Branchez sur **`PAYMENT_SUCCEEDED`** → marquez le Thing payé (de façon idempotente pour qu’un doublon soit sans effet).
+4. Branchez sur **`REFUND_COMPLETED`** → marquez le Thing remboursé.
+5. Dans [dashboard.lomi.africa](https://dashboard.lomi.africa) → **Développeurs → Webhooks**, ajoutez l’URL de votre endpoint Bubble, activez **`PAYMENT_SUCCEEDED`** et **`REFUND_COMPLETED`**, puis recollez le **secret de signature** dans **Plugins → lomi.**.
+
+## Étape 7, Faire un paiement de test
+
+1. Prévisualisez votre application et cliquez sur le bouton **Payer**.
+2. Vous êtes envoyé vers **lomi. Checkout** (sandbox tant que votre clé de test est utilisée).
+3. Payez avec la carte de test **`4242 4242 4242 4242`** (date future, CVC au choix). Voir [Paiements sandbox](/start/sandbox-payments).
+4. Vérifiez que la page de succès affiche `paid = yes` et que votre Thing est marqué payé.
+5. Si le Thing reste impayé, vérifiez que le secret de webhook correspond et que **`PAYMENT_SUCCEEDED`** est activé sur votre endpoint.
+
+## Passer en production
+
+Quand vous êtes prêt pour des paiements réels :
+
+1. Basculez votre application sur sa version **live** et utilisez les champs de clé **Production**.
+2. Collez votre **clé secrète live** et votre **secret de webhook live** (créez un endpoint de webhook **live** dans le tableau de bord pointant vers votre URL Bubble live).
+3. Effectuez un petit paiement réel et vérifiez que le Thing se complète.
+
+Voir aussi [Vérifier les paiements](/build/guides/verify-payments).
+
+## Remboursements, mode intégré et référence
+
+**Remboursements** : depuis le [tableau de bord](https://dashboard.lomi.africa) ; le webhook `REFUND_COMPLETED` met à jour votre Thing.
+
+**Mode intégré** : réglez le **lomi. Pay button** (ou **Open checkout embed**) sur `embed` pour garder le client dans votre application ; écoutez `oncomplete` ou l’événement window `lomi:checkout-complete`. Cela réutilise le [widget d’intégration](/build/embed-widget).
+
+**En-têtes de webhook** : `X-Lomi-Event`, `X-Lomi-Signature` (HMAC-SHA256 hex du corps brut). Détails : [Traiter les webhooks](/build/advanced-guides/handling-webhooks) et [Webhooks](/build/webhooks).
+
+## Pour les développeurs
+
+GitHub, la construction des assets d’intégration et les détails d’API sont documentés séparément :
+
+- [Hub e‑commerce](/build/ecommerce-extensions), contrat d’API partagé
+- [dépôt bubble](https://github.com/lomiafrica/bubble), source de l’extension et `docs/SETUP.md`
+- Chaîne d’assets d’intégration : construire l’IIFE `@lomi./embed`, puis lancer `scripts/build-assets.mjs` (contributeurs uniquement)

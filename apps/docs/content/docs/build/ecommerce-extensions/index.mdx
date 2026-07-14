@@ -41,6 +41,7 @@ Before going live, also read [API integration](/start/first-payment), [Authentic
 | Magento 2 | Composer VCS from [magento](https://github.com/lomiafrica/magento) or copy to `app/code/Lomi/Payments/` |
 | PrestaShop | Zip the `lomi/` folder from [prestashop](https://github.com/lomiafrica/prestashop) |
 | Shopify | [Dashboard](https://dashboard.lomi.africa) → **Settings → Payment channels → Integrations** (custom install, no zip) |
+| Bubble | [Bubble editor](https://bubble.io/home/plugins) → **Plugins → Add plugins → lomi.** (or GitHub sync), step-by-step [setup](/build/ecommerce-extensions/bubble) |
 
 ## Choose your platform
 
@@ -65,8 +66,33 @@ Before going live, also read [API integration](/start/first-payment), [Authentic
     description="Custom app, cart pay with mobile money and cards"
     href="/build/ecommerce-extensions/shopify"
   />
+  <Card
+    title="Bubble"
+    description="No-code Bubble.io plugin, redirect or embedded checkout"
+    href="/build/ecommerce-extensions/bubble"
+  />
 </Cards>
 
 <Callout type="info">
   **Shopify** is distributed as a **custom install app** (not App Store payments). Enable it from [dashboard.lomi.africa](https://dashboard.lomi.africa) → **Settings → Payment channels → Integrations**, then install on your store via OAuth.
 </Callout>
+
+## Other ways to integrate
+
+Not on a supported platform, or building a custom flow? These give you the same hosted checkout without a store plugin:
+
+- **[Embed widget](/build/embed-widget)**, a drop-in checkout button and modal for any site (including Bubble and custom HTML).
+- **[Hosted checkout](/build/checkout)**, the lomi. page your plugins redirect shoppers to.
+- **[lomi-ui](/build/lomi-ui)**, copy-paste checkout components when you want your own UI.
+- **[CLI](/build/cli)**, create and test checkout sessions from your terminal.
+- **[MCP](/build/mcp)**, drive checkout from AI agents and IDE workflows.
+
+## Plugin, embed, or API?
+
+| You want to… | Use |
+| --- | --- |
+| Add payments to a supported store (Woo, Magento, PrestaShop, Shopify, Bubble) | The **plugin** for that platform |
+| Add a checkout button to a custom site or no-code page | **[Embed widget](/build/embed-widget)** |
+| Keep your own checkout UI but skip the payment plumbing | **[lomi-ui](/build/lomi-ui)** components |
+| Full control from your own backend | The **[public API](/start/first-payment)** (`POST /checkout-sessions`) |
+| Automate or test from a terminal or AI agents | **[CLI](/build/cli)** or **[MCP](/build/mcp)** |

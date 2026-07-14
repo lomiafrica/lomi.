@@ -41,6 +41,7 @@ Avant la mise en production : [Intégration API](/start/first-payment), [Authen
 | Magento 2 | Composer VCS depuis [magento](https://github.com/lomiafrica/magento) ou copie dans `app/code/Lomi/Payments/` |
 | PrestaShop | Zip du dossier `lomi/` depuis [prestashop](https://github.com/lomiafrica/prestashop) |
 | Shopify | [Tableau de bord](https://dashboard.lomi.africa) → **Paramètres → Canaux de paiement → Intégrations** (installation personnalisée, pas de zip) |
+| Bubble | [Éditeur Bubble](https://bubble.io/home/plugins) → **Plugins → Add plugins → lomi.** (ou sync GitHub), [installation](/build/ecommerce-extensions/bubble) pas à pas |
 
 ## Choisir la plateforme
 
@@ -65,8 +66,33 @@ Avant la mise en production : [Intégration API](/start/first-payment), [Authen
     description="App personnalisée, paiement panier mobile money et cartes"
     href="/build/ecommerce-extensions/shopify"
   />
+  <Card
+    title="Bubble"
+    description="Extension no-code Bubble.io, checkout par redirection ou intégré"
+    href="/build/ecommerce-extensions/bubble"
+  />
 </Cards>
 
 <Callout type="info">
   **Shopify** est distribué en **installation personnalisée**. Activez-le depuis le tableau de bord lomi. → **Intégrations**, puis installez sur votre boutique via OAuth.
 </Callout>
+
+## Autres façons d’intégrer
+
+Pas sur une plateforme prise en charge, ou vous construisez un tunnel personnalisé ? Ces options offrent le même checkout hébergé sans extension de boutique :
+
+- **[Widget d’intégration](/build/embed-widget)**, un bouton et une fenêtre de checkout à intégrer sur n’importe quel site (y compris Bubble et HTML personnalisé).
+- **[Checkout hébergé](/build/checkout)**, la page lomi. vers laquelle vos extensions redirigent les clients.
+- **[lomi-ui](/build/lomi-ui)**, des composants de checkout à copier-coller quand vous voulez votre propre UI.
+- **[CLI](/build/cli)**, créer et tester des sessions de paiement depuis votre terminal.
+- **[MCP](/build/mcp)**, piloter le checkout depuis des agents IA et vos workflows d’IDE.
+
+## Extension, widget ou API ?
+
+| Vous voulez… | Utilisez |
+| --- | --- |
+| Ajouter les paiements à une boutique prise en charge (Woo, Magento, PrestaShop, Shopify, Bubble) | L’**extension** de cette plateforme |
+| Ajouter un bouton de paiement à un site personnalisé ou une page no-code | **[Widget d’intégration](/build/embed-widget)** |
+| Garder votre propre UI de checkout sans recoder la plomberie de paiement | Les composants **[lomi-ui](/build/lomi-ui)** |
+| Un contrôle total depuis votre propre backend | L’**[API publique](/start/first-payment)** (`POST /checkout-sessions`) |
+| Automatiser ou tester depuis un terminal ou des agents IA | **[CLI](/build/cli)** ou **[MCP](/build/mcp)** |

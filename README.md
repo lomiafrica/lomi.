@@ -56,7 +56,7 @@ We are progressively open-sourcing the monorepo toward **eventual self-hosting**
 
 - **Opening soon**:
   - Merchant dashboard: **[apps/dashboard](./apps/dashboard)**
-  - Shopify extension: **[apps/shopify](./apps/shopify)**
+  - Shopify extension: **[apps/plugins/shopify](./apps/plugins/shopify)**
 
 - **Proprietary**:
   - Admin dashboard: **[apps/admin](./apps/admin)**
