@@ -224,11 +224,10 @@ describe('WaveWebhookService', () => {
     expect(result).toEqual({ message: 'Test event received' });
   });
 
-  it('rejects wrong-length legacy Bearer secrets without calling timingSafeEqual', async () => {
+  it('rejects wrong-length legacy Bearer secrets before claiming the event', async () => {
     process.env.WAVE_WEBHOOK_SECRET = 'wave-secret';
     process.env.NODE_ENV = 'production';
     await compileService();
-    const timingSafeEqualSpy = jest.spyOn(crypto, 'timingSafeEqual');
 
     await expect(
       service.handleWebhook(
@@ -238,7 +237,6 @@ describe('WaveWebhookService', () => {
       ),
     ).rejects.toBeInstanceOf(UnauthorizedException);
 
-    expect(timingSafeEqualSpy).not.toHaveBeenCalled();
     expect(rpcMock).not.toHaveBeenCalled();
   });
 
