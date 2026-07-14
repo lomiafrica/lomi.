@@ -246,6 +246,64 @@ describe('CheckoutSessionsService', () => {
     expect(mockSupabaseClient.from).not.toHaveBeenCalled();
   });
 
+  it('derives contact flags from unified fields before calling create_checkout_session', async () => {
+    const createDto: CreateCheckoutSessionDto = {
+      amount: 1000,
+      currency_code: 'XOF',
+      require_email: true,
+      require_phone: true,
+      require_name: true,
+      customer_name: 'Ada',
+      fields: [
+        {
+          key: 'name',
+          scope: 'system',
+          type: 'text',
+          visibility: 'hidden',
+          order: 0,
+        },
+        {
+          key: 'email',
+          scope: 'system',
+          type: 'email',
+          visibility: 'hidden',
+          order: 10,
+        },
+        {
+          key: 'phone',
+          scope: 'system',
+          type: 'tel',
+          visibility: 'required',
+          order: 20,
+        },
+        {
+          key: 'billing_address',
+          scope: 'system',
+          type: 'address_group',
+          visibility: 'required',
+          order: 40,
+        },
+      ],
+    } as CreateCheckoutSessionDto;
+
+    mockSupabaseService.rpc.mockResolvedValue({
+      data: { checkout_session_id: 'fields-1' },
+      error: null,
+    });
+
+    await service.create(createDto, mockUser as AuthContext);
+
+    expect(mockSupabaseService.rpc).toHaveBeenCalledWith(
+      'create_checkout_session',
+      expect.objectContaining({
+        p_require_billing_address: true,
+        p_require_email: false,
+        p_require_phone: true,
+        p_require_name: false,
+      }),
+    );
+  });
+
   it('forwards integration_source into checkout session metadata', async () => {
     const createDto: CreateCheckoutSessionDto = {
       amount: 1000,
