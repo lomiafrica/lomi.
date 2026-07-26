@@ -43,5 +43,11 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.19",
+      "fast-uri": "^3.1.4"
+    }
   }
 }

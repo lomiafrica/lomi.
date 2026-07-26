@@ -6,12 +6,15 @@
     "overrides": {
       "fast-xml-parser": "^5.3.4",
       "@isaacs/brace-expansion": "^5.0.1",
-      "js-yaml": "^4.2.0",
+      "js-yaml": "^4.3.0",
       "undici": "^5.28.4",
       "lodash": "^4.17.21",
-      "postcss": "^8.5.15",
+      "postcss": "^8.5.19",
       "vite": "^7.3.5",
-      "yaml": "^2.8.3"
+      "yaml": "^2.8.3",
+      "sharp": "^0.35.3",
+      "fast-uri": "^3.1.4",
+      "brace-expansion": "^2.1.2"
     }
   },
   "scripts": {
@@ -67,7 +70,7 @@
     "fumadocs-ui": "~16.8.12",
     "katex": "^0.16.47",
     "lucide-react": "^0.542.0",
-    "next": "^16.2.10",
+    "next": "^16.2.11",
     "next-themes": "^0.4.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

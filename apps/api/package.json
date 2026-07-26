@@ -67,9 +67,11 @@
       "@isaacs/brace-expansion": "^5.0.1",
       "diff": "^5.2.0",
       "form-data": "^4.0.6",
-      "js-yaml": "^4.2.0",
+      "js-yaml": "^4.3.0",
       "lodash": "^4.18.1",
-      "multer": "^2.2.0"
+      "multer": "^2.2.0",
+      "fast-uri": "^3.1.4",
+      "brace-expansion": "^2.1.2"
     }
   },
   "dependencies": {
