@@ -47,9 +47,6 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/api/pnpm-lock.yaml
-      - name: Install API dependencies
-        working-directory: .
-        run: node tooling/scripts/install-app-with-packages.mjs apps/api
       - name: pnpm audit (high and critical)
         run: pnpm --ignore-workspace audit --audit-level high
 
@@ -75,9 +72,6 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/dashboard/pnpm-lock.yaml
-      - name: Install dashboard dependencies
-        working-directory: .
-        run: node tooling/scripts/install-app-with-packages.mjs apps/dashboard
       - name: pnpm audit (high and critical)
         run: pnpm --ignore-workspace audit --audit-level high
 
@@ -103,8 +97,5 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/checkout/pnpm-lock.yaml
-      - name: Install checkout dependencies
-        working-directory: .
-        run: node tooling/scripts/install-app-with-packages.mjs apps/checkout
       - name: pnpm audit (high and critical)
         run: pnpm --ignore-workspace audit --audit-level high
