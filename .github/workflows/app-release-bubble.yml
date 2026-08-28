@@ -36,8 +36,8 @@ jobs:
 
       - name: Build embed asset
         run: |
+          node tooling/scripts/install-app-with-packages.mjs apps/sdks/embed
           cd apps/sdks/embed
-          pnpm install --ignore-workspace --frozen-lockfile
           pnpm run build:iife
           node ../../plugins/bubble/scripts/build-assets.mjs
 

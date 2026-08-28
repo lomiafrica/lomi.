@@ -48,7 +48,8 @@ jobs:
           cache-dependency-path: apps/plugins/shopify/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        working-directory: ${{ github.workspace }}
+        run: node tooling/scripts/install-app-with-packages.mjs apps/plugins/shopify
 
       - name: Typecheck
         run: pnpm typecheck
