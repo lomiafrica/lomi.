@@ -39,11 +39,9 @@ jobs:
         working-directory: apps/tools/doctool
         run: cargo test --workspace
       - name: Install docs dependencies
-        working-directory: apps/docs
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        run: node tooling/scripts/install-app-with-packages.mjs apps/docs
       - name: Install MCP dependencies
-        working-directory: apps/mcp
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        run: node tooling/scripts/install-app-with-packages.mjs apps/mcp
       - name: MCP unit tests
         working-directory: apps/mcp
         run: pnpm test

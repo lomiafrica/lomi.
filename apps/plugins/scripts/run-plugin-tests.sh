@@ -83,7 +83,7 @@ else
   fi
   (
     cd "${WOO_DIR}"
-    pnpm install --frozen-lockfile
+    pnpm install --ignore-workspace --frozen-lockfile
     pnpm run build
     if grep -q '"i18n"' package.json 2>/dev/null; then
       pnpm run i18n

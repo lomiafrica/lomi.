@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: apps/plugins/woo
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --ignore-workspace --frozen-lockfile
 
       - name: Build plugin assets
         working-directory: apps/plugins/woo

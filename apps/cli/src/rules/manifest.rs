@@ -71,6 +71,7 @@ fn load_rule_file(relative_path: &str) -> Result<String> {
         "subscriptions.md" => include_str!("../utils/rules/subscriptions.md"),
         "api-reference.md" => include_str!("../utils/rules/api-reference.md"),
         "embed-checkout.md" => include_str!("../utils/rules/embed-checkout.md"),
+        "ecommerce-plugins.md" => include_str!("../utils/rules/ecommerce-plugins.md"),
         "docs-writing.md" => include_str!("../utils/rules/docs-writing.md"),
         "llms.txt" => include_str!("../utils/rules/llms.txt"),
         other => anyhow::bail!("Unknown rule file: {other}"),

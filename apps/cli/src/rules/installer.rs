@@ -176,6 +176,7 @@ fn merge_replace_section(path: &Path, section_name: &str, section: &str) -> Resu
 mod tests {
     use super::*;
     use std::env;
+    use std::path::Path;
 
     #[test]
     fn install_target_parsing() {
@@ -186,35 +187,36 @@ mod tests {
         assert!(InstallTarget::from_str("unknown").is_err());
     }
 
+    fn with_temp_cwd<T>(f: impl FnOnce(&Path) -> T) -> T {
+        let cwd = env::current_dir().expect("current dir");
+        let project = tempfile::tempdir().expect("tempdir");
+        env::set_current_dir(project.path()).expect("chdir tempdir");
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(project.path())));
+        let _ = env::set_current_dir(&cwd);
+        match result {
+            Ok(value) => value,
+            Err(panic) => std::panic::resume_unwind(panic),
+        }
+    }
+
     #[test]
     fn install_cursor_rules() {
-        let cwd = env::current_dir().unwrap();
-        let project = tempfile::tempdir().unwrap();
-        env::set_current_dir(project.path()).unwrap();
-
         let rules = crate::rules::manifest::load_current_rules().unwrap();
-        let installed = install_rules(&[InstallTarget::Cursor], &rules).unwrap();
-        assert!(!installed.is_empty());
-        assert!(project
-            .path()
-            .join(".cursor/rules/lomi.sdk-basics.mdc")
-            .exists());
-
-        env::set_current_dir(cwd).unwrap();
+        with_temp_cwd(|root| {
+            let installed = install_rules(&[InstallTarget::Cursor], &rules).unwrap();
+            assert!(!installed.is_empty());
+            assert!(root.join(".cursor/rules/lomi.sdk-basics.mdc").exists());
+        });
     }
 
     #[test]
     fn install_llms_txt() {
-        let cwd = env::current_dir().unwrap();
-        let project = tempfile::tempdir().unwrap();
-        env::set_current_dir(project.path()).unwrap();
-
         let rules = crate::rules::manifest::load_current_rules().unwrap();
-        let installed = install_rules(&[InstallTarget::LlmsTxt], &rules).unwrap();
-        assert_eq!(installed.len(), 1);
-        let content = fs::read_to_string(project.path().join("llms.txt")).unwrap();
-        assert!(content.contains("lomi."));
-
-        env::set_current_dir(cwd).unwrap();
+        with_temp_cwd(|root| {
+            let installed = install_rules(&[InstallTarget::LlmsTxt], &rules).unwrap();
+            assert_eq!(installed.len(), 1);
+            let content = fs::read_to_string(root.join("llms.txt")).unwrap();
+            assert!(content.contains("lomi."));
+        });
     }
 }

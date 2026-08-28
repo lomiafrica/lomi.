@@ -47,7 +47,7 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/api/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --ignore-workspace --frozen-lockfile
       - name: pnpm audit (high and critical)
         run: pnpm audit --audit-level high
 
@@ -73,7 +73,7 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/dashboard/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --ignore-workspace --frozen-lockfile
       - name: pnpm audit (high and critical)
         run: pnpm audit --audit-level high
 
@@ -99,6 +99,6 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/checkout/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --ignore-workspace --frozen-lockfile
       - name: pnpm audit (high and critical)
         run: pnpm audit --audit-level high

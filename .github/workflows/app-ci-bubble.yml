@@ -69,7 +69,7 @@ jobs:
             exit 0
           fi
           cd apps/sdks/embed
-          pnpm install --frozen-lockfile
+          pnpm install --ignore-workspace --frozen-lockfile
           pnpm run build:iife
           node ../../plugins/bubble/scripts/build-assets.mjs
 

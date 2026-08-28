@@ -51,8 +51,7 @@ jobs:
             apps/docs/pnpm-lock.yaml
 
       - name: Install API dependencies
-        working-directory: apps/api
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
 
       - name: Export OpenAPI
         working-directory: apps/api
@@ -77,8 +76,7 @@ jobs:
           )
 
       - name: Install docs dependencies
-        working-directory: apps/docs
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        run: node tooling/scripts/install-app-with-packages.mjs apps/docs
 
       - name: Run parity worker
         working-directory: apps/docs
