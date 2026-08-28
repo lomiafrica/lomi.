@@ -17,8 +17,22 @@ export function extractEmailFromText(
   value: string | null | undefined,
 ): string | undefined {
   if (!value) return undefined;
-  const match = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
-  return match?.[0];
+  const at = value.indexOf("@");
+  if (at <= 0 || at === value.length - 1) return undefined;
+  let start = at - 1;
+  while (start >= 0 && /[A-Za-z0-9._+-]/.test(value[start] ?? "")) {
+    start -= 1;
+  }
+  let end = at + 1;
+  while (end < value.length && /[A-Za-z0-9.-]/.test(value[end] ?? "")) {
+    end += 1;
+  }
+  const email = value.slice(start + 1, end);
+  const domainDot = email.indexOf(".", at - start);
+  if (domainDot <= at - start || domainDot === email.length - 1) {
+    return undefined;
+  }
+  return email;
 }
 
 export function resolveSupportEmail(

@@ -10,7 +10,6 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const POLICY_PATH = path.join(ROOT, ".github/duplication-policy.json");
-const MIN_BLOCK_LINES = 10;
 const MIN_BLOCK_CHARS = 180;
 
 const SKIP_DIR = new Set([
@@ -145,45 +144,6 @@ function checkExactFiles(files, policy) {
     }
   }
   return violations;
-}
-
-function checkBlocks(files, policy) {
-  const blocks = new Map();
-  for (const file of files) {
-    if (file.endsWith("database.ts") || file.endsWith("database.types.ts")) {
-      continue;
-    }
-    const raw = fs.readFileSync(path.join(ROOT, file), "utf8");
-    const lines = raw.split("\n").map((line) => line.trimEnd());
-    if (lines.length > 800) continue;
-    for (let i = 0; i <= lines.length - MIN_BLOCK_LINES; i++) {
-      const slice = lines.slice(i, i + MIN_BLOCK_LINES).join("\n");
-      const normalized = normalize(slice);
-      if (normalized.length < MIN_BLOCK_CHARS) continue;
-      const digest = sha(normalized);
-      if (!blocks.has(digest)) blocks.set(digest, []);
-      blocks.get(digest).push({ file, line: i + 1 });
-    }
-  }
-  const violations = [];
-  for (const group of blocks.values()) {
-    const uniqueFiles = [...new Set(group.map((item) => item.file))];
-    if (uniqueFiles.length < 2) continue;
-    const apps = uniqueFiles.filter((file) => file.startsWith("apps/"));
-    const packages = uniqueFiles.filter((file) => file.startsWith("packages/"));
-    const crossApp = new Set(apps.map((file) => file.split("/")[1])).size > 1;
-    const packageVsApp = packages.length > 0 && apps.length > 0;
-    if (!crossApp && !packageVsApp) continue;
-    const allowed = uniqueFiles.every((file, index) =>
-      uniqueFiles
-        .slice(index + 1)
-        .every((other) => isAllowlisted(policy, file, other)),
-    );
-    if (allowed) continue;
-    const pair = uniqueFiles.slice(0, 2).join(" <-> ");
-    violations.push(`exact ${MIN_BLOCK_LINES}-line block: ${pair}`);
-  }
-  return [...new Set(violations)];
 }
 
 function selfTest() {

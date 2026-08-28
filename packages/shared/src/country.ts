@@ -50,8 +50,8 @@ export function normalizeCountryName(
   if (!trimmed) return "";
 
   const unicodeNormalized = trimmed
-    .replace(/['']/g, "'")
-    .replace(/[""]/g, '"')
+    .replace(/[\u0027\u2018\u2019]/g, "'")
+    .replace(/[\u0022\u201C\u201D]/g, '"')
     .replace(/–/g, "-");
 
   if (lookupNormalization(unicodeNormalized)) {

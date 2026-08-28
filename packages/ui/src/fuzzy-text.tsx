@@ -29,7 +29,7 @@ function isForwardedRefCallback<T>(
 function isMutableRefObject<T>(
   ref: React.ForwardedRef<T>,
 ): ref is React.MutableRefObject<T | null> {
-  return typeof ref === "object" && ref !== null;
+  return ref != null && typeof ref === "object" && "current" in ref;
 }
 
 function setForwardedRef<T>(

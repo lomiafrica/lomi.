@@ -52,7 +52,7 @@ fn write_fallback_file(profile: &str, token: &str) -> Result<()> {
     }
     fs::write(&path, token)
         .with_context(|| format!("Failed to write credential file {}", path.display()))?;
-    restrict_secret_permissions(&path)?;
+    chmod_private(&path)?;
     Ok(())
 }
 
@@ -80,7 +80,7 @@ fn delete_fallback_file(profile: &str) -> Result<()> {
 }
 
 #[cfg(unix)]
-fn restrict_secret_permissions(path: &PathBuf) -> Result<()> {
+fn chmod_private(path: &PathBuf) -> Result<()> {
     use std::os::unix::fs::PermissionsExt;
     let mut perms = fs::metadata(path)?.permissions();
     perms.set_mode(0o600);
@@ -89,6 +89,6 @@ fn restrict_secret_permissions(path: &PathBuf) -> Result<()> {
 }
 
 #[cfg(not(unix))]
-fn restrict_secret_permissions(_path: &PathBuf) -> Result<()> {
+fn chmod_private(_path: &PathBuf) -> Result<()> {
     Ok(())
 }

@@ -160,5 +160,5 @@ export async function requestWithClient<T>(
     }
   }
 
-  throw lastError ?? new LomiError('Request failed');
+  throw lastError;
 }

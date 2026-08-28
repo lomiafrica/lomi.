@@ -185,7 +185,7 @@ export function WizardSteps({
   const panelTransition = reduced ? { duration: 0 } : CROSSFADE;
 
   const onStepKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    let target = at;
+    let target: number;
     if (e.key === "ArrowRight" || e.key === "ArrowDown") target = at + 1;
     else if (e.key === "ArrowLeft" || e.key === "ArrowUp") target = at - 1;
     else if (e.key === "Home") target = 0;

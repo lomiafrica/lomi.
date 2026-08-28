@@ -29,12 +29,6 @@ app.use(express.static(path.join(__dirname, "..", "frontend")));
 const eventStore = [];
 const MAX_EVENTS = 50;
 
-function isPlainObject(value) {
-  return value !== null && !Array.isArray(value) && Object(value) === value;
-}
-function isTranslationLeaf(value) {
-  return value === null || value === undefined || Object(value) !== value;
-}
 function isStringValue(value) {
   return Object.prototype.toString.call(value) === '[object String]';
 }

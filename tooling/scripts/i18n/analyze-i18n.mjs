@@ -278,8 +278,9 @@ async function analyzeTranslations() {
     removeUnusedKeys(cleanedTranslations, unusedKeys);
     const finalCleaned = sortObjectKeys(cleanedTranslations);
 
-    // 7. Replace original file with cleaned version
-    fs.writeFileSync(localeFile, JSON.stringify(finalCleaned, null, 2));
+    const tmp = `${localeFile}.${process.pid}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(finalCleaned, null, 2));
+    fs.renameSync(tmp, localeFile);
     console.log(
       `✅ Updated ${locale.toUpperCase()} file: ${path.relative(process.cwd(), localeFile)}`,
     );

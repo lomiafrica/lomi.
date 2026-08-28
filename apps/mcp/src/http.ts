@@ -364,25 +364,29 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     res.status(200).json(buildProtectedResourceMetadata());
   }
 
-  app.get(protectedResourceMetadataPattern, serveProtectedResourceMetadata);
+  app.get(
+    protectedResourceMetadataPattern,
+    rateLimitMiddleware,
+    serveProtectedResourceMetadata,
+  );
 
-  app.get('/.well-known/oauth-authorization-server', (_req, res) => {
+  app.get('/.well-known/oauth-authorization-server', rateLimitMiddleware, (_req, res) => {
     res.status(200).json(buildAuthorizationServerPointer());
   });
 
-  app.get('/.well-known/mcp', (_req, res) => {
+  app.get('/.well-known/mcp', rateLimitMiddleware, (_req, res) => {
     res.status(200).json(buildMcpWellKnown(manifest));
   });
 
-  app.get('/.well-known/mcp.json', (_req, res) => {
+  app.get('/.well-known/mcp.json', rateLimitMiddleware, (_req, res) => {
     res.status(200).json(buildMcpWellKnown(manifest));
   });
 
-  app.get('/.well-known/mcp/catalog.json', (_req, res) => {
+  app.get('/.well-known/mcp/catalog.json', rateLimitMiddleware, (_req, res) => {
     res.status(200).json(buildMcpCatalog(manifest));
   });
 
-  app.get('/server-card', (_req, res) => {
+  app.get('/server-card', rateLimitMiddleware, (_req, res) => {
     res.status(200).json(buildMcpServerCard(manifest));
   });
 

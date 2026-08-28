@@ -26,6 +26,7 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -116,12 +117,19 @@ function hoistNextForVercelBuilder(appRel) {
 
 function excludeAdminGrowthAgentFromTsc(appDir) {
   const tsconfigPath = path.join(appDir, "tsconfig.json");
-  if (!existsSync(tsconfigPath)) return;
-  const tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf8"));
+  let tsconfig;
+  try {
+    tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf8"));
+  } catch (error) {
+    if (error && error.code === "ENOENT") return;
+    throw error;
+  }
   const exclude = new Set(tsconfig.exclude ?? []);
   exclude.add("src/growth/agent");
   tsconfig.exclude = [...exclude];
-  writeFileSync(tsconfigPath, `${JSON.stringify(tsconfig, null, 2)}\n`);
+  const tmp = `${tsconfigPath}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(tsconfig, null, 2)}\n`);
+  renameSync(tmp, tsconfigPath);
   console.log(
     `==> excluded src/growth/agent from ${path.relative(ROOT, tsconfigPath)}`,
   );

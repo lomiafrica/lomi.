@@ -11,6 +11,14 @@ export class ProviderApiError extends Error {
   code?: string;
 }
 
+function trimTrailingSlashes(url: string): string {
+  let end = url.length;
+  while (end > 0 && url.charCodeAt(end - 1) === 47) {
+    end -= 1;
+  }
+  return url.slice(0, end);
+}
+
 export type ProviderAuthClient = {
   auth: {
     getSession: () => Promise<{
@@ -69,11 +77,11 @@ export async function postLomiProvider(
     apiBaseUrl?: string;
   },
 ): Promise<JsonValue> {
-  const apiBaseUrl = (
+  const apiBaseUrl = trimTrailingSlashes(
     deps.apiBaseUrl ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "https://api.lomi.africa"
-  ).replace(/\/+$/, "");
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://api.lomi.africa",
+  );
   const publishableKey = deps.publishableKey ?? "";
 
   const response = await fetch(`${apiBaseUrl}/providers/${provider}`, {

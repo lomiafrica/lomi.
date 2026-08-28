@@ -33,14 +33,10 @@ export async function checkBuildSidebarParity(errors: string[]): Promise<void> {
   const enMeta = await pagesFromMeta(path.join(BUILD_ROOT, 'meta.json'));
   const frMeta = await pagesFromMeta(path.join(BUILD_ROOT, 'meta.fr.json'));
 
-  let exempt = new Set<string>();
-  try {
-    const exemptRaw = await fs.readFile(EXEMPT_PATH, 'utf-8');
-    // SAFETY: Boundary value matches the asserted domain type at this call site.
-    exempt = new Set(JSON.parse(exemptRaw) as string[]);
-  } catch {
-    exempt = new Set();
-  }
+  const exempt = await fs
+    .readFile(EXEMPT_PATH, 'utf-8')
+    .then((exemptRaw) => new Set(JSON.parse(exemptRaw) as string[]))
+    .catch(() => new Set<string>());
 
   const files = await glob('*.mdx', { cwd: BUILD_ROOT });
   for (const file of files) {

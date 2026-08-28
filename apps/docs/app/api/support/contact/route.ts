@@ -7,7 +7,21 @@ import {
   type JsonObject,
 } from '@lomi./shared';
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function isContactEmail(value: string): boolean {
+  if (value.length < 3 || value.length > 254) return false;
+  const at = value.indexOf("@");
+  if (at <= 0 || at !== value.lastIndexOf("@")) return false;
+  const local = value.slice(0, at);
+  const domain = value.slice(at + 1);
+  const dot = domain.indexOf(".");
+  return (
+    local.length > 0 &&
+    !local.includes(" ") &&
+    dot > 0 &&
+    dot < domain.length - 1 &&
+    !domain.includes(" ")
+  );
+}
 const ALLOWED_ORIGINS = [
   'https://docs.lomi.africa',
   'http://localhost:3000',
@@ -104,7 +118,7 @@ export async function POST(req: Request) {
   if (
     !name ||
     name.length > 200 ||
-    !EMAIL_RE.test(email) ||
+    !isContactEmail(email) ||
     !message ||
     message.length < 10 ||
     message.length > 8000 ||

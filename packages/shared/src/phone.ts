@@ -95,7 +95,7 @@ export function formatPhoneNumber(
 
 /** Legacy bug stored phones as `Côte d'Ivoire+225…` — strip before Stripe/API use. */
 const LEGACY_COUNTRY_NAME_PHONE_PREFIX =
-  /^(?:C[oô]te d['']Ivoire|Ivory Coast)\+?/i;
+  /^(?:C[oô]te d[\u0027\u2019]Ivoire|Ivory Coast)\+?/i;
 
 export function stripLegacyCountryPhonePrefix(phone: string): string {
   if (!LEGACY_COUNTRY_NAME_PHONE_PREFIX.test(phone)) {

@@ -87,7 +87,7 @@ export function isJsonArray<Value>(
 }
 
 function isPlainObject<Value>(value: Value): value is Value & JsonObject {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return isJsonObject(value);
 }
 
 /**

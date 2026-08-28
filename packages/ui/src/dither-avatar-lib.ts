@@ -144,14 +144,22 @@ export function seedToCheckoutDitherColors(seed: string): DitherAvatarColors {
   };
 }
 
+function svgHexColor(value: string, fallback: string): string {
+  return /^#[0-9A-Fa-f]{6}$/.test(value) ? value : fallback;
+}
+
+function svgPathData(value: string): string {
+  return value.replace(/[^MmHhVvLlZz0-9,.\s-]/g, "");
+}
+
 function resolveColors(
   seed: string,
   overrides?: Partial<DitherAvatarColors>,
 ): DitherAvatarColors {
   const derived = seedToDitherColors(seed);
   return {
-    background: overrides?.background ?? derived.background,
-    foreground: overrides?.foreground ?? derived.foreground,
+    background: svgHexColor(overrides?.background ?? derived.background, derived.background),
+    foreground: svgHexColor(overrides?.foreground ?? derived.foreground, derived.foreground),
   };
 }
 
@@ -226,10 +234,11 @@ export function generateDitherAvatarSvg({
   const cells = Math.max(8, Math.min(gridCells, 64));
   const colors = resolveColors(seed, colorOverrides);
   const grid = buildPixelGrid(cells, seed);
-  const pathData = encodeDitherPath(grid);
+  const pathData = svgPathData(encodeDitherPath(grid));
+  const displaySize = Number.isFinite(size) ? Math.max(1, Math.round(size)) : 40;
   const dimensions = fluid
     ? `width="100%" height="100%"`
-    : `width="${size}" height="${size}"`;
+    : `width="${displaySize}" height="${displaySize}"`;
 
   return [
     `<svg ${dimensions} viewBox="0 0 ${cells} ${cells}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" preserveAspectRatio="xMidYMid slice">`,

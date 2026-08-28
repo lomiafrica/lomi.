@@ -27,24 +27,34 @@ pub fn error_prefix() -> String {
     format!("{} {}", "✗".red().bold(), "Error:".red())
 }
 
+fn write_stdout(line: &str) {
+    let mut out = std::io::stdout().lock();
+    let _ = writeln!(out, "{line}");
+}
+
+fn write_stderr(line: &str) {
+    let mut err = std::io::stderr().lock();
+    let _ = writeln!(err, "{line}");
+}
+
 pub fn print_error(message: &str) {
-    eprintln!("{} {}", error_prefix(), message);
+    write_stderr(&format!("{} {}", error_prefix(), message));
 }
 
 pub fn print_success(message: &str) {
-    println!("  {} {}", "✓".green(), message);
+    write_stdout(&format!("  {} {}", "✓".green(), message));
 }
 
 pub fn print_info(message: &str) {
-    println!("  {} {}", "→".bright_blue(), message);
+    write_stdout(&format!("  {} {}", "→".bright_blue(), message));
 }
 
 pub fn print_dim(message: &str) {
-    println!("  {}", message.bright_black());
+    write_stdout(&format!("  {}", message.bright_black()));
 }
 
 pub fn print_hint(message: &str) {
-    println!("  {} {}", "Hint:".cyan(), message);
+    write_stdout(&format!("  {} {}", "Hint:".cyan(), message));
 }
 
 pub fn print_step(message: &str) {

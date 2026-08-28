@@ -3,8 +3,6 @@
 import type React from "react";
 import { useEffect } from "react";
 import { Input } from "@lomi./ui/input";
-import { Label } from "@lomi./ui/label";
-import { cn } from "@lomi./ui/cn";
 import {
   PhoneNumberInput,
   WhatsAppNumberInput,
