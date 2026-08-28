@@ -52,7 +52,7 @@ jobs:
 
       - name: Install API dependencies
         working-directory: apps/api
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --ignore-workspace --frozen-lockfile
 
       - name: Export OpenAPI
         working-directory: apps/api
@@ -78,7 +78,7 @@ jobs:
 
       - name: Install docs dependencies
         working-directory: apps/docs
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --ignore-workspace --frozen-lockfile
 
       - name: Run parity worker
         working-directory: apps/docs

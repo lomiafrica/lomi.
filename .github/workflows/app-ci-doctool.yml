@@ -40,10 +40,10 @@ jobs:
         run: cargo test --workspace
       - name: Install docs dependencies
         working-directory: apps/docs
-        run: pnpm install
+        run: pnpm install --ignore-workspace --frozen-lockfile
       - name: Install MCP dependencies
         working-directory: apps/mcp
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --ignore-workspace --frozen-lockfile
       - name: MCP unit tests
         working-directory: apps/mcp
         run: pnpm test

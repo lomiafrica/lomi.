@@ -53,7 +53,7 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: apps/api/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --ignore-workspace --frozen-lockfile
       - run: pnpm run build
       - run: pnpm test
       - name: Export OpenAPI
@@ -83,7 +83,7 @@ jobs:
           node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "./apps/docs/pnpm-lock.yaml"
-      - run: pnpm install
+      - run: pnpm install --ignore-workspace --frozen-lockfile
       - run: pnpm lint
       - run: pnpm docs:drift
       - run: pnpm build
