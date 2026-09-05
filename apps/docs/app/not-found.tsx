@@ -15,12 +15,15 @@ export const metadata: Metadata = {
 
 export default async function NotFound() {
   const locale = await getDocsLocale();
-  const label = translate('ui.notFound', locale);
 
   return (
     <>
       <pre className="sr-only">{buildDocsNotFoundMarkdown()}</pre>
-      <NotFoundPage label={label} />
+      <NotFoundPage
+        title={translate('ui.notFoundTitle', locale)}
+        description={translate('ui.notFoundDescription', locale)}
+        homeLabel={translate('ui.notFoundHome', locale)}
+      />
     </>
   );
 }

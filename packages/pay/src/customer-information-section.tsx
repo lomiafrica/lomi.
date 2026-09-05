@@ -2,12 +2,11 @@
 
 import type React from "react";
 import { useEffect } from "react";
-import { Input } from "@lomi./ui/input";
 import {
   PhoneNumberInput,
-  WhatsAppNumberInput,
   parsePhoneCountry,
 } from "@lomi./ui/phone-number-input";
+import { CheckoutFloatField } from "./checkout-float-field";
 import {
   Tooltip,
   TooltipContent,
@@ -134,59 +133,61 @@ export function PersonalInformationSection({
       </label>
       <div className="checkout-field-stack overflow-hidden rounded-sm shadow-sm shadow-black/4">
         {showName && (
-          <div className="relative">
-            <Input
-              ref={nameInputRef}
-              name="fullName"
-              value={rawNameInput}
-              onChange={handleFullNameChange}
-              placeholder={t("checkout.personal_info.full_name")}
-              className={`${showEmail || showPhone ? "rounded-tl rounded-tr" : "rounded-sm"} w-full bg-white text-gray-900 border-gray-300 focus:bg-white dark:bg-white dark:text-gray-900 dark:border-gray-300 dark:focus:bg-white dark:placeholder:text-gray-500 placeholder:text-base md:placeholder:text-sm input-checkout text-base md:text-sm h-10`}
-              required={requireName}
-              autoComplete="name"
-            />
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <div className="hidden md:block">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="right"
-                      className="max-w-xs text-xs p-2 bg-white text-gray-700 border border-gray-200 shadow-sm"
-                    >
-                      <p>{t("checkout.personal_info.name_tooltip")}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+          <CheckoutFloatField
+            inputRef={nameInputRef}
+            name="fullName"
+            label={t("checkout.personal_info.full_name")}
+            value={rawNameInput}
+            onChange={handleFullNameChange}
+            required={requireName}
+            autoComplete="name"
+            roundingClass={`${showEmail || showPhone ? "rounded-tl rounded-tr rounded-b-none" : "rounded-sm"} border-gray-300 input-checkout`}
+            endAdornment={
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                <div className="hidden md:block">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="right"
+                        className="max-w-xs text-xs p-2 bg-white text-gray-700 border border-gray-200 shadow-sm"
+                      >
+                        <p>{t("checkout.personal_info.name_tooltip")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <span className="md:hidden text-red-500 pointer-events-none">
+                  *
+                </span>
               </div>
-              <span className="md:hidden text-red-500 pointer-events-none">
-                *
-              </span>
-            </div>
-          </div>
+            }
+          />
         )}
         {showEmail && (
           <div className={`flex ${showName ? "-mt-px" : ""}`}>
-            <div className="relative w-full">
-              <Input
+            <div className="w-full">
+              <CheckoutFloatField
                 id="email"
+                inputRef={emailInputRef}
                 type="email"
                 name="email"
+                label={t("checkout.personal_info.email")}
                 value={customerDetails.email}
                 onChange={handleGenericCustomerInputChange}
-                placeholder={t("checkout.personal_info.email")}
-                className={`${showName ? "rounded-none" : "rounded-tl rounded-tr"} w-full bg-white text-gray-900 border-gray-300 placeholder:text-base md:placeholder:text-sm text-base md:text-sm h-10`}
                 required={requireEmail}
-                ref={emailInputRef}
                 autoComplete="email"
+                roundingClass={`${showName ? "rounded-none" : showPhone ? "rounded-tl rounded-tr rounded-b-none" : "rounded-sm"} border-gray-300`}
+                endAdornment={
+                  requireEmail ? (
+                    <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
+                      *
+                    </span>
+                  ) : null
+                }
               />
-              {requireEmail && (
-                <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
-                  *
-                </span>
-              )}
             </div>
           </div>
         )}
@@ -207,6 +208,7 @@ export function PersonalInformationSection({
                     : undefined
                 }
                 isFirstInStack={!hasFieldAbovePhone}
+                isMiddleInStack={hasFieldAbovePhone}
                 directEdit
                 requiredMark
               />
@@ -222,39 +224,42 @@ export function PersonalInformationSection({
         {showPhone && !isDifferentWhatsApp ? (
           <div className="flex -mt-px">
             <div
-              className="w-full rounded-none box-border bg-white"
-              style={{ border: "clamp(1px, 0.12vw, 1.3px) solid #d1d5db" }}
+              role="button"
+              tabIndex={0}
+              className="phone-input-last-in-stack box-border flex h-10 min-h-10 w-full cursor-pointer items-center justify-between rounded-t-none rounded-b-sm border border-gray-300 bg-white px-3 dark:border-white/[0.16]"
+              onClick={() => setIsDifferentWhatsApp(true)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setIsDifferentWhatsApp(true);
+                }
+              }}
             >
-              <div
-                onMouseDown={() => setIsDifferentWhatsApp(true)}
-                className="group h-10 flex items-center justify-between cursor-pointer transition-all duration-200 px-3"
-              >
-                <span className="text-xs text-gray-500">
-                  {t("checkout.personal_info.whatsapp_different")}
-                </span>
-                <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors duration-200 flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5 ml-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
-              </div>
+              <span className="text-xs text-gray-500">
+                {t("checkout.personal_info.whatsapp_different")}
+              </span>
+              <span className="flex items-center text-sm text-gray-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="ml-1 h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </span>
             </div>
           </div>
         ) : showPhone ? (
-          <div className="flex -mt-px bg-transparent">
-            <div className="w-full rounded-none bg-transparent relative">
-              <WhatsAppNumberInput
+          <div className="flex -mt-px">
+            <div className="relative w-full rounded-none box-border">
+              <PhoneNumberInput
                 value={customerDetails.whatsappNumber}
                 onChange={handleWhatsAppNumberChange}
                 defaultCountry={
@@ -262,11 +267,24 @@ export function PersonalInformationSection({
                     ? parsePhoneCountry(detectedCountry)
                     : undefined
                 }
+                placeholder="WhatsApp number"
+                className="pr-10"
+                directEdit
+                isLastInStack
               />
               <div
+                role="button"
+                tabIndex={0}
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer rounded-[1px] bg-blue-100 hover:bg-blue-200 transition-colors p-1.5"
-                onMouseDown={() => setIsDifferentWhatsApp(false)}
+                onClick={() => setIsDifferentWhatsApp(false)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setIsDifferentWhatsApp(false);
+                  }
+                }}
                 title={t("checkout.personal_info.switch_to_phone")}
+                aria-label={t("checkout.personal_info.switch_to_phone")}
               >
                 <ArrowRightLeft className="h-3.5 w-3.5 text-blue-600" />
               </div>

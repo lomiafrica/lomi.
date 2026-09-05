@@ -71,9 +71,22 @@ export function formatProviderCode(providerCode: string): string {
       return "MTN";
     case "STRIPE":
       return "Cards";
+    case "APPLE_PAY":
+      return "Apple Pay";
+    case "GOOGLE_PAY":
+      return "Google Pay";
+    case "FREE":
+      return "Free";
+    case "SPI":
+      return "π-SPI";
+    case "DJAMO":
+      return "Djamo";
+    case "ORANGE":
+      return "Orange";
     default:
       return (
-        providerCode.charAt(0).toUpperCase() + providerCode.slice(1).toLowerCase()
+        providerCode.charAt(0).toUpperCase() +
+        providerCode.slice(1).toLowerCase()
       );
   }
 }

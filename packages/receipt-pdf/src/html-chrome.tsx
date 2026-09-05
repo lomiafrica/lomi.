@@ -121,6 +121,70 @@ export function HtmlContactLine({
   );
 }
 
+/** Email transaction-card chrome for web receipt / invoice. */
+export function HtmlRecordCard({
+  heading,
+  amount,
+  dateLine,
+  actions,
+  children,
+}: {
+  heading: ReactNode;
+  amount: string;
+  dateLine?: string;
+  actions?: ReactNode;
+  children?: ReactNode;
+}) {
+  return (
+    <div
+      data-record-card=""
+      className="rounded-sm border border-stone-200 bg-white px-8 py-8 text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-20px_rgba(28,25,23,0.2)] dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200"
+    >
+      <div>
+        <h2 className="m-0 mb-2 text-[13px] font-medium text-stone-500 dark:text-stone-400">
+          {heading}
+        </h2>
+        <p className="m-0 text-[36px] font-bold leading-none tracking-[-0.5px] text-stone-900 dark:text-stone-100">
+          {amount}
+        </p>
+        {dateLine ? (
+          <p className="mb-0 mt-2 text-[13px] text-stone-500 dark:text-stone-400">
+            {dateLine}
+          </p>
+        ) : null}
+      </div>
+      {actions ? (
+        <div className="mb-2 mt-5 flex flex-wrap gap-3 border-b border-stone-200 pb-6 dark:border-white/[0.12]">
+          {actions}
+        </div>
+      ) : (
+        <div className="mb-2 mt-6 border-b border-stone-200 dark:border-white/[0.12]" />
+      )}
+      {children}
+    </div>
+  );
+}
+
+export function HtmlRecordRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: ReactNode;
+}) {
+  if (value == null || value === "") return null;
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-stone-200 py-3.5 last:border-b-0 dark:border-white/[0.12]">
+      <span className="w-36 shrink-0 text-[13px] font-medium text-stone-500 dark:text-stone-400">
+        {label}
+      </span>
+      <span className="min-w-0 break-all text-right text-[13px] font-medium text-stone-800 dark:text-stone-200">
+        {value}
+      </span>
+    </div>
+  );
+}
+
 export function HtmlLegalFooter() {
   return (
     <div className="mt-8 pt-2 border-t border-[#E2E8F0]">

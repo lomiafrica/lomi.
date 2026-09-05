@@ -71,9 +71,11 @@ export function GimCardInformationSection({
           id="gim-card-number"
           inputMode="numeric"
           autoComplete="cc-number"
+          enterKeyHint="next"
           placeholder="1234 5678 9012 3456"
           value={details.pan}
           disabled={disabled}
+          className="text-base md:text-sm"
           onChange={(e) => update({ pan: formatPan(e.target.value) })}
         />
       </div>
@@ -86,9 +88,11 @@ export function GimCardInformationSection({
             id="gim-card-expiry"
             inputMode="numeric"
             autoComplete="cc-exp"
+            enterKeyHint="next"
             placeholder="MM/YY"
             value={details.expiry}
             disabled={disabled}
+            className="text-base md:text-sm"
             onChange={(e) => update({ expiry: formatExpiry(e.target.value) })}
           />
         </div>
@@ -100,11 +104,13 @@ export function GimCardInformationSection({
             id="gim-card-cvv"
             inputMode="numeric"
             autoComplete="cc-csc"
+            enterKeyHint="done"
             placeholder="123"
             type="password"
             value={details.cvv}
             disabled={disabled}
             maxLength={4}
+            className="text-base md:text-sm"
             onChange={(e) => update({ cvv: digitsOnly(e.target.value, 4) })}
           />
         </div>

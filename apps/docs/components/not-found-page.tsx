@@ -2,25 +2,30 @@
 
 'use client';
 
-import { FuzzyText } from '@lomi./ui/fuzzy-text';
+import {
+  StatusPage,
+  StatusPageActionLink,
+} from '@lomi./ui/status-page';
 
 type NotFoundPageProps = {
-  label: string;
+  title: string;
+  description: string;
+  homeLabel: string;
 };
 
-export function NotFoundPage({ label }: NotFoundPageProps) {
+export function NotFoundPage({
+  title,
+  description,
+  homeLabel,
+}: NotFoundPageProps) {
   return (
-    <div className="flex h-svh items-center justify-center overflow-hidden bg-background px-4">
-      <FuzzyText
-        fontSize="clamp(1.25rem, 6vw, 2.5rem)"
-        fontWeight={900}
-        fontFamily="Fira Mono, monospace"
-        baseIntensity={0.2}
-        hoverIntensity={0.4}
-        enableHover
-      >
-        {label}
-      </FuzzyText>
-    </div>
+    <StatusPage
+      code="404"
+      title={title}
+      description={description}
+      actions={
+        <StatusPageActionLink href="/start/overview">{homeLabel}</StatusPageActionLink>
+      }
+    />
   );
 }

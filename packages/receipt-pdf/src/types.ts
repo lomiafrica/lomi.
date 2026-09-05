@@ -68,6 +68,9 @@ export interface ReceiptTransactionInput {
   product_price?: number | null;
   quantity?: number | null;
   provider_code?: string | null;
+  payment_method_code?: string | null;
+  card_last4?: string | null;
+  card_brand?: string | null;
   provider_transaction_id?: string | null;
   subscription_id?: string | null;
   plan_name?: string | null;
@@ -115,4 +118,10 @@ export interface ReceiptLayoutLabels {
   fees?: string;
   download: string;
   generating: string;
+  reference?: string;
+  item?: string;
+  items?: string;
+  plan?: string;
+  nextBilling?: string;
+  status?: string;
 }

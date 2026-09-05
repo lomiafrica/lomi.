@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Input } from "@lomi./ui/input";
 import type { CheckoutCustomFieldDefinition } from "@lomi./shared";
+import { CheckoutFloatField } from "./checkout-float-field";
 import type { TranslateFn } from "./types";
 
 interface CustomCheckoutFieldsSectionProps {
@@ -33,11 +33,26 @@ export function CustomCheckoutFieldsSection({
     }));
   };
 
-  const renderField = (field: CheckoutCustomFieldDefinition) => {
-    const value = customFieldValues[field.id] || "";
-    const roundingClass = "rounded-none";
+  const stackRoundingClass = (index: number, total: number) => {
+    if (total === 1) {
+      return "rounded-sm";
+    }
+    if (index === 0) {
+      return "rounded-tl rounded-tr rounded-b-none";
+    }
+    if (index === total - 1) {
+      return "rounded-bl rounded-br rounded-t-none";
+    }
+    return "rounded-none";
+  };
 
-    const baseClassName = `${roundingClass} w-full bg-white text-gray-900 border-gray-300 placeholder:text-sm text-sm h-10`;
+  const renderField = (
+    field: CheckoutCustomFieldDefinition,
+    index: number,
+    total: number,
+  ) => {
+    const value = customFieldValues[field.id] || "";
+    const roundingClass = stackRoundingClass(index, total);
 
     if (field.type === "checkbox" || field.type === "terms") {
       return (
@@ -65,24 +80,42 @@ export function CustomCheckoutFieldsSection({
       );
     }
 
+    const isLast = index === total - 1;
+    const inputMode =
+      field.type === "email"
+        ? "email"
+        : field.type === "url"
+          ? "url"
+          : undefined;
+    const autoComplete =
+      field.type === "email"
+        ? "email"
+        : field.type === "url"
+          ? "url"
+          : undefined;
+
     return (
-      <div key={field.id} className="relative">
-        <Input
-          type={field.type}
-          name={field.id}
-          value={value}
-          onChange={(e) => handleFieldChange(field.id, e.target.value)}
-          placeholder={field.placeholder || field.label}
-          required={field.required}
-          className={baseClassName}
-          pattern={field.validation?.pattern}
-        />
-        {field.required && (
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
-            *
-          </span>
-        )}
-      </div>
+      <CheckoutFloatField
+        name={field.id}
+        type={field.type}
+        label={field.label}
+        hint={field.placeholder}
+        value={value}
+        onChange={(e) => handleFieldChange(field.id, e.target.value)}
+        required={field.required}
+        pattern={field.validation?.pattern}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        enterKeyHint={isLast ? "done" : "next"}
+        roundingClass={`${roundingClass} border-gray-300`}
+        endAdornment={
+          field.required ? (
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
+              *
+            </span>
+          ) : null
+        }
+      />
     );
   };
 
@@ -95,7 +128,7 @@ export function CustomCheckoutFieldsSection({
         {customFields.map((field, index) => (
           <div key={field.id} className={index > 0 ? "flex -mt-px" : "flex"}>
             <div className="w-full">
-              {renderField(field)}
+              {renderField(field, index, customFields.length)}
             </div>
           </div>
         ))}

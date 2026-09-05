@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Label } from "@lomi./ui/label";
 import { cn } from "@lomi./ui/cn";
 import type { TranslateFn } from "./types";
 
@@ -78,12 +77,8 @@ export function PriceSelector({
   };
 
   return (
-    <div className={cn("w-full space-y-2", !embedded && "mb-4")}>
-      <Label className="text-sm font-normal text-gray-400">
-        {t("checkout.billing_cycle.choose_plan")}
-      </Label>
-
-      <div className="space-y-1.5">
+    <div className={cn("price-selector", !embedded && "mb-4")}>
+      <div className="price-selector-list" role="radiogroup">
         {activePrices.map((price) => {
           const isSelected = price.price_id === selectedPriceId;
           const savings = calculateSavings(price);
@@ -92,38 +87,70 @@ export function PriceSelector({
             <button
               key={price.price_id}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               data-selected={isSelected ? "true" : "false"}
+              onMouseDown={(event) => event.preventDefault()}
               onClick={() => onPriceSelect(price.price_id)}
+              onKeyDown={(event) => {
+                const index = activePrices.findIndex(
+                  (item) => item.price_id === price.price_id,
+                );
+                let next = index;
+                if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                  next = (index + 1) % activePrices.length;
+                } else if (
+                  event.key === "ArrowUp" ||
+                  event.key === "ArrowLeft"
+                ) {
+                  next =
+                    (index - 1 + activePrices.length) % activePrices.length;
+                } else if (event.key === "Home") {
+                  next = 0;
+                } else if (event.key === "End") {
+                  next = activePrices.length - 1;
+                } else {
+                  return;
+                }
+                event.preventDefault();
+                const nextPrice = activePrices[next];
+                if (!nextPrice) return;
+                onPriceSelect(nextPrice.price_id);
+                const radios =
+                  event.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
+                    '[role="radio"]',
+                  );
+                radios?.[next]?.focus();
+              }}
               className={cn(
-                "price-selector-option w-full flex items-center gap-2.5 px-3 h-10 rounded-sm transition-colors duration-150",
-                "bg-transparent text-left",
+                "price-selector-option flex h-10 w-full items-center gap-2.5 px-3 text-left appearance-none select-none",
                 isSelected && "price-selector-option-selected",
               )}
             >
-              <div
+              <span
                 className={cn(
-                  "h-3.5 w-3.5 shrink-0 rounded-full border flex items-center justify-center",
-                  isSelected ? "border-[#56A5F9]" : "border-gray-600",
+                  "price-selector-radio flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border",
                 )}
+                aria-hidden
               >
-                {isSelected && (
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#56A5F9]" />
-                )}
-              </div>
+                {isSelected ? (
+                  <span className="price-selector-radio-dot h-1.5 w-1.5 rounded-full" />
+                ) : null}
+              </span>
 
-              <div className="flex min-w-0 flex-1 items-center gap-1.5 text-sm">
-                <span className="font-medium text-gray-200">
+              <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm">
+                <span className="price-selector-amount font-medium">
                   {formatCurrency(price.amount, currencyCode)}
                 </span>
-                <span className="text-gray-400">
+                <span className="price-selector-interval">
                   / {formatBillingIntervalLabel(price.billing_interval)}
                 </span>
-                {savings && (
-                  <span className="ml-auto shrink-0 text-xs text-green-400">
+                {savings ? (
+                  <span className="price-selector-save ml-auto shrink-0 text-xs">
                     {t("checkout.billing_cycle.save")} {savings.percent}%
                   </span>
-                )}
-              </div>
+                ) : null}
+              </span>
             </button>
           );
         })}

@@ -1,7 +1,9 @@
+import { formatReceiptPaymentMethod } from "./format-payment-method";
 import {
   formatPhoneNumber,
   formatReceiptDate,
   formatSubscriptionStatus,
+  isGenericReceiptItemName,
   stripEmojis,
 } from "./format-utils";
 import type {
@@ -56,6 +58,41 @@ function resolveProductName(
   return fallback;
 }
 
+function isFiniteNumber(value: JsonValue): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function readMetadataLineItems(
+  metadata: JsonObject | null,
+): ReceiptLineItem[] | null {
+  const raw = metadata?.line_items;
+  if (!Array.isArray(raw) || raw.length === 0) return null;
+  const items: ReceiptLineItem[] = [];
+  for (const entry of raw) {
+    if (!isJsonObject(entry)) continue;
+    const name =
+      readMetadataString(entry, "name") ??
+      readMetadataString(entry, "description") ??
+      "Item";
+    const quantity = isFiniteNumber(entry.quantity)
+      ? Math.max(1, entry.quantity)
+      : 1;
+    const unitPrice = isFiniteNumber(entry.unit_price)
+      ? entry.unit_price
+      : isFiniteNumber(entry.price)
+        ? entry.price
+        : 0;
+    items.push({
+      description: stripEmojis(name),
+      quantity,
+      unitPrice,
+      amount: quantity * unitPrice,
+      isFee: false,
+    });
+  }
+  return items.length > 0 ? items : null;
+}
+
 function resolveSubscriptionName(transaction: ReceiptTransactionInput): string {
   if (transaction.plan_name && transaction.plan_name !== "Item") {
     return transaction.plan_name;
@@ -79,11 +116,47 @@ export function buildReceiptLineItems(
 
   const grossAmount = transaction.gross_amount ?? 0;
   const netAmount = transaction.net_amount ?? 0;
+  const metadataItems = readMetadataLineItems(
+    asMetadataRecord(transaction.metadata),
+  );
+
+  if (metadataItems) {
+    const subtotalFromItems = metadataItems.reduce(
+      (sum, item) => sum + item.amount,
+      0,
+    );
+    let fee = 0;
+    if (isMerchantReceipt) {
+      fee = netAmount > 0 ? subtotalFromItems - netAmount : 0;
+      if (fee < 0.01) fee = 0;
+    }
+    const pricedItems = [...metadataItems];
+    if (isMerchantReceipt && fee > 0.01) {
+      pricedItems.push({
+        description: "Fees",
+        quantity: 1,
+        unitPrice: fee,
+        amount: fee,
+        isFee: true,
+      });
+    }
+    return {
+      items: pricedItems,
+      subtotal: subtotalFromItems,
+      platformFee: fee,
+    };
+  }
+
+  const namedProduct =
+    transaction.product_name &&
+    !isGenericReceiptItemName(transaction.product_name)
+      ? transaction.product_name
+      : null;
 
   if (
     transaction.product_id &&
     transaction.product_id !== "" &&
-    transaction.product_name &&
+    namedProduct &&
     (transaction.product_price ?? 0) > 0
   ) {
     const quantity = transaction.quantity ?? 1;
@@ -103,27 +176,15 @@ export function buildReceiptLineItems(
       if (platformFee < 0.01) platformFee = 0;
     }
 
-    const productName = resolveProductName(transaction, "Product/Service");
-
-    if (quantity > 1) {
-      for (let i = 0; i < quantity; i++) {
-        items.push({
-          description: stripEmojis(productName),
-          quantity: 1,
-          unitPrice,
-          amount: unitPrice,
-          isFee: false,
-        });
-      }
-    } else {
-      items.push({
-        description: stripEmojis(productName),
-        quantity,
-        unitPrice,
-        amount: subtotal,
-        isFee: false,
-      });
-    }
+    items.push({
+      description: stripEmojis(
+        resolveProductName(transaction, namedProduct),
+      ),
+      quantity,
+      unitPrice,
+      amount: subtotal,
+      isFee: false,
+    });
   } else if (transaction.subscription_id) {
     subtotal = grossAmount;
 
@@ -138,7 +199,7 @@ export function buildReceiptLineItems(
       amount: subtotal,
       isFee: false,
     });
-  } else if (transaction.product_name && grossAmount > 0) {
+  } else if (namedProduct && grossAmount > 0) {
     const quantity = transaction.quantity ?? 1;
     const unitPrice = grossAmount / quantity;
     subtotal = grossAmount;
@@ -147,56 +208,18 @@ export function buildReceiptLineItems(
       platformFee = netAmount > 0 ? subtotal - netAmount : 0;
     }
 
-    const fallbackName = resolveProductName(transaction, "Service");
-
-    if (quantity > 1) {
-      for (let i = 0; i < quantity; i++) {
-        items.push({
-          description: stripEmojis(fallbackName),
-          quantity: 1,
-          unitPrice,
-          amount: unitPrice,
-          isFee: false,
-        });
-      }
-    } else {
-      items.push({
-        description: stripEmojis(fallbackName),
-        quantity,
-        unitPrice,
-        amount: grossAmount,
-        isFee: false,
-      });
-    }
+    items.push({
+      description: stripEmojis(resolveProductName(transaction, namedProduct)),
+      quantity,
+      unitPrice,
+      amount: subtotal,
+      isFee: false,
+    });
   } else {
-    const quantity = transaction.quantity ?? 1;
-    const unitPrice = grossAmount / quantity;
     subtotal = grossAmount;
 
     if (isMerchantReceipt) {
       platformFee = netAmount > 0 ? subtotal - netAmount : 0;
-    }
-
-    const paymentName = resolveProductName(transaction, "Payment/Service");
-
-    if (quantity > 1) {
-      for (let i = 0; i < quantity; i++) {
-        items.push({
-          description: stripEmojis(paymentName),
-          quantity: 1,
-          unitPrice,
-          amount: unitPrice,
-          isFee: false,
-        });
-      }
-    } else {
-      items.push({
-        description: stripEmojis(paymentName),
-        quantity: 1,
-        unitPrice: grossAmount,
-        amount: grossAmount,
-        isFee: false,
-      });
     }
   }
 
@@ -246,7 +269,10 @@ export function buildReceiptDocumentData(
     transactionId: transaction.transaction_id,
     providerTransactionId: transaction.provider_transaction_id || undefined,
     date: formatReceiptDate(transaction.date || transaction.created_at),
-    paymentMethod: options.formatPaymentMethod(transaction.provider_code),
+    paymentMethod: formatReceiptPaymentMethod(
+      transaction,
+      options.formatPaymentMethod,
+    ),
     currency,
     from: {
       name: stripEmojis(options.organizationName || "lomi."),

@@ -11,6 +11,38 @@ import { Button } from "./button";
 
 const PhoneInputCompactContext = createContext(false);
 
+type PhoneStackRole = "solo" | "first" | "middle" | "last";
+
+const PhoneInputStackContext = createContext<PhoneStackRole>("solo");
+
+function resolvePhoneStackRole(
+  isFirstInStack: boolean,
+  isMiddleInStack: boolean,
+  isLastInStack: boolean,
+): PhoneStackRole {
+  if (isFirstInStack) return "first";
+  if (isMiddleInStack) return "middle";
+  if (isLastInStack) return "last";
+  return "solo";
+}
+
+function phoneStackWrapperClass(stackRole: PhoneStackRole): string {
+  switch (stackRole) {
+    case "first":
+      return "phone-input-first-in-stack box-border h-10 min-h-10 rounded-t-sm rounded-b-none border border-gray-300 dark:border-white/[0.16]";
+    case "middle":
+      return "phone-input-middle-in-stack box-border h-10 min-h-10 rounded-none border border-gray-300 dark:border-white/[0.16]";
+    case "last":
+      return "phone-input-last-in-stack box-border h-10 min-h-10 rounded-t-none rounded-b-sm border border-gray-300 dark:border-white/[0.16]";
+    case "solo":
+      return "box-border h-10 min-h-10 rounded-sm border border-stone-200 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(28,25,23,0.06)] dark:border-white/[0.16] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]";
+    default: {
+      const _exhaustive: never = stackRole;
+      return _exhaustive;
+    }
+  }
+}
+
 export type PhoneCountryCode = RPNInput.Country;
 
 function isPhoneCountry(value: string): value is RPNInput.Country {
@@ -44,6 +76,10 @@ export type PhoneNumberInputProps = {
   countries?: PhoneCountryCode[];
   /** Checkout stacked form: top border + top rounding. */
   isFirstInStack?: boolean;
+  /** Checkout stacked form: square joins (email above, WhatsApp below). */
+  isMiddleInStack?: boolean;
+  /** Checkout stacked form: bottom rounding only. */
+  isLastInStack?: boolean;
   disabled?: boolean;
   /** Show required asterisk (checkout). */
   requiredMark?: boolean;
@@ -63,9 +99,16 @@ export function PhoneNumberInput({
   compact = false,
   countries: countriesProp,
   isFirstInStack = false,
+  isMiddleInStack = false,
+  isLastInStack = false,
   disabled = false,
   requiredMark = false,
 }: PhoneNumberInputProps) {
+  const stackRole = resolvePhoneStackRole(
+    isFirstInStack,
+    isMiddleInStack,
+    isLastInStack,
+  );
   const [isEditing, setIsEditing] = useState(directEdit);
   const hasTouchedRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -144,16 +187,15 @@ export function PhoneNumberInput({
 
   return (
     <PhoneInputCompactContext.Provider value={compact}>
-      <div className={cn(compact ? "space-y-0" : "space-y-2")}>
-        <div className="relative">
+      <PhoneInputStackContext.Provider value={stackRole}>
+        <div className={cn(compact || stackRole !== "solo" ? "space-y-0" : "space-y-2")}>
+          <div className="relative">
           <div
             className={cn(
               "flex w-full overflow-hidden bg-transparent transition-colors",
               compact
                 ? "phone-input-compact h-7 rounded-sm border border-stone-200 dark:border-white/[0.16]"
-                : isFirstInStack
-                  ? "phone-input-first-in-stack h-10 rounded-t-sm rounded-b-none border border-stone-200 dark:border-white/[0.16]"
-                  : "h-10 rounded-sm border border-stone-200 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(28,25,23,0.06)] dark:border-white/[0.16] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]",
+                : phoneStackWrapperClass(stackRole),
               showActionButton && !compact && "pr-9",
               className,
             )}
@@ -163,7 +205,7 @@ export function PhoneNumberInput({
                 "flex PhoneInput w-full",
                 compact
                   ? "h-7 min-h-0 items-stretch"
-                  : "h-10 min-h-0 items-stretch",
+                  : "h-full min-h-0 items-stretch",
               )}
               international
               defaultCountry={resolvedDefault}
@@ -223,7 +265,8 @@ export function PhoneNumberInput({
             </Button>
           ) : null}
         </div>
-      </div>
+        </div>
+      </PhoneInputStackContext.Provider>
     </PhoneInputCompactContext.Provider>
   );
 }
@@ -233,6 +276,8 @@ const PhoneField = React.forwardRef<
   React.InputHTMLAttributes<HTMLInputElement>
 >(({ className, ...props }, ref) => {
   const compact = useContext(PhoneInputCompactContext);
+  const stackRole = useContext(PhoneInputStackContext);
+  const squareJoins = !compact && stackRole !== "solo";
 
   return (
     <input
@@ -243,7 +288,8 @@ const PhoneField = React.forwardRef<
           ? "flex h-full w-full min-w-0 px-2 py-0 text-xs outline-none"
           : "flex h-full w-full min-w-0 px-3 py-1 text-[13px] outline-none",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-100",
-        "border-0 shadow-none rounded-l-none rounded-r-[9px]",
+        "border-0 shadow-none rounded-l-none",
+        squareJoins ? "rounded-r-none" : "rounded-r-[9px]",
         className,
       )}
       {...props}
@@ -269,6 +315,8 @@ function CountrySelect({
   options,
 }: CountrySelectProps) {
   const compact = useContext(PhoneInputCompactContext);
+  const stackRole = useContext(PhoneInputStackContext);
+  const squareJoins = !compact && stackRole !== "solo";
 
   return (
     <div
@@ -276,7 +324,10 @@ function CountrySelect({
         "PhoneInputCountry relative items-center bg-transparent text-stone-700 outline-none dark:text-stone-200",
         compact
           ? "flex h-full min-h-0 min-w-0 shrink-0 rounded-l-[9px] rounded-r-none border-0 border-r border-stone-200 px-2 py-0 dark:border-white/[0.16]"
-          : "flex h-full min-w-0 shrink-0 self-stretch rounded-l-[9px] rounded-r-none border-0 border-r border-stone-200 px-3 py-1 dark:border-white/[0.16]",
+          : cn(
+              "flex h-full min-h-0 min-w-[65px] max-w-[70px] shrink-0 self-stretch rounded-r-none border-0 border-r border-stone-200 px-3 py-0 dark:border-white/[0.16]",
+              squareJoins ? "rounded-l-none" : "rounded-l-[9px]",
+            ),
         disabled && "pointer-events-none cursor-not-allowed",
       )}
     >
@@ -356,6 +407,7 @@ export type WhatsAppNumberInputProps = {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  isLastInStack?: boolean;
 };
 
 export function WhatsAppNumberInput({
@@ -365,18 +417,18 @@ export function WhatsAppNumberInput({
   placeholder = "WhatsApp number",
   className,
   disabled = false,
+  isLastInStack = false,
 }: WhatsAppNumberInputProps) {
   return (
-    <div className={cn("whatsapp-input-container", className)}>
-      <PhoneNumberInput
-        value={value}
-        onChange={onChange}
-        defaultCountry={defaultCountry}
-        placeholder={placeholder}
-        className="pr-10"
-        disabled={disabled}
-        directEdit
-      />
-    </div>
+    <PhoneNumberInput
+      value={value}
+      onChange={onChange}
+      defaultCountry={defaultCountry}
+      placeholder={placeholder}
+      className={cn("pr-10", className)}
+      disabled={disabled}
+      directEdit
+      isLastInStack={isLastInStack}
+    />
   );
 }

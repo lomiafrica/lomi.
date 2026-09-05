@@ -92,6 +92,34 @@ export async function getCheckoutColors(
   return callRpc(client, "get_checkout_colors", args, "get_checkout_colors", options);
 }
 
+export async function getTransactionDigitalDeliverables(
+  client: TypedSupabaseClient,
+  args: { p_transaction_id: string },
+  options?: SupabaseRpcOptions<
+    DbFunctions["get_transaction_digital_deliverables"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["get_transaction_digital_deliverables"]["Returns"] | null | boolean
+> {
+  const rpcArgs = args as DbFunctions["get_transaction_digital_deliverables"]["Args"];
+  if (options === null) {
+    return callRpc(
+      client,
+      "get_transaction_digital_deliverables",
+      rpcArgs,
+      "get_transaction_digital_deliverables",
+      { fallbackValue: null },
+    );
+  }
+  return callRpc(
+    client,
+    "get_transaction_digital_deliverables",
+    rpcArgs,
+    "get_transaction_digital_deliverables",
+    options,
+  );
+}
+
 export async function getPostCheckoutDetails(
   client: TypedSupabaseClient,
   args: DbFunctions["get_post_checkout_details"]["Args"],

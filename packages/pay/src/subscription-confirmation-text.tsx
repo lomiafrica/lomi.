@@ -24,7 +24,7 @@ export function SubscriptionConfirmationText({
   const merchant = merchantName || "the merchant";
 
   return (
-    <div className="w-full text-sm text-center text-gray-600 mt-4 mb-2 select-none">
+    <div className="checkout-subscription-legal w-full text-sm text-center text-gray-600 mt-4 mb-0 select-none">
       <p>
         {trialEnabled && nextBillingDateLabel
           ? t("checkout.trial.confirmation", {

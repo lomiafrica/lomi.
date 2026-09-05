@@ -130,6 +130,7 @@ export type {
   MergedCustomerData,
   ValidateCheckoutCustomerOptions,
   ValidateCheckoutCustomerResult,
+  CheckoutValidationField,
   ValidateCheckoutContactFieldsOptions,
   CheckoutCustomerFormDetails,
   ExpressCheckoutConfirmLike,

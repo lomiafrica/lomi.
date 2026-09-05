@@ -2,11 +2,7 @@ import { isValidPhoneNumber, toCountryCode } from "./phone.js";
 import { resolveStripeCountry } from "./country.js";
 
 export type CheckoutCustomFieldType =
-  | "text"
-  | "email"
-  | "url"
-  | "checkbox"
-  | "terms";
+  "text" | "email" | "url" | "checkbox" | "terms";
 
 export interface CheckoutCustomFieldDefinition {
   id: string;
@@ -54,10 +50,15 @@ export interface ValidateCheckoutCustomerOptions {
   forceRequirePhone?: boolean;
 }
 
+export type CheckoutValidationField =
+  "name" | "email" | "phone" | "billing" | "custom";
+
 export interface ValidateCheckoutCustomerResult {
   valid: boolean;
   errorCode?: string;
   errorMessage?: string;
+  field?: CheckoutValidationField;
+  customFieldId?: string;
 }
 
 export interface ValidateCheckoutContactFieldsOptions {
@@ -226,6 +227,7 @@ export function validateCheckoutCustomer({
       valid: false,
       errorCode: "missing_customer_data",
       errorMessage: "Missing customer information",
+      field: "name",
     };
   }
 
@@ -235,6 +237,7 @@ export function validateCheckoutCustomer({
         valid: false,
         errorCode: "missing_customer_data",
         errorMessage: "Missing customer information",
+        field: "email",
       };
     }
   }
@@ -246,6 +249,7 @@ export function validateCheckoutCustomer({
       valid: false,
       errorCode: "missing_customer_data",
       errorMessage: "Missing customer information",
+      field: "phone",
     };
   }
 
@@ -261,6 +265,7 @@ export function validateCheckoutCustomer({
       errorCode: "phone_validation_error",
       errorMessage:
         "Please enter a valid phone number for the selected country.",
+      field: "phone",
     };
   }
 
@@ -270,6 +275,7 @@ export function validateCheckoutCustomer({
         valid: false,
         errorCode: "missing_billing_address",
         errorMessage: "Billing address is required",
+        field: "billing",
       };
     }
   }
@@ -283,6 +289,8 @@ export function validateCheckoutCustomer({
           valid: false,
           errorCode: "missing_custom_fields",
           errorMessage: "Please complete all required fields",
+          field: "custom",
+          customFieldId: field.id,
         };
       }
       continue;
@@ -292,6 +300,8 @@ export function validateCheckoutCustomer({
         valid: false,
         errorCode: "missing_custom_fields",
         errorMessage: "Please complete all required fields",
+        field: "custom",
+        customFieldId: field.id,
       };
     }
   }

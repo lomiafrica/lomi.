@@ -1,3 +1,24 @@
+const GENERIC_RECEIPT_ITEM_NAMES = new Set([
+  "payment",
+  "direct charge",
+  "product",
+  "product/service",
+  "payment/service",
+  "service",
+  "item",
+  "produit",
+  "paiement",
+  "article",
+]);
+
+/** True when the name is a charge fallback, not a real product. */
+export function isGenericReceiptItemName(
+  value: string | null | undefined,
+): boolean {
+  if (!value?.trim()) return true;
+  return GENERIC_RECEIPT_ITEM_NAMES.has(value.trim().toLowerCase());
+}
+
 export function stripEmojis(value: string | null | undefined): string {
   if (!value) return "";
   return value
@@ -74,6 +95,15 @@ export function formatSubscriptionStatus(
 ): string {
   if (!status) return "N/A";
   return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+export function formatReceiptLineDetail(
+  quantity: number,
+  unitPrice: number,
+  currency: string,
+): string | null {
+  if (quantity <= 1) return null;
+  return `${quantity} × ${formatCurrencyForReceipt(unitPrice, currency)}`;
 }
 
 export function formatCurrencyForReceipt(

@@ -15,6 +15,8 @@ export {
   HtmlLegalFooter,
   HtmlMetaRow,
   HtmlPayOnlineRow,
+  HtmlRecordCard,
+  HtmlRecordRow,
   HtmlSectionLabel,
   HtmlWordmark,
 } from "./html-chrome";
@@ -59,10 +61,16 @@ export {
   PDF_TOTALS_WIDTH,
 } from "./tokens";
 export {
+  extractReceiptCardLast4,
+  formatReceiptPaymentMethod,
+  sanitizeReceiptLast4,
+} from "./format-payment-method";
+export {
   formatCurrencyForReceipt,
   formatPhoneNumber,
   formatReceiptDate,
   formatSubscriptionStatus,
+  isGenericReceiptItemName,
   stripEmojis,
 } from "./format-utils";
 export { ReceiptLayout } from "./receipt-layout";

@@ -150,6 +150,7 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
           </View>
         ) : null}
 
+        {data.lineItems.length > 0 ? (
         <View>
           <View
             style={{
@@ -261,6 +262,7 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
             </View>
           ))}
         </View>
+        ) : null}
 
         <View style={{ alignItems: "flex-end", marginTop: 16 }}>
           <View style={{ width: PDF_TOTALS_WIDTH }}>
