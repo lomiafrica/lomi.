@@ -1,13 +1,21 @@
-import { Document, Page, Text, View } from "@react-pdf/renderer";
+import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
 import { formatAddressLines, formatContactLines } from "./format-address";
-import { formatCurrencyForReceipt } from "./format-utils";
+import {
+  formatCurrencyForReceipt,
+  isPlaceholderReceiptValue,
+  receiptNamesMatch,
+} from "./format-utils";
 import { registerReceiptFonts } from "./fonts";
 import {
   PDF_BAND_RECEIPT,
   PDF_BORDER_COLOR,
   PDF_FONT_SIZE,
   PDF_LABEL_COLOR,
+  PDF_LINE_ROW_PADDING_BOTTOM,
+  PDF_LINE_ROW_PADDING_TOP,
+  PDF_LINK,
   PDF_MUTED_BORDER,
+  PDF_MUTED_TEXT,
   PDF_TOTALS_WIDTH,
 } from "./tokens";
 import {
@@ -15,67 +23,278 @@ import {
   PdfDocumentHeader,
   PdfLegalFooter,
   PdfSectionLabel,
+  PdfSectionRule,
   PdfTopBand,
   PDF_PAGE_CHROME_STYLE,
+  pdfLineValueOffset,
 } from "./pdf-chrome";
 import { resolveSupportEmail } from "./legal";
-import type { ReceiptAddress, ReceiptDocumentData } from "./types";
+import type {
+  ReceiptAddress,
+  ReceiptDigitalDelivery,
+  ReceiptDocumentData,
+} from "./types";
 
 registerReceiptFonts();
+
+function AddressLine({
+  children,
+  muted,
+  weight,
+}: {
+  children: string;
+  muted?: boolean;
+  weight?: 600;
+}) {
+  return (
+    <View>
+      <Text
+        style={{
+          fontSize: weight === 600 ? 10 : PDF_FONT_SIZE.body,
+          ...(weight === 600 ? { fontWeight: 600 } : {}),
+          ...(muted ? { color: PDF_MUTED_TEXT } : {}),
+          marginBottom: 2,
+        }}
+      >
+        {children}
+      </Text>
+    </View>
+  );
+}
 
 function AddressBlock({
   label,
   address,
+  locale,
 }: {
   label: string;
   address: ReceiptAddress;
+  locale?: string;
 }) {
-  const addressLines = formatAddressLines(address);
+  const addressLines =
+    address.formattedLines && address.formattedLines.length > 0
+      ? address.formattedLines
+      : formatAddressLines(address, locale);
   const contactLines = formatContactLines(address);
 
   return (
-    <View style={{ flex: 1, marginBottom: 20 }}>
+    <View style={{ flexDirection: "column" }}>
       <PdfSectionLabel>{label}</PdfSectionLabel>
-      <Text
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          marginBottom: 3,
-        }}
-      >
-        {address.name}
-      </Text>
+      {address.name ? (
+        <AddressLine weight={600}>{address.name}</AddressLine>
+      ) : null}
       {addressLines.map((line, index) => (
-        <Text
-          key={`addr-${index.toString()}`}
-          style={{
-            fontSize: PDF_FONT_SIZE.body,
-            lineHeight: 1.45,
-            color: "#6B7280",
-            marginBottom: 2,
-          }}
-        >
+        <AddressLine key={`addr-${index.toString()}`} muted>
           {line}
-        </Text>
+        </AddressLine>
       ))}
       {contactLines.map((line, index) => (
-        <Text
-          key={`contact-${index.toString()}`}
-          style={{
-            fontSize: PDF_FONT_SIZE.body,
-            lineHeight: 1.45,
-            marginBottom: 2,
-            color: "#6B7280",
-          }}
-        >
+        <AddressLine key={`contact-${index.toString()}`} muted>
           {line}
-        </Text>
+        </AddressLine>
       ))}
     </View>
   );
 }
 
+function PdfSubscriptionDetails({ data }: { data: ReceiptDocumentData }) {
+  const subscription = data.subscription;
+  if (!subscription) return null;
+  const planAlreadyListed = data.lineItems.some(
+    (item) =>
+      !item.isFee && receiptNamesMatch(item.description, subscription.planName),
+  );
+  const showPlan =
+    !isPlaceholderReceiptValue(subscription.planName) && !planAlreadyListed;
+  const showFrequency = !isPlaceholderReceiptValue(
+    subscription.billingFrequency,
+  );
+  const showNextBilling =
+    !data.amountHint &&
+    !isPlaceholderReceiptValue(subscription.nextBillingDate);
+  if (!showPlan && !showFrequency && !showNextBilling) return null;
+  return (
+    <View
+      wrap={false}
+      style={{
+        marginTop: 24,
+        padding: 12,
+        borderWidth: 0.5,
+        borderColor: PDF_MUTED_BORDER,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: PDF_FONT_SIZE.label,
+          fontWeight: 600,
+          marginBottom: 8,
+        }}
+      >
+        Subscription details
+      </Text>
+      {showPlan ? (
+        <DetailRow label="Plan" value={subscription.planName} />
+      ) : null}
+      {showFrequency ? (
+        <DetailRow
+          label="Billing frequency"
+          value={subscription.billingFrequency}
+        />
+      ) : null}
+      {showNextBilling ? (
+        <DetailRow label="Next billing" value={subscription.nextBillingDate} />
+      ) : null}
+    </View>
+  );
+}
+
+function PdfLibraryHint({ delivery }: { delivery: ReceiptDigitalDelivery }) {
+  const libraryUrl = delivery.libraryUrl;
+  const libraryLinkLabel = delivery.libraryLinkLabel;
+  if (libraryUrl && libraryLinkLabel) {
+    return (
+      <Text
+        style={{
+          fontSize: PDF_FONT_SIZE.label,
+          color: PDF_MUTED_TEXT,
+          marginTop: 10,
+        }}
+      >
+        {delivery.libraryHintBefore}
+        <Link
+          src={libraryUrl}
+          style={{ color: PDF_LINK, textDecoration: "none" }}
+        >
+          {libraryLinkLabel}
+        </Link>
+        {delivery.libraryHintAfter}
+      </Text>
+    );
+  }
+  if (!delivery.libraryHint) return null;
+  return (
+    <Text
+      style={{
+        fontSize: PDF_FONT_SIZE.label,
+        color: PDF_MUTED_TEXT,
+        marginTop: 10,
+      }}
+    >
+      {delivery.libraryHint}
+    </Text>
+  );
+}
+
+function PdfDigitalDelivery({
+  delivery,
+}: {
+  delivery: ReceiptDigitalDelivery;
+}) {
+  if (delivery.files.length === 0 && delivery.licenseKeys.length === 0) {
+    return null;
+  }
+  return (
+    <View wrap={false} style={{ marginTop: 24 }}>
+      <PdfSectionRule spaceAfter={14} />
+      {delivery.files.length > 0 ? (
+        <View
+          style={{
+            marginBottom: delivery.licenseKeys.length > 0 ? 14 : 0,
+          }}
+        >
+          <PdfSectionLabel>{delivery.downloadsTitle}</PdfSectionLabel>
+          {delivery.files.map((file, index) => (
+            <View
+              key={`file-${index.toString()}`}
+              style={{ marginBottom: 8 }}
+            >
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.body,
+                  fontWeight: 600,
+                  lineHeight: 1,
+                  marginBottom: 3,
+                }}
+              >
+                {file.filename}
+              </Text>
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.body,
+                  lineHeight: 1,
+                  color: PDF_MUTED_TEXT,
+                }}
+              >
+                {file.productName}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+      {delivery.licenseKeys.length > 0 ? (
+        <View>
+          <PdfSectionLabel>{delivery.licenseKeysTitle}</PdfSectionLabel>
+          {delivery.licenseKeys.map((item, index) => (
+            <View key={`key-${index.toString()}`} style={{ marginBottom: 8 }}>
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.body,
+                  fontWeight: 600,
+                  lineHeight: 1,
+                  letterSpacing: 0.3,
+                  marginBottom: 3,
+                }}
+              >
+                {item.licenseKey}
+              </Text>
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.body,
+                  lineHeight: 1,
+                  color: PDF_MUTED_TEXT,
+                }}
+              >
+                {item.productName}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+      <PdfLibraryHint delivery={delivery} />
+    </View>
+  );
+}
+
+const PDF_QTY_COL_WIDTH = 36;
+const PDF_PRICE_COL_WIDTH = 80;
+const PDF_AMOUNT_COL_WIDTH = 110;
+
+function PdfLineValue({
+  width,
+  align = "left",
+  children,
+}: {
+  width: number;
+  align?: "left" | "right";
+  children: string;
+}) {
+  return (
+    <View style={{ width }}>
+      <Text
+        style={{
+          fontSize: PDF_FONT_SIZE.body,
+          lineHeight: 1,
+          textAlign: align,
+        }}
+      >
+        {children}
+      </Text>
+    </View>
+  );
+}
+
 function DetailRow({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
   return (
     <View
       style={{
@@ -94,22 +313,6 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function getStatusColor(status: string): string {
-  switch (status.toLowerCase()) {
-    case "active":
-      return "#22c55e";
-    case "cancelled":
-      return "#ef4444";
-    case "suspended":
-    case "paused":
-      return "#eab308";
-    case "pending":
-      return "#3b82f6";
-    default:
-      return "#9ca3af";
-  }
-}
-
 export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
   const supportEmail = resolveSupportEmail(data.from.email);
 
@@ -119,10 +322,24 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
         <PdfTopBand color={PDF_BAND_RECEIPT} />
         <PdfDocumentHeader
           title={data.title}
-          meta={[
-            { label: "Receipt ID", value: data.transactionId },
-            { label: "Date", value: data.date },
-            { label: "Payment method", value: data.paymentMethod },
+          logoSrc={data.logoUrl}
+          showWordmark={false}
+          metaGroups={[
+            [
+              {
+                label: data.idLabel || "Receipt ID",
+                value: data.transactionId || "—",
+              },
+              {
+                label: "Transaction ID",
+                value: data.providerTransactionId || "—",
+              },
+              { label: "Date", value: data.date || "—" },
+              {
+                label: "Payment method",
+                value: data.paymentMethod || "—",
+              },
+            ],
           ]}
         />
 
@@ -130,138 +347,147 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginBottom: 22,
+            alignItems: "flex-start",
+            marginBottom: 16,
           }}
         >
           <View style={{ width: "36%" }}>
-            <AddressBlock label="From" address={data.from} />
+            <AddressBlock
+              label="From"
+              address={data.from}
+              locale={data.addressLocale}
+            />
           </View>
-          <View style={{ width: "38%", marginLeft: "auto" }}>
-            <AddressBlock label="Bill to" address={data.to} />
+          <View style={{ width: "38%" }}>
+            <AddressBlock
+              label="Bill to"
+              address={data.to}
+              locale={data.addressLocale}
+            />
           </View>
         </View>
 
-        {data.providerTransactionId ? (
-          <View style={{ marginBottom: 16 }}>
-            <DetailRow
-              label="Transaction ID"
-              value={data.providerTransactionId}
-            />
-          </View>
-        ) : null}
+        <PdfSectionRule />
 
         {data.lineItems.length > 0 ? (
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              borderBottomWidth: 0.5,
-              borderBottomColor: PDF_BORDER_COLOR,
-              paddingBottom: 5,
-              marginBottom: 8,
-            }}
-          >
-            <Text
-              style={{
-                flex: 3.4,
-                fontSize: PDF_FONT_SIZE.label,
-                fontWeight: 500,
-                color: PDF_LABEL_COLOR,
-              }}
-            >
-              Description
-            </Text>
-            {data.showQuantityAndPrice ? (
-              <Text
-                style={{
-                  flex: 0.6,
-                  fontSize: PDF_FONT_SIZE.label,
-                  fontWeight: 500,
-                  color: PDF_LABEL_COLOR,
-                }}
-              >
-                Qty
-              </Text>
-            ) : null}
-            {data.showQuantityAndPrice ? (
-              <Text
-                style={{
-                  flex: 1,
-                  fontSize: PDF_FONT_SIZE.label,
-                  fontWeight: 500,
-                  color: PDF_LABEL_COLOR,
-                  textAlign: "right",
-                }}
-              >
-                Price
-              </Text>
-            ) : null}
-            <Text
-              style={{
-                flex: 1,
-                fontSize: PDF_FONT_SIZE.label,
-                fontWeight: 500,
-                color: PDF_LABEL_COLOR,
-                textAlign: "right",
-              }}
-            >
-              Amount
-            </Text>
-          </View>
-
-          {data.lineItems.map((item, index) => (
+          <View>
             <View
-              key={`line-${index.toString()}`}
-              wrap={false}
               style={{
                 flexDirection: "row",
-                paddingBottom: 12,
-                marginBottom: 4,
                 borderBottomWidth: 0.5,
-                borderBottomColor: PDF_MUTED_BORDER,
-                alignItems: "flex-start",
+                borderBottomColor: PDF_BORDER_COLOR,
+                paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
               }}
             >
-              <View style={{ flex: 3.4, paddingRight: 14 }}>
+              <Text
+                style={{
+                  flexGrow: 1,
+                  fontSize: PDF_FONT_SIZE.label,
+                  fontWeight: 500,
+                  color: PDF_LABEL_COLOR,
+                  lineHeight: 1,
+                }}
+              >
+                Description
+              </Text>
+              {data.showQuantityAndPrice ? (
                 <Text
                   style={{
-                    fontSize: PDF_FONT_SIZE.body,
-                    fontWeight: item.isFee ? 400 : 600,
+                    width: PDF_QTY_COL_WIDTH,
+                    fontSize: PDF_FONT_SIZE.label,
+                    fontWeight: 500,
+                    color: PDF_LABEL_COLOR,
                   }}
                 >
-                  {item.description}
-                </Text>
-              </View>
-              {data.showQuantityAndPrice ? (
-                <Text style={{ flex: 0.6, fontSize: PDF_FONT_SIZE.body }}>
-                  {!item.isFee ? String(item.quantity) : ""}
+                  Qty
                 </Text>
               ) : null}
               {data.showQuantityAndPrice ? (
                 <Text
                   style={{
-                    flex: 1,
-                    fontSize: PDF_FONT_SIZE.body,
+                    width: PDF_PRICE_COL_WIDTH,
+                    fontSize: PDF_FONT_SIZE.label,
+                    fontWeight: 500,
+                    color: PDF_LABEL_COLOR,
                     textAlign: "right",
                   }}
                 >
-                  {!item.isFee
-                    ? formatCurrencyForReceipt(item.unitPrice, data.currency)
-                    : ""}
+                  Price
                 </Text>
               ) : null}
               <Text
                 style={{
-                  flex: 1,
-                  fontSize: PDF_FONT_SIZE.body,
+                  width: PDF_AMOUNT_COL_WIDTH,
+                  fontSize: PDF_FONT_SIZE.label,
+                  fontWeight: 500,
+                  color: PDF_LABEL_COLOR,
                   textAlign: "right",
                 }}
               >
-                {formatCurrencyForReceipt(item.amount, data.currency)}
+                Amount
               </Text>
             </View>
-          ))}
-        </View>
+
+            {data.lineItems.map((item, index) => (
+              <View
+                key={`line-${index.toString()}`}
+                wrap={false}
+                style={{
+                  flexDirection: "row",
+                  paddingTop: PDF_LINE_ROW_PADDING_TOP,
+                  paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: PDF_MUTED_BORDER,
+                }}
+              >
+                <View style={{ flexGrow: 1, flexShrink: 1, paddingRight: 14 }}>
+                  <Text
+                    style={{
+                      fontSize: PDF_FONT_SIZE.body,
+                      fontWeight: item.isFee ? 400 : 600,
+                      lineHeight: 1,
+                      marginBottom: item.detail ? 4 : 0,
+                    }}
+                  >
+                    {item.description}
+                  </Text>
+                  {item.detail ? (
+                    <Text
+                      style={{
+                        fontSize: PDF_FONT_SIZE.body,
+                        lineHeight: 1,
+                        color: PDF_MUTED_TEXT,
+                      }}
+                    >
+                      {item.detail}
+                    </Text>
+                  ) : null}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingTop: pdfLineValueOffset(item.detail ? 1 : 0),
+                  }}
+                >
+                  {data.showQuantityAndPrice ? (
+                    <PdfLineValue width={PDF_QTY_COL_WIDTH}>
+                      {!item.isFee ? String(item.quantity) : ""}
+                    </PdfLineValue>
+                  ) : null}
+                  {data.showQuantityAndPrice ? (
+                    <PdfLineValue width={PDF_PRICE_COL_WIDTH} align="right">
+                      {!item.isFee
+                        ? formatCurrencyForReceipt(item.unitPrice, data.currency)
+                        : ""}
+                    </PdfLineValue>
+                  ) : null}
+                  <PdfLineValue width={PDF_AMOUNT_COL_WIDTH} align="right">
+                    {formatCurrencyForReceipt(item.amount, data.currency)}
+                  </PdfLineValue>
+                </View>
+              </View>
+            ))}
+          </View>
         ) : null}
 
         <View style={{ alignItems: "flex-end", marginTop: 16 }}>
@@ -330,75 +556,36 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
                 {data.totalLabel}
               </Text>
               <Text style={{ fontSize: PDF_FONT_SIZE.total, fontWeight: 600 }}>
-                {formatCurrencyForReceipt(data.totalAmount, data.currency)}
+                {data.subscription?.isTrial
+                  ? "Trial"
+                  : data.isFree
+                    ? "Free"
+                    : formatCurrencyForReceipt(data.totalAmount, data.currency)}
               </Text>
             </View>
+            {data.amountHint ? (
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.label,
+                  color: PDF_MUTED_TEXT,
+                  marginTop: 6,
+                  textAlign: "right",
+                }}
+              >
+                {data.amountHint}
+              </Text>
+            ) : null}
             <PdfContactLine email={supportEmail} kind="receipt" />
           </View>
         </View>
 
-        {data.subscription ? (
-          <View
-            wrap={false}
-            style={{
-              marginTop: 24,
-              padding: 12,
-              borderWidth: 0.5,
-              borderColor: PDF_MUTED_BORDER,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: PDF_FONT_SIZE.label,
-                fontWeight: 600,
-                marginBottom: 8,
-              }}
-            >
-              Subscription details
-            </Text>
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 1, marginRight: 10 }}>
-                <DetailRow label="Plan" value={data.subscription.planName} />
-                <DetailRow
-                  label="Billing frequency"
-                  value={data.subscription.billingFrequency}
-                />
-              </View>
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <DetailRow
-                  label="Next billing"
-                  value={data.subscription.nextBillingDate}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: PDF_FONT_SIZE.label,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Status
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: PDF_FONT_SIZE.label,
-                      color: getStatusColor(data.subscription.status),
-                    }}
-                  >
-                    {data.subscription.status}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
+        {data.digitalDelivery ? (
+          <PdfDigitalDelivery delivery={data.digitalDelivery} />
         ) : null}
 
-        <PdfLegalFooter />
+        <PdfSubscriptionDetails data={data} />
+
+        <PdfLegalFooter brandMark />
       </Page>
     </Document>
   );

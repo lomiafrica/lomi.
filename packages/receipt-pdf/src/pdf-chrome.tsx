@@ -49,8 +49,46 @@ export function PdfTopBand({ color }: { color: string }) {
   );
 }
 
-export function PdfWordmark() {
-  return <Image src={LOMI_WORDMARK_SRC} style={{ width: 56, height: 21 }} />;
+export function PdfWordmark({ muted }: { muted?: boolean }) {
+  return (
+    <Image
+      src={LOMI_WORDMARK_SRC}
+      style={{
+        width: muted ? 40 : 56,
+        height: muted ? 15 : 21,
+        ...(muted ? { opacity: 0.35 } : {}),
+      }}
+    />
+  );
+}
+
+export type PdfMetaEntry = { label: string; value: string };
+
+export function pdfLineValueOffset(extraLines: number) {
+  if (extraLines <= 0) return 0;
+  const line = PDF_FONT_SIZE.body;
+  const gap = 4;
+  return (extraLines * (line + gap)) / 2;
+}
+
+function visibleMetaRows(rows: PdfMetaEntry[]) {
+  return rows.filter((row) => row.value);
+}
+
+export function PdfSectionRule({
+  spaceAfter = 16,
+}: {
+  spaceAfter?: number;
+}) {
+  return (
+    <View
+      style={{
+        borderTopWidth: 0.5,
+        borderTopColor: PDF_MUTED_BORDER,
+        marginBottom: spaceAfter,
+      }}
+    />
+  );
 }
 
 export function PdfMetaRow({ label, value }: { label: string; value: string }) {
@@ -72,17 +110,30 @@ export function PdfMetaRow({ label, value }: { label: string; value: string }) {
 export function PdfDocumentHeader({
   title,
   meta,
+  metaGroups,
+  logoSrc,
+  showWordmark = true,
 }: {
   title: string;
-  meta?: Array<{ label: string; value: string }>;
+  meta?: PdfMetaEntry[];
+  metaGroups?: PdfMetaEntry[][];
+  logoSrc?: string | null;
+  showWordmark?: boolean;
 }) {
+  const groups = (metaGroups ?? (meta ? [meta] : []))
+    .map(visibleMetaRows)
+    .filter((group) => group.length > 0);
+
   return (
     <View
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        marginBottom: 22,
+        marginBottom: 16,
+        paddingBottom: 14,
+        borderBottomWidth: 0.5,
+        borderBottomColor: PDF_MUTED_BORDER,
       }}
     >
       <View style={{ flex: 1, paddingRight: 16, minWidth: 0 }}>
@@ -95,11 +146,32 @@ export function PdfDocumentHeader({
         >
           {title}
         </Text>
-        {meta?.map((row) => (
-          <PdfMetaRow key={row.label} label={row.label} value={row.value} />
+        {groups.map((group, groupIndex) => (
+          <View key={group.map((row) => row.label).join("-")}>
+            {groupIndex > 0 ? (
+              <View
+                style={{
+                  borderTopWidth: 0.5,
+                  borderTopColor: PDF_MUTED_BORDER,
+                  marginTop: 8,
+                  marginBottom: 8,
+                }}
+              />
+            ) : null}
+            {group.map((row) => (
+              <PdfMetaRow key={row.label} label={row.label} value={row.value} />
+            ))}
+          </View>
         ))}
       </View>
-      <PdfWordmark />
+      {logoSrc ? (
+        <Image
+          src={logoSrc}
+          style={{ width: 56, height: 28, objectFit: "contain" }}
+        />
+      ) : showWordmark ? (
+        <PdfWordmark />
+      ) : null}
     </View>
   );
 }
@@ -181,19 +253,21 @@ export function PdfContactLine({
   );
 }
 
-export function PdfLegalFooter() {
+export function PdfLegalFooter({ brandMark }: { brandMark?: boolean }) {
   return (
     <View
       fixed
       style={{
         position: "absolute",
         bottom: 16,
-        left: PDF_PAGE_PADDING,
-        right: PDF_PAGE_PADDING,
+        left: 20,
+        right: 20,
       }}
     >
       <View
         style={{
+          flexDirection: "row",
+          alignItems: "center",
           borderTopWidth: 0.5,
           borderTopColor: PDF_MUTED_BORDER,
           paddingTop: 8,
@@ -201,22 +275,14 @@ export function PdfLegalFooter() {
       >
         <Text
           style={{
-            fontSize: PDF_FONT_SIZE.footer,
-            color: PDF_LABEL_COLOR,
-            lineHeight: 1.45,
-            marginBottom: 2,
-          }}
-        >
-          {PDF_LEGAL_LINE_1}
-        </Text>
-        <Text
-          style={{
+            flex: 1,
+            paddingRight: brandMark ? 12 : 0,
             fontSize: PDF_FONT_SIZE.footer,
             color: PDF_LABEL_COLOR,
             lineHeight: 1.45,
           }}
         >
-          {PDF_REGISTERED_OFFICE}.{"  "}
+          {PDF_LEGAL_LINE_1} {PDF_REGISTERED_OFFICE}.{"  "}
           <Link
             src={PDF_DOCS_URL}
             style={{ color: PDF_LABEL_COLOR, textDecoration: "none" }}
@@ -225,6 +291,7 @@ export function PdfLegalFooter() {
           </Link>
           .
         </Text>
+        {brandMark ? <PdfWordmark muted /> : null}
       </View>
     </View>
   );

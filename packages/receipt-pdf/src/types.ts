@@ -5,16 +5,19 @@ export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 export interface ReceiptAddress {
   name: string;
   street?: string;
+  district?: string;
   city?: string;
   region?: string;
   postalCode?: string;
   country?: string;
   email?: string;
   phone?: string;
+  formattedLines?: string[];
 }
 
 export interface ReceiptLineItem {
   description: string;
+  detail?: string;
   quantity: number;
   unitPrice: number;
   amount: number;
@@ -25,11 +28,36 @@ export interface ReceiptSubscriptionDetails {
   planName: string;
   billingFrequency: string;
   nextBillingDate: string;
-  status: string;
+  recurringAmount?: number;
+  isTrial?: boolean;
+}
+
+export interface ReceiptDigitalFile {
+  productName: string;
+  filename: string;
+}
+
+export interface ReceiptLicenseKey {
+  productName: string;
+  licenseKey: string;
+}
+
+/** Filenames and license keys only. Never put live download tokens in a PDF. */
+export interface ReceiptDigitalDelivery {
+  downloadsTitle: string;
+  licenseKeysTitle: string;
+  libraryHint: string;
+  libraryHintBefore?: string;
+  libraryLinkLabel?: string;
+  libraryHintAfter?: string;
+  libraryUrl?: string;
+  files: ReceiptDigitalFile[];
+  licenseKeys: ReceiptLicenseKey[];
 }
 
 export interface ReceiptDocumentData {
   title: string;
+  idLabel?: string;
   transactionId: string;
   providerTransactionId?: string;
   date: string;
@@ -41,11 +69,15 @@ export interface ReceiptDocumentData {
   showQuantityAndPrice: boolean;
   totalAmount: number;
   totalLabel: string;
+  isFree?: boolean;
+  amountHint?: string;
   logoUrl?: string;
   subscription?: ReceiptSubscriptionDetails;
+  digitalDelivery?: ReceiptDigitalDelivery;
   isMerchantReceipt: boolean;
   subtotal?: number;
   platformFee?: number;
+  addressLocale?: string;
 }
 
 export interface ReceiptTransactionInput {
@@ -65,6 +97,7 @@ export interface ReceiptTransactionInput {
   customer_country?: string | null;
   product_id?: string | null;
   product_name?: string | null;
+  product_description?: string | null;
   product_price?: number | null;
   quantity?: number | null;
   provider_code?: string | null;
@@ -74,6 +107,7 @@ export interface ReceiptTransactionInput {
   provider_transaction_id?: string | null;
   subscription_id?: string | null;
   plan_name?: string | null;
+  plan_description?: string | null;
   plan_billing_frequency?: string | null;
   subscription_next_billing_date?: string | null;
   subscription_status?: string | null;
@@ -90,16 +124,22 @@ export interface ReceiptBuildOptions {
   organizationName: string;
   organizationLogo?: string;
   organizationStreet?: string;
+  organizationDistrict?: string;
   organizationCity?: string;
   organizationRegion?: string;
   organizationPostalCode?: string;
   organizationCountry?: string;
   organizationEmail?: string;
+  addressLocale?: string;
   receiptTitle?: string;
   isMerchantReceipt?: boolean;
   formatPaymentMethod: (code: string | null | undefined) => string;
   formatBillingFrequency?: (frequency: string | undefined | null) => string;
-  formatSubscriptionStatus?: (status: string | undefined | null) => string;
+  formatTrialStarting?: (parts: {
+    amount: string;
+    interval: string;
+    date: string;
+  }) => string;
 }
 
 export interface ReceiptLayoutLabels {
@@ -123,5 +163,6 @@ export interface ReceiptLayoutLabels {
   items?: string;
   plan?: string;
   nextBilling?: string;
-  status?: string;
+  free?: string;
+  trial?: string;
 }

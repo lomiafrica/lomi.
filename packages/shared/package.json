@@ -1,6 +1,6 @@
 {
   "name": "@lomi./shared",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "private": true,
   "files": [
     "dist",
@@ -39,6 +39,12 @@
       "import": "./dist/country.js",
       "default": "./dist/country.js",
       "react-native": "./dist/country.js"
+    },
+    "./format-address": {
+      "types": "./src/format-address.ts",
+      "import": "./dist/format-address.js",
+      "default": "./dist/format-address.js",
+      "react-native": "./dist/format-address.js"
     },
     "./auth-recovery": {
       "types": "./src/auth-recovery.ts",

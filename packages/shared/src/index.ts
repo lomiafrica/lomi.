@@ -29,6 +29,17 @@ export {
 } from "./country.js";
 export type { BillingCountryOption } from "./country.js";
 export {
+  formatMerchantCompanyLines,
+  formatOfficialAddressLines,
+  formatOfficialCountryName,
+  invoicePartyAddress,
+} from "./format-address.js";
+export type {
+  InvoicePartyAddress,
+  MerchantCompanyInput,
+  OfficialAddressInput,
+} from "./format-address.js";
+export {
   formatDate,
   formatPercentage,
   formatProviderCode,

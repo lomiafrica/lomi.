@@ -125,20 +125,26 @@ export function HtmlContactLine({
 export function HtmlRecordCard({
   heading,
   amount,
+  amountHint,
   dateLine,
   actions,
+  banner,
+  contact,
   children,
 }: {
   heading: ReactNode;
   amount: string;
+  amountHint?: string;
   dateLine?: string;
   actions?: ReactNode;
+  banner?: ReactNode;
+  contact?: ReactNode;
   children?: ReactNode;
 }) {
   return (
     <div
       data-record-card=""
-      className="rounded-sm border border-stone-200 bg-white px-8 py-8 text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-20px_rgba(28,25,23,0.2)] dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200"
+      className="overflow-hidden rounded-sm border border-stone-200 bg-white px-8 py-8 text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-20px_rgba(28,25,23,0.2)] dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200"
     >
       <div>
         <h2 className="m-0 mb-2 text-[13px] font-medium text-stone-500 dark:text-stone-400">
@@ -147,8 +153,19 @@ export function HtmlRecordCard({
         <p className="m-0 text-[36px] font-bold leading-none tracking-[-0.5px] text-stone-900 dark:text-stone-100">
           {amount}
         </p>
-        {dateLine ? (
+        {amountHint ? (
           <p className="mb-0 mt-2 text-[13px] text-stone-500 dark:text-stone-400">
+            {amountHint}
+          </p>
+        ) : null}
+        {dateLine ? (
+          <p
+            className={
+              amountHint
+                ? "mb-0 mt-1 text-[13px] text-stone-500 dark:text-stone-400"
+                : "mb-0 mt-2 text-[13px] text-stone-500 dark:text-stone-400"
+            }
+          >
             {dateLine}
           </p>
         ) : null}
@@ -160,16 +177,20 @@ export function HtmlRecordCard({
       ) : (
         <div className="mb-2 mt-6 border-b border-stone-200 dark:border-white/[0.12]" />
       )}
+      {banner ? <div className="mb-4 mt-3">{banner}</div> : null}
       {children}
+      {contact}
     </div>
   );
 }
 
 export function HtmlRecordRow({
   label,
+  detail,
   value,
 }: {
-  label: string;
+  label: ReactNode;
+  detail?: ReactNode;
   value: ReactNode;
 }) {
   if (value == null || value === "") return null;
@@ -177,6 +198,11 @@ export function HtmlRecordRow({
     <div className="flex items-start justify-between gap-4 border-b border-stone-200 py-3.5 last:border-b-0 dark:border-white/[0.12]">
       <span className="w-36 shrink-0 text-[13px] font-medium text-stone-500 dark:text-stone-400">
         {label}
+        {detail ? (
+          <span className="mt-0.5 block font-normal text-stone-400 dark:text-stone-500">
+            {detail}
+          </span>
+        ) : null}
       </span>
       <span className="min-w-0 break-all text-right text-[13px] font-medium text-stone-800 dark:text-stone-200">
         {value}
@@ -185,14 +211,46 @@ export function HtmlRecordRow({
   );
 }
 
+/** Invoice / receipt product line without a hairline. */
+export function HtmlRecordLine({
+  label,
+  detail,
+  value,
+  valueDetail,
+}: {
+  label: ReactNode;
+  detail?: ReactNode;
+  value: ReactNode;
+  valueDetail?: ReactNode;
+}) {
+  if (value == null || value === "") return null;
+  return (
+    <div className="flex items-start justify-between gap-4 py-2 first:pt-3.5">
+      <div className="min-w-0 text-[13px] font-medium text-stone-500 dark:text-stone-400">
+        {label}
+        {detail ? (
+          <span className="mt-0.5 block font-normal text-stone-400 dark:text-stone-500">
+            {detail}
+          </span>
+        ) : null}
+      </div>
+      <div className="min-w-0 text-right text-[13px] font-medium text-stone-800 dark:text-stone-200">
+        {value}
+        {valueDetail ? (
+          <span className="mt-0.5 block text-[12px] font-normal text-stone-500 dark:text-stone-400">
+            {valueDetail}
+          </span>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export function HtmlLegalFooter() {
   return (
     <div className="mt-8 pt-2 border-t border-[#E2E8F0]">
-      <p className="text-[10px] leading-[1.45] text-[#878787] mb-0.5">
-        {PDF_LEGAL_LINE_1}
-      </p>
-      <p className="text-[10px] leading-[1.45] text-[#878787]">
-        {PDF_REGISTERED_OFFICE}.{"  "}
+      <p className="max-w-none text-[10px] leading-[1.45] text-[#878787]">
+        {PDF_LEGAL_LINE_1} {PDF_REGISTERED_OFFICE}.{"  "}
         <a
           href={PDF_DOCS_URL}
           target="_blank"

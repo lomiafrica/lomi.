@@ -10,6 +10,7 @@ import { cn } from "./cn";
 import { Button } from "./button";
 
 const PhoneInputCompactContext = createContext(false);
+const PhoneInputForceLightContext = createContext(false);
 
 type PhoneStackRole = "solo" | "first" | "middle" | "last";
 
@@ -83,6 +84,8 @@ export type PhoneNumberInputProps = {
   disabled?: boolean;
   /** Show required asterisk (checkout). */
   requiredMark?: boolean;
+  /** Keep dark text on a light surface even when the page is in dark mode. */
+  forceLight?: boolean;
 };
 
 export function PhoneNumberInput({
@@ -103,6 +106,7 @@ export function PhoneNumberInput({
   isLastInStack = false,
   disabled = false,
   requiredMark = false,
+  forceLight = false,
 }: PhoneNumberInputProps) {
   const stackRole = resolvePhoneStackRole(
     isFirstInStack,
@@ -187,6 +191,7 @@ export function PhoneNumberInput({
 
   return (
     <PhoneInputCompactContext.Provider value={compact}>
+      <PhoneInputForceLightContext.Provider value={forceLight}>
       <PhoneInputStackContext.Provider value={stackRole}>
         <div className={cn(compact || stackRole !== "solo" ? "space-y-0" : "space-y-2")}>
           <div className="relative">
@@ -267,6 +272,7 @@ export function PhoneNumberInput({
         </div>
         </div>
       </PhoneInputStackContext.Provider>
+      </PhoneInputForceLightContext.Provider>
     </PhoneInputCompactContext.Provider>
   );
 }
@@ -276,6 +282,7 @@ const PhoneField = React.forwardRef<
   React.InputHTMLAttributes<HTMLInputElement>
 >(({ className, ...props }, ref) => {
   const compact = useContext(PhoneInputCompactContext);
+  const forceLight = useContext(PhoneInputForceLightContext);
   const stackRole = useContext(PhoneInputStackContext);
   const squareJoins = !compact && stackRole !== "solo";
 
@@ -283,7 +290,10 @@ const PhoneField = React.forwardRef<
     <input
       ref={ref}
       className={cn(
-        "PhoneInputInput file:text-foreground selection:bg-primary selection:text-primary-foreground bg-transparent text-stone-700 placeholder:text-stone-400 dark:text-stone-200 dark:placeholder:text-stone-500",
+        "PhoneInputInput file:text-foreground selection:bg-primary selection:text-primary-foreground bg-transparent text-stone-700 placeholder:text-stone-400",
+        forceLight
+          ? "dark:text-stone-700 dark:placeholder:text-stone-400"
+          : "dark:text-stone-200 dark:placeholder:text-stone-500",
         compact
           ? "flex h-full w-full min-w-0 px-2 py-0 text-xs outline-none"
           : "flex h-full w-full min-w-0 px-3 py-1 text-[13px] outline-none",
@@ -315,17 +325,27 @@ function CountrySelect({
   options,
 }: CountrySelectProps) {
   const compact = useContext(PhoneInputCompactContext);
+  const forceLight = useContext(PhoneInputForceLightContext);
   const stackRole = useContext(PhoneInputStackContext);
   const squareJoins = !compact && stackRole !== "solo";
 
   return (
     <div
       className={cn(
-        "PhoneInputCountry relative items-center bg-transparent text-stone-700 outline-none dark:text-stone-200",
+        "PhoneInputCountry relative items-center bg-transparent text-stone-700 outline-none",
+        forceLight ? "dark:text-stone-700" : "dark:text-stone-200",
         compact
-          ? "flex h-full min-h-0 min-w-0 shrink-0 rounded-l-[9px] rounded-r-none border-0 border-r border-stone-200 px-2 py-0 dark:border-white/[0.16]"
+          ? cn(
+              "flex h-full min-h-0 min-w-0 shrink-0 rounded-l-[9px] rounded-r-none border-y-0 border-l-0 border-r px-2 py-0",
+              forceLight
+                ? "border-gray-300 dark:border-gray-300"
+                : "border-stone-200 dark:border-white/[0.16]",
+            )
           : cn(
-              "flex h-full min-h-0 min-w-[65px] max-w-[70px] shrink-0 self-stretch rounded-r-none border-0 border-r border-stone-200 px-3 py-0 dark:border-white/[0.16]",
+              "flex h-full min-h-0 min-w-[65px] max-w-[70px] shrink-0 self-stretch rounded-r-none border-y-0 border-l-0 border-r px-3 py-0",
+              forceLight
+                ? "border-gray-300 dark:border-gray-300"
+                : "border-stone-200 dark:border-white/[0.16]",
               squareJoins ? "rounded-l-none" : "rounded-l-[9px]",
             ),
         disabled && "pointer-events-none cursor-not-allowed",

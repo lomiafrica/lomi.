@@ -1,30 +1,24 @@
+import { formatOfficialAddressLines } from "@lomi./shared";
 import type { ReceiptAddress } from "./types";
 
 export function formatAddressLines(
   address: Pick<
     ReceiptAddress,
-    "street" | "city" | "region" | "postalCode" | "country"
+    "street" | "district" | "city" | "region" | "postalCode" | "country"
   >,
+  locale?: string,
 ): string[] {
-  const lines: string[] = [];
-
-  if (address.street?.trim()) {
-    lines.push(address.street.trim());
-  }
-
-  const cityLine = [address.city, address.region, address.postalCode]
-    .filter((part) => part && part.trim().length > 0)
-    .join(", ");
-
-  if (cityLine) {
-    lines.push(cityLine);
-  }
-
-  if (address.country?.trim()) {
-    lines.push(address.country.trim());
-  }
-
-  return lines;
+  return formatOfficialAddressLines(
+    {
+      street: address.street,
+      district: address.district,
+      city: address.city,
+      region: address.region,
+      postalCode: address.postalCode,
+      country: address.country,
+    },
+    locale,
+  );
 }
 
 export function formatContactLines(

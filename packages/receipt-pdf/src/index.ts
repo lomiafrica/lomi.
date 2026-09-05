@@ -16,11 +16,13 @@ export {
   HtmlMetaRow,
   HtmlPayOnlineRow,
   HtmlRecordCard,
+  HtmlRecordLine,
   HtmlRecordRow,
   HtmlSectionLabel,
   HtmlWordmark,
 } from "./html-chrome";
 export {
+  CUSTOMER_LIBRARY_URL,
   PDF_DOCS_URL,
   PDF_LEARN_MORE_LABEL,
   PDF_LEGAL_ENTITY,
@@ -34,6 +36,7 @@ export {
   resolveSupportEmail,
 } from "./legal";
 export type { PdfDocumentKind } from "./legal";
+export type { PdfMetaEntry } from "./pdf-chrome";
 export {
   PdfContactLine,
   PdfDocumentHeader,
@@ -41,7 +44,9 @@ export {
   PdfMetaRow,
   PdfPayOnlineRow,
   PdfSectionLabel,
+  PdfSectionRule,
   PdfTopBand,
+  pdfLineValueOffset,
   PdfWordmark,
   PDF_PAGE_CHROME_STYLE,
 } from "./pdf-chrome";
@@ -53,6 +58,8 @@ export {
   PDF_BORDER_COLOR,
   PDF_FONT_SIZE,
   PDF_LABEL_COLOR,
+  PDF_LINE_ROW_PADDING_BOTTOM,
+  PDF_LINE_ROW_PADDING_TOP,
   PDF_LINK,
   PDF_MUTED_BORDER,
   PDF_MUTED_TEXT,
@@ -61,16 +68,24 @@ export {
   PDF_TOTALS_WIDTH,
 } from "./tokens";
 export {
+  extractReceiptCardBrand,
   extractReceiptCardLast4,
+  formatReceiptCardBrand,
   formatReceiptPaymentMethod,
+  isFreeReceiptRail,
   sanitizeReceiptLast4,
 } from "./format-payment-method";
 export {
   formatCurrencyForReceipt,
   formatPhoneNumber,
   formatReceiptDate,
-  formatSubscriptionStatus,
+  formatReceiptItemTitle,
+  formatReceiptLineDetail,
   isGenericReceiptItemName,
+  isPlaceholderReceiptValue,
+  isTrialSubscriptionStatus,
+  receiptNamesMatch,
+  resolveReceiptLineDetail,
   stripEmojis,
 } from "./format-utils";
 export { ReceiptLayout } from "./receipt-layout";
@@ -79,8 +94,11 @@ export { LOMI_WORDMARK_SRC } from "./wordmark";
 export type {
   ReceiptAddress,
   ReceiptBuildOptions,
+  ReceiptDigitalDelivery,
+  ReceiptDigitalFile,
   ReceiptDocumentData,
   ReceiptLayoutLabels,
+  ReceiptLicenseKey,
   ReceiptLineItem,
   ReceiptSubscriptionDetails,
   ReceiptTransactionInput,

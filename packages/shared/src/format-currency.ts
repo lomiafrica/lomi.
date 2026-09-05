@@ -138,8 +138,12 @@ export function formatCheckoutCurrency(
   return formatCurrencyDisplay(amount, currency, options);
 }
 
-/** Maps ISO currency codes to customer-facing labels (XOF → F CFA). */
+/** Maps ISO currency codes to customer-facing labels (XOF → F CFA, EUR → €, USD → $). */
 export function getDisplayCurrencyCode(currencyCode: string): string {
   if (!currencyCode) return currencyCode;
-  return currencyCode === "XOF" ? "F CFA" : currencyCode;
+  const normalized = currencyCode === "F CFA" ? "XOF" : currencyCode;
+  if (normalized === "XOF") return "F CFA";
+  if (normalized === "EUR") return "€";
+  if (normalized === "USD") return "$";
+  return currencyCode;
 }

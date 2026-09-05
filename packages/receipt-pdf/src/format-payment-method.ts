@@ -49,8 +49,51 @@ export function extractReceiptCardLast4(
   if (!metadata) return undefined;
   return (
     readMetadataLast4(metadata, "card_last4") ??
+    readMetadataLast4(metadata, "cardLast4") ??
     readMetadataLast4(metadata, "last4")
   );
+}
+
+export function formatReceiptCardBrand(
+  raw: string | null | undefined,
+): string | undefined {
+  if (!raw) return undefined;
+  const normalized = raw.trim().toLowerCase().replace(/[_-]+/g, " ");
+  if (normalized === "visa") return "Visa";
+  if (normalized === "mastercard" || normalized === "mc") return "Mastercard";
+  if (
+    normalized === "amex" ||
+    normalized === "american express" ||
+    normalized === "americanexpress"
+  ) {
+    return "Amex";
+  }
+  return undefined;
+}
+
+export function extractReceiptCardBrand(
+  transaction: Pick<ReceiptTransactionInput, "card_brand" | "metadata">,
+): string | undefined {
+  const fromField = formatReceiptCardBrand(transaction.card_brand);
+  if (fromField) return fromField;
+  const metadata = asMetadataRecord(transaction.metadata);
+  if (!metadata) return undefined;
+  return formatReceiptCardBrand(
+    readMetadataString(metadata, "card_brand") ??
+      readMetadataString(metadata, "cardBrand") ??
+      readMetadataString(metadata, "brand"),
+  );
+}
+
+export function isFreeReceiptRail(
+  transaction: Pick<
+    ReceiptTransactionInput,
+    "provider_code" | "payment_method_code" | "metadata"
+  >,
+): boolean {
+  const provider = (transaction.provider_code ?? "").toUpperCase();
+  const method = paymentMethodCode(transaction);
+  return provider === "FREE" || method === "FREE";
 }
 
 function paymentMethodCode(
@@ -81,6 +124,7 @@ export function formatReceiptPaymentMethod(
   transaction: ReceiptTransactionInput,
   formatRail: (code: string | null | undefined) => string,
 ): string {
+  if (isFreeReceiptRail(transaction)) return "";
   const providerCode = (transaction.provider_code ?? "").toUpperCase();
   const metadata = asMetadataRecord(transaction.metadata);
   if (isWalletRail(providerCode, metadata)) {
@@ -88,11 +132,12 @@ export function formatReceiptPaymentMethod(
   }
 
   const last4 = extractReceiptCardLast4(transaction);
+  const brand = extractReceiptCardBrand(transaction);
   const method = paymentMethodCode(transaction);
-  if (last4 && isCardRail(providerCode, method)) {
-    return `**** ${last4}`;
-  }
   if (isCardRail(providerCode, method)) {
+    if (brand && last4) return `${brand} **** ${last4}`;
+    if (brand) return brand;
+    if (last4) return `**** ${last4}`;
     return "Card";
   }
   return formatRail(transaction.provider_code ?? "FREE");
