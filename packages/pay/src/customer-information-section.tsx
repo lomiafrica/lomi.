@@ -211,6 +211,7 @@ export function PersonalInformationSection({
                 isMiddleInStack={hasFieldAbovePhone}
                 directEdit
                 requiredMark
+                forceLight
               />
               {requirePhone && (
                 <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none z-10">
@@ -271,6 +272,7 @@ export function PersonalInformationSection({
                 className="pr-10"
                 directEdit
                 isLastInStack
+                forceLight
               />
               <div
                 role="button"

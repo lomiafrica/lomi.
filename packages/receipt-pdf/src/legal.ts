@@ -1,7 +1,8 @@
 export const PDF_LEGAL_ENTITY = "lomi. Technologies Africa S.A";
 export const PDF_LEGAL_FORM = "an Ivoirian limited company";
 export const PDF_RCCM = "CI-ABJ-03-2024-B12-07612";
-export const PDF_REGISTERED_OFFICE = "Cocody, Les Perles, Rue L82/375, Abidjan";
+export const PDF_REGISTERED_OFFICE =
+  "Cocody, Les Perles, Rue 01012 L82/375, Abidjan, Côte d'Ivoire";
 export const PDF_DOCS_URL = "https://docs.lomi.africa";
 export const CUSTOMER_LIBRARY_URL = "https://customers.lomi.africa/portal/library";
 export const PDF_LEARN_MORE_LABEL = "Learn more about our billing products";

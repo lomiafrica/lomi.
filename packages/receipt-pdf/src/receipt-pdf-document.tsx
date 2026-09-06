@@ -334,6 +334,8 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
                 label: "Transaction ID",
                 value: data.providerTransactionId || "—",
               },
+            ],
+            [
               { label: "Date", value: data.date || "—" },
               {
                 label: "Payment method",

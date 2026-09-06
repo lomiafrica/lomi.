@@ -178,6 +178,20 @@ function wipeCachedNodeModules(dir) {
   console.log(`==> removed cached ${path.relative(ROOT, nm)}`);
 }
 
+/**
+ * Vercel restores `apps/<app>/node_modules` from a lockfile-keyed cache.
+ * `file:` specs do not change when a new module is added to `@lomi./ui`,
+ * so npm keeps the stale copy and Turbopack cannot resolve it. Drop the
+ * scoped packages so the next install recopies them from `packages/`.
+ */
+function wipeCachedLomiPackages(dir) {
+  if (!process.env.VERCEL && !process.env.CI) return;
+  const scoped = path.join(dir, "node_modules", "@lomi.");
+  if (!existsSync(scoped)) return;
+  rmSync(scoped, { recursive: true, force: true });
+  console.log(`==> removed cached ${path.relative(ROOT, scoped)}`);
+}
+
 function installDeps(appRel, dir, { frozen }) {
   if (useNpm(appRel)) {
     run("npm", ["install", "--ignore-scripts", "--include=dev"], dir);
@@ -272,6 +286,35 @@ function linkNestedFilePackages(appDir) {
   }
 }
 
+/**
+ * npm `file:` copies can stay stale (lockfile-keyed Vercel cache, or a
+ * packed tarball keyed by package version). Point every `@lomi.` file:
+ * dep at the uploaded `packages/` tree so Turbopack sees new modules.
+ */
+function linkFilePackagesIntoNodeModules(destDir, pkg) {
+  const deps = dependencyMap(pkg);
+  for (const [name, spec] of Object.entries(deps)) {
+    const rel = FILE_SPEC_TO_DIR[name];
+    if (!rel) continue;
+    const specText = String(spec);
+    if (!specText.startsWith("file:") && !specText.startsWith("workspace:")) {
+      continue;
+    }
+    const target = path.join(ROOT, rel);
+    if (!existsSync(path.join(target, "package.json"))) {
+      console.error(`missing ${path.relative(ROOT, target)} for ${name}`);
+      process.exit(1);
+    }
+    const dest = path.join(destDir, "node_modules", name);
+    mkdirSync(path.dirname(dest), { recursive: true });
+    rmSync(dest, { recursive: true, force: true });
+    symlinkSync(target, dest);
+    console.log(
+      `==> linked ${path.relative(ROOT, dest)} -> ${path.relative(ROOT, target)}`,
+    );
+  }
+}
+
 function installFileApp(appRel, pkg, { frozen }) {
   const appDir = path.join(ROOT, appRel);
   for (const rel of neededPackageDirs(pkg)) {
@@ -292,7 +335,11 @@ function installFileApp(appRel, pkg, { frozen }) {
   // pnpm resolves file:packages/* before preinstall, so the nested
   // folders must exist before the app install starts.
   linkNestedFilePackages(appDir);
+  wipeCachedLomiPackages(appDir);
+  wipeCachedLomiPackages(ROOT);
   installDeps(appRel, appDir, { frozen });
+  linkFilePackagesIntoNodeModules(appDir, pkg);
+  linkFilePackagesIntoNodeModules(ROOT, pkg);
   hoistNodeModules(appDir);
 }
 
@@ -323,7 +370,8 @@ function main() {
     useNpm(appRel) &&
     (appRel === "apps/website" ||
       appRel === "apps/checkout" ||
-      appRel === "apps/storefront")
+      appRel === "apps/storefront" ||
+      appRel === "apps/customers")
   ) {
     hoistNextForVercelBuilder(appRel);
   }

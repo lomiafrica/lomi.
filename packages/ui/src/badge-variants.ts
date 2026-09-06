@@ -23,7 +23,7 @@ const toneBadge = {
 } as const;
 
 export const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-[13px] font-medium transition-colors focus:outline-none focus-visible:border-[#4568FF]",
+  "inline-flex items-center rounded-sm border px-2.5 py-0.5 text-[13px] font-medium transition-colors focus:outline-none focus-visible:border-[#4568FF]",
   {
     variants: {
       variant: {

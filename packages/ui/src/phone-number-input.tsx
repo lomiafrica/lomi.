@@ -27,16 +27,27 @@ function resolvePhoneStackRole(
   return "solo";
 }
 
-function phoneStackWrapperClass(stackRole: PhoneStackRole): string {
+function phoneStackWrapperClass(
+  stackRole: PhoneStackRole,
+  forceLight: boolean,
+): string {
   switch (stackRole) {
     case "first":
-      return "phone-input-first-in-stack box-border h-10 min-h-10 rounded-t-sm rounded-b-none border border-gray-300 dark:border-white/[0.16]";
+      return forceLight
+        ? "phone-input-first-in-stack box-border h-10 min-h-10 rounded-t-sm rounded-b-none border border-gray-300 dark:border-gray-300"
+        : "phone-input-first-in-stack box-border h-10 min-h-10 rounded-t-sm rounded-b-none border border-gray-300 dark:border-white/[0.16]";
     case "middle":
-      return "phone-input-middle-in-stack box-border h-10 min-h-10 rounded-none border border-gray-300 dark:border-white/[0.16]";
+      return forceLight
+        ? "phone-input-middle-in-stack box-border h-10 min-h-10 rounded-none border border-gray-300 dark:border-gray-300"
+        : "phone-input-middle-in-stack box-border h-10 min-h-10 rounded-none border border-gray-300 dark:border-white/[0.16]";
     case "last":
-      return "phone-input-last-in-stack box-border h-10 min-h-10 rounded-t-none rounded-b-sm border border-gray-300 dark:border-white/[0.16]";
+      return forceLight
+        ? "phone-input-last-in-stack box-border h-10 min-h-10 rounded-t-none rounded-b-sm border border-gray-300 dark:border-gray-300"
+        : "phone-input-last-in-stack box-border h-10 min-h-10 rounded-t-none rounded-b-sm border border-gray-300 dark:border-white/[0.16]";
     case "solo":
-      return "box-border h-10 min-h-10 rounded-sm border border-stone-200 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(28,25,23,0.06)] dark:border-white/[0.16] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]";
+      return forceLight
+        ? "box-border h-10 min-h-10 rounded-sm border border-gray-300 shadow-none dark:border-gray-300"
+        : "box-border h-10 min-h-10 rounded-sm border border-stone-200 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(28,25,23,0.06)] dark:border-white/[0.16] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]";
     default: {
       const _exhaustive: never = stackRole;
       return _exhaustive;
@@ -113,6 +124,7 @@ export function PhoneNumberInput({
     isMiddleInStack,
     isLastInStack,
   );
+  const stackWrapperClass = phoneStackWrapperClass(stackRole, forceLight);
   const [isEditing, setIsEditing] = useState(directEdit);
   const hasTouchedRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -199,11 +211,14 @@ export function PhoneNumberInput({
             className={cn(
               "flex w-full overflow-hidden bg-transparent transition-colors",
               compact
-                ? "phone-input-compact h-7 rounded-sm border border-stone-200 dark:border-white/[0.16]"
-                : phoneStackWrapperClass(stackRole),
+                ? forceLight
+                  ? "phone-input-compact h-7 rounded-sm border border-gray-300 dark:border-gray-300"
+                  : "phone-input-compact h-7 rounded-sm border border-stone-200 dark:border-white/[0.16]"
+                : stackWrapperClass,
               showActionButton && !compact && "pr-9",
               className,
             )}
+            style={forceLight ? { borderColor: "#d1d5db" } : undefined}
           >
             <RPNInput.default
               className={cn(

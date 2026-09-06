@@ -90,10 +90,12 @@ export function ReceiptLayout({
       banner={banner}
       contact={contact}
     >
-      <HtmlRecordRow
-        label={labels.transactionId}
-        value={truncateId(data.transactionId)}
-      />
+      {data.providerTransactionId ? (
+        <HtmlRecordRow
+          label={labels.transactionId}
+          value={truncateId(data.providerTransactionId)}
+        />
+      ) : null}
       {data.paymentMethod ? (
         <HtmlRecordRow label={labels.paymentMethod} value={data.paymentMethod} />
       ) : null}

@@ -249,7 +249,7 @@ export function HtmlRecordLine({
 export function HtmlLegalFooter() {
   return (
     <div className="mt-8 pt-2 border-t border-[#E2E8F0]">
-      <p className="max-w-none text-[10px] leading-[1.45] text-[#878787]">
+      <p className="max-w-[46rem] text-[10px] leading-[1.45] text-[#878787]">
         {PDF_LEGAL_LINE_1} {PDF_REGISTERED_OFFICE}.{"  "}
         <a
           href={PDF_DOCS_URL}
