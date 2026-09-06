@@ -1,0 +1,51 @@
+name: lomi · deploy · shopify
+
+on:
+  repository_dispatch:
+    types: [lomi-deploy-shopify]
+  push:
+    branches: [main]
+    paths:
+      - "apps/plugins/shopify/**"
+      - "packages/shared/**"
+      - "tooling/scripts/install-app-with-packages.mjs"
+      - "tooling/vercel/shopify.json"
+      - ".github/workflows/app-deploy-shopify.yml"
+      - ".github/workflows/app-deploy-vercel.yml"
+      - ".github/actions/checkout-app-submodule/**"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch to deploy
+        type: string
+        default: main
+      vercel-target:
+        description: Vercel target (preview or production)
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
+
+concurrency:
+  group: lomi-deploy-shopify-${{ github.event.client_payload.pr_number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/app-deploy-vercel.yml
+    with:
+      app: shopify
+      repository: lomiafrica/shopify
+      submodule-path: apps/plugins/shopify
+      working-directory-mode: umbrella
+      workflow-ref: ${{ inputs.ref }}
+      vercel-target: ${{ inputs.vercel-target }}
+    secrets:
+      REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_SHOPIFY }}

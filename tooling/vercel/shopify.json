@@ -1,0 +1,38 @@
+{
+  "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/plugins/shopify",
+  "buildCommand": "pnpm --dir apps/plugins/shopify run build && rm -rf .vercel && cp -a apps/plugins/shopify/.vercel .vercel",
+  "headers": [
+    {
+      "source": "/health",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://dashboard.lomi.africa"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors https://*.shopify.com https://admin.shopify.com https://*.myshopify.com; default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.shopify.com https://admin.shopify.com https://cdn.shopify.com data: blob: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.shopify.com https://admin.shopify.com https://cdn.shopify.com;"
+        }
+      ]
+    }
+  ]
+}

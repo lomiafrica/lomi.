@@ -79,6 +79,7 @@ PRs that only touch public plugin submodules do not require Bubble checkout. Bub
 - **[scripts/run-plugin-tests.sh](./scripts/run-plugin-tests.sh)**: CI suite — static parity, webhook contract, Bubble JSON, Woo build + release zip.
 - **[scripts/verify-lomi-plugins.sh](./scripts/verify-lomi-plugins.sh)**: Static compliance gate (step 1 of `run-plugin-tests.sh`).
 - **[scripts/scan_broken_images.py](./scripts/scan_broken_images.py)**: Scans Magento, PrestaShop, and Woo for broken image path references.
+- **[scripts/check-ecommerce-hosts.sh](./scripts/check-ecommerce-hosts.sh)**: Live host probe (API, docs Woo zip, plugin GitHub pages). Shopify `/health` is a warning until `connect.lomi.africa` is live; pass `--strict-shopify` after DNS + Vercel.
 
 ```bash
 cd apps/plugins
