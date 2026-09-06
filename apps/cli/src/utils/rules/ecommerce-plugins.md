@@ -25,7 +25,7 @@ Hub: https://docs.lomi.africa/build/ecommerce-extensions
 ## When not to use a plugin
 
 - Custom site or landing page → [embed widget](https://docs.lomi.africa/build/embed-widget)
-- Your own React checkout UI → [lomi-ui](https://docs.lomi.africa/build/lomi-ui) or SDK
+- Your own checkout UI → SDK + hosted checkout or [direct charges](https://docs.lomi.africa/build/accept/direct-charges)
 - Terminal or agent workflows → CLI (`lomi checkout create`) or [MCP](https://docs.lomi.africa/build/mcp)
 - Hosted product catalog without a third-party store → [Products](https://docs.lomi.africa/build/products) + store.lomi.africa
 

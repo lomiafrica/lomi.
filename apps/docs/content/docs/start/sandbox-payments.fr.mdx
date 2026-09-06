@@ -335,18 +335,21 @@ Voir **[Webhooks](/build/reliability)**. Pour l’automatisation, voir le **[Gui
 | Erreurs bac à sable MTN | numéro de téléphone ou identifiants invalides | Numéros documentés par MTN pour votre pays |
 | Pas d’e-mail client | Normal en test | Notifications désactivées en test |
 
-## Documentation associée
-
-- **[Authentification](/start/api-keys)**: clés, environnements, sécurité
-- **[Intégration API](/start/first-payment)**: première requête et index API
-- **[Sessions checkout](/build/accept/checkout)**: API checkout hébergé
-- **[Encaissements directs](/build/accept/direct-charges)**: Wave, MTN et carte (`POST /charge/card`)
-- **[Liens de paiement](/build/accept/payment-links)**: liens réutilisables
-- **[lomi Payment Elements](/build/accept/payment-elements)**: UI carte côté client
-- **[Webhooks](/build/reliability)**: abonnements aux événements
-- **[Soldes et règlement](/build/money/balance-and-settlement)**: règles des soldes live
-- **[Guide de tests](/build/reliability/testing)**: automatisation, CI, écouteurs webhook
-
 ## Passer en production
 
 Passez aux clés live uniquement quand votre intégration est validée de bout en bout. Voir [Que vérifier avant le live ?](/start/go-live).
+
+<DocsNextSteps>
+  <DocsNextStep href="/start/first-payment" hint="Première requête en sandbox">
+    Tester un paiement
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="API checkout hébergé">
+    Sessions checkout
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability" hint="Abonnements aux événements">
+    Webhooks
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/testing" hint="Automatisation et CI">
+    Guide de tests
+  </DocsNextStep>
+</DocsNextSteps>

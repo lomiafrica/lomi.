@@ -1,6 +1,6 @@
 ---
 title: 'Quelle intégration choisir ?'
-description: 'Choisissez entre checkout hébergé, liens de paiement, demandes de paiement, charges directes, abonnements, extensions ecommerce et composants UI.'
+description: 'Choisissez entre checkout hébergé, liens de paiement, demandes de paiement, charges directes, abonnements et extensions ecommerce.'
 docType: explanation
 ---
 
@@ -26,7 +26,6 @@ Choisissez l’intégration la plus simple qui donne au client la bonne expérie
 | Plugin boutique | [Extensions ecommerce](/build/ecommerce-extensions) | WooCommerce, Magento, PrestaShop, Shopify et Bubble |
 | Catalogue produit hébergé | [Produits](/build/billing/products) + [store.lomi.africa](https://store.lomi.africa) | Quand vous voulez une boutique lomi. sans plateforme tierce |
 | Assistant IA / agent MCP | [MCP](/build/mcp) | Cursor, Claude Desktop et clients MCP sur l’API marchande |
-| Composants UI copier-coller | [lomi. UI](/build/lomi-ui) | Primitives checkout dans votre app |
 | Accès API typé dans votre code | [SDKs](/build/sdks) | Clients TypeScript, Python, Go et PHP avec méthodes typées et gestion d’erreurs |
 | Configuration et tests depuis le terminal | [CLI](/build/cli) | S’authentifier, scaffolder des projets, créer des checkouts sandbox et transférer les webhooks |
 | Comparer par pays | [Canaux de paiement](/build/payment-channels) | Matrice pays × devise × canal |
@@ -36,14 +35,14 @@ Choisissez l’intégration la plus simple qui donne au client la bonne expérie
 
 ## Comparaison des produits
 
-| | Checkout hébergé | Widget iframe | Liens | Demandes | Charges directes | Abonnements | Plugins | lomi. UI |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Effort de développement** | Faible | Faible | Faible | Moyen | Élevé | Moyen | Faible | Moyen |
-| **Contrôle UI** | Hébergé lomi. | iframe sur votre site | Hébergé lomi. | App + étape pay | Total (UI maison) | Inscription hébergée | Natif boutique | Primitives dans votre app |
-| **Rapidité de lancement** | Élevée | Élevée | Élevée | Moyenne | Faible | Moyenne | Élevée | Moyenne |
-| **Mobile money asynchrone** | Géré sur la page hébergée | Comme hébergé | Idem | Idem | UX pending à vous | Flux hébergé | Selon plugin | À composer |
-| **Webhooks** | Recommandés | Recommandés | Recommandés | Recommandés | Requis (live) | Requis | Recommandés | Recommandés |
-| **Dashboard no-code** | Sessions + catalogue | - | Oui | Partiel | - | Plans + liens | Oui | - |
+| | Checkout hébergé | Widget iframe | Liens | Demandes | Charges directes | Abonnements | Plugins |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Effort de développement** | Faible | Faible | Faible | Moyen | Élevé | Moyen | Faible |
+| **Contrôle UI** | Hébergé lomi. | iframe sur votre site | Hébergé lomi. | App + étape pay | Total (UI maison) | Inscription hébergée | Natif boutique |
+| **Rapidité de lancement** | Élevée | Élevée | Élevée | Moyenne | Faible | Moyenne | Élevée |
+| **Mobile money asynchrone** | Géré sur la page hébergée | Comme hébergé | Idem | Idem | UX pending à vous | Flux hébergé | Selon plugin |
+| **Webhooks** | Recommandés | Recommandés | Recommandés | Recommandés | Requis (live) | Requis | Recommandés |
+| **Dashboard no-code** | Sessions + catalogue | - | Oui | Partiel | - | Plans + liens | Oui |
 
 ## Choix recommandé
 
@@ -63,22 +62,17 @@ Toute intégration sérieuse doit inclure :
 
 Avant le go-live, exécutez [Simuler des erreurs](/build/reliability/simulate-errors) en sandbox pour tester échecs et états en attente.
 
-## Étapes suivantes
-
-**Onboarding**
-
-- [Parcours d’intégration](/start/integration-journey)
-- [Comment tester un paiement ?](/start/first-payment)
-- [Paiements sandbox](/start/sandbox-payments)
-- [Simuler des erreurs](/build/reliability/simulate-errors)
-
-**Build**
-
-- [Checkout hébergé](/build/accept/checkout) · [Produits](/build/billing/products) · [Canaux de paiement](/build/payment-channels)
-- [Webhooks](/build/reliability) · [Vérifier les paiements](/build/reliability/verify-payments)
-
-**Exemples & API**
-
-- [Exemple checkout hébergé](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/references/payment-integration-sdk-reference)
-- [Exemple charge directe](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/references/direct-charge-integration-reference)
-- [Référence API](/api)
+<DocsNextSteps>
+  <DocsNextStep href="/start/first-payment" hint="Premier paiement en sandbox">
+    Tester un paiement
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Chemin recommandé">
+    Checkout hébergé
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/verify-payments" hint="Ne jamais se fier au client">
+    Vérifier les paiements
+  </DocsNextStep>
+  <DocsNextStep href="/api" hint="Requêtes et réponses exactes">
+    Référence API
+  </DocsNextStep>
+</DocsNextSteps>

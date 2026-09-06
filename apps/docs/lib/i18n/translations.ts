@@ -53,9 +53,9 @@ const STRINGS: TranslationsByLanguage = {
     'section.community': 'Community',
     'section.management': 'Management',
     'sectionDescription.start':
-      'Understand lomi., create your account, get API keys, make a test payment, and go live.',
+      'Create your account, get API keys, make a test payment, and go live.',
     'sectionDescription.build':
-      'Choose an integration path and build checkout, payment links, subscriptions, webhooks, and tools.',
+      'Choose an integration path and build checkout, subscriptions, and tools.',
     'sectionDescription.resources':
       'Support, merchant policies, open-source material, and contributor documentation.',
     'sectionDescription.firstSteps':
@@ -96,9 +96,6 @@ const STRINGS: TranslationsByLanguage = {
     'tryit.organization': 'Organization',
     'tryit.selectOrganization': 'Select organization…',
     'tryit.chooseOrganization': 'Choose…',
-    'tryit.attachKey': 'Attach my test secret key automatically',
-    'tryit.proxyHint':
-      'When the playground does not send X-API-Key, the proxy adds your test secret for this organization. You can still override by entering a key manually.',
     'tryit.summary': 'Try this request in the sandbox',
     'tryit.send': 'Send to sandbox',
     'tryit.sending': 'Sending…',
@@ -139,6 +136,7 @@ const STRINGS: TranslationsByLanguage = {
     'tier.dashboard': 'Confirm live rates in Billing → Pricing.',
     'tier.mobileMoney': 'Mobile Money',
     'tier.cards': 'Cards',
+    'next.title': 'Next',
   },
   fr: {
     'search.all': 'Tout',
@@ -187,9 +185,9 @@ const STRINGS: TranslationsByLanguage = {
     'section.community': 'Communauté',
     'section.management': 'Gestion',
     'sectionDescription.start':
-      'Comprendre lomi., créer un compte, obtenir des clés API, faire un paiement de test et passer en production.',
+      'Créer un compte, obtenir des clés API, faire un paiement de test et passer en production.',
     'sectionDescription.build':
-      'Choisir une intégration, puis mettre en place le checkout, les liens de paiement, les abonnements, les webhooks et les outils.',
+      'Choisir une intégration, puis mettre en place le checkout, les abonnements et les outils.',
     'sectionDescription.resources':
       'Support, règles marchandes, open source et documentation contributeur.',
     'sectionDescription.firstSteps':
@@ -232,9 +230,6 @@ const STRINGS: TranslationsByLanguage = {
     'tryit.organization': 'Organisation',
     'tryit.selectOrganization': 'Choisir une organisation…',
     'tryit.chooseOrganization': 'Choisir…',
-    'tryit.attachKey': 'Joindre automatiquement ma clé secrète de test',
-    'tryit.proxyHint':
-      'Si le playground n’envoie pas X-API-Key, le proxy ajoute votre secret de test pour cette organisation. Vous pouvez toujours saisir une clé manuellement.',
     'tryit.summary': 'Essayer cette requête dans le sandbox',
     'tryit.send': 'Envoyer au sandbox',
     'tryit.sending': 'Envoi…',
@@ -276,6 +271,7 @@ const STRINGS: TranslationsByLanguage = {
       'Confirmez les tarifs live dans Facturation → Tarification.',
     'tier.mobileMoney': 'Mobile Money',
     'tier.cards': 'Cartes',
+    'next.title': 'Ensuite',
   },
 };
 

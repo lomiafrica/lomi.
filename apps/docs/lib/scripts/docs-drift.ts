@@ -316,6 +316,37 @@ async function checkLlmsTxtRoute(errors: string[]): Promise<void> {
   }
 }
 
+const NEXT_STEPS_MAX = 4;
+
+const BANNED_NEXT_STEP_HEADING_RE =
+  /^## (Next steps|Étapes suivantes|Suite|What should I read next\?|What should I build next\?|Que lire ensuite \?|Que construire ensuite \?|Related documentation|Documentation associée)\s*$/m;
+
+const NEXT_STEP_CHILD_RE = /<DocsNextStep\b/g;
+
+async function checkNextSteps(errors: string[]): Promise<void> {
+  const files = await glob('**/*.mdx', { cwd: CONTENT_ROOT });
+  for (const file of files) {
+    const content = await fs.readFile(path.join(CONTENT_ROOT, file), 'utf-8');
+    if (BANNED_NEXT_STEP_HEADING_RE.test(content)) {
+      errors.push(
+        `Legacy next-steps heading in ${file}: use <DocsNextSteps> (max ${NEXT_STEPS_MAX})`,
+      );
+    }
+
+    const blocks = content.split(/<DocsNextSteps[\s>]/).slice(1);
+    for (const [index, block] of blocks.entries()) {
+      const close = block.indexOf('</DocsNextSteps>');
+      const body = close === -1 ? block : block.slice(0, close);
+      const count = body.match(NEXT_STEP_CHILD_RE)?.length ?? 0;
+      if (count > NEXT_STEPS_MAX) {
+        errors.push(
+          `${file} DocsNextSteps #${index + 1} has ${count} items; max is ${NEXT_STEPS_MAX}`,
+        );
+      }
+    }
+  }
+}
+
 async function checkFeeLiterals(errors: string[]): Promise<void> {
   const files = await glob('**/*.mdx', { cwd: CONTENT_ROOT });
   for (const file of files) {
@@ -340,6 +371,7 @@ async function main(): Promise<void> {
   await checkInternalLinks(errors, validSlugs);
   await checkLlmsTxtRoute(errors);
   await checkFeeLiterals(errors);
+  await checkNextSteps(errors);
 
   if (errors.length > 0) {
     for (const e of errors) console.error(e);

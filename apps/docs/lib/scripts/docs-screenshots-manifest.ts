@@ -19,7 +19,6 @@ export const DOCS_SCREENSHOT_SCREENS = [
   'build/payouts',
   'build/subscriptions',
   'build/customer-portal',
-  'build/lomi-ui',
   'build/woocommerce-upload',
   'build/woocommerce-payments',
   'build/woocommerce-webhook-url',

@@ -51,8 +51,14 @@ Votre handler (worker webhook ou poll API) doit être **idempotent** : traiter d
 - La livraison n’a lieu que si `transaction_status` est `completed`
 - Remboursements et litiges ont un chemin d’annulation
 
-## Voir aussi
-
-- [Parcours d’intégration](/start/integration-journey)
-- [Lister les transactions](/api/transactions/TransactionsController_findAll)
-- [Paiements en bac à sable](/start/sandbox-payments)
+<DocsNextSteps>
+  <DocsNextStep href="/start/integration-journey" hint="Sandbox jusqu’au live">
+    Parcours d’intégration
+  </DocsNextStep>
+  <DocsNextStep href="/api/transactions/TransactionsController_findAll" hint="Interroger si le webhook tarde">
+    Lister les transactions
+  </DocsNextStep>
+  <DocsNextStep href="/start/sandbox-payments" hint="Cartes et wallets de test">
+    Paiements en bac à sable
+  </DocsNextStep>
+</DocsNextSteps>

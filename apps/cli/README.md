@@ -67,7 +67,6 @@ lomi checkout create --amount 10000 --currency XOF \
 | `install-rules` | AI setup wizard: Cursor, Claude Code, Codex, llms.txt |
 | `payments create` | Create a payment link interactively |
 | `update` | Update `@lomi./sdk` in the current project |
-| `ui list` / `ui add` / `ui update` | Install lomi. UI components from docs registry |
 | `list-profiles` | List CLI auth profiles |
 | `switch` | Set the default profile |
 

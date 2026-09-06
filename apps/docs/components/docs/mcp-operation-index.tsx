@@ -12,7 +12,10 @@ import {
 import { source } from '@/lib/utils/source';
 import { isString } from '@lomi./shared';
 
+let restUrlCache: Map<string, string> | null = null;
+
 function restUrlByOperationKey(): Map<string, string> {
+  if (restUrlCache) return restUrlCache;
   const map = new Map<string, string>();
   for (const page of source.getPages('en')) {
     const method =
@@ -29,6 +32,7 @@ function restUrlByOperationKey(): Map<string, string> {
       map.set(key, page.url);
     }
   }
+  restUrlCache = map;
   return map;
 }
 
@@ -87,9 +91,11 @@ function TwinRow({
   restHref: string | undefined;
   missingLabel: string;
 }) {
+  const anchor = mcpTwinAnchor(twin.tool, twin.action);
   return (
-    <tr id={mcpTwinAnchor(twin.tool, twin.action)}>
+    <tr className="docs-mcp-index-row">
       <td>
+        <span id={anchor} className="docs-mcp-index-anchor" />
         <code>{twin.action}</code>
       </td>
       <td>

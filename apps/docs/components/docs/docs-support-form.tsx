@@ -19,7 +19,7 @@ const CONTACT_TOPICS = ['general', 'billing', 'integration', 'abuse'] as const;
 type ContactTopic = (typeof CONTACT_TOPICS)[number];
 
 const CARD_CLASS =
-  'docs-support-form not-prose my-6 w-full rounded-[11px] border border-[color:var(--docs-hairline)] bg-[var(--docs-well)] p-6 shadow-none sm:p-8';
+  'docs-support-form not-prose my-6 w-full rounded-[var(--docs-sidebar-radius)] border border-[color:var(--docs-hairline)] bg-[var(--docs-well)] p-5 shadow-none sm:p-6';
 
 const FIELD_CLASS =
   'h-10 w-full rounded-[9px] px-3 text-[13px] outline-none disabled:cursor-not-allowed disabled:opacity-50';
@@ -43,7 +43,7 @@ function Field({
 }) {
   return (
     <label className={cn('block min-w-0', className)}>
-      <span className="mb-1.5 block text-[13px] text-fd-muted-foreground">
+      <span className="mb-1 block text-[13px] text-fd-muted-foreground">
         {label}
       </span>
       {children}
@@ -155,17 +155,18 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
             reference ?? t('support.noReference'),
           )}
         </p>
-        <Button
-          type="button"
-          variant="secondary"
-          className="mt-6"
-          onClick={() => {
-            setSubmitState('idle');
-            setReference(null);
-          }}
-        >
-          {t('support.submit')}
-        </Button>
+        <div className="mt-4 flex justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              setSubmitState('idle');
+              setReference(null);
+            }}
+          >
+            {t('support.submit')}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -197,7 +198,7 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
         />
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
         <Field label={t('support.name')}>
           <input
             className={FIELD_CLASS}
@@ -269,7 +270,7 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
       </div>
 
       {siteKey ? (
-        <div className="mt-5 flex w-full justify-end">
+        <div className="mt-3 flex w-full justify-end">
           <div
             ref={turnstileRef}
             className="docs-turnstile-mount min-h-[65px] w-fit max-w-full"
@@ -277,7 +278,7 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
         </div>
       ) : null}
 
-      <div className={siteKey ? 'mt-4' : 'mt-6'}>
+      <div className={siteKey ? 'mt-3 flex justify-end' : 'mt-4 flex justify-end'}>
         <Button type="submit" disabled={pending}>
           {pending ? t('support.submitting') : t('support.submit')}
         </Button>

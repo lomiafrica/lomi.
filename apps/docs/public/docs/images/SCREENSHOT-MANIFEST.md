@@ -29,7 +29,7 @@ apps/docs/public/docs/images/
 | Dashboard           | Portal theme toggle                                |
 | Checkout            | Checkout theme (if available) or system appearance |
 | Customer portal     | Portal theme                                       |
-| Docs (lomi-ui only) | Docs site theme toggle (top bar)                   |
+| Docs                 | Docs site theme toggle (top bar)                   |
 
 ---
 
@@ -48,7 +48,6 @@ Capture each pair in light and dark:
 - [ ] `build/payouts-light.webp` + `build/payouts-dark.webp`
 - [ ] `build/subscriptions-light.webp` + `build/subscriptions-dark.webp`
 - [ ] `build/customer-portal-light.webp` + `build/customer-portal-dark.webp`
-- [ ] `build/lomi-ui-light.webp` + `build/lomi-ui-dark.webp`
 - [x] `build/woocommerce-upload-light.webp` + `build/woocommerce-upload-dark.webp`
 - [x] `build/woocommerce-payments-light.webp` + `build/woocommerce-payments-dark.webp`
 - [x] `build/woocommerce-webhook-url-light.webp` + `build/woocommerce-webhook-url-dark.webp`
@@ -183,18 +182,6 @@ Capture each pair in light and dark:
 
 ---
 
-## 12. lomi. UI (docs preview)
-
-|             |                                                                                             |
-| ----------- | ------------------------------------------------------------------------------------------- |
-| **Save as** | `build/lomi-ui-light.webp` and `build/lomi-ui-dark.webp`                                    |
-| **Open**    | https://docs.lomi.africa/build/lomi-ui/quick-start#payment-provider-selector                |
-| **Show**    | **“Preview”** heading + **Payment Provider Selector** demo (Wave, MTN, π-SPI, Card radios). |
-| **Theme**   | Use the **docs** theme toggle; not checkout theme.                                          |
-| **Framing** | Scroll so Preview block + heading fit the 16:9 crop.                                        |
-
----
-
 ## Which docs pages use each image?
 
 | Files                                 | MDX pages                                |
@@ -210,7 +197,6 @@ Capture each pair in light and dark:
 | `build/payouts`                       | `build/payouts` (EN + FR)                |
 | `build/subscriptions`                 | `build/subscriptions` (EN + FR)          |
 | `build/customer-portal`               | `build/customer-portal` (EN + FR)        |
-| `build/lomi-ui`                       | `build/lomi-ui/index`                    |
 | `build/woocommerce-upload`            | `build/ecommerce-extensions/woocommerce` |
 | `build/woocommerce-payments`          | `build/ecommerce-extensions/woocommerce` |
 | `build/woocommerce-webhook-url`       | `build/ecommerce-extensions/woocommerce` |

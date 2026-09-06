@@ -2,6 +2,7 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { docsLinkShouldScroll } from '@/lib/docs-hash';
 import { translate } from '@/lib/i18n/translations';
 import {
   findMcpTwin,
@@ -38,6 +39,16 @@ test('renders bilingual twin labels', () => {
   assert.equal(translate('twins.rest', 'fr'), 'Même opération dans l’API');
   assert.equal(translate('twins.action', 'en'), 'action');
   assert.equal(translate('twins.action', 'fr'), 'action');
+});
+
+test('hash twin links skip Next scroll-to-top', () => {
+  assert.equal(docsLinkShouldScroll('/build/mcp#lomi_checkout-create'), false);
+  assert.equal(
+    docsLinkShouldScroll(
+      '/api/checkout-sessions/CheckoutSessionsController_create',
+    ),
+    true,
+  );
 });
 
 test('derives REST docs hrefs from hand-authored MDX paths', () => {

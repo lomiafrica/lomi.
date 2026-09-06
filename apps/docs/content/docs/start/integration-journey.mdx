@@ -193,28 +193,17 @@ When sandbox flows work end to end:
 2. Switch servers to `lomi_sk_live_...` and `https://api.lomi.africa`.
 3. Follow [What to check before live?](/start/go-live) and process one small live payment with webhook verification.
 
-## Next steps
-
-### Confirm payments in production
-
-- [Verify payments](/build/reliability/verify-payments)
-- [Payment lifecycle](/build/reliability/payment-lifecycle)
-- [Payment state machine](/api/payment-state-machine)
-
-### Operate after go-live
-
-- [Transactions](/build/money/transactions) · [Refunds](/build/money/refunds) · [Payouts](/build/money/payouts) · [Disputes](/build/money/disputes)
-- [Balance and settlement](/build/money/balance-and-settlement) · [Radar (fraud)](/build/money/radar)
-
-### Catalog, billing, and customers
-
-- [Products](/build/billing/products) · [Usage billing](/build/billing/usage-billing) · [Discount coupons](/build/billing/discount-coupons)
-- [Customer portal](/build/billing/customer-portal) · [Customers](/build/platform/customers)
-- [Merchants](/build/platform/merchants) · [Organizations](/build/platform/organizations)
-
-### Tools and hardening
-
-- [SDKs](/build/sdks) · [CLI](/build/cli) · [MCP](/build/mcp) · [lomi. UI](/build/lomi-ui)
-- [E-commerce extensions](/build/ecommerce-extensions) (WooCommerce, Shopify, Magento, PrestaShop)
-- [Advanced guides](/build/reliability) (error handling, testing, CI/CD, webhook reliability)
-- [CLI quickstart](/start/cli-quickstart) · [SDK quickstart](/start/sdk-quickstart)
+<DocsNextSteps>
+  <DocsNextStep href="/build/reliability/verify-payments" hint="Confirm before you fulfill">
+    Verify payments
+  </DocsNextStep>
+  <DocsNextStep href="/start/go-live" hint="Switch to live keys">
+    Go live
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Ship the production path">
+    Hosted checkout
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability" hint="Reconcile on your server">
+    Webhooks
+  </DocsNextStep>
+</DocsNextSteps>

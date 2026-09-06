@@ -129,18 +129,6 @@ De nombreux fichiers, surtout les migrations et la logique paiement cœur, porte
         └── website/      # Site marketing (produit hébergé)
 ```
 
-## `@lomi./ui` vs lomi-ui (docs)
-
-Ce ne sont **pas** la même chose. Ne pas les fusionner.
-
-| | `@lomi./ui` (`packages/ui`) | lomi-ui (`apps/docs/components/lomi-ui/`) |
-| --- | --- | --- |
-| Public | Apps produit lomi. (dashboard, admin, checkout, storefront, website, customers) et chrome docs | Marchands qui construisent leur propre checkout React |
-| Distribution | Package workspace privé (jamais npm) | Copier-coller public via `lomi ui add` / registre docs |
-| Contenu | Primitives partagées + interior.dev | Sélecteur de prestataire, formulaire client, carte mobile money, etc. |
-
-Le **chrome** docs (layout, previews, scripts) peut importer `@lomi./ui` et `@lomi./shared` via `file:`. Le registre marchand **lomi-ui** sous `apps/docs/components/lomi-ui/` reste autonome et **ne doit pas** importer ces packages privés.
-
 ## Tableau de bord marchand (`apps/dashboard`)
 
 Le tableau de bord est le back-office marchand (transactions, liens de paiement, paramètres, analytics). C’est un **produit hébergé** aujourd’hui ; le code s’ouvre progressivement.

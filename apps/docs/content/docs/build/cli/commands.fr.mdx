@@ -79,38 +79,6 @@ Met à jour `@lomi./sdk` dans le projet courant (via votre gestionnaire de paque
 lomi update
 ```
 
-### `lomi ui`
-
-Installe et met à jour les composants checkout [lomi. UI](/build/lomi-ui) depuis le registre docs. Voir [Commandes lomi. UI](/build/cli/ui).
-
-```bash
-lomi ui list
-lomi ui add payment-provider-selector
-lomi ui add --all
-lomi ui update
-lomi ui update --component payment-provider-selector
-```
-
-Aucune authentification requise. Nécessite Node.js, `npx` et un projet shadcn (`components.json`).
-
-| Sous-commande | Description |
-| --- | --- |
-| `list` | Récupère et affiche les composants du registre |
-| `add <name>` | Installe un composant via `npx shadcn@latest add` |
-| `add --all` | Installe chaque entrée du registre |
-| `update` | Réinstalle les composants verrouillés depuis `.lomi/ui-lock.json` |
-
-| Option | S'applique à | Description |
-| --- | --- | --- |
-| `--path` | `add`, `update` | Répertoire projet cible |
-| `--yes` | `add`, `update` | Ignorer l'invite shadcn init |
-| `--dry-run` | `add`, `update` | Afficher les commandes sans les exécuter |
-| `--component` | `update` | Mettre à jour un seul composant verrouillé |
-
-`lomi init --with-ui <name>` installe un composant après le scaffold. Voir [Initialiser un projet](/build/cli/init).
-
----
-
 ## Développement
 
 ### `lomi quickstart`

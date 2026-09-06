@@ -16,25 +16,7 @@ pub fn cli_auth_base(api_url: &str) -> String {
     format!("{}/cli-auth", api_url.trim_end_matches('/'))
 }
 pub const DOCS_URL: &str = "https://docs.lomi.africa";
-pub const LOMI_UI_REGISTRY_URL: &str = "https://docs.lomi.africa/r/registry.json";
-pub const LOMI_UI_INDEX_URL: &str = "https://docs.lomi.africa/r/index.json";
 pub const DEFAULT_DEV_PORT: u16 = 4242;
-
-pub fn lomi_ui_registry_url() -> String {
-    std::env::var("LOMI_UI_REGISTRY_URL").unwrap_or_else(|_| LOMI_UI_REGISTRY_URL.to_string())
-}
-
-pub fn lomi_ui_index_url() -> String {
-    std::env::var("LOMI_UI_INDEX_URL").unwrap_or_else(|_| LOMI_UI_INDEX_URL.to_string())
-}
-
-pub fn lomi_ui_item_url(name: &str) -> String {
-    let registry_url = lomi_ui_registry_url();
-    let base = registry_url
-        .trim_end_matches("registry.json")
-        .trim_end_matches('/');
-    format!("{base}/{name}.json")
-}
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, ValueEnum)]
 pub enum OutputFormat {

@@ -48,6 +48,8 @@ Définissez `docType` dans le frontmatter des nouveaux guides :
 
 Les guides rédigés à la main doivent lier vers les références canoniques au lieu de dupliquer les tableaux (ex. pointer vers [Paiements sandbox](/start/sandbox-payments) pour les cartes test).
 
+Les destinations de fin de page utilisent `<DocsNextSteps>` (4 maximum). Pas de listes markdown `## Étapes suivantes` ni de sitemaps groupés Onboarding / Build / Référence. Préférez 3 destinations. Le titre reste hors table des matières.
+
 ## Vérités d'intégration (à répéter dans les guides)
 
 - Les montants en **XOF** utilisent les **centimes** (unités mineures entières) sauf documentation contraire d'un champ API.
@@ -84,7 +86,11 @@ Depuis la racine du monorepo :
 lomi docs check
 ```
 
-## Voir aussi
-
-- [Brief design CORE-38](https://github.com/lomiafrica/lomi.): `apps/design/docs/note.md` dans le monorepo
-- [Installer les règles agent](/build/cli/install-rules)
+<DocsNextSteps>
+  <DocsNextStep href="/build/cli/install-rules" hint="Règle Cursor condensée">
+    Installer les règles agent
+  </DocsNextStep>
+  <DocsNextStep href="/resources/contributing/overview" hint="Ouvrir une PR">
+    Comment contribuer
+  </DocsNextStep>
+</DocsNextSteps>

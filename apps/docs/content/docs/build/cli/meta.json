@@ -10,7 +10,6 @@
     "dev",
     "listen",
     "install-rules",
-    "configuration",
-    "ui"
+    "configuration"
   ]
 }

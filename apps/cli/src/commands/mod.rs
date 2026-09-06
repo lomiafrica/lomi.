@@ -23,7 +23,6 @@ pub mod status;
 pub mod switch;
 pub mod transactions;
 pub mod trigger;
-pub mod ui;
 pub mod update;
 pub mod upgrade;
 pub mod webhooks_cmd;

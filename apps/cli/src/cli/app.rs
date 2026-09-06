@@ -77,8 +77,6 @@ pub enum Commands {
     Update(crate::commands::update::UpdateArgs),
     /// Show how to upgrade the lomi. CLI
     Upgrade(crate::commands::upgrade::UpgradeArgs),
-    /// Install and update lomi. UI checkout components
-    Ui(crate::commands::ui::UiArgs),
     /// Documentation lint and drift checks (monorepo apps/docs)
     #[command(hide = true)]
     Docs(crate::commands::docs_cmd::DocsArgs),

@@ -24,8 +24,6 @@ lomi init
 | `--api-key` | Clé secrète écrite dans `.env` |
 | `--skip-package-install` | Ignorer l'installation npm |
 | `--skip-rules-install` | Ignorer l'installation des règles agent (`--yes` installe Cursor + llms.txt par défaut) |
-| `--with-ui <name>` | Installer un composant lomi. UI après le scaffold (sans interaction) |
-| `--skip-ui-install` | Ignorer l'invite d'installation lomi. UI |
 | `[path]` | Répertoire projet (défaut : répertoire courant) |
 
 ### Exemple CI
@@ -39,19 +37,6 @@ lomi init --yes \
   --skip-rules-install
 ```
 
-### Avec lomi. UI (headless)
-
-```bash filename="Terminal"
-lomi init --yes \
-  --environment sandbox \
-  --language ts \
-  --api-key lomi_sk_test_xxx \
-  --with-ui payment-provider-selector \
-  --skip-package-install
-```
-
-Nécessite Node.js et shadcn dans le projet cible (ou passez `--yes` pour que shadcn init s'exécute en non interactif).
-
 ## Flux interactif
 
 En mode interactif, `lomi init` demande :
@@ -60,7 +45,7 @@ En mode interactif, `lomi init` demande :
 2. **Langage**: TypeScript ou JavaScript pour les exemples générés
 3. **Clé API**: Votre clé secrète depuis le [portail marchand](https://lomi.africa/portal/settings/api-keys)
 
-Il peut aussi proposer [`lomi install-rules`](/build/cli/install-rules) si vous n'avez pas encore installé les règles agent, et optionnellement un composant checkout [lomi. UI](/build/lomi-ui) via [`lomi ui`](/build/cli/ui).
+Il peut aussi proposer [`lomi install-rules`](/build/cli/install-rules) si vous n'avez pas encore installé les règles agent.
 
 ## Fichiers créés
 
@@ -127,9 +112,17 @@ lomi status
 - [`lomi login`](/build/cli/auth) effectué (ou `LOMI_ACCESS_TOKEN` défini)
 - Une **clé API secrète** du portail marchand (`lomi_sk_test_…` ou `lomi_sk_live_…`)
 
-## Suite
-
-- [Serveur de développement local](/build/cli/dev)
-- [Recevoir les webhooks](/build/reliability/handling-webhooks)
-- [Sessions checkout](/build/accept/checkout)
-- [SDK TypeScript](/build/sdks/typescript)
+<DocsNextSteps>
+  <DocsNextStep href="/build/cli/dev" hint="Récepteur local">
+    Serveur de développement local
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/handling-webhooks" hint="Vérifier avant de parser">
+    Recevoir les webhooks
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Sessions checkout hébergé">
+    Sessions checkout
+  </DocsNextStep>
+  <DocsNextStep href="/build/sdks/typescript" hint="Client typé">
+    SDK TypeScript
+  </DocsNextStep>
+</DocsNextSteps>

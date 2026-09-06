@@ -79,38 +79,6 @@ Update `@lomi./sdk` in the current project (runs your package manager).
 lomi update
 ```
 
-### `lomi ui`
-
-Install and update [lomi. UI](/build/lomi-ui) checkout components from the live docs registry. See [lomi. UI commands](/build/cli/ui).
-
-```bash
-lomi ui list
-lomi ui add payment-provider-selector
-lomi ui add --all
-lomi ui update
-lomi ui update --component payment-provider-selector
-```
-
-No authentication required. Requires Node.js, `npx`, and a shadcn project (`components.json`).
-
-| Subcommand | Description |
-| --- | --- |
-| `list` | Fetch and print available registry components |
-| `add <name>` | Install one component via `npx shadcn@latest add` |
-| `add --all` | Install every registry item |
-| `update` | Re-install locked components from `.lomi/ui-lock.json` |
-
-| Flag | Applies to | Description |
-| --- | --- | --- |
-| `--path` | `add`, `update` | Target project directory |
-| `--yes` | `add`, `update` | Skip shadcn init prompt |
-| `--dry-run` | `add`, `update` | Print commands without running |
-| `--component` | `update` | Update a single locked component |
-
-`lomi init --with-ui <name>` installs a component after scaffold. See [Initialize a project](/build/cli/init).
-
----
-
 ## Development
 
 ### `lomi quickstart`

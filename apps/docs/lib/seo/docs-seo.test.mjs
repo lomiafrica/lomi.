@@ -84,8 +84,8 @@ test('legacy content redirects stay unprefixed', () => {
   const proxySource = read('proxy.ts');
 
   assert.match(configSource, /core\/introduction\/what-is-lomi/);
-  assert.match(configSource, /source:\s*'\/build\/lomi-ui\/quick-start'/);
-  assert.match(configSource, /destination:\s*'\/build\/lomi-ui'/);
+  assert.match(configSource, /source:\s*'\/build\/lomi-ui'/);
+  assert.match(configSource, /destination:\s*'\/build\/choose-integration'/);
   assert.doesNotMatch(configSource, /source:\s*'\/en\//);
   assert.doesNotMatch(
     configSource,

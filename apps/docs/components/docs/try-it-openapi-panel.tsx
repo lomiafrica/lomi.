@@ -2,22 +2,13 @@
 
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Checkbox } from '@lomi./ui/checkbox';
 import { Label } from '@lomi./ui/label';
 import { cn } from '@lomi./ui/cn';
-import { canAttachTestKey, isDocsApiOperationPath } from '@/lib/tryit/gating';
+import { useDocsWorkspace } from '@/lib/docs/workspace-context';
+import { isDocsApiOperationPath } from '@/lib/tryit/gating';
 import { t as translate } from '@/lib/i18n/translations';
 import { useTranslation } from '@/lib/utils/translation-context';
-
-type TryItContext = {
-  signedIn: boolean;
-  useTestKey: boolean;
-  organizations: { id: string; name: string }[];
-  selectedOrganizationId: string | null;
-  needsOrganizationChoice: boolean;
-};
 
 type TryItOpenApiPanelProps = {
   enabled?: boolean;
@@ -27,27 +18,14 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
   const pathname = usePathname();
   const { currentLanguage } = useTranslation();
   const t = (key: string) => translate(key, currentLanguage);
-  const [ctx, setCtx] = useState<TryItContext | null>(null);
-  const [pending, setPending] = useState(false);
+  const workspace = useDocsWorkspace();
   const visible = enabled ?? isDocsApiOperationPath(pathname ?? '');
-
-  const load = useCallback(async () => {
-    const r = await fetch('/api/tryit-context', { credentials: 'include' });
-    if (r.ok) {
-      setCtx(await r.json());
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!visible) return;
-    void load();
-  }, [load, visible]);
 
   if (!visible) {
     return null;
   }
 
-  if (!ctx) {
+  if (!workspace.ready) {
     return (
       <div
         className={cn(
@@ -59,7 +37,7 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
     );
   }
 
-  if (!ctx.signedIn) {
+  if (!workspace.signedIn) {
     const dashboard =
       process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'https://dashboard.lomi.africa';
     const next = pathname || '/api';
@@ -70,7 +48,7 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
         )}
       >
         <a
-          className="underline underline-offset-2"
+          className="docs-text-link"
           href={`${dashboard.replace(/\/$/, '')}/docs-handoff?next=${encodeURIComponent(next)}`}
         >
           {t('tryit.connect')}
@@ -80,48 +58,25 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
     );
   }
 
-  const hasTestKeys = ctx.organizations.length > 0;
-  const injectSwitchDisabled =
-    pending ||
-    !canAttachTestKey({
-      signedIn: ctx.signedIn,
-      organizations: ctx.organizations,
-      selectedOrganizationId: ctx.selectedOrganizationId,
-    });
+  if (workspace.organizations.length === 0) {
+    return (
+      <div
+        className={cn(
+          'mb-4 rounded-md border border-fd-border bg-fd-card px-3 py-2 text-sm',
+        )}
+      >
+        <p className="text-amber-700 dark:text-amber-400">
+          {t('tryit.noTestKey')}
+        </p>
+      </div>
+    );
+  }
 
-  const savePrefs = async (
-    useTestKey: boolean,
-    organizationId: string | null,
-  ) => {
-    setPending(true);
-    try {
-      const res = await fetch('/api/tryit-prefs', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ useTestKey, organizationId }),
-      });
-      if (res.ok) {
-        await load();
-      }
-    } finally {
-      setPending(false);
-    }
-  };
+  if (workspace.organizations.length === 1) {
+    return null;
+  }
 
-  const onSwitchChange = (checked: boolean) => {
-    const orgId =
-      ctx.selectedOrganizationId ??
-      (ctx.organizations.length === 1 ? ctx.organizations[0]!.id : null);
-    if (checked && !orgId) {
-      return;
-    }
-    void savePrefs(checked, orgId);
-  };
-
-  const onOrgChange = (orgId: string) => {
-    void savePrefs(ctx.useTestKey, orgId || null);
-  };
+  const needsOrganizationChoice = workspace.selectedOrganizationId === null;
 
   return (
     <div
@@ -129,63 +84,33 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
         'mb-6 rounded-lg border border-fd-border bg-fd-card px-4 py-3 text-sm shadow-sm',
       )}
     >
-      {!hasTestKeys && (
-        <p className="mt-2 text-amber-700 dark:text-amber-400">
-          {t('tryit.noTestKey')}
-        </p>
-      )}
-
-      {hasTestKeys && (
-        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {ctx.organizations.length > 1 && (
-            <div className="flex flex-col gap-1.5 sm:min-w-[220px]">
-              <Label htmlFor="tryit-org">{t('tryit.organization')}</Label>
-              <select
-                id="tryit-org"
-                className={cn(
-                  'rounded-md border border-fd-border bg-fd-background px-2 py-1.5 text-fd-foreground',
-                )}
-                value={ctx.selectedOrganizationId ?? ''}
-                onChange={(e) => onOrgChange(e.target.value)}
-                disabled={pending}
-              >
-                <option value="">
-                  {ctx.needsOrganizationChoice
-                    ? t('tryit.selectOrganization')
-                    : t('tryit.chooseOrganization')}
-                </option>
-                {ctx.organizations.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className="flex flex-col gap-1.5 sm:min-w-[220px]">
+        <Label htmlFor="tryit-org">{t('tryit.organization')}</Label>
+        <select
+          id="tryit-org"
+          className={cn(
+            'rounded-md border border-fd-border bg-fd-background px-2 py-1.5 text-fd-foreground',
           )}
-
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="tryit-inject"
-              checked={ctx.useTestKey}
-              onCheckedChange={(checked: boolean | 'indeterminate') =>
-                onSwitchChange(checked === true)
-              }
-              disabled={injectSwitchDisabled}
-            />
-            <Label htmlFor="tryit-inject" className="cursor-pointer">
-              {t('tryit.attachKey')}
-            </Label>
-          </div>
-        </div>
-      )}
-
-      {ctx.useTestKey &&
-        !injectSwitchDisabled &&
-        ctx.selectedOrganizationId && (
-          <p className="mt-2 text-xs text-fd-muted-foreground">
-            {t('tryit.proxyHint')}
-          </p>
-        )}
+          value={workspace.selectedOrganizationId ?? ''}
+          onChange={(event) => {
+            const orgId = event.target.value;
+            if (!orgId) return;
+            void workspace.selectOrganization(orgId);
+          }}
+          disabled={workspace.pending}
+        >
+          <option value="">
+            {needsOrganizationChoice
+              ? t('tryit.selectOrganization')
+              : t('tryit.chooseOrganization')}
+          </option>
+          {workspace.organizations.map((org) => (
+            <option key={org.id} value={org.id}>
+              {org.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }

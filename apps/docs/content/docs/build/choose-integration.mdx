@@ -1,6 +1,6 @@
 ---
 title: 'Which integration to choose?'
-description: 'Choose between hosted checkout, payment links, payment requests, direct charges, subscriptions, ecommerce extensions, and UI components.'
+description: 'Choose between hosted checkout, payment links, payment requests, direct charges, subscriptions, and ecommerce extensions.'
 docType: explanation
 ---
 
@@ -26,7 +26,6 @@ Choose the simplest integration that gives your customer the right payment exper
 | Store plugin checkout | [E-commerce extensions](/build/ecommerce-extensions) | Good for WooCommerce, Magento, PrestaShop, Shopify, and Bubble |
 | Hosted product catalog | [Products](/build/billing/products) + [store.lomi.africa](https://store.lomi.africa) | Good when you want a lomi.-hosted shop without a third-party platform |
 | AI assistant / agent access | [MCP](/build/mcp) | Cursor, Claude Desktop, and other MCP clients calling the merchant API |
-| Copy-paste checkout UI | [lomi. UI](/build/lomi-ui) | Good when you want UI primitives inside your app |
 | Typed API access in your code | [SDKs](/build/sdks) | TypeScript, Python, Go, and PHP clients with typed methods and error handling |
 | Terminal-first setup and testing | [CLI](/build/cli) | Authenticate, scaffold projects, create sandbox checkouts, and forward webhooks |
 | Compare channels by country | [Payment channels](/build/payment-channels) | Country × currency × channel matrix |
@@ -36,14 +35,14 @@ Choose the simplest integration that gives your customer the right payment exper
 
 ## Product comparison
 
-| | Hosted checkout | Embed widget | Payment links | Payment requests | Direct charges | Subscriptions | E-commerce plugins | lomi. UI |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Dev effort** | Low | Low | Low | Medium | High | Medium | Low | Medium |
-| **UI control** | lomi.-hosted | iframe on your site | lomi.-hosted | Your app + hosted pay step | Full (you build UI) | Hosted signup | Store-native | Primitives in your app |
-| **Speed to market** | High | High | High | Medium | Low | Medium | High | Medium |
-| **Mobile money async** | Handled on hosted page | Same as hosted | Same | Same | You handle pending UX | Hosted flow | Plugin-dependent | You compose |
-| **Webhooks required** | Recommended | Recommended | Recommended | Recommended | Required (live) | Required | Recommended | Recommended |
-| **No-code dashboard** | Sessions + catalog | - | Yes | Partial | - | Plans + links | Yes | - |
+| | Hosted checkout | Embed widget | Payment links | Payment requests | Direct charges | Subscriptions | E-commerce plugins |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Dev effort** | Low | Low | Low | Medium | High | Medium | Low |
+| **UI control** | lomi.-hosted | iframe on your site | lomi.-hosted | Your app + hosted pay step | Full (you build UI) | Hosted signup | Store-native |
+| **Speed to market** | High | High | High | Medium | Low | Medium | High |
+| **Mobile money async** | Handled on hosted page | Same as hosted | Same | Same | You handle pending UX | Hosted flow | Plugin-dependent |
+| **Webhooks required** | Recommended | Recommended | Recommended | Recommended | Required (live) | Required | Recommended |
+| **No-code dashboard** | Sessions + catalog | - | Yes | Partial | - | Plans + links | Yes |
 
 ## Recommended first choice
 
@@ -63,22 +62,17 @@ Every serious integration should include:
 
 Before go-live, run [Simulate errors](/build/reliability/simulate-errors) in sandbox to exercise failure and pending states.
 
-## Next steps
-
-**Onboarding**
-
-- [Integration journey](/start/integration-journey)
-- [Make a test payment](/start/first-payment)
-- [Sandbox payments](/start/sandbox-payments)
-- [Simulate errors](/build/reliability/simulate-errors)
-
-**Build**
-
-- [Hosted checkout](/build/accept/checkout) · [Products](/build/billing/products) · [Payment channels](/build/payment-channels)
-- [Webhooks](/build/reliability) · [Verify payments](/build/reliability/verify-payments)
-
-**Reference apps & API**
-
-- [Hosted checkout reference app](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/references/payment-integration-sdk-reference)
-- [Direct charge reference app](https://github.com/lomiafrica/lomi./tree/main/apps/plugins/references/direct-charge-integration-reference)
-- [API reference](/api)
+<DocsNextSteps>
+  <DocsNextStep href="/start/first-payment" hint="First money in sandbox">
+    Make a test payment
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Recommended first path">
+    Hosted checkout
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/verify-payments" hint="Never trust the client">
+    Verify payments
+  </DocsNextStep>
+  <DocsNextStep href="/api" hint="Exact requests and responses">
+    API reference
+  </DocsNextStep>
+</DocsNextSteps>

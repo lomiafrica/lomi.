@@ -355,18 +355,21 @@ See **[Webhooks](/build/reliability)** for subscription management and verificat
 | MTN live charge/refund errors | Missing provider reference or disbursement balance | Ensure payment completed with RequestToPay reference; check MTN disbursement wallet |
 | No customer email | Expected in test | Notifications are disabled for test transactions |
 
-## Related documentation
-
-- **[Authentication](/start/api-keys)**: keys, environments, security
-- **[API integration](/start/first-payment)**: first request and API index
-- **[Checkout sessions](/build/accept/checkout)**: hosted checkout API
-- **[Direct charges](/build/accept/direct-charges)**: Wave, MTN, and embedded card (`POST /charge/card`)
-- **[Payment links](/build/accept/payment-links)**: reusable pay links
-- **[lomi Payment Elements](/build/accept/payment-elements)**: client-side card UI
-- **[Webhooks](/build/reliability)**: event subscriptions
-- **[Balance and settlement](/build/money/balance-and-settlement)**: live balance rules
-- **[Testing guide](/build/reliability/testing)**: automation, CI, webhook listeners
-
 ## When am I ready for live mode?
 
 Move to live keys only when your integration is verified end to end. See [What to check before live?](/start/go-live).
+
+<DocsNextSteps>
+  <DocsNextStep href="/start/first-payment" hint="First request in sandbox">
+    Make a test payment
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Hosted checkout API">
+    Checkout sessions
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability" hint="Event subscriptions">
+    Webhooks
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/testing" hint="Automation and CI">
+    Testing guide
+  </DocsNextStep>
+</DocsNextSteps>

@@ -1,6 +1,7 @@
 /* @proprietary license */
 
 import { DocsAppLayout, DocsMobileSectionSwitch } from '@/components/docs/docs-sidebar';
+import { DocsHashScroll } from '@/components/docs/docs-hash-scroll';
 import { DocsMobileSearchBanner } from '@/components/docs/docs-mobile-search-banner';
 import { DocsSidebarLocaleAndTheme } from '@/components/docs/sidebar-locale-theme';
 import { baseOptions, linkItems, logo } from '@/lib/utils/layout.shared';
@@ -44,9 +45,9 @@ const SECTION_LABEL_KEYS = {
 } as const;
 
 const SECTION_DESCRIPTION_KEYS = {
-  'Understand lomi., create your account, get API keys, make a test payment, and go live.':
+  'Create your account, get API keys, make a test payment, and go live.':
     'sectionDescription.start',
-  'Choose an integration path and build checkout, payment links, subscriptions, webhooks, and tools.':
+  'Choose an integration path and build checkout, subscriptions, and tools.':
     'sectionDescription.build',
   'Authentication, errors, data models, and endpoint reference for the lomi. API.':
     'sectionDescription.apiReference',
@@ -193,6 +194,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
         title: <>{logo}</>,
       }}
     >
+      <DocsHashScroll />
       {children}
     </DocsAppLayout>
   );

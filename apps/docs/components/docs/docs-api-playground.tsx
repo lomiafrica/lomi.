@@ -5,6 +5,7 @@
 import { useMemo, useState } from 'react';
 import { t as translate } from '@/lib/i18n/translations';
 import { useTranslation } from '@/lib/utils/translation-context';
+import { useDocsWorkspace } from '@/lib/docs/workspace-context';
 import {
   resolvePathTemplate,
   type TryItOperation,
@@ -19,6 +20,7 @@ export function DocsApiPlaygroundClient({
 }: DocsApiPlaygroundClientProps) {
   const { currentLanguage } = useTranslation();
   const t = (key: string) => translate(key, currentLanguage);
+  const workspace = useDocsWorkspace();
   const [paramValues, setParamValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(operation.pathParams.map((name) => [name, ''])),
   );
@@ -32,8 +34,11 @@ export function DocsApiPlaygroundClient({
     [operation.pathParams, paramValues],
   );
 
+  const canSend =
+    workspace.ready && workspace.canSendSandbox && missingParams.length === 0;
+
   const send = async () => {
-    if (missingParams.length > 0) return;
+    if (!canSend) return;
     setPending(true);
     setResult(null);
     setStatus(null);
@@ -112,14 +117,16 @@ export function DocsApiPlaygroundClient({
           />
         </label>
       ) : null}
-      <button
-        type="button"
-        className="docs-api-playground-send"
-        onClick={() => void send()}
-        disabled={pending || missingParams.length > 0}
-      >
-        {pending ? t('tryit.sending') : t('tryit.send')}
-      </button>
+      {canSend ? (
+        <button
+          type="button"
+          className="docs-api-playground-send"
+          onClick={() => void send()}
+          disabled={pending}
+        >
+          {pending ? t('tryit.sending') : t('tryit.send')}
+        </button>
+      ) : null}
       {status ? (
         <pre className="docs-api-playground-result">
           <strong>{status}</strong>

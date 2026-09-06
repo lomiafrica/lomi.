@@ -14,6 +14,7 @@ import {
 } from 'react';
 import Link from 'next/link';
 import { cn } from '@lomi./ui/cn';
+import { docsLinkShouldScroll } from '@/lib/docs-hash';
 import { PersonalizedCodeSurface } from '@/components/docs/personalized-code-surface';
 import type { ServiceReference } from '@/lib/docs/service-references';
 import { translate } from '@/lib/i18n/translations';
@@ -302,7 +303,12 @@ function ReferencePanel({ reference }: { reference: ServiceReference }) {
       </PersonalizedCodeSurface>
       {reference.href && reference.hrefLabel ? (
         <p className="docs-surface-link-wrap">
-          <Link href={reference.href} className="docs-surface-link">
+          <Link
+            href={reference.href}
+            className="docs-surface-link"
+            prefetch
+            scroll={docsLinkShouldScroll(reference.href)}
+          >
             {reference.hrefLabel}
           </Link>
         </p>
@@ -327,7 +333,12 @@ export function IntegrationSurface({
       {children}
       {href && hrefLabel ? (
         <p className="docs-surface-link-wrap">
-          <Link href={href} className="docs-surface-link">
+          <Link
+            href={href}
+            className="docs-surface-link"
+            prefetch
+            scroll={docsLinkShouldScroll(href)}
+          >
             {hrefLabel}
           </Link>
         </p>

@@ -7,17 +7,6 @@ import type { MDXComponents } from 'mdx/types';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import * as icons from 'lucide-react';
-import { ComponentPreview } from '@/components/preview/component-preview';
-import { CustomerInformationSection } from '@/components/lomi-ui/customer-information-section';
-import { CheckoutSummaryCard } from '@/components/lomi-ui/checkout-summary-card';
-import { MobileMoneyCheckoutCard } from '@/components/lomi-ui/mobile-money-checkout-card';
-import { PaymentProviderSelector } from '@/components/lomi-ui/payment-provider-selector';
-import {
-  MobileMoneyCheckoutCardDemo,
-  PaymentProviderSelectorDemo,
-} from '@/components/lomi-ui/demo';
-import { PriceSelector } from '@/components/lomi-ui/price-selector';
-import { UsageMeter } from '@/components/lomi-ui/usage-meter';
 import { DocsScreenshot } from '@/components/docs/docs-screenshot';
 import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 import { InlineCommand } from '@/components/docs/inline-command';
@@ -34,6 +23,10 @@ import {
   DocsSecurityForm,
 } from '@/components/docs/docs-support-form';
 import { DocsTierCallout } from '@/components/docs/docs-tier-callout';
+import {
+  DocsNextStep,
+  DocsNextSteps,
+} from '@/components/docs/docs-next-steps';
 import { PricingTable } from '@/components/docs/pricing-table';
 import { TaskSurfaces } from '@/components/docs/task-surfaces';
 import { DocsHighlightedPre } from '@/components/docs/docs-highlighted-pre';
@@ -62,15 +55,6 @@ export function getMDXComponents(components?: MDXComponents) {
     Accordions,
     Step,
     Steps,
-    ComponentPreview,
-    CustomerInformationSection,
-    CheckoutSummaryCard,
-    MobileMoneyCheckoutCard,
-    MobileMoneyCheckoutCardDemo,
-    PaymentProviderSelector,
-    PaymentProviderSelectorDemo,
-    PriceSelector,
-    UsageMeter,
     DocsScreenshot,
     DocsAgentIndex,
     InlineCommand,
@@ -80,6 +64,8 @@ export function getMDXComponents(components?: MDXComponents) {
     DocsContactForm,
     DocsSecurityForm,
     DocsTierCallout,
+    DocsNextSteps,
+    DocsNextStep,
     PricingTable,
     TaskSurfaces,
     ...components,

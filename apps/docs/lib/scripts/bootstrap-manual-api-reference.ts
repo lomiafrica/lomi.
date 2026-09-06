@@ -167,8 +167,7 @@ async function main(): Promise<void> {
 
   const rootMeta = {
     title: 'API',
-    description:
-      'Payment and commerce endpoints. Reference pages are hand-written; the OpenAPI JSON export remains the schema contract.',
+    description: 'Payment and commerce endpoints.',
     root: true,
     icon: 'BookOpen',
     pages: rootPages,

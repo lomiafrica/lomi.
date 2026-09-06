@@ -2,12 +2,11 @@
 
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import {
-  COOKIE_TRYIT_ORG,
-  COOKIE_TRYIT_USE_TEST_KEY,
-} from '@/lib/tryit/constants';
+import { COOKIE_TRYIT_ORG } from '@/lib/tryit/constants';
+import { tryitPreferenceCookieOptions } from '@/lib/tryit/cookie-options';
 import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
 import { resolveTestSecretApiKey } from '@/lib/resolve-test-api-key';
+import { selectTryitOrganizationId } from '@/lib/tryit/gating';
 
 type TryitContextResponse = {
   signedIn: boolean;
@@ -18,13 +17,11 @@ type TryitContextResponse = {
 export async function GET() {
   const token = await getDocsSessionToken();
   const c = await cookies();
-  const useTestKey = c.get(COOKIE_TRYIT_USE_TEST_KEY)?.value === 'true';
   const cookieOrg = c.get(COOKIE_TRYIT_ORG)?.value ?? null;
 
   if (!token) {
     return NextResponse.json({
       signedIn: false,
-      useTestKey,
       organizations: [] as { id: string; name: string }[],
       selectedOrganizationId: null as string | null,
       needsOrganizationChoice: false,
@@ -44,7 +41,6 @@ export async function GET() {
   if (!context?.signedIn || organizations.length === 0) {
     return NextResponse.json({
       signedIn: Boolean(context?.signedIn),
-      useTestKey,
       organizations,
       selectedOrganizationId: null,
       needsOrganizationChoice: false,
@@ -54,12 +50,10 @@ export async function GET() {
     });
   }
 
-  const selectedOrganizationId =
-    cookieOrg && organizations.some((o) => o.id === cookieOrg)
-      ? cookieOrg
-      : organizations.length === 1
-        ? organizations[0]!.id
-        : null;
+  const selectedOrganizationId = selectTryitOrganizationId(
+    organizations,
+    cookieOrg,
+  );
 
   const testApiKey = selectedOrganizationId
     ? await resolveTestSecretApiKey({
@@ -67,9 +61,8 @@ export async function GET() {
       })
     : null;
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     signedIn: true,
-    useTestKey,
     organizations,
     selectedOrganizationId,
     needsOrganizationChoice:
@@ -78,4 +71,18 @@ export async function GET() {
     pricingPlan: null,
     volumeTier: null,
   });
+
+  if (
+    organizations.length === 1 &&
+    selectedOrganizationId &&
+    cookieOrg !== selectedOrganizationId
+  ) {
+    res.cookies.set(
+      COOKIE_TRYIT_ORG,
+      selectedOrganizationId,
+      tryitPreferenceCookieOptions(),
+    );
+  }
+
+  return res;
 }

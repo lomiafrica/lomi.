@@ -142,8 +142,18 @@ const config = {
         permanent: true,
       },
       {
-        source: '/build/lomi-ui/quick-start',
-        destination: '/build/lomi-ui',
+        source: '/build/lomi-ui',
+        destination: '/build/choose-integration',
+        permanent: true,
+      },
+      {
+        source: '/build/lomi-ui/:path*',
+        destination: '/build/choose-integration',
+        permanent: true,
+      },
+      {
+        source: '/build/cli/ui',
+        destination: '/build/cli',
         permanent: true,
       },
       {

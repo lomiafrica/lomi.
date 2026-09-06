@@ -19,6 +19,26 @@ export function isDocsApiOperationPath(pathname: string): boolean {
   return operationId !== undefined && /[A-Z]/.test(operationId);
 }
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function parseTryitOrgId(
+  value: string | null | undefined,
+): string | null {
+  if (!value || !UUID_RE.test(value)) return null;
+  return value;
+}
+
+export function selectTryitOrganizationId(
+  organizations: readonly { id: string }[],
+  cookieOrg: string | null | undefined,
+): string | null {
+  const org = parseTryitOrgId(cookieOrg);
+  if (org && organizations.some((item) => item.id === org)) return org;
+  if (organizations.length === 1) return organizations[0]!.id;
+  return null;
+}
+
 export function canAttachTestKey(ctx: {
   signedIn: boolean;
   organizations: readonly { id: string }[];
@@ -30,4 +50,13 @@ export function canAttachTestKey(ctx: {
     return false;
   }
   return true;
+}
+
+export function canSendSandbox(ctx: {
+  signedIn: boolean;
+  organizations: readonly { id: string }[];
+  selectedOrganizationId: string | null;
+  hasTestApiKey: boolean;
+}): boolean {
+  return canAttachTestKey(ctx) && ctx.hasTestApiKey;
 }

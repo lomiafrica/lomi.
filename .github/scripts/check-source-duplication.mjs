@@ -25,7 +25,6 @@ const SKIP_DIR = new Set([
 ]);
 
 const SKIP_PATH_PREFIXES = [
-  "apps/docs/components/lomi-ui/",
   "packages/ui/src/interior/",
   "apps/dashboard/supabase/migrations/",
   "apps/api/src/utils/types/",

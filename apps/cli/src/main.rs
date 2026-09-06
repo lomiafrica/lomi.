@@ -5,7 +5,6 @@ mod commands;
 mod config;
 mod monorepo;
 mod rules;
-mod ui;
 mod webhook;
 
 use clap::Parser;
@@ -77,7 +76,6 @@ async fn dispatch(command: cli::app::Commands, common: &cli::CommonOptions) -> a
         Commands::InstallRules(args) => commands::install_rules::run(common, args).await,
         Commands::Update(args) => commands::update::run(common, args).await,
         Commands::Upgrade(args) => commands::upgrade::run(common, args).await,
-        Commands::Ui(args) => commands::ui::run(common, args).await,
         Commands::Docs(args) => commands::docs_cmd::run(common, args).await,
         Commands::ListProfiles(args) => commands::list_profiles::run(common, args).await,
         Commands::Switch(args) => commands::switch::run(common, args).await,

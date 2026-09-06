@@ -2,7 +2,13 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canAttachTestKey, isDocsApiOperationPath } from './gating';
+import {
+  canAttachTestKey,
+  canSendSandbox,
+  isDocsApiOperationPath,
+  parseTryitOrgId,
+  selectTryitOrganizationId,
+} from './gating';
 
 test('gates Try-it to hand-authored API operation pages', () => {
   assert.equal(
@@ -58,6 +64,67 @@ test('rejects unsigned sessions and accounts without test keys', () => {
       signedIn: true,
       organizations: [],
       selectedOrganizationId: null,
+    }),
+    false,
+  );
+});
+
+test('selects the cookie org when it belongs to the session', () => {
+  assert.equal(parseTryitOrgId('not-a-uuid'), null);
+  assert.equal(
+    selectTryitOrganizationId(
+      [
+        { id: '11111111-1111-4111-8111-111111111111' },
+        { id: '22222222-2222-4222-8222-222222222222' },
+      ],
+      '22222222-2222-4222-8222-222222222222',
+    ),
+    '22222222-2222-4222-8222-222222222222',
+  );
+  assert.equal(
+    selectTryitOrganizationId(
+      [{ id: '11111111-1111-4111-8111-111111111111' }],
+      null,
+    ),
+    '11111111-1111-4111-8111-111111111111',
+  );
+  assert.equal(
+    selectTryitOrganizationId(
+      [
+        { id: '11111111-1111-4111-8111-111111111111' },
+        { id: '22222222-2222-4222-8222-222222222222' },
+      ],
+      null,
+    ),
+    null,
+  );
+});
+
+test('canSendSandbox requires an attachable session and a test key', () => {
+  assert.equal(
+    canSendSandbox({
+      signedIn: true,
+      organizations: [{ id: 'org_a' }],
+      selectedOrganizationId: 'org_a',
+      hasTestApiKey: true,
+    }),
+    true,
+  );
+  assert.equal(
+    canSendSandbox({
+      signedIn: true,
+      organizations: [{ id: 'org_a' }],
+      selectedOrganizationId: 'org_a',
+      hasTestApiKey: false,
+    }),
+    false,
+  );
+  assert.equal(
+    canSendSandbox({
+      signedIn: true,
+      organizations: [{ id: 'org_a' }, { id: 'org_b' }],
+      selectedOrganizationId: null,
+      hasTestApiKey: true,
     }),
     false,
   );

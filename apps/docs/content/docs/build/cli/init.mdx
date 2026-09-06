@@ -24,8 +24,6 @@ lomi init
 | `--api-key` | Secret API key written to `.env` |
 | `--skip-package-install` | Skip `npm install` of SDK dependencies |
 | `--skip-rules-install` | Skip agent rules install (`--yes` installs Cursor + llms.txt by default) |
-| `--with-ui <name>` | Install a lomi. UI component after scaffold (headless) |
-| `--skip-ui-install` | Skip lomi. UI install prompt |
 | `[path]` | Project directory (default: current directory) |
 
 ### Headless example (CI)
@@ -39,19 +37,6 @@ lomi init --yes \
   --skip-rules-install
 ```
 
-### with lomi. UI (headless)
-
-```bash filename="Terminal"
-lomi init --yes \
-  --environment sandbox \
-  --language ts \
-  --api-key lomi_sk_test_xxx \
-  --with-ui payment-provider-selector \
-  --skip-package-install
-```
-
-Requires Node.js and shadcn in the target project (or pass `--yes` so shadcn init runs non-interactively).
-
 ## Interactive flow
 
 When run interactively, `lomi init` prompts for:
@@ -60,7 +45,7 @@ When run interactively, `lomi init` prompts for:
 2. **Language**: TypeScript or JavaScript for generated examples
 3. **API key**: Your secret key from the [Merchant Portal](https://lomi.africa/portal/settings/api-keys)
 
-It may also offer to run [`lomi install-rules`](/build/cli/install-rules) if you haven't installed agent rules yet, and optionally install a [lomi. UI](/build/lomi-ui) checkout component via [`lomi ui`](/build/cli/ui).
+It may also offer to run [`lomi install-rules`](/build/cli/install-rules) if you haven't installed agent rules yet.
 
 ## Files created
 
@@ -127,9 +112,17 @@ lomi status
 - [`lomi login`](/build/cli/auth) completed (or `LOMI_ACCESS_TOKEN` set)
 - A **secret API key** from the Merchant Portal (`lomi_sk_test_…` or `lomi_sk_live_…`)
 
-## Next steps
-
-- [Local development server](/build/cli/dev)
-- [Handling webhooks](/build/reliability/handling-webhooks)
-- [Checkout sessions](/build/accept/checkout)
-- [TypeScript SDK](/build/sdks/typescript)
+<DocsNextSteps>
+  <DocsNextStep href="/build/cli/dev" hint="Local receiver">
+    Local development server
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/handling-webhooks" hint="Verify before you parse">
+    Handling webhooks
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Hosted checkout sessions">
+    Checkout sessions
+  </DocsNextStep>
+  <DocsNextStep href="/build/sdks/typescript" hint="Typed client">
+    TypeScript SDK
+  </DocsNextStep>
+</DocsNextSteps>

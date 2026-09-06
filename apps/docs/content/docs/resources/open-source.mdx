@@ -129,18 +129,6 @@ Many files, especially database migrations and core payment logic, are marked `/
         └── website/      # Marketing site (hosted product)
 ```
 
-## `@lomi./ui` vs docs lomi-ui
-
-These are **not** the same thing. Do not merge them.
-
-| | `@lomi./ui` (`packages/ui`) | lomi-ui (`apps/docs/components/lomi-ui/`) |
-| --- | --- | --- |
-| Audience | lomi. product apps (dashboard, admin, checkout, storefront, website, customers) and docs **chrome** | External merchants building their own React checkout |
-| Distribution | Private workspace package (never npm) | Public copy-paste via `lomi ui add` / docs registry |
-| Contents | Shared primitives + vendored interior.dev | Payment provider selector, customer form, mobile-money card, etc. |
-
-Docs **chrome** (layout, preview helpers, scripts) may import `@lomi./ui` and `@lomi./shared` via `file:`. The merchant **lomi-ui registry** under `apps/docs/components/lomi-ui/` must stay self-contained and must **not** import those private packages.
-
 ## Merchant dashboard (`apps/dashboard`)
 
 The dashboard is the merchant back-office (transactions, payment links, settings, analytics). It is a **hosted product** today; source is opening progressively.

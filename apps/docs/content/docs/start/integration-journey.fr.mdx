@@ -191,28 +191,17 @@ Les webhooks sont essentiels pour les moyens de paiement et les événements hor
 2. Passez à `lomi_sk_live_...` et `https://api.lomi.africa`.
 3. Suivez [Que vérifier avant le live ?](/start/go-live) et traitez un petit paiement live avec webhook.
 
-## Étapes suivantes
-
-### Confirmer les paiements en production
-
-- [Vérifier les paiements](/build/reliability/verify-payments)
-- [Cycle de vie des paiements](/build/reliability/payment-lifecycle)
-- [Machine à états des paiements](/api/payment-state-machine)
-
-### Exploiter après le go-live
-
-- [Transactions](/build/money/transactions) · [Remboursements](/build/money/refunds) · [Reversements](/build/money/payouts) · [Litiges](/build/money/disputes)
-- [Solde et règlement](/build/money/balance-and-settlement) · [Radar (fraude)](/build/money/radar)
-
-### Catalogue, facturation et clients
-
-- [Produits](/build/billing/products) · [Facturation à l’usage](/build/billing/usage-billing) · [Coupons](/build/billing/discount-coupons)
-- [Portail client](/build/billing/customer-portal) · [Clients](/build/platform/customers)
-- [Marchands](/build/platform/merchants) · [Organisations](/build/platform/organizations)
-
-### Outils et durcissement
-
-- [SDKs](/build/sdks) · [CLI](/build/cli) · [MCP](/build/mcp) · [lomi. UI](/build/lomi-ui)
-- [Extensions e‑commerce](/build/ecommerce-extensions) (WooCommerce, Shopify, Magento, PrestaShop)
-- [Guides avancés](/build/reliability) (erreurs, tests, CI/CD, fiabilité webhooks)
-- [Démarrer avec le CLI](/start/cli-quickstart) · [Démarrer avec le SDK](/start/sdk-quickstart)
+<DocsNextSteps>
+  <DocsNextStep href="/build/reliability/verify-payments" hint="Confirmer avant de livrer">
+    Vérifier les paiements
+  </DocsNextStep>
+  <DocsNextStep href="/start/go-live" hint="Passer aux clés live">
+    Passer en production
+  </DocsNextStep>
+  <DocsNextStep href="/build/accept/checkout" hint="Chemin de production">
+    Checkout hébergé
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability" hint="Réconcilier côté serveur">
+    Webhooks
+  </DocsNextStep>
+</DocsNextSteps>

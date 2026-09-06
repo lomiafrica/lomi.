@@ -89,9 +89,6 @@ importers:
       react-force-graph-2d:
         specifier: ^1.29.1
         version: 1.29.1(react@19.2.8)
-      react-phone-number-input:
-        specifier: ^3.4.18
-        version: 3.4.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       rehype-katex:
         specifier: ^7.0.1
         version: 7.0.1

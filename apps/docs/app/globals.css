@@ -101,6 +101,9 @@
     inset 0 0 0 1px rgba(28, 25, 23, 0.05), 0 1px 2px rgba(28, 25, 23, 0.03);
   --docs-code-radius: 9px;
   --docs-callout-radius: 11px;
+  --docs-info: #2f6fef;
+  --docs-info-fill: #d7e6ff;
+  --docs-info-ring: color-mix(in oklab, var(--docs-info) 42%, transparent);
   --docs-text-size: 0.9375rem;
   --docs-text-line-height: 1.7;
   --docs-space-block: 0.75rem;
@@ -130,6 +133,10 @@
   --docs-overlay: color-mix(in oklab, var(--foreground) 40%, transparent);
   --docs-shadow-lift:
     0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.11);
+  --docs-link-underline: color-mix(in oklab, currentColor 32%, transparent);
+  --docs-link-underline-hover: color-mix(in oklab, currentColor 58%, transparent);
+  --docs-link-underline-thickness: 1px;
+  --docs-link-underline-offset: 0.2em;
 }
 
 .dark {
@@ -221,6 +228,9 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   --docs-shadow-button:
     inset 0 0 0 1px rgba(255, 255, 255, 0.055), 0 1px 2px rgba(0, 0, 0, 0.25);
+  --docs-info: #7eb0ff;
+  --docs-info-fill: #1c334f;
+  --docs-info-ring: color-mix(in oklab, var(--docs-info) 40%, transparent);
 }
 
 @layer base {
@@ -761,6 +771,9 @@ html.dark .docs-turnstile-mount {
   > div.flex.flex-col.gap-3.p-4.pb-2
   > button:not([data-search-full])
   > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 1rem;
   height: 1rem;
 }
@@ -1125,6 +1138,15 @@ html.dark .docs-turnstile-mount {
   border-radius: var(--docs-sidebar-radius);
 }
 
+/* Fumadocs pins the icon to the top on md+ (`md:mb-auto`). Keep it
+   vertically centered on the left of the title + description. */
+.flex.flex-col.gap-1.fd-scroll-container > a > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
 .flex.flex-col.gap-1.fd-scroll-container > a:hover {
   background: var(--docs-sidebar-well);
 }
@@ -1183,28 +1205,13 @@ html.dark .docs-turnstile-mount {
   border-color: #374151;
 }
 
-.info-block {
-  border-left: 4px solid #3b82f6;
-  background-color: #eff6ff;
-  padding: 1rem 1.5rem;
-  margin: 1.5rem 0;
-  border-radius: 0 0.25rem 0.25rem 0;
-}
-
-.dark .info-block {
-  background-color: rgba(59, 130, 246, 0.1);
-}
-
+.info-block,
 .warning-block {
-  border-left: 4px solid #3b82f6;
-  background-color: #eff6ff;
+  border-left: 4px solid var(--docs-info);
+  background-color: var(--docs-info-fill);
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   border-radius: 0 0.25rem 0.25rem 0;
-}
-
-.dark .warning-block {
-  background-color: rgba(59, 130, 246, 0.1);
 }
 
 /* Docs page — unified body typography */
@@ -1277,6 +1284,39 @@ html.dark .docs-turnstile-mount {
   font-family: var(--font-main);
   font-size: var(--docs-text-size);
   line-height: var(--docs-text-line-height);
+}
+
+.docs-text-link,
+.prose
+  :where(a:not([data-card])):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ),
+.docs-aside-body a,
+.docs-surface-link,
+.docs-agent-index-text a {
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-thickness: var(--docs-link-underline-thickness);
+  text-underline-offset: var(--docs-link-underline-offset);
+  text-decoration-color: var(--docs-link-underline);
+  text-decoration-skip-ink: auto;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.docs-text-link:hover,
+.prose
+  :where(a:not([data-card]):hover):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ),
+.docs-aside-body a:hover,
+.docs-surface-link:hover,
+.docs-agent-index-text a:hover {
+  opacity: 1;
+  text-decoration-color: var(--docs-link-underline-hover);
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) a {
+  font-weight: inherit;
 }
 
 .docs-page-title {
@@ -1395,18 +1435,9 @@ html.dark .docs-turnstile-mount {
 .docs-aside--info,
 .docs-aside--idea,
 .docs-aside--warning {
-  color: color-mix(
-    in oklch,
-    var(--color-fd-muted-foreground) 88%,
-    var(--color-fd-foreground)
-  );
-  background: color-mix(
-    in oklab,
-    var(--color-fd-info) 10%,
-    var(--docs-well)
-  );
-  box-shadow: inset 0 0 0 1px
-    color-mix(in oklab, var(--color-fd-info) 28%, transparent);
+  color: var(--color-fd-foreground);
+  background: var(--docs-info-fill);
+  box-shadow: inset 0 0 0 1px var(--docs-info-ring);
 }
 
 .docs-aside--error {
@@ -1491,19 +1522,6 @@ html.dark .docs-turnstile-mount {
 
 .docs-aside-body a {
   color: var(--color-fd-primary);
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: color-mix(
-    in oklch,
-    var(--color-fd-primary) 35%,
-    transparent
-  );
-  text-underline-offset: 2px;
-  transition: text-decoration-color 0.15s ease;
-}
-
-.docs-aside-body a:hover {
-  text-decoration-color: var(--color-fd-primary);
 }
 
 /* Task-first REST / SDK / CLI / MCP tabs */
@@ -1667,19 +1685,7 @@ html.dark .docs-turnstile-mount {
 
 .docs-surface-link {
   font-size: 0.875rem;
-  font-weight: 500;
   color: var(--color-fd-primary);
-  text-decoration: underline;
-  text-decoration-color: color-mix(
-    in oklch,
-    var(--color-fd-primary) 35%,
-    transparent
-  );
-  text-underline-offset: 2px;
-}
-
-.docs-surface-link:hover {
-  text-decoration-color: var(--color-fd-primary);
 }
 
 /* Agent / llms.txt index — discreet meta line, not a card */
@@ -1719,18 +1725,6 @@ html.dark .docs-turnstile-mount {
 
 .docs-agent-index-text a {
   color: inherit;
-  text-decoration: underline;
-  text-decoration-color: color-mix(
-    in oklch,
-    var(--color-fd-muted-foreground) 45%,
-    transparent
-  );
-  text-underline-offset: 2px;
-  transition: text-decoration-color 0.15s ease;
-}
-
-.docs-agent-index-text a:hover {
-  text-decoration-color: var(--color-fd-muted-foreground);
 }
 
 .docs-agent-index .docs-inline-command {
@@ -1760,7 +1754,99 @@ html.dark .docs-turnstile-mount {
 
 .docs-twin-link-target:hover code {
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-thickness: var(--docs-link-underline-thickness);
+  text-underline-offset: var(--docs-link-underline-offset);
+  text-decoration-color: var(--docs-link-underline-hover);
+}
+
+.docs-next {
+  margin: 2.25rem 0 0;
+  padding: 1.125rem 0 0;
+  border-top: 1px solid var(--docs-hairline);
+}
+
+.docs-next-label {
+  margin: 0 0 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
+}
+
+.docs-next-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .docs-next-list {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.25rem;
+  }
+}
+
+.docs-next-row {
+  margin: 0;
+  padding: 0;
+}
+
+.docs-next-item {
+  display: grid;
+  grid-template-columns: 1.625rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: start;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.375rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+.docs-next-index {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6875rem;
+  line-height: 1.375rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+.docs-next-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.docs-next-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.375rem;
+  color: var(--color-fd-foreground);
+}
+
+.docs-next-hint {
+  margin-top: 0.0625rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-fd-muted-foreground);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .docs-next-item:hover .docs-next-title {
+    text-decoration: underline;
+    text-decoration-thickness: var(--docs-link-underline-thickness);
+    text-underline-offset: var(--docs-link-underline-offset);
+    text-decoration-color: var(--docs-link-underline-hover);
+  }
+}
+
+.docs-next-item:focus-visible {
+  outline: 2px solid var(--color-fd-primary);
+  outline-offset: 2px;
 }
 
 .docs-mcp-index {
@@ -1784,6 +1870,15 @@ html.dark .docs-turnstile-mount {
   margin: 0 0 0.5rem;
   font-size: 0.95rem;
   font-weight: 600;
+  scroll-margin-top: 5rem;
+}
+
+.docs-mcp-index-anchor {
+  scroll-margin-top: 5rem;
+}
+
+.docs-mcp-index-row:has(.docs-mcp-index-anchor:target) {
+  background: color-mix(in oklch, var(--color-fd-primary) 8%, transparent);
 }
 
 .docs-mcp-index-tool-title {

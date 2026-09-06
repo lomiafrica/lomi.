@@ -51,8 +51,14 @@ Your fulfillment handler (webhook worker or API poller) must be **idempotent**: 
 - Fulfillment runs only when `transaction_status` is `completed`
 - Refunds and chargebacks have a reversal path
 
-## Related
-
-- [Integration journey](/start/integration-journey)
-- [List transactions](/api/transactions/TransactionsController_findAll)
-- [Sandbox payments](/start/sandbox-payments)
+<DocsNextSteps>
+  <DocsNextStep href="/start/integration-journey" hint="Sandbox to live">
+    Integration journey
+  </DocsNextStep>
+  <DocsNextStep href="/api/transactions/TransactionsController_findAll" hint="Poll when webhooks lag">
+    List transactions
+  </DocsNextStep>
+  <DocsNextStep href="/start/sandbox-payments" hint="Test cards and wallets">
+    Sandbox payments
+  </DocsNextStep>
+</DocsNextSteps>

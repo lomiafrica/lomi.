@@ -1,9 +1,11 @@
 /* @proprietary license */
 
+import Link from 'next/link';
 import type { Language } from '@/lib/i18n/config';
 import { t as translate } from '@/lib/i18n/translations';
 import type { McpTwin } from '@/lib/mcp-twins';
 import { mcpTwinHref } from '@/lib/mcp-twins';
+import { docsLinkShouldScroll } from '@/lib/docs-hash';
 
 type DocsTwinLinkProps = {
   twin: McpTwin;
@@ -28,24 +30,33 @@ export function DocsTwinLink({
         <span className="docs-twin-link-label">
           {translate('twins.rest', locale)}
         </span>
-        <a className="docs-twin-link-target" href={restHref}>
+        <Link
+          className="docs-twin-link-target"
+          href={restHref}
+          prefetch
+          scroll={docsLinkShouldScroll(restHref)}
+        >
           <code>{twin.operationKey}</code>
-        </a>
+        </Link>
       </p>
     );
   }
+
+  const href = mcpTwinHref(twin.tool, twin.action);
 
   return (
     <p className="docs-twin-link">
       <span className="docs-twin-link-label">
         {translate('twins.mcp', locale)}
       </span>
-      <a
+      <Link
         className="docs-twin-link-target"
-        href={mcpTwinHref(twin.tool, twin.action)}
+        href={href}
+        prefetch
+        scroll={docsLinkShouldScroll(href)}
       >
         <code>{identifier}</code>
-      </a>
+      </Link>
     </p>
   );
 }

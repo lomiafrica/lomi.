@@ -59,10 +59,6 @@ assert_contains "upgrade" "$LOMI" --help
 assert_contains "get" "$LOMI" transactions --help
 assert_contains "create" "$LOMI" refunds --help
 assert_contains "json" "$LOMI" --help
-assert_contains "ui" "$LOMI" --help
-assert_contains "list" "$LOMI" ui --help
-assert_contains "add" "$LOMI" ui --help
-assert_contains "update" "$LOMI" ui --help
 
 log "2. Unauthenticated commands"
 assert_contains "No profiles" "$LOMI" list-profiles
@@ -188,30 +184,7 @@ assert_contains "sandbox" "$LOMI" list-profiles
 assert_exit 0 "$LOMI" logout --profile sandbox
 assert_exit 1 "$LOMI" switch sandbox
 
-log "10. lomi ui list (live registry)"
-set +e
-UI_LIST="$("$LOMI" ui list 2>&1)"
-UI_CODE=$?
-set -e
-if [[ "$UI_CODE" -eq 0 ]] && echo "$UI_LIST" | grep -q "payment-provider-selector"; then
-  pass "lomi ui list fetched registry"
-elif echo "$UI_LIST" | grep -q "Registry unavailable"; then
-  fail "lomi ui list — registry not deployed yet (run docs build)"
-else
-  fail "lomi ui list (exit $UI_CODE)"
-  echo "$UI_LIST" | head -15 >&2
-fi
-
-log "11. lomi ui add dry-run"
-UI_DRY_DIR="$TMP/ui-dry"
-mkdir -p "$UI_DRY_DIR"
-(
-  cd "$UI_DRY_DIR"
-  npm init -y >/dev/null 2>&1
-  "$LOMI" ui add payment-provider-selector --dry-run --yes >/dev/null 2>&1
-) && pass "lomi ui add --dry-run" || fail "lomi ui add --dry-run"
-
-log "12. generate-rules.sh"
+log "10. generate-rules.sh"
 if ./scripts/generate/generate-rules.sh >/dev/null 2>&1; then
   pass "generate-rules.sh"
   [[ -f src/utils/rules/llms.txt ]] && pass "src/utils/rules/llms.txt exists" || fail "src/utils/rules/llms.txt missing"

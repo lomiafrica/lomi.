@@ -8,7 +8,6 @@ use std::process::Command;
 use crate::auth::session::ensure_authenticated;
 use crate::cli::{self, CommonOptions, DOCS_URL};
 use crate::commands::install_rules::{self, InstallRulesArgs};
-use crate::commands::ui;
 use crate::config::{Environment, GlobalConfig, Language};
 
 #[derive(Args, Debug)]
@@ -47,14 +46,6 @@ pub struct InitArgs {
     /// Project template (default, express, nextjs)
     #[arg(long, default_value = "default")]
     pub template: String,
-
-    /// Install a lomi. UI component after scaffold (skips interactive picker)
-    #[arg(long)]
-    pub with_ui: Option<String>,
-
-    /// Skip lomi. UI install prompt
-    #[arg(long)]
-    pub skip_ui_install: bool,
 }
 
 pub async fn run(common: &CommonOptions, args: InitArgs) -> Result<()> {
@@ -207,41 +198,6 @@ pub async fn run(common: &CommonOptions, args: InitArgs) -> Result<()> {
                 let mut config = GlobalConfig::load()?;
                 config.settings.has_seen_rules_install_prompt = true;
                 config.save()?;
-            }
-        }
-    }
-
-    if !args.skip_ui_install {
-        if let Some(component) = &args.with_ui {
-            cli::output::print_info(&format!("Installing lomi. UI component: {component}"));
-            ui::install_for_init(&project_dir, component, args.yes, false).await?;
-            cli::output::print_success(&format!("Installed lomi. UI component: {component}"));
-        } else if !args.yes {
-            let install_ui =
-                cli::prompts::confirm("Install a lomi. UI checkout component?", false)?;
-
-            if install_ui {
-                let index = crate::ui::registry::fetch_index().await?;
-                let names: Vec<String> = index.items.iter().map(|item| item.name.clone()).collect();
-
-                if names.is_empty() {
-                    cli::output::print_dim("No lomi. UI components available in registry.");
-                } else {
-                    let default = names
-                        .iter()
-                        .find(|name| **name == "payment-provider-selector")
-                        .cloned()
-                        .or_else(|| names.first().cloned())
-                        .unwrap_or_default();
-
-                    let component =
-                        cli::prompts::select("Which component should we install?", names, default)?;
-
-                    ui::install_for_init(&project_dir, &component, false, false).await?;
-                    cli::output::print_success(&format!(
-                        "Installed lomi. UI component: {component}"
-                    ));
-                }
             }
         }
     }

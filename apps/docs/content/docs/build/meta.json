@@ -1,6 +1,6 @@
 {
   "title": "Build",
-  "description": "Choose an integration path and build checkout, payment links, subscriptions, webhooks, and tools.",
+  "description": "Choose an integration path and build checkout, subscriptions, and tools.",
   "root": true,
   "icon": "Blocks",
   "pages": [
@@ -20,7 +20,6 @@
     "mcp",
     "---Apps---",
     "ecommerce-extensions",
-    "lomi-ui",
     "platform"
   ]
 }
