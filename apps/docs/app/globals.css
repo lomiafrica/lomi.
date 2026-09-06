@@ -1749,99 +1749,11 @@ html.dark .docs-turnstile-mount {
 }
 
 .docs-next {
-  margin: 2.25rem 0 0;
-  padding: 1.125rem 0 0;
-  border-top: 1px solid var(--docs-hairline);
+  margin: 2.5rem 0 0;
 }
 
-.docs-next-label {
-  margin: 0 0 0.75rem;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-fd-muted-foreground);
-}
-
-.docs-next-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.125rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: docs-next;
-}
-
-@media (min-width: 640px) {
-  .docs-next-list {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 1.25rem;
-  }
-}
-
-.docs-next-row {
-  margin: 0;
-  padding: 0;
-  counter-increment: docs-next;
-}
-
-.docs-next-item {
-  display: grid;
-  grid-template-columns: 1.625rem minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: start;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.375rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
-  color: inherit;
-  touch-action: manipulation;
-}
-
-.docs-next-index {
-  font-variant-numeric: tabular-nums;
-  font-size: 0.6875rem;
-  line-height: 1.375rem;
-  color: var(--color-fd-muted-foreground);
-}
-
-.docs-next-index::before {
-  content: counter(docs-next, decimal-leading-zero);
-}
-
-.docs-next-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-}
-
-.docs-next-title {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  line-height: 1.375rem;
-  color: var(--color-fd-foreground);
-}
-
-.docs-next-hint {
-  margin-top: 0.0625rem;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--color-fd-muted-foreground);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .docs-next-item:hover .docs-next-title {
-    text-decoration: underline;
-    text-decoration-thickness: var(--docs-link-underline-thickness);
-    text-underline-offset: var(--docs-link-underline-offset);
-    text-decoration-color: var(--docs-link-underline-hover);
-  }
-}
-
-.docs-next-item:focus-visible {
-  outline: 2px solid var(--color-fd-primary);
-  outline-offset: 2px;
+.docs-next-item:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .docs-mcp-index {

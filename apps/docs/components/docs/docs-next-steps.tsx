@@ -2,8 +2,16 @@
 
 'use client';
 
-import { Children, isValidElement, type ReactElement, type ReactNode } from 'react';
-import Link from 'next/link';
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
+import Link from 'fumadocs-core/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@lomi./ui/cn';
 import { translate } from '@/lib/i18n/translations';
 import { useTranslation } from '@/lib/utils/translation-context';
 
@@ -13,6 +21,7 @@ export type DocsNextStepProps = {
   href: string;
   hint?: string;
   children: ReactNode;
+  align?: 'start' | 'end';
 };
 
 function collectStepElements(children: ReactNode): ReactElement[] {
@@ -24,34 +33,37 @@ function collectStepElements(children: ReactNode): ReactElement[] {
   return steps.slice(0, DOCS_NEXT_STEPS_MAX);
 }
 
-function isExternalHref(href: string): boolean {
-  return /^https?:\/\//.test(href);
-}
-
-export function DocsNextStep({ href, hint, children }: DocsNextStepProps) {
-  const className = 'docs-next-item';
-  const body = (
-    <>
-      <span className="docs-next-index" aria-hidden="true" />
-      <span className="docs-next-copy">
-        <span className="docs-next-title">{children}</span>
-        {hint ? <span className="docs-next-hint">{hint}</span> : null}
-      </span>
-    </>
-  );
+/** Same chrome as fumadocs-ui page FooterItem (previous / next). */
+export function DocsNextStep({
+  href,
+  hint,
+  children,
+  align = 'start',
+}: DocsNextStepProps) {
+  const end = align === 'end';
+  const Icon = end ? ChevronRight : ChevronLeft;
 
   return (
-    <li className="docs-next-row">
-      {isExternalHref(href) ? (
-        <a className={className} href={href}>
-          {body}
-        </a>
-      ) : (
-        <Link className={className} href={href}>
-          {body}
-        </Link>
+    <Link
+      href={href}
+      className={cn(
+        'docs-next-item flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground @max-lg:col-span-full',
+        end && 'text-end',
       )}
-    </li>
+    >
+      <div
+        className={cn(
+          'inline-flex items-center gap-1.5 font-medium [&_p]:m-0',
+          end && 'flex-row-reverse',
+        )}
+      >
+        <Icon className="-mx-1 size-4 shrink-0 rtl:rotate-180" />
+        {children}
+      </div>
+      {hint ? (
+        <p className="truncate text-fd-muted-foreground">{hint}</p>
+      ) : null}
+    </Link>
   );
 }
 
@@ -60,21 +72,28 @@ type DocsNextStepsProps = {
   title?: string;
 };
 
-/** Page-end destinations. Cap is 4. No groups, no sitemap. */
+/** Page-end destinations. Same chrome as the previous / next page switcher. */
 export function DocsNextSteps({ children, title }: DocsNextStepsProps) {
   const { currentLanguage } = useTranslation();
   const heading = title ?? translate('next.title', currentLanguage);
-  const headingId = 'docs-next-steps';
   const steps = collectStepElements(children);
 
   if (steps.length === 0) return null;
 
   return (
-    <nav className="docs-next not-prose" aria-labelledby={headingId}>
-      <p className="docs-next-label" id={headingId}>
-        {heading}
-      </p>
-      <ol className="docs-next-list">{steps}</ol>
+    <nav
+      className={cn(
+        'docs-next not-prose @container grid gap-4',
+        steps.length > 1 ? 'grid-cols-2' : 'grid-cols-1',
+      )}
+      aria-label={heading}
+    >
+      {steps.map((step, index) =>
+        cloneElement(step as ReactElement<DocsNextStepProps>, {
+          key: (step.props as DocsNextStepProps).href ?? String(index),
+          align: index % 2 === 1 ? 'end' : 'start',
+        }),
+      )}
     </nav>
   );
 }
