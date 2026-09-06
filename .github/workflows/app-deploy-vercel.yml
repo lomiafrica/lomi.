@@ -77,17 +77,21 @@ jobs:
           fi
 
       - name: Point umbrella Vercel deploys at the app
-        if: ${{ inputs.working-directory-mode == 'umbrella' && (inputs.app == 'admin' || inputs.app == 'website' || inputs.app == 'dashboard' || inputs.app == 'checkout' || inputs.app == 'storefront' || inputs.app == 'customers') }}
+        if: ${{ inputs.working-directory-mode == 'umbrella' && (inputs.app == 'admin' || inputs.app == 'website' || inputs.app == 'dashboard' || inputs.app == 'checkout' || inputs.app == 'storefront' || inputs.app == 'customers' || inputs.app == 'shopify') }}
         run: |
           set -euo pipefail
           test -f "tooling/vercel/${{ inputs.app }}.json"
-          test -f tooling/vercel/umbrella-package.json
           cp "tooling/vercel/${{ inputs.app }}.json" vercel.json
           git add -f vercel.json
-          # Detection-only stub (next). Do not set engines.node: website
-          # and admin projects are 24.x; npm does not need a 22 pin.
-          cp tooling/vercel/umbrella-package.json package.json
-          git add -f package.json
+          # Shopify is Remix (@vercel/remix output). Do not drop the
+          # Next detection stub used by website/admin onto that upload.
+          if [ "${{ inputs.app }}" != "shopify" ]; then
+            test -f tooling/vercel/umbrella-package.json
+            # Detection-only stub (next). Do not set engines.node: website
+            # and admin projects are 24.x; npm does not need a 22 pin.
+            cp tooling/vercel/umbrella-package.json package.json
+            git add -f package.json
+          fi
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v42.2.0

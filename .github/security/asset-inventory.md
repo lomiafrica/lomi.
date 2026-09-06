@@ -22,7 +22,7 @@ Canonical inventory for penetration testing and PCI scoping. Production URLs are
 | CLI | `lomi` binary | Device flow via Nest `/cli-auth` |
 | SDKs / embed | npm `@lomi./sdk`, embed widget | Merchant sites |
 | MPOS (jumbo) | iOS/Android | Stripe Terminal + API |
-| E-commerce plugins | Woo, Shopify (`connect.lomi.africa`), etc. | Separate deploy repos |
+| E-commerce plugins | Woo, Shopify custom install (`connect.lomi.africa`; leftover `shopify.lomi.africa` Vercel CNAME is not the install host), etc. | Separate deploy repos |
 
 ## Tier 2 — public, usually outside CDE
 
