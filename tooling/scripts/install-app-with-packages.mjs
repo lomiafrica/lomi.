@@ -198,9 +198,13 @@ function installDeps(appRel, dir, { frozen }) {
     return;
   }
   const args = ["install", "--ignore-workspace"];
-  if (frozen && existsSync(path.join(dir, "pnpm-lock.yaml"))) {
+  if (process.env.PNPM_IGNORE_ENGINES === "1") {
+    args.push("--config.engine-strict=false");
+  }
+  const forceNoFrozen = process.env.PNPM_NO_FROZEN_LOCKFILE === "1";
+  if (frozen && !forceNoFrozen && existsSync(path.join(dir, "pnpm-lock.yaml"))) {
     args.push("--frozen-lockfile");
-  } else if (!existsSync(path.join(dir, "pnpm-lock.yaml"))) {
+  } else if (!existsSync(path.join(dir, "pnpm-lock.yaml")) || forceNoFrozen) {
     args.push("--no-frozen-lockfile");
   }
   run("pnpm", args, dir);
