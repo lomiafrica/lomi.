@@ -11,6 +11,30 @@
       "has": [{ "type": "host", "value": "www.lomi.africa" }],
       "destination": "https://lomi.africa/:path*",
       "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "trylomi.com" }],
+      "destination": "https://lomi.africa/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "trylomi.com" }],
+      "destination": "https://lomi.africa/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.trylomi.com" }],
+      "destination": "https://lomi.africa/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.trylomi.com" }],
+      "destination": "https://lomi.africa/:path*",
+      "permanent": true
     }
   ],
   "headers": [

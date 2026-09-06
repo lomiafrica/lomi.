@@ -1,6 +1,6 @@
 {
   "name": "@lomi./ui",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",
@@ -76,6 +76,11 @@
       "import": "./src/fuzzy-text.tsx",
       "default": "./src/fuzzy-text.tsx"
     },
+    "./lomi-wordmark": {
+      "types": "./src/lomi-wordmark.tsx",
+      "import": "./src/lomi-wordmark.tsx",
+      "default": "./src/lomi-wordmark.tsx"
+    },
     "./status-page": {
       "types": "./src/status-page.tsx",
       "import": "./src/status-page.tsx",
@@ -85,6 +90,11 @@
       "types": "./src/lottie-icon.tsx",
       "import": "./src/lottie-icon.tsx",
       "default": "./src/lottie-icon.tsx"
+    },
+    "./lomi-wordmark": {
+      "types": "./src/lomi-wordmark.tsx",
+      "import": "./src/lomi-wordmark.tsx",
+      "default": "./src/lomi-wordmark.tsx"
     },
     "./calendar": {
       "types": "./src/calendar.tsx",
