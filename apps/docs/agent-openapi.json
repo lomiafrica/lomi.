@@ -948,6 +948,7 @@
     },
     "/oauth/register": {
       "post": {
+        "description": "Unknown client metadata is ignored (RFC 7591). MCP clients such as Cursor send extra fields like application_type.",
         "operationId": "OAuthController_registerClient",
         "parameters": [
           {
@@ -961,6 +962,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthRegisterClientDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
@@ -1232,6 +1243,42 @@
       "CreateHandoffDto": {
         "type": "object",
         "properties": {}
+      },
+      "OAuthRegisterClientDto": {
+        "type": "object",
+        "properties": {
+          "client_name": {
+            "type": "string"
+          },
+          "redirect_uris": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "grant_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "response_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "token_endpoint_auth_method": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_name",
+          "redirect_uris"
+        ]
       }
     }
   }
