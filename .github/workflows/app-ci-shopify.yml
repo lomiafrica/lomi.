@@ -49,6 +49,12 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ github.workspace }}
+        env:
+          # Lockfile was written with a different pnpm overrides encoding
+          # than Actions pnpm 9; supabase-js 2.x also wants Node 22 while
+          # this app is pinned to Node 20.
+          PNPM_NO_FROZEN_LOCKFILE: "1"
+          PNPM_IGNORE_ENGINES: "1"
         run: node tooling/scripts/install-app-with-packages.mjs apps/plugins/shopify
 
       - name: Typecheck
