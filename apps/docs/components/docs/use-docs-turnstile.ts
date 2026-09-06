@@ -1,6 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 
 declare global {
   interface Window {
@@ -22,10 +28,37 @@ declare global {
   }
 }
 
+function readTurnstileTheme(): 'light' | 'dark' {
+  const root = document.documentElement;
+  if (root.classList.contains('dark')) return 'dark';
+  if (root.dataset.theme === 'dark') return 'dark';
+  if (root.getAttribute('color-scheme') === 'dark') return 'dark';
+  return 'light';
+}
+
+function subscribeTurnstileTheme(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class', 'data-theme', 'style', 'color-scheme'],
+  });
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  media.addEventListener('change', onChange);
+  return () => {
+    observer.disconnect();
+    media.removeEventListener('change', onChange);
+  };
+}
+
 export function useDocsTurnstile(action: string) {
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const widgetTheme = useSyncExternalStore(
+    subscribeTurnstileTheme,
+    readTurnstileTheme,
+    () => 'light' as const,
+  );
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
 
   const resetTurnstile = useCallback(() => {
@@ -54,7 +87,7 @@ export function useDocsTurnstile(action: string) {
       widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
         sitekey: siteKey,
         action,
-        theme: 'auto',
+        theme: widgetTheme,
         callback: (token) => setTurnstileToken(token),
         'expired-callback': () => setTurnstileToken(''),
         'error-callback': () => setTurnstileToken(''),
@@ -92,7 +125,7 @@ export function useDocsTurnstile(action: string) {
       cancelled = true;
       unmount();
     };
-  }, [siteKey, action]);
+  }, [siteKey, action, widgetTheme]);
 
   return { siteKey, turnstileRef, turnstileToken, resetTurnstile };
 }

@@ -4,16 +4,9 @@ description: 'De la sandbox au live : compte, clés, premier paiement, webhooks 
 docType: tutorial
 ---
 
-import { Callout } from '@/components/docs/docs-callout';
 import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 
 <DocsAgentIndex />
-
-Suivez ce guide avant d’écrire du code de production. Chaque étape renvoie vers la page détaillée, cette page est la carte, pas le manuel.
-
-<Callout type="info">
-  Nouveau ? Lisez [Qu’est-ce que lomi. ?](/start/overview), puis suivez ce parcours étape par étape.
-</Callout>
 
 Le checkout hébergé, les liens de paiement, les abonnements et les autres produits ci-dessous passent tous par la même API marchande. Le choix de **ce que vous construisez** est indépendant de **comment vous utilisez lomi.** : API, SDK, CLI ou MCP.
 
@@ -31,7 +24,7 @@ Le checkout hébergé, les liens de paiement, les abonnements et les autres prod
 
 ## Comment utiliser lomi.
 
-Choisissez la surface qui correspond à votre façon de travailler. Chaque onglet est un point de départ. Les guides complets restent sur leurs pages : [API](/api), [Démarrer avec le SDK](/start/sdk-quickstart), [Démarrer avec le CLI](/start/cli-quickstart) et [MCP](/build/mcp).
+Choisissez la surface qui correspond à votre façon de travailler.
 
 <IntegrationSurfaceGroup id="how-you-call-lomi">
 
@@ -169,8 +162,6 @@ lomi. propose plusieurs options d’intégration selon votre stack :
 Définissez ce que vous vendez dans [Produits](/build/billing/products) avant de créer des sessions checkout ou des plans d’abonnement.
 
 La plupart des équipes commencent par le **checkout hébergé**. Consultez [Quelle intégration choisir ?](/build/choose-integration) et [Canaux de paiement](/build/payment-channels) pour confirmer la couverture Wave, MTN et cartes sur vos marchés.
-
-Ce choix de produit est indépendant de l’API, du SDK, du CLI ou du MCP. Voir [Comment utiliser lomi.](#how-you-call-lomi).
 
 ## Étape 3: Tester de bout en bout
 

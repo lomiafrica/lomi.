@@ -14,12 +14,7 @@ type SubmitState = 'idle' | 'pending' | 'success' | 'error';
 
 export type DocsSupportFormKind = 'contact' | 'security';
 
-const CONTACT_TOPICS = [
-  'general',
-  'billing',
-  'integration',
-  'abuse',
-] as const;
+const CONTACT_TOPICS = ['general', 'billing', 'integration', 'abuse'] as const;
 
 type ContactTopic = (typeof CONTACT_TOPICS)[number];
 
@@ -72,6 +67,9 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
   const [honeypot, setHoneypot] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [reference, setReference] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState<
+    'support.error' | 'support.errorVerification'
+  >('support.error');
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -84,11 +82,13 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
       !EMAIL_OK.test(trimmedEmail) ||
       trimmedMessage.length < 10
     ) {
+      setErrorKey('support.error');
       setSubmitState('error');
       return;
     }
 
     if (siteKey && !turnstileToken) {
+      setErrorKey('support.errorVerification');
       setSubmitState('error');
       return;
     }
@@ -114,9 +114,15 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
 
       const body = (await res.json().catch(() => null)) as {
         reference?: string;
+        error?: string;
       } | null;
 
       if (!res.ok) {
+        setErrorKey(
+          body?.error === 'Verification failed'
+            ? 'support.errorVerification'
+            : 'support.error',
+        );
         setSubmitState('error');
         resetTurnstile();
         return;
@@ -131,6 +137,7 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
       setMessage('');
       resetTurnstile();
     } catch {
+      setErrorKey('support.error');
       setSubmitState('error');
       resetTurnstile();
     }
@@ -172,11 +179,14 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
       </p>
       {submitState === 'error' ? (
         <p className="mt-3 text-[13px] text-red-600 dark:text-red-400">
-          {t('support.error')}
+          {t(errorKey)}
         </p>
       ) : null}
 
-      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden>
+      <div
+        className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+        aria-hidden
+      >
         <label htmlFor={honeypotId}>Website</label>
         <input
           id={honeypotId}
@@ -258,7 +268,14 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
         </Field>
       </div>
 
-      {siteKey ? <div ref={turnstileRef} className="mt-5 min-h-16" /> : null}
+      {siteKey ? (
+        <div className="mt-5 flex w-full justify-end">
+          <div
+            ref={turnstileRef}
+            className="docs-turnstile-mount min-h-[65px] w-fit max-w-full"
+          />
+        </div>
+      ) : null}
 
       <div className={siteKey ? 'mt-4' : 'mt-6'}>
         <Button type="submit" disabled={pending}>

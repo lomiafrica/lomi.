@@ -190,7 +190,6 @@ function buildServicesSections(): BookSection[] {
     {
       title: 'Merchant of Record',
       files: existingFiles([
-        docsPath('start/merchant-of-record/index.fr.mdx'),
         docsPath('start/merchant-of-record/pricing.fr.mdx'),
         docsPath('start/merchant-of-record/acceptable-use.fr.mdx'),
         docsPath('start/merchant-of-record/account-reviews.fr.mdx'),

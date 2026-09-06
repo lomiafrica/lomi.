@@ -4,22 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  fast-xml-parser: ^5.3.4
-  '@isaacs/brace-expansion': ^5.0.1
-  js-yaml: ^4.3.1
-  undici: ^5.28.4
-  lodash: ^4.17.21
-  postcss: ^8.5.26
-  vite: ^7.3.5
-  yaml: ^2.8.3
-  sharp: ^0.35.3
-  fast-uri: ^3.1.5
-  brace-expansion: ^2.1.4
-  brace-expansion@^5: ^5.0.9
-  tar: ^7.5.21
-  nanoid: ^3.3.18
-
 importers:
 
   .:
@@ -68,25 +52,25 @@ importers:
         version: 3.0.0
       fumadocs-core:
         specifier: ~16.8.12
-        version: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
+        version: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
       fumadocs-docgen:
         specifier: ^3.1.0
-        version: 3.1.0(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(mdast-util-mdx@3.0.0)
+        version: 3.1.0(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(mdast-util-mdx@3.0.0(supports-color@7.2.0))
       fumadocs-mdx:
         specifier: ^14.3.2
-        version: 14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
+        version: 14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)
       fumadocs-openapi:
         specifier: ^10.10.3
-        version: 10.10.3(603cfb914aa3afd286d6b75ef6518f2a)
+        version: 10.10.3(fe956339d3eaac57fe829fb325d5c624)
       fumadocs-twoslash:
         specifier: ^3.3.0
-        version: 3.3.0(d17e7d075b54e2eed2366ef399ccfc66)
+        version: 3.3.0(e1f67efc777af92b19ff77cf30ed3e42)
       fumadocs-typescript:
         specifier: ^4.0.14
-        version: 4.0.14(2db671f83851b1b8143000c39f2a6cac)
+        version: 4.0.14(256e021945ab83347974644ae3e79ffa)
       fumadocs-ui:
         specifier: ~16.8.12
-        version: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
+        version: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
       katex:
         specifier: ^0.16.47
         version: 0.16.47
@@ -113,16 +97,16 @@ importers:
         version: 7.0.1
       remark:
         specifier: ^15.0.1
-        version: 15.0.1
+        version: 15.0.1(supports-color@7.2.0)
       remark-gfm:
         specifier: ^4.0.1
-        version: 4.0.1
+        version: 4.0.1(supports-color@7.2.0)
       remark-math:
         specifier: ^6.0.0
-        version: 6.0.0
+        version: 6.0.0(supports-color@7.2.0)
       remark-mdx:
         specifier: ^3.1.1
-        version: 3.1.1
+        version: 3.1.1(supports-color@7.2.0)
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -150,7 +134,7 @@ importers:
         version: 16.3.3
       '@next/eslint-plugin-next':
         specifier: ^16.3.3
-        version: 16.3.3(eslint@9.39.5(jiti@2.7.0))
+        version: 16.3.3(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))
       '@tailwindcss/postcss':
         specifier: ^4.3.3
         version: 4.3.3
@@ -174,19 +158,19 @@ importers:
         version: 19.2.5(@types/react@19.2.18)
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.68.0
-        version: 8.68.0(@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+        version: 8.68.0(@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: ^8.68.0
-        version: 8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+        version: 8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       algoliasearch:
         specifier: 5.37.0
         version: 5.37.0
       eslint:
         specifier: ^9.39.5
-        version: 9.39.5(jiti@2.7.0)
+        version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       eslint-plugin-react-hooks:
         specifier: ^5.2.0
-        version: 5.2.0(eslint@9.39.5(jiti@2.7.0))
+        version: 5.2.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))
       globals:
         specifier: ^16.5.0
         version: 16.5.0
@@ -195,7 +179,7 @@ importers:
         version: 5.63.0(@types/node@24.3.1)(typescript@5.9.3)
       next-validate-link:
         specifier: ^1.6.7
-        version: 1.6.7(@types/mdast@4.0.4)(@types/unist@3.0.3)
+        version: 1.6.7(@types/mdast@4.0.4)(@types/unist@3.0.3)(supports-color@7.2.0)
       postcss:
         specifier: ^8.5.26
         version: 8.5.26
@@ -2018,8 +2002,8 @@ packages:
   bezier-js@6.1.4:
     resolution: {integrity: sha512-PA0FW9ZpcHbojUCMu28z9Vg/fNkwTj5YhusSAjHHDfHDGLxJ6YUKrAN2vk1fP2MMOxVw4Oko16FMlRGVBGqLKg==}
 
-  brace-expansion@2.1.4:
-    resolution: {integrity: sha512-hGfVzPxthbf3+2yjg/RBs60cB0FhqBS/zvdV/4wn4/BmN0bNMMHPc4V/BbFieqf1TKAGGAHnY4eSjajCl0f2Xg==}
+  brace-expansion@1.1.18:
+    resolution: {integrity: sha512-Edep/X9fGqVNmzKBVsDYIOtD+z1tuezV70LBjdCst9Tqu76lsnvRiZ6oTic1n+/BIwX6QDGAO94PN4N2SADvtw==}
 
   brace-expansion@5.0.9:
     resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
@@ -2108,6 +2092,9 @@ packages:
 
   compute-scroll-into-view@3.1.1:
     resolution: {integrity: sha512-VRhuHOLoKYOy4UbilLbUzbYg93XLjv2PncJC50EuTWPA3gaja1UjBsUP/D/9/juV3vQFr6XBEzn9KCAHdUvOHw==}
+
+  concat-map@0.0.1:
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
@@ -2518,7 +2505,7 @@ packages:
       mdast-util-directive: '*'
       next: ^15.3.0 || ^16.0.0
       react: ^19.2.0
-      vite: ^7.3.5
+      vite: 6.x.x || 7.x.x || 8.x.x
     peerDependenciesMeta:
       '@types/mdast':
         optional: true
@@ -3255,6 +3242,10 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
+  postcss@8.5.23:
+    resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
+    engines: {node: ^10 || ^12 || >=14}
+
   postcss@8.5.26:
     resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
     engines: {node: ^10 || ^12 || >=14}
@@ -3919,22 +3910,22 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
-  '@eslint-community/eslint-utils@4.10.1(eslint@9.39.5(jiti@2.7.0))':
+  '@eslint-community/eslint-utils@4.10.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))':
     dependencies:
-      eslint: 9.39.5(jiti@2.7.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@9.39.5(jiti@2.7.0))':
+  '@eslint-community/eslint-utils@4.9.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))':
     dependencies:
-      eslint: 9.39.5(jiti@2.7.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
 
-  '@eslint/config-array@0.21.2':
+  '@eslint/config-array@0.21.2(supports-color@7.2.0)':
     dependencies:
       '@eslint/object-schema': 2.1.7
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       minimatch: 3.1.5
     transitivePeerDependencies:
       - supports-color
@@ -3947,10 +3938,10 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/eslintrc@3.3.6':
+  '@eslint/eslintrc@3.3.6(supports-color@7.2.0)':
     dependencies:
       ajv: 6.15.0
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       espree: 10.4.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -4180,7 +4171,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@mdx-js/mdx@3.1.1':
+  '@mdx-js/mdx@3.1.1(supports-color@7.2.0)':
     dependencies:
       '@types/estree': 1.0.9
       '@types/estree-jsx': 1.0.5
@@ -4192,14 +4183,14 @@ snapshots:
       estree-util-is-identifier-name: 3.0.0
       estree-util-scope: 1.0.1
       estree-walker: 3.0.3
-      hast-util-to-jsx-runtime: 2.3.6
+      hast-util-to-jsx-runtime: 2.3.6(supports-color@7.2.0)
       markdown-extensions: 2.0.0
       recma-build-jsx: 1.0.0
       recma-jsx: 1.0.1(acorn@8.18.0)
       recma-stringify: 1.0.0
-      rehype-recma: 1.0.0
-      remark-mdx: 3.1.1
-      remark-parse: 11.0.0
+      rehype-recma: 1.0.0(supports-color@7.2.0)
+      remark-mdx: 3.1.1(supports-color@7.2.0)
+      remark-parse: 11.0.0(supports-color@7.2.0)
       remark-rehype: 11.1.2
       source-map: 0.7.6
       unified: 11.0.5
@@ -4228,9 +4219,9 @@ snapshots:
 
   '@next/env@16.3.3': {}
 
-  '@next/eslint-plugin-next@16.3.3(eslint@9.39.5(jiti@2.7.0))':
+  '@next/eslint-plugin-next@16.3.3(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.5(jiti@2.7.0))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))
       fast-glob: 3.3.1
     transitivePeerDependencies:
       - eslint
@@ -4943,11 +4934,11 @@ snapshots:
     dependencies:
       '@shikijs/types': 4.4.3
 
-  '@shikijs/twoslash@4.4.3(typescript@5.9.3)':
+  '@shikijs/twoslash@4.4.3(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@shikijs/core': 4.4.3
       '@shikijs/types': 4.4.3
-      twoslash: 0.3.9(typescript@5.9.3)
+      twoslash: 0.3.9(supports-color@7.2.0)(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -5134,15 +5125,15 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@typescript-eslint/eslint-plugin@8.68.0(@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.68.0(@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.68.0
-      '@typescript-eslint/type-utils': 8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.68.0
-      eslint: 9.39.5(jiti@2.7.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       ignore: 7.0.6
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -5150,23 +5141,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.68.0
       '@typescript-eslint/types': 8.68.0
-      '@typescript-eslint/typescript-estree': 8.68.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.68.0
-      debug: 4.4.3
-      eslint: 9.39.5(jiti@2.7.0)
+      debug: 4.4.3(supports-color@7.2.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.68.0(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.68.0(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.68.0(typescript@5.9.3)
       '@typescript-eslint/types': 8.68.0
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -5180,13 +5171,13 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  '@typescript-eslint/type-utils@8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.68.0
-      '@typescript-eslint/typescript-estree': 8.68.0(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
-      debug: 4.4.3
-      eslint: 9.39.5(jiti@2.7.0)
+      '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      debug: 4.4.3(supports-color@7.2.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -5194,13 +5185,13 @@ snapshots:
 
   '@typescript-eslint/types@8.68.0': {}
 
-  '@typescript-eslint/typescript-estree@8.68.0(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.68.0(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.68.0(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.68.0(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/tsconfig-utils': 8.68.0(typescript@5.9.3)
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/visitor-keys': 8.68.0
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       minimatch: 10.2.6
       semver: 7.8.5
       tinyglobby: 0.2.17
@@ -5209,13 +5200,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.68.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.68.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(jiti@2.7.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))
       '@typescript-eslint/scope-manager': 8.68.0
       '@typescript-eslint/types': 8.68.0
-      '@typescript-eslint/typescript-estree': 8.68.0(typescript@5.9.3)
-      eslint: 9.39.5(jiti@2.7.0)
+      '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@5.9.3)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -5225,9 +5216,9 @@ snapshots:
       '@typescript-eslint/types': 8.68.0
       eslint-visitor-keys: 5.0.1
 
-  '@typescript/vfs@1.6.4(typescript@5.9.3)':
+  '@typescript/vfs@1.6.4(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -5298,9 +5289,10 @@ snapshots:
 
   bezier-js@6.1.4: {}
 
-  brace-expansion@2.1.4:
+  brace-expansion@1.1.18:
     dependencies:
       balanced-match: 1.0.2
+      concat-map: 0.0.1
 
   brace-expansion@5.0.9:
     dependencies:
@@ -5376,6 +5368,8 @@ snapshots:
   commander@8.3.0: {}
 
   compute-scroll-into-view@3.1.1: {}
+
+  concat-map@0.0.1: {}
 
   cookie@1.1.1: {}
 
@@ -5472,9 +5466,11 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  debug@4.4.3:
+  debug@4.4.3(supports-color@7.2.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 7.2.0
 
   decode-named-character-reference@1.3.0:
     dependencies:
@@ -5546,9 +5542,9 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-plugin-react-hooks@5.2.0(eslint@9.39.5(jiti@2.7.0)):
+  eslint-plugin-react-hooks@5.2.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0)):
     dependencies:
-      eslint: 9.39.5(jiti@2.7.0)
+      eslint: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
 
   eslint-scope@8.4.0:
     dependencies:
@@ -5561,14 +5557,14 @@ snapshots:
 
   eslint-visitor-keys@5.0.1: {}
 
-  eslint@9.39.5(jiti@2.7.0):
+  eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(jiti@2.7.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint-community/regexpp': 4.12.2
-      '@eslint/config-array': 0.21.2
+      '@eslint/config-array': 0.21.2(supports-color@7.2.0)
       '@eslint/config-helpers': 0.4.2
       '@eslint/core': 0.17.0
-      '@eslint/eslintrc': 3.3.6
+      '@eslint/eslintrc': 3.3.6(supports-color@7.2.0)
       '@eslint/js': 9.39.5
       '@eslint/plugin-kit': 0.4.1
       '@humanfs/node': 0.16.8
@@ -5578,7 +5574,7 @@ snapshots:
       ajv: 6.15.0
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.4.0
       eslint-visitor-keys: 4.2.1
@@ -5763,18 +5759,18 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4):
+  fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4):
     dependencies:
       '@orama/orama': 3.1.18
       estree-util-value-to-estree: 3.5.0
       github-slugger: 2.0.0
-      hast-util-to-estree: 3.1.3
-      hast-util-to-jsx-runtime: 2.3.6
+      hast-util-to-estree: 3.1.3(supports-color@7.2.0)
+      hast-util-to-jsx-runtime: 2.3.6(supports-color@7.2.0)
       js-yaml: 4.3.2
-      mdast-util-mdx: 3.0.0
+      mdast-util-mdx: 3.0.0(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
-      remark: 15.0.1
-      remark-gfm: 4.0.1
+      remark: 15.0.1(supports-color@7.2.0)
+      remark-gfm: 4.0.1(supports-color@7.2.0)
       remark-rehype: 11.1.2
       scroll-into-view-if-needed: 3.1.0
       shiki: 4.4.3
@@ -5783,7 +5779,7 @@ snapshots:
       unist-util-visit: 5.1.0
       vfile: 6.0.3
     optionalDependencies:
-      '@mdx-js/mdx': 3.1.1
+      '@mdx-js/mdx': 3.1.1(supports-color@7.2.0)
       '@mixedbread/sdk': 0.27.0
       '@orama/core': 1.2.19
       '@oramacloud/client': 2.1.4
@@ -5800,11 +5796,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-docgen@3.1.0(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(mdast-util-mdx@3.0.0):
+  fumadocs-docgen@3.1.0(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(mdast-util-mdx@3.0.0(supports-color@7.2.0)):
     dependencies:
       estree-util-to-js: 2.0.0
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
       npm-to-yarn: 3.2.0
       oxc-transform: 0.138.0
       unified: 11.0.5
@@ -5815,18 +5811,18 @@ snapshots:
       '@types/estree': 1.0.9
       '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
-      mdast-util-mdx: 3.0.0
+      mdast-util-mdx: 3.0.0(supports-color@7.2.0)
 
-  fumadocs-mdx@14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8):
+  fumadocs-mdx@14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(supports-color@7.2.0):
     dependencies:
-      '@mdx-js/mdx': 3.1.1
+      '@mdx-js/mdx': 3.1.1(supports-color@7.2.0)
       '@standard-schema/spec': 1.1.0
       chokidar: 5.0.0
       esbuild: 0.28.2
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
       js-yaml: 4.3.2
-      mdast-util-mdx: 3.0.0
+      mdast-util-mdx: 3.0.0(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
       picocolors: 1.1.1
       picomatch: 4.0.7
@@ -5846,7 +5842,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-openapi@10.10.3(603cfb914aa3afd286d6b75ef6518f2a):
+  fumadocs-openapi@10.10.3(fe956339d3eaac57fe829fb325d5c624):
     dependencies:
       '@fumari/json-schema-ts': 0.0.2(@typescript-eslint/types@8.68.0)
       '@fumari/stf': 1.0.5(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -5855,15 +5851,15 @@ snapshots:
       '@radix-ui/react-select': 2.3.7(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       chokidar: 5.0.0
       class-variance-authority: 0.7.1
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
       github-slugger: 2.0.0
-      hast-util-to-jsx-runtime: 2.3.6
+      hast-util-to-jsx-runtime: 2.3.6(supports-color@7.2.0)
       js-yaml: 4.3.2
       lucide-react: 1.37.0(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
-      remark: 15.0.1
+      remark: 15.0.1(supports-color@7.2.0)
       remark-rehype: 11.1.2
       shiki: 4.4.3
       tailwind-merge: 3.6.0
@@ -5874,20 +5870,20 @@ snapshots:
       - '@typescript-eslint/types'
       - supports-color
 
-  fumadocs-twoslash@3.3.0(d17e7d075b54e2eed2366ef399ccfc66):
+  fumadocs-twoslash@3.3.0(e1f67efc777af92b19ff77cf30ed3e42):
     dependencies:
       '@base-ui/react': 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@shikijs/twoslash': 4.4.3(typescript@5.9.3)
+      '@shikijs/twoslash': 4.4.3(supports-color@7.2.0)(typescript@5.9.3)
       cnfast: 0.0.8
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
-      mdast-util-from-markdown: 2.0.3
-      mdast-util-gfm: 3.1.0
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
+      mdast-util-gfm: 3.1.0(supports-color@7.2.0)
       mdast-util-to-hast: 13.2.1
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       shiki: 4.4.3
-      twoslash: 0.3.9(typescript@5.9.3)
+      twoslash: 0.3.9(supports-color@7.2.0)(typescript@5.9.3)
     optionalDependencies:
       '@types/react': 19.2.18
     transitivePeerDependencies:
@@ -5896,13 +5892,13 @@ snapshots:
       - supports-color
       - typescript
 
-  fumadocs-typescript@4.0.14(2db671f83851b1b8143000c39f2a6cac):
+  fumadocs-typescript@4.0.14(256e021945ab83347974644ae3e79ffa):
     dependencies:
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
-      hast-util-to-estree: 3.1.3
-      hast-util-to-jsx-runtime: 2.3.6
-      remark: 15.0.1
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
+      hast-util-to-estree: 3.1.3(supports-color@7.2.0)
+      hast-util-to-jsx-runtime: 2.3.6(supports-color@7.2.0)
+      remark: 15.0.1(supports-color@7.2.0)
       remark-rehype: 11.1.2
       tinyglobby: 0.2.17
       ts-morph: 27.0.2
@@ -5910,11 +5906,11 @@ snapshots:
       unist-util-visit: 5.1.0
     optionalDependencies:
       '@types/react': 19.2.18
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-ui@16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3):
+  fumadocs-ui@16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3):
     dependencies:
       '@fumadocs/tailwind': 0.0.5(@tailwindcss/oxide@4.3.3)(tailwindcss@4.3.3)
       '@radix-ui/react-accordion': 1.2.20(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -5928,7 +5924,7 @@ snapshots:
       '@radix-ui/react-slot': 1.3.3(@types/react@19.2.18)(react@19.2.8)
       '@radix-ui/react-tabs': 1.1.21(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       class-variance-authority: 0.7.1
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.5.4)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.18)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.2.8))(next@16.3.3(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(zod@4.5.4)
       lucide-react: 1.37.0(react@19.2.8)
       motion: 12.43.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       next-themes: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -6033,7 +6029,7 @@ snapshots:
       web-namespaces: 2.0.1
       zwitch: 2.0.4
 
-  hast-util-to-estree@3.1.3:
+  hast-util-to-estree@3.1.3(supports-color@7.2.0):
     dependencies:
       '@types/estree': 1.0.9
       '@types/estree-jsx': 1.0.5
@@ -6043,9 +6039,9 @@ snapshots:
       estree-util-attach-comments: 3.0.0
       estree-util-is-identifier-name: 3.0.0
       hast-util-whitespace: 3.0.0
-      mdast-util-mdx-expression: 2.0.1
-      mdast-util-mdx-jsx: 3.2.0
-      mdast-util-mdxjs-esm: 2.0.1
+      mdast-util-mdx-expression: 2.0.1(supports-color@7.2.0)
+      mdast-util-mdx-jsx: 3.2.0(supports-color@7.2.0)
+      mdast-util-mdxjs-esm: 2.0.1(supports-color@7.2.0)
       property-information: 7.2.0
       space-separated-tokens: 2.0.2
       style-to-js: 1.1.21
@@ -6068,7 +6064,7 @@ snapshots:
       stringify-entities: 4.0.4
       zwitch: 2.0.4
 
-  hast-util-to-jsx-runtime@2.3.6:
+  hast-util-to-jsx-runtime@2.3.6(supports-color@7.2.0):
     dependencies:
       '@types/estree': 1.0.9
       '@types/hast': 3.0.5
@@ -6077,9 +6073,9 @@ snapshots:
       devlop: 1.1.0
       estree-util-is-identifier-name: 3.0.0
       hast-util-whitespace: 3.0.0
-      mdast-util-mdx-expression: 2.0.1
-      mdast-util-mdx-jsx: 3.2.0
-      mdast-util-mdxjs-esm: 2.0.1
+      mdast-util-mdx-expression: 2.0.1(supports-color@7.2.0)
+      mdast-util-mdx-jsx: 3.2.0(supports-color@7.2.0)
+      mdast-util-mdxjs-esm: 2.0.1(supports-color@7.2.0)
       property-information: 7.2.0
       space-separated-tokens: 2.0.2
       style-to-js: 1.1.21
@@ -6320,14 +6316,14 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  mdast-util-from-markdown@2.0.3:
+  mdast-util-from-markdown@2.0.3(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
       decode-named-character-reference: 1.3.0
       devlop: 1.1.0
       mdast-util-to-string: 4.0.0
-      micromark: 4.0.2
+      micromark: 4.0.2(supports-color@7.2.0)
       micromark-util-decode-numeric-character-reference: 2.0.2
       micromark-util-decode-string: 2.0.1
       micromark-util-normalize-identifier: 2.0.1
@@ -6345,79 +6341,79 @@ snapshots:
       mdast-util-find-and-replace: 3.0.2
       micromark-util-character: 2.1.1
 
-  mdast-util-gfm-footnote@2.1.0:
+  mdast-util-gfm-footnote@2.1.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
       micromark-util-normalize-identifier: 2.0.1
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-strikethrough@2.0.0:
+  mdast-util-gfm-strikethrough@2.0.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-table@2.0.0:
+  mdast-util-gfm-table@2.0.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       markdown-table: 3.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-task-list-item@2.0.0:
+  mdast-util-gfm-task-list-item@2.0.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm@3.1.0:
+  mdast-util-gfm@3.1.0(supports-color@7.2.0):
     dependencies:
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-gfm-autolink-literal: 2.0.1
-      mdast-util-gfm-footnote: 2.1.0
-      mdast-util-gfm-strikethrough: 2.0.0
-      mdast-util-gfm-table: 2.0.0
-      mdast-util-gfm-task-list-item: 2.0.0
+      mdast-util-gfm-footnote: 2.1.0(supports-color@7.2.0)
+      mdast-util-gfm-strikethrough: 2.0.0(supports-color@7.2.0)
+      mdast-util-gfm-table: 2.0.0(supports-color@7.2.0)
+      mdast-util-gfm-task-list-item: 2.0.0(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-math@3.0.0:
+  mdast-util-math@3.0.0(supports-color@7.2.0):
     dependencies:
       '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       longest-streak: 3.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
       unist-util-remove-position: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-mdx-expression@2.0.1:
+  mdast-util-mdx-expression@2.0.1(supports-color@7.2.0):
     dependencies:
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-mdx-jsx@3.2.0:
+  mdast-util-mdx-jsx@3.2.0(supports-color@7.2.0):
     dependencies:
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.5
@@ -6425,7 +6421,7 @@ snapshots:
       '@types/unist': 3.0.3
       ccount: 2.0.1
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
       parse-entities: 4.0.2
       stringify-entities: 4.0.4
@@ -6434,23 +6430,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-mdx@3.0.0:
+  mdast-util-mdx@3.0.0(supports-color@7.2.0):
     dependencies:
-      mdast-util-from-markdown: 2.0.3
-      mdast-util-mdx-expression: 2.0.1
-      mdast-util-mdx-jsx: 3.2.0
-      mdast-util-mdxjs-esm: 2.0.1
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
+      mdast-util-mdx-expression: 2.0.1(supports-color@7.2.0)
+      mdast-util-mdx-jsx: 3.2.0(supports-color@7.2.0)
+      mdast-util-mdxjs-esm: 2.0.1(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-mdxjs-esm@2.0.1:
+  mdast-util-mdxjs-esm@2.0.1(supports-color@7.2.0):
     dependencies:
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
@@ -6742,10 +6738,10 @@ snapshots:
 
   micromark-util-types@2.0.2: {}
 
-  micromark@4.0.2:
+  micromark@4.0.2(supports-color@7.2.0):
     dependencies:
       '@types/debug': 4.1.13
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@7.2.0)
       decode-named-character-reference: 1.3.0
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.3
@@ -6775,7 +6771,7 @@ snapshots:
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 2.1.4
+      brace-expansion: 1.1.18
 
   minimist@1.2.8: {}
 
@@ -6806,12 +6802,12 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  next-validate-link@1.6.7(@types/mdast@4.0.4)(@types/unist@3.0.3):
+  next-validate-link@1.6.7(@types/mdast@4.0.4)(@types/unist@3.0.3)(supports-color@7.2.0):
     dependencies:
       picocolors: 1.1.1
-      remark: 15.0.1
-      remark-gfm: 4.0.1
-      remark-mdx: 3.1.1
+      remark: 15.0.1(supports-color@7.2.0)
+      remark-gfm: 4.0.1(supports-color@7.2.0)
+      remark-mdx: 3.1.1(supports-color@7.2.0)
       tinyglobby: 0.2.17
       unified: 11.0.5
       unist-util-visit: 5.1.0
@@ -6828,7 +6824,7 @@ snapshots:
       '@swc/helpers': 0.5.23
       baseline-browser-mapping: 2.11.20
       caniuse-lite: 1.0.30001810
-      postcss: 8.5.26
+      postcss: 8.5.23
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       styled-jsx: 5.1.6(react@19.2.8)
@@ -6958,6 +6954,12 @@ snapshots:
   picomatch@2.3.2: {}
 
   picomatch@4.0.7: {}
+
+  postcss@8.5.23:
+    dependencies:
+      nanoid: 3.3.18
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
 
   postcss@8.5.26:
     dependencies:
@@ -7100,45 +7102,45 @@ snapshots:
       hast-util-raw: 9.1.0
       vfile: 6.0.3
 
-  rehype-recma@1.0.0:
+  rehype-recma@1.0.0(supports-color@7.2.0):
     dependencies:
       '@types/estree': 1.0.9
       '@types/hast': 3.0.5
-      hast-util-to-estree: 3.1.3
+      hast-util-to-estree: 3.1.3(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
-  remark-gfm@4.0.1:
+  remark-gfm@4.0.1(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-gfm: 3.1.0
+      mdast-util-gfm: 3.1.0(supports-color@7.2.0)
       micromark-extension-gfm: 3.0.0
-      remark-parse: 11.0.0
+      remark-parse: 11.0.0(supports-color@7.2.0)
       remark-stringify: 11.0.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
 
-  remark-math@6.0.0:
+  remark-math@6.0.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-math: 3.0.0
+      mdast-util-math: 3.0.0(supports-color@7.2.0)
       micromark-extension-math: 3.1.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
 
-  remark-mdx@3.1.1:
+  remark-mdx@3.1.1(supports-color@7.2.0):
     dependencies:
-      mdast-util-mdx: 3.0.0
+      mdast-util-mdx: 3.0.0(supports-color@7.2.0)
       micromark-extension-mdxjs: 3.0.0
     transitivePeerDependencies:
       - supports-color
 
-  remark-parse@11.0.0:
+  remark-parse@11.0.0(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@7.2.0)
       micromark-util-types: 2.0.2
       unified: 11.0.5
     transitivePeerDependencies:
@@ -7158,10 +7160,10 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remark@15.0.1:
+  remark@15.0.1(supports-color@7.2.0):
     dependencies:
       '@types/mdast': 4.0.4
-      remark-parse: 11.0.0
+      remark-parse: 11.0.0(supports-color@7.2.0)
       remark-stringify: 11.0.0
       unified: 11.0.5
     transitivePeerDependencies:
@@ -7330,9 +7332,9 @@ snapshots:
 
   twoslash-protocol@0.3.9: {}
 
-  twoslash@0.3.9(typescript@5.9.3):
+  twoslash@0.3.9(supports-color@7.2.0)(typescript@5.9.3):
     dependencies:
-      '@typescript/vfs': 1.6.4(typescript@5.9.3)
+      '@typescript/vfs': 1.6.4(supports-color@7.2.0)(typescript@5.9.3)
       twoslash-protocol: 0.3.9
       typescript: 5.9.3
     transitivePeerDependencies:

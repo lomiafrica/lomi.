@@ -398,6 +398,22 @@ button:active:focus {
   color-scheme: dark;
 }
 
+/* Turnstile paints a 1px chrome inside the iframe; clip the mount. */
+.docs-turnstile-mount {
+  line-height: 0;
+  overflow: hidden;
+  border-radius: var(--docs-code-radius);
+}
+
+.docs-turnstile-mount iframe {
+  display: block;
+  max-width: 100%;
+}
+
+html.dark .docs-turnstile-mount {
+  clip-path: inset(1px round var(--docs-code-radius));
+}
+
 @layer utilities {
   /* Style @mentions in textarea inputs */
   .mention-input {
@@ -629,6 +645,16 @@ button:active:focus {
       var(--fd-toc-width),
       var(--docs-sidebar-inset)
     ) !important;
+  }
+}
+
+/* Pages without headings omit #nd-toc. Fumadocs then leaves
+   [--fd-toc-width:0px] on the layout and the 900px article centers in a
+   wider main column (large left/right gutters). Reserve the same TOC
+   column as Privacy and other guides. */
+@media (min-width: 80rem) {
+  #nd-docs-layout:not(:has(#nd-toc)) {
+    --fd-toc-width: 268px !important;
   }
 }
 
@@ -1170,15 +1196,15 @@ button:active:focus {
 }
 
 .warning-block {
-  border-left: 4px solid #f59e0b;
-  background-color: #fffbeb;
+  border-left: 4px solid #3b82f6;
+  background-color: #eff6ff;
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   border-radius: 0 0.25rem 0.25rem 0;
 }
 
 .dark .warning-block {
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
 /* Docs page — unified body typography */
@@ -1367,22 +1393,20 @@ button:active:focus {
 }
 
 .docs-aside--info,
-.docs-aside--idea {
+.docs-aside--idea,
+.docs-aside--warning {
   color: color-mix(
     in oklch,
     var(--color-fd-muted-foreground) 88%,
     var(--color-fd-foreground)
   );
-}
-
-.docs-aside--warning {
   background: color-mix(
     in oklab,
-    var(--color-fd-warning) 10%,
+    var(--color-fd-info) 10%,
     var(--docs-well)
   );
   box-shadow: inset 0 0 0 1px
-    color-mix(in oklab, var(--color-fd-warning) 28%, transparent);
+    color-mix(in oklab, var(--color-fd-info) 28%, transparent);
 }
 
 .docs-aside--error {

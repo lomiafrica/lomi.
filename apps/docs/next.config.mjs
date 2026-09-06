@@ -70,7 +70,8 @@ const MOVED_DOC_REDIRECTS = [
   ['/resources/security', '/build/reliability/security-best-practices'],
   ['/resources/network', '/build/platform/network'],
   ['/resources/network/onboarding-journey', '/build/platform/network'],
-  ['/resources/merchant-of-record', '/start/merchant-of-record'],
+  ['/resources/merchant-of-record', '/start/merchant-of-record/pricing'],
+  ['/start/merchant-of-record', '/start/merchant-of-record/pricing'],
   [
     '/resources/merchant-of-record/pricing',
     '/start/merchant-of-record/pricing',

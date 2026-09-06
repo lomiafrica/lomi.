@@ -125,6 +125,8 @@ const STRINGS: TranslationsByLanguage = {
     'support.noReference': 'your request',
     'support.error':
       'Could not send. Check the fields and try again, or email hello@lomi.africa.',
+    'support.errorVerification':
+      'Complete the verification check and try again.',
     'tier.signedIn': 'Your plan',
     'tier.starter': 'Starter (volume-tiered)',
     'tier.growth': 'Growth (volume-tiered)',
@@ -166,7 +168,7 @@ const STRINGS: TranslationsByLanguage = {
     'ui.notFoundHome': 'Accueil',
     'ui.errorTitle': "Une erreur s'est produite",
     'ui.errorDescription':
-      'Une erreur inattendue s\'est produite au chargement de cette page. Veuillez réessayer.',
+      "Une erreur inattendue s'est produite au chargement de cette page. Veuillez réessayer.",
     'ui.errorHome': 'Accueil',
     'ui.errorRetry': 'Réessayer',
     'section.start': 'Démarrer',
@@ -194,8 +196,7 @@ const STRINGS: TranslationsByLanguage = {
       "Les développeurs utilisent lomi. pour encaisser des paiements en toute fiabilité en Afrique de l'Ouest.",
     'sectionDescription.apiReference':
       "Référence complète pour intégrer l'API lomi.",
-    'sectionDescription.restApi':
-      'Endpoints de paiement et de commerce.',
+    'sectionDescription.restApi': 'Endpoints de paiement et de commerce.',
     'footer.company_disclaimer':
       "<p>Cette documentation décrit l'API marchande lomi. et les produits associés.</p>\n\n<p>Le comportement d'intégration peut évoluer ; consultez l'OpenAPI générée et votre tableau de bord pour les détails de référence.</p>",
     'components.business_outreach.message':
@@ -260,6 +261,7 @@ const STRINGS: TranslationsByLanguage = {
     'support.noReference': 'votre demande',
     'support.error':
       'Envoi impossible. Vérifiez les champs ou écrivez à hello@lomi.africa.',
+    'support.errorVerification': 'Terminez la vérification, puis réessayez.',
     'tier.signedIn': 'Votre offre',
     'tier.starter': 'Starter (par volume)',
     'tier.growth': 'Growth (par volume)',

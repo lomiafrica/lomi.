@@ -1,25 +1,21 @@
 /* @proprietary license */
 
 import { NextResponse } from 'next/server';
-import {
-  isJsonObject,
-  isString,
-  type JsonObject,
-} from '@lomi./shared';
+import { isJsonObject, isString, type JsonObject } from '@lomi./shared';
 
 function isContactEmail(value: string): boolean {
   if (value.length < 3 || value.length > 254) return false;
-  const at = value.indexOf("@");
-  if (at <= 0 || at !== value.lastIndexOf("@")) return false;
+  const at = value.indexOf('@');
+  if (at <= 0 || at !== value.lastIndexOf('@')) return false;
   const local = value.slice(0, at);
   const domain = value.slice(at + 1);
-  const dot = domain.indexOf(".");
+  const dot = domain.indexOf('.');
   return (
     local.length > 0 &&
-    !local.includes(" ") &&
+    !local.includes(' ') &&
     dot > 0 &&
     dot < domain.length - 1 &&
-    !domain.includes(" ")
+    !domain.includes(' ')
   );
 }
 const ALLOWED_ORIGINS = [
@@ -55,11 +51,19 @@ function isAllowedOrigin(origin: string | null): boolean {
   return ALLOWED_ORIGINS.includes(origin);
 }
 
-async function verifyTurnstile(token: string | undefined): Promise<boolean> {
+async function verifyTurnstile(input: {
+  token: string | undefined;
+  remoteIp: string;
+  expectedAction: string;
+}): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
   if (!secret) return true;
-  if (!token) return false;
-  const body = new URLSearchParams({ secret, response: token });
+  if (!input.token) return false;
+  const body = new URLSearchParams({
+    secret,
+    response: input.token,
+  });
+  if (input.remoteIp !== 'unknown') body.set('remoteip', input.remoteIp);
   const res = await fetch(
     'https://challenges.cloudflare.com/turnstile/v0/siteverify',
     {
@@ -70,7 +74,11 @@ async function verifyTurnstile(token: string | undefined): Promise<boolean> {
   );
   if (!res.ok) return false;
   const json: unknown = await res.json();
-  return isJsonObject(json) && json.success === true;
+  if (!isJsonObject(json) || json.success !== true) return false;
+  if (isString(json.action) && json.action !== input.expectedAction) {
+    return false;
+  }
+  return true;
 }
 
 export async function POST(req: Request) {
@@ -127,7 +135,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 
-  const turnstileOk = await verifyTurnstile(turnstileToken);
+  const turnstileOk = await verifyTurnstile({
+    token: turnstileToken,
+    remoteIp: ip,
+    expectedAction:
+      topic === 'security' ? 'security_contact' : 'support_contact',
+  });
   if (!turnstileOk) {
     return NextResponse.json({ error: 'Verification failed' }, { status: 400 });
   }
