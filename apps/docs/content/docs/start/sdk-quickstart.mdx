@@ -25,7 +25,7 @@ Copy a **test secret key** (`lomi_sk_test_…`) from **Settings → Access token
 LOMI_SECRET_KEY=lomi_sk_test_xxxxxxxxxxxxxxxxxxxxxx
 ```
 
-<Callout type="info" emoji="💡" title="Let the CLI scaffold this for you">
+<Callout type="info" title="Let the CLI scaffold this for you">
   `lomi init` writes the SDK client, example files, and your `.env` automatically. See the [CLI quickstart](/start/cli-quickstart) and [Initialize a project](/build/cli/init).
 </Callout>
 
@@ -117,7 +117,7 @@ See [Listen for webhooks](/build/cli/listen) and [Webhooks](/build/reliability).
 
 ## Two kinds of credentials
 
-<Callout type="info" emoji="💡" title="API key vs CLI token">
+<Callout type="info" title="API key vs CLI token">
   The **SDK** uses your **secret API key** (`LOMI_SECRET_KEY`) in application code.
 
   The **CLI** uses a separate **CLI token** from `lomi login` for terminal commands like `checkout create` and `listen`.

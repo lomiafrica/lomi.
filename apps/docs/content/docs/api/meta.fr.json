@@ -1,6 +1,6 @@
 {
   "title": "API",
-  "description": "Authentification, erreurs, modèles de données et endpoints de l’API lomi.",
+  "description": "Endpoints de paiement et de commerce.",
   "root": true,
   "icon": "BookOpen",
   "pages": [

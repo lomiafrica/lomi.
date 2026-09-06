@@ -21,27 +21,22 @@ type DocsCalloutProps = {
   children?: ReactNode;
 } & Omit<ComponentProps<'div'>, 'title'>;
 
-/** Minimal callout for MDX: no default icon, discreet tinted surface. */
+/** Minimal callout for MDX: title and body only, no icon. */
 export function DocsCallout({
   title,
   type: inputType = 'info',
-  emoji,
-  icon,
+  emoji: _emoji,
+  icon: _icon,
   children,
   className,
   ...props
 }: DocsCalloutProps) {
   const type = resolveType(inputType);
 
-  const asideIcon =
-    icon ??
-    (emoji ? <span className="text-sm leading-none">{emoji}</span> : undefined);
-
   return (
     <DocsAside
       // SAFETY: Boundary value matches the asserted domain type at this call site.
       variant={type as DocsAsideVariant}
-      icon={asideIcon}
       title={title}
       className={className}
       {...props}

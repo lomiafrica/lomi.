@@ -6,15 +6,13 @@ export type DocsAsideVariant =
 
 type DocsAsideProps = {
   variant: DocsAsideVariant;
-  icon?: ReactNode;
   title?: ReactNode;
   children?: ReactNode;
 } & Omit<ComponentProps<'div'>, 'title'>;
 
-/** Shared shell for docs callouts. */
+/** Shared shell for docs callouts. Text only; no icon slot. */
 export function DocsAside({
   variant,
-  icon,
   title,
   children,
   className,
@@ -29,11 +27,6 @@ export function DocsAside({
       )}
       {...props}
     >
-      {icon ? (
-        <div className="docs-aside-icon" aria-hidden="true">
-          {icon}
-        </div>
-      ) : null}
       <div className="min-w-0 flex-1">
         {title ? <p className="docs-aside-title">{title}</p> : null}
         {children ? (

@@ -47,7 +47,11 @@ const SECTION_LABEL_KEYS = {
 const SECTION_DESCRIPTION_KEYS = {
   'Create your account, get API keys, make a test payment, and go live.':
     'sectionDescription.start',
+  'Créer un compte, tester un paiement et passer en production.':
+    'sectionDescription.start',
   'Choose an integration path and build checkout, subscriptions, and tools.':
+    'sectionDescription.build',
+  'Choisir une intégration et construire checkout, abonnements et outils.':
     'sectionDescription.build',
   'Authentication, errors, data models, and endpoint reference for the lomi. API.':
     'sectionDescription.apiReference',
@@ -58,6 +62,7 @@ const SECTION_DESCRIPTION_KEYS = {
   'Complete reference to building with lomi. API.':
     'sectionDescription.apiReference',
   'Payment and commerce endpoints.': 'sectionDescription.restApi',
+  'Endpoints de paiement et de commerce.': 'sectionDescription.restApi',
 } as const;
 
 function isSectionLabelKey(

@@ -25,7 +25,7 @@ Copiez une **clé secrète de test** (`lomi_sk_test_…`) depuis **Paramètres �
 LOMI_SECRET_KEY=lomi_sk_test_xxxxxxxxxxxxxxxxxxxxxx
 ```
 
-<Callout type="info" emoji="💡" title="Laissez le CLI le configurer pour vous">
+<Callout type="info" title="Laissez le CLI le configurer pour vous">
   `lomi init` écrit automatiquement le client SDK, des fichiers d'exemple et votre `.env`. Voir le [guide CLI quickstart](/start/cli-quickstart) et [Initialiser un projet](/build/cli/init).
 </Callout>
 
@@ -117,7 +117,7 @@ Voir [Écouter les webhooks](/build/cli/listen) et [Webhooks](/build/reliability
 
 ## Deux types d'identifiants
 
-<Callout type="info" emoji="💡" title="Clé API vs jeton CLI">
+<Callout type="info" title="Clé API vs jeton CLI">
   Le **SDK** utilise votre **clé API secrète** (`LOMI_SECRET_KEY`) dans le code de l'application.
 
   Le **CLI** utilise un **jeton CLI** distinct issu de `lomi login` pour les commandes terminal comme `checkout create` et `listen`.

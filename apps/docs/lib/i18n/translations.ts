@@ -185,9 +185,9 @@ const STRINGS: TranslationsByLanguage = {
     'section.community': 'Communauté',
     'section.management': 'Gestion',
     'sectionDescription.start':
-      'Créer un compte, obtenir des clés API, faire un paiement de test et passer en production.',
+      'Créer un compte, tester un paiement et passer en production.',
     'sectionDescription.build':
-      'Choisir une intégration, puis mettre en place le checkout, les abonnements et les outils.',
+      'Choisir une intégration et construire checkout, abonnements et outils.',
     'sectionDescription.resources':
       'Support, règles marchandes, open source et documentation contributeur.',
     'sectionDescription.firstSteps':

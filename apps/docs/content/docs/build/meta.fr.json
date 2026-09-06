@@ -1,6 +1,6 @@
 {
   "title": "Construire",
-  "description": "Choisir une intégration et construire checkout, liens de paiement, abonnements, webhooks et outils.",
+  "description": "Choisir une intégration et construire checkout, abonnements et outils.",
   "root": true,
   "icon": "Blocks",
   "pages": [
