@@ -1,7 +1,7 @@
 name: lomi · security · dependency audit
 
 # Full installs are expensive: run on lockfile changes, weekly, or manually.
-# dashboard/checkout live in private submodule repos — check them out explicitly.
+# dashboard/checkout/jumbo live in private submodule repos — check them out explicitly.
 on:
   push:
     branches: [main, develop]
@@ -9,6 +9,7 @@ on:
       - "apps/api"
       - "apps/dashboard/pnpm-lock.yaml"
       - "apps/checkout/pnpm-lock.yaml"
+      - "apps/jumbo/pnpm-lock.yaml"
       - ".github/workflows/app-security-audit.yml"
   pull_request:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "apps/api"
       - "apps/dashboard/pnpm-lock.yaml"
       - "apps/checkout/pnpm-lock.yaml"
+      - "apps/jumbo/pnpm-lock.yaml"
       - ".github/workflows/app-security-audit.yml"
   schedule:
     - cron: "30 8 * * 1"
@@ -85,6 +87,29 @@ jobs:
           ref: main
           token: ${{ secrets.REPO_CHECKOUT_PAT }}
           path: apps/checkout
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: pnpm audit (high and critical)
+        run: pnpm --ignore-workspace audit --audit-level high
+
+  audit-jumbo:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/jumbo
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout jumbo submodule
+        uses: actions/checkout@v5
+        with:
+          repository: lomiafrica/jumbo
+          ref: main
+          token: ${{ secrets.REPO_CHECKOUT_PAT }}
+          path: apps/jumbo
       - uses: pnpm/action-setup@v4
         with:
           version: 9
