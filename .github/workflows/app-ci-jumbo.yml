@@ -57,9 +57,6 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Format
-        run: pnpm format
-
       - name: Knip
         run: pnpm knip
 

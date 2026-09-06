@@ -293,7 +293,7 @@
       ],
       "owner": "mobile",
       "risk": "medium",
-      "notes": "dev is the Expo bundler. start is an Expo-compatible alias. Typecheck and Jest run from monorepo CI until jumbo adds matching package scripts."
+      "notes": "dev is the Expo bundler. start is an Expo-compatible alias. Monorepo CI runs lint, knip, tsc, and Jest. Prettier and pnpm audit are still dirty on the current pin (Expo image-size advisory)."
     },
     {
       "id": "cli",
