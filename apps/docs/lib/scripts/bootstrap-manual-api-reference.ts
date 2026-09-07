@@ -15,9 +15,9 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
-  REST_API_SECTION_ORDER,
   isPublicRestApiOperation,
   pathToFolder,
+  restApiRootSidebarPages,
 } from '@/lib/scripts/manual-api/constants';
 import {
   collectPublicOperations,
@@ -161,16 +161,12 @@ async function main(): Promise<void> {
     );
   }
 
-  const rootPages = [...REST_API_SECTION_ORDER].filter((name) =>
-    byFolder.has(name),
-  );
-
   const rootMeta = {
     title: 'API',
     description: 'Payment and commerce endpoints.',
     root: true,
     icon: 'BookOpen',
-    pages: rootPages,
+    pages: restApiRootSidebarPages(new Set(byFolder.keys())),
   };
 
   writeFileSync(

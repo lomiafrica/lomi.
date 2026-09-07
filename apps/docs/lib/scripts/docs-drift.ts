@@ -4,7 +4,11 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { glob } from 'tinyglobby';
-import { isPublicRestApiOperation } from '@/lib/scripts/manual-api/constants';
+import {
+  REST_API_CONCEPT_PAGES,
+  REST_API_SECTION_ORDER,
+  isPublicRestApiOperation,
+} from '@/lib/scripts/manual-api/constants';
 import { collectPublicOperations } from '@/lib/scripts/manual-api/render-operation-mdx';
 import {
   flattenMcpTwins,
@@ -78,6 +82,65 @@ async function collectValidSlugs(): Promise<Set<string>> {
   }
 
   return slugs;
+}
+
+function isApiSidebarSeparator(entry: string): boolean {
+  return entry.startsWith('---') && entry.endsWith('---');
+}
+
+function apiResourcePages(pages: string[]): string[] {
+  const concepts = new Set<string>(REST_API_CONCEPT_PAGES);
+  return pages.filter(
+    (entry) => !isApiSidebarSeparator(entry) && !concepts.has(entry),
+  );
+}
+
+async function checkApiSidebarParity(errors: string[]): Promise<void> {
+  const enRaw = await fs.readFile(
+    path.join(CONTENT_ROOT, 'api/meta.json'),
+    'utf-8',
+  );
+  const frRaw = await fs.readFile(
+    path.join(CONTENT_ROOT, 'api/meta.fr.json'),
+    'utf-8',
+  );
+  // SAFETY: API sidebar manifests are authored JSON with a pages string list.
+  const enMeta = JSON.parse(enRaw) as { pages?: string[] };
+  const frMeta = JSON.parse(frRaw) as { pages?: string[] };
+  const enPages = enMeta.pages ?? [];
+  const frPages = frMeta.pages ?? [];
+
+  const enSeparators = enPages.filter(isApiSidebarSeparator);
+  const frSeparators = frPages.filter(isApiSidebarSeparator);
+  if (enSeparators.length === 0) {
+    errors.push(
+      'English API sidebar (content/docs/api/meta.json) is missing theme separators',
+    );
+  }
+  if (frSeparators.length === 0) {
+    errors.push(
+      'French API sidebar (content/docs/api/meta.fr.json) is missing theme separators',
+    );
+  }
+  if (enSeparators.length !== frSeparators.length) {
+    errors.push(
+      `API sidebar theme groups differ: EN has ${enSeparators.length}, FR has ${frSeparators.length}`,
+    );
+  }
+
+  const enResources = apiResourcePages(enPages);
+  const frResources = apiResourcePages(frPages);
+  if (enResources.join('\0') !== frResources.join('\0')) {
+    errors.push(
+      `API sidebar resource order differs between EN and FR: EN=${enResources.join(', ')} FR=${frResources.join(', ')}`,
+    );
+  }
+
+  if (enResources.join('\0') !== REST_API_SECTION_ORDER.join('\0')) {
+    errors.push(
+      'English API sidebar resource order does not match REST_API_SECTION_ORDER',
+    );
+  }
 }
 
 async function checkOpenApiParity(errors: string[]): Promise<void> {
@@ -363,6 +426,7 @@ async function main(): Promise<void> {
   const errors: string[] = [];
   const validSlugs = await collectValidSlugs();
 
+  await checkApiSidebarParity(errors);
   await checkOpenApiParity(errors);
   await checkAgentContracts(errors);
   await checkMcpManifestParity(errors);

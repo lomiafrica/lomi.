@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import {
   DOCS_SEARCH_ALIASES,
+  DOCS_SEARCH_SUGGESTED,
   DOCS_SEARCH_SUGGESTED_HREFS,
 } from '@/lib/search/aliases';
 
@@ -42,6 +43,23 @@ function aliasesMatch(href: string, query: string): boolean {
 }
 
 function run(): void {
+  if (DOCS_SEARCH_SUGGESTED.length !== 5) {
+    throw new Error(
+      `Expected 5 empty-state search suggestions, got ${DOCS_SEARCH_SUGGESTED.length}`,
+    );
+  }
+
+  const pathLikeTitles = DOCS_SEARCH_SUGGESTED.filter(
+    (item) => item.title.en.startsWith('/') || item.title.fr.startsWith('/'),
+  );
+  if (pathLikeTitles.length > 0) {
+    throw new Error(
+      `Search suggestions must use page titles, not routes: ${pathLikeTitles
+        .map((item) => item.href)
+        .join(', ')}`,
+    );
+  }
+
   const missingSuggested = DOCS_SEARCH_SUGGESTED_HREFS.filter(
     (href) => !hrefExists(href),
   );

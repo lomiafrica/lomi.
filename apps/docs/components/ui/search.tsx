@@ -26,7 +26,8 @@ import { t as translate } from '@/lib/i18n/translations';
 import { orama } from '@/lib/orama/client';
 import type { OramaCloudSearchParams } from '@orama/core';
 import type { SortedResult } from 'fumadocs-core/search';
-import { DOCS_SEARCH_SUGGESTED_HREFS } from '@/lib/search/aliases';
+import { DOCS_SEARCH_SUGGESTED } from '@/lib/search/aliases';
+import type { Language } from '@/lib/i18n/config';
 import type { DocsSearchTag } from '@/lib/search/tags';
 
 interface OramaHit {
@@ -51,12 +52,12 @@ function oramaConfigured(): boolean {
   );
 }
 
-function suggestedResults(): SortedResult[] {
-  return DOCS_SEARCH_SUGGESTED_HREFS.map((href) => ({
+function suggestedResults(locale: Language): SortedResult[] {
+  return DOCS_SEARCH_SUGGESTED.map((item) => ({
     type: 'page' as const,
-    id: `suggest:${href}`,
-    url: href,
-    content: href,
+    id: `suggest:${item.href}`,
+    url: item.href,
+    content: item.title[locale],
   }));
 }
 
@@ -241,7 +242,8 @@ export default function CustomSearchDialog(props: SharedProps) {
     };
   }, [search, tag, currentLanguage]);
 
-  const listItems = results === 'empty' ? suggestedResults() : results;
+  const listItems =
+    results === 'empty' ? suggestedResults(currentLanguage) : results;
 
   return (
     <SearchDialog

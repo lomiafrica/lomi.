@@ -184,12 +184,36 @@ export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
   ],
 };
 
-export const DOCS_SEARCH_SUGGESTED_HREFS = [
-  '/start/overview',
-  '/start/integration-journey',
-  '/start/api-keys',
-  '/build/accept/checkout',
+/** Empty-state search rows: page titles, not route paths. */
+export const DOCS_SEARCH_SUGGESTED = [
+  {
+    href: '/start/overview',
+    title: { en: 'What is lomi.?', fr: "Qu'est-ce que lomi. ?" },
+  },
+  {
+    href: '/start/integration-journey',
+    title: { en: 'Integration journey', fr: 'Parcours d’intégration' },
+  },
+  {
+    href: '/start/api-keys',
+    title: { en: 'Where are my API keys?', fr: 'Où trouver mes clés API ?' },
+  },
+  {
+    href: '/start/first-payment',
+    title: {
+      en: 'How do I test a payment?',
+      fr: 'Comment tester un paiement ?',
+    },
+  },
+  {
+    href: '/build/accept/checkout',
+    title: { en: 'How do I use checkout?', fr: 'Comment utiliser le checkout ?' },
+  },
 ] as const;
+
+export const DOCS_SEARCH_SUGGESTED_HREFS = DOCS_SEARCH_SUGGESTED.map(
+  (item) => item.href,
+);
 
 export function aliasesForPath(path: string): readonly string[] {
   const normalized = path.startsWith('/') ? path : `/${path}`;
