@@ -392,7 +392,7 @@ async function checkNextSteps(errors: string[]): Promise<void> {
     const content = await fs.readFile(path.join(CONTENT_ROOT, file), 'utf-8');
     if (BANNED_NEXT_STEP_HEADING_RE.test(content)) {
       errors.push(
-        `Legacy next-steps heading in ${file}: use <DocsNextSteps> (max ${NEXT_STEPS_MAX})`,
+        `Legacy next-steps heading in ${file}: use the built-in previous / next footer only`,
       );
     }
 

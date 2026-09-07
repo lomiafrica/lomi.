@@ -41,6 +41,7 @@ import { DocsPage } from 'fumadocs-ui/page';
 import { asJsonValue, isString, type JsonValue } from '@lomi./shared';
 import { DocsTwinLink } from '@/components/docs/docs-twin-link';
 import { DocsApiTryIt } from '@/components/docs/docs-api-tryit';
+import { DocsPageFooter } from '@/components/docs/docs-page-footer';
 import { findMcpTwin } from '@/lib/mcp-twins';
 
 type CompiledDocsPageData = {
@@ -187,6 +188,7 @@ export default async function Page({
         tableOfContent={{
           style: 'clerk',
         }}
+        slots={{ footer: DocsPageFooter }}
       >
         <div className="docs-page-header">
           <div className="docs-page-header-main">

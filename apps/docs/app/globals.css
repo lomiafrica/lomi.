@@ -111,7 +111,7 @@
   --docs-space-heading-bottom: 0.375rem;
   --docs-space-section: 1rem;
   --docs-sidebar-radius: 9px;
-  --docs-pill-radius: var(--docs-sidebar-radius);
+  --docs-pill-radius: 5px;
   --docs-sidebar-inset: 0.5rem;
   --docs-sidebar-well: color-mix(
     in oklab,
@@ -1470,7 +1470,7 @@ html.dark .docs-turnstile-mount {
 .docs-aside--error .docs-aside-title,
 .docs-aside--success .docs-aside-title,
 .docs-aside--idea .docs-aside-title {
-  font-weight: 500;
+  font-weight: 700;
   font-size: inherit;
 }
 
@@ -1484,7 +1484,7 @@ html.dark .docs-turnstile-mount {
 
 .docs-aside-title {
   margin: 0;
-  font-weight: 500;
+  font-weight: 700;
   font-size: inherit;
   line-height: inherit;
   color: var(--color-fd-foreground);
@@ -1495,7 +1495,7 @@ html.dark .docs-turnstile-mount {
 }
 
 .docs-aside-body--titled {
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .docs-aside-body p {
@@ -1513,6 +1513,12 @@ html.dark .docs-turnstile-mount {
 
 .docs-aside-body a {
   color: var(--color-fd-primary);
+}
+
+/* Pills inside callouts lift off the box fill instead of using the page chip. */
+.docs-aside .docs-aside-body :is(.docs-inline-code, .docs-inline-command, code) {
+  background: color-mix(in oklab, var(--foreground) 14%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 20%, transparent);
 }
 
 /* Task-first REST / SDK / CLI / MCP tabs */
@@ -1746,14 +1752,6 @@ html.dark .docs-turnstile-mount {
   text-decoration-thickness: var(--docs-link-underline-thickness);
   text-underline-offset: var(--docs-link-underline-offset);
   text-decoration-color: var(--docs-link-underline-hover);
-}
-
-.docs-next {
-  margin: 2.5rem 0 0;
-}
-
-.docs-next-item:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
 }
 
 .docs-mcp-index {
