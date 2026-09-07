@@ -82,6 +82,17 @@ export async function rejectManualRefundRequest(
   return callRpc(client, "reject_manual_refund_request", args, "reject_manual_refund_request", options);
 }
 
+export async function restoreMerchant(
+  client: TypedSupabaseClient,
+  args: DbFunctions["restore_merchant"]["Args"],
+  options?: SupabaseRpcOptions<DbFunctions["restore_merchant"]["Returns"]> | null,
+): Promise<DbFunctions["restore_merchant"]["Returns"] | null | boolean> {
+  if (options === null) {
+    return callRpc(client, "restore_merchant", args, "restore_merchant", { fallbackValue: null });
+  }
+  return callRpc(client, "restore_merchant", args, "restore_merchant", options);
+}
+
 export async function updateAdminDashboardAccessConfig(
   client: TypedSupabaseClient,
   args: DbFunctions["update_admin_dashboard_access_config"]["Args"],

@@ -26098,6 +26098,10 @@ export type Database = {
         Args: { p_organization_id: string; p_raw_order: Json }
         Returns: Json
       }
+      restore_merchant: {
+        Args: { p_merchant_id: string }
+        Returns: Json
+      }
       retry_webhook_delivery: {
         Args: { p_log_id: string; p_merchant_id: string; p_webhook_id: string }
         Returns: boolean
