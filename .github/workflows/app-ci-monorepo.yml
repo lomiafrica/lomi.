@@ -13,6 +13,7 @@ jobs:
       api: ${{ steps.changes.outputs.api }}
       docs: ${{ steps.changes.outputs.docs }}
       cli: ${{ steps.changes.outputs.cli }}
+      shared: ${{ steps.changes.outputs.shared }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -30,6 +31,8 @@ jobs:
               - 'apps/docs/**'
             cli:
               - 'apps/cli/**'
+            shared:
+              - 'packages/shared/**'
 
   build-api:
     needs: detect-changes
@@ -94,6 +97,24 @@ jobs:
       - run: pnpm lint
       - run: pnpm docs:drift
       - run: pnpm build
+
+  test-shared:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.shared == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/shared
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: pnpm install --ignore-workspace --frozen-lockfile
+      - run: pnpm test
 
   build-cli:
     needs: detect-changes
