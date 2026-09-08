@@ -1,0 +1,35 @@
+---
+title: "Lister les demandes d'assistance"
+description: "Lister les demandes d'assistance"
+full: true
+method: get
+path: /support-requests
+operationId: SupportRequestsController_findAll
+---
+
+## Aperçu
+
+Lister les demandes d'assistance
+
+### Quand l'utiliser
+
+Utilisez cet endpoint pour suivre les tickets ouverts depuis le tableau de bord ou le MCP.
+
+## Authentification
+
+Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY`.
+
+## Endpoint
+
+`GET /support-requests`
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Succès |
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_findAll`
+- **Operation**: `GET /support-requests`

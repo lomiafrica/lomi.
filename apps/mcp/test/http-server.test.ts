@@ -566,6 +566,7 @@ describe('createHttpApplication', () => {
     const before = await toolNames(2);
     expect(before).toContain('lomi_provision');
     expect(before).toContain('lomi_search_tools');
+    expect(before).toContain('lomi_support');
     expect(before).not.toContain('lomi_checkout');
 
     // Standalone SSE stream receives server notifications.
@@ -664,6 +665,190 @@ describe('createHttpApplication', () => {
     expect(String((body.error as JsonObject)?.message ?? '')).toMatch(
       /credential mismatch/,
     );
+  });
+
+  it('guest lomi_support file posts /contact and list asks for a merchant key', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    delete process.env.LOMI_SECRET_KEY;
+    delete process.env.X_API_KEY;
+    process.env.LOMI_API_URL = 'https://api.lomi.africa';
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input, init) => {
+        const url = String(input);
+        if (url.endsWith('/contact')) {
+          return new Response(
+            JSON.stringify({ success: true, reference: 'docs-guest1' }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } },
+          );
+        }
+        return realFetch(input, init);
+      },
+    );
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp/guest`;
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'support-guest', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const rpc = async (body: JsonObject): Promise<JsonObject> => {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json, text/event-stream',
+          'mcp-session-id': sessionId!,
+        },
+        body: JSON.stringify(body),
+      });
+      expect(res.status).toBe(200);
+      return parseSseJsonRpc(await res.text());
+    };
+
+    const fileCall = await rpc({
+      jsonrpc: '2.0',
+      method: 'tools/call',
+      id: 2,
+      params: {
+        name: 'lomi_support',
+        arguments: {
+          action: 'file',
+          email: 'friend@example.com',
+          message: 'Wave paid but the receipt never arrived.',
+          topic: 'billing',
+        },
+      },
+    });
+    const fileResult = fileCall.result as JsonObject;
+    expect(fileResult.isError).not.toBe(true);
+    const fileText = JSON.stringify(fileResult.content);
+    expect(fileText).toContain('docs-guest1');
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/contact'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+
+    const listCall = await rpc({
+      jsonrpc: '2.0',
+      method: 'tools/call',
+      id: 3,
+      params: {
+        name: 'lomi_support',
+        arguments: { action: 'list' },
+      },
+    });
+    const listResult = listCall.result as JsonObject;
+    expect(listResult.isError).toBe(true);
+    expect(JSON.stringify(listResult.content)).toMatch(/merchant key/i);
+
+    fetchMock.mockRestore();
+  });
+
+  it('merchant lomi_support file posts /support-requests', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    process.env.LOMI_SECRET_KEY = 'lomi_sk_test_support_merchant';
+    process.env.LOMI_API_URL = 'https://api.lomi.africa';
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input, init) => {
+        const url = String(input);
+        if (url.endsWith('/support-requests') && init?.method === 'POST') {
+          return new Response(
+            JSON.stringify({
+              id: 'sr_mcp',
+              category: 'billing',
+              status: 'open',
+              message: 'Wave paid but the receipt never arrived.',
+            }),
+            { status: 201, headers: { 'Content-Type': 'application/json' } },
+          );
+        }
+        return realFetch(input, init);
+      },
+    );
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'x-lomi-api-key': 'lomi_sk_test_support_merchant',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'support-merchant', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const callRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId!,
+        'x-lomi-api-key': 'lomi_sk_test_support_merchant',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'tools/call',
+        id: 2,
+        params: {
+          name: 'lomi_support',
+          arguments: {
+            action: 'file',
+            category: 'billing',
+            message: 'Wave paid but the receipt never arrived.',
+          },
+        },
+      }),
+    });
+    expect(callRes.status).toBe(200);
+    const call = parseSseJsonRpc(await callRes.text());
+    const callResult = call.result as JsonObject;
+    expect(callResult.isError, JSON.stringify(callResult.content)).not.toBe(
+      true,
+    );
+    expect(JSON.stringify(callResult.content)).toContain('sr_mcp');
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/support-requests'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+    fetchMock.mockRestore();
   });
 });
 

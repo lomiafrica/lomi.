@@ -184,7 +184,7 @@ export default async function Page({
         }}
       />
       <DocsPage
-        toc={toc}
+        toc={toc.filter((item) => item.depth === 2)}
         lastUpdate={lastModified ? new Date(lastModified) : undefined}
         tableOfContent={{
           style: 'clerk',

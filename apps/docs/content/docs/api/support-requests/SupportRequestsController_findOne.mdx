@@ -1,0 +1,53 @@
+---
+title: "Get support ticket"
+description: "Get support ticket"
+full: true
+method: get
+path: /support-requests/{id}
+operationId: SupportRequestsController_findOne
+---
+
+## Overview
+
+Get support ticket
+
+Returns one ticket by id, including status, subject, and any staff resolution note.
+
+
+### When to use this
+
+Use when following up on a ticket id from create or list.
+
+### See also
+
+[List support tickets](/api/support-requests/SupportRequestsController_findAll)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /support-requests/{id}`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `404` | Not found |
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/support-requests/$TICKET_ID" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_findOne`
+- **Operation**: `GET /support-requests/{id}`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

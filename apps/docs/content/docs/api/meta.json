@@ -32,6 +32,7 @@
     "providers",
     "---Operations---",
     "disputes",
+    "support-requests",
     "risk-assessments",
     "webhooks",
     "logs",

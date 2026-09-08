@@ -17,6 +17,7 @@ import {
 } from './env-config.js';
 import { registerSearchToolsMetaTool } from './register-search-tools.js';
 import { registerLomiRegisterAgent } from './register-agent.js';
+import { registerLomiSupport } from './register-support.js';
 import { mcpLog } from './mcp-request-context.js';
 import { validateJsonValue } from "@lomi./shared";
 
@@ -68,6 +69,7 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     },
   );
   registerLomiRegisterAgent(server, { onProvisioningKeyDiscovered });
+  registerLomiSupport(server, { getApiKey });
   registerProvisioningTools(server, provisioningManifest, {
     getProvisioningKey,
     getPartnerKey,

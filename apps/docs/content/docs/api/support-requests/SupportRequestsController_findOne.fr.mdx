@@ -1,0 +1,36 @@
+---
+title: "Obtenir une demande d'assistance"
+description: "Obtenir une demande d'assistance"
+full: true
+method: get
+path: /support-requests/{id}
+operationId: SupportRequestsController_findOne
+---
+
+## Aperçu
+
+Obtenir une demande d'assistance
+
+### Quand l'utiliser
+
+Utilisez cet endpoint pour relire un ticket à partir de son identifiant.
+
+## Authentification
+
+Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY`.
+
+## Endpoint
+
+`GET /support-requests/{id}`
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Succès |
+| `404` | Introuvable |
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_findOne`
+- **Operation**: `GET /support-requests/{id}`

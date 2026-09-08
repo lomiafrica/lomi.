@@ -1,0 +1,37 @@
+---
+title: "Fermer une demande d'assistance"
+description: "Fermer une demande d'assistance"
+full: true
+method: post
+path: /support-requests/{id}/close
+operationId: SupportRequestsController_close
+---
+
+## Aperçu
+
+Fermer une demande d'assistance
+
+Le créateur ou un admin de l'organisation peut fermer un ticket ouvert.
+
+### Quand l'utiliser
+
+Utilisez cet endpoint quand le problème est résolu.
+
+## Authentification
+
+Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY`.
+
+## Endpoint
+
+`POST /support-requests/{id}/close`
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Fermée |
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_close`
+- **Operation**: `POST /support-requests/{id}/close`

@@ -15,7 +15,7 @@ export function buildServerInstructions(
     `Default API base URL: ${baseUrl}. Override with LOMI_API_URL (sandbox: https://sandbox.api.lomi.africa).`,
     '',
     guest
-      ? 'Guest bootstrap: this session has no merchant key yet. Call lomi_register_agent (solves a short proof-of-work) to mint a sandbox-only lomi_prov_* key on this session. Then lomi_provision action=create_account, upload_document, complete, api_keys. As soon as a test secret key comes back, this same session gains the merchant tools (lomi_checkout, lomi_customers, ...) in TEST mode; refresh the tool list, no reconnect needed. Live money still needs lomi_provision action=request_live and human approval at https://dashboard.lomi.africa/connect/go-live; live keys are only shown in the dashboard. Guest URL: https://mcp.lomi.africa/mcp/guest.'
+      ? 'Guest bootstrap: this session has no merchant key yet. Call lomi_register_agent (solves a short proof-of-work) to mint a sandbox-only lomi_prov_* key on this session. Then lomi_provision action=create_account, upload_document, complete, api_keys. As soon as a test secret key comes back, this same session gains the merchant tools (lomi_checkout, lomi_customers, ...) in TEST mode; refresh the tool list, no reconnect needed. Live money still needs lomi_provision action=request_live and human approval at https://dashboard.lomi.africa/connect/go-live; live keys are only shown in the dashboard. File a complaint with lomi_support action=file (email + message) without a key. Guest URL: https://mcp.lomi.africa/mcp/guest.'
       : '',
     '',
     'Authentication:',
@@ -45,6 +45,7 @@ export function buildServerInstructions(
     '- Pass idempotency_key on all write operations for safe retries.',
     '- Prefer list/filter actions before destructive operations.',
     '- Use lomi_search_tools to discover tools by keyword. Resource tools take a required `action` (for example lomi_customers with action=list).',
+    '- To contact lomi. (complaint, billing, integration, abuse, security): lomi_support action=file. Guest needs email + message. A merchant key opens a Settings → Support ticket (list/get/close). action=status returns https://status.lomi.africa and GET /ready.',
     '- To collect money, prefer checkout-sessions / payment-links; direct charge tools are intentionally not exposed.',
     '- Resources: lomi://docs/recipes, lomi://docs/finance, lomi://docs/authentication, lomi://docs/idempotency, lomi://docs/pagination, lomi://docs/webhooks, lomi://docs/money, lomi://docs/errors, lomi://tools/index.',
     '- Money moves (payouts, refunds, instant settlement) return a confirmation_token preview first. Resend with that token to execute. merchant.write cannot move money; reconnect with merchant.money.',

@@ -15,7 +15,7 @@ import {
 
 The **Model Context Protocol (MCP)** lets AI assistants (Cursor, Claude Desktop, custom agents) call the **lomi. merchant API** for you: create checkouts, list payments, debug webhooks, without writing every HTTP request by hand. Most teams use the hosted server at `https://mcp.lomi.africa` or local stdio with `npx @lomi./mcp`. Access is scoped to your organization, the same as your API key.
 
-## Connect with OAuth
+## Connect
 
 Recommended: add the hosted MCP URL with **no API key**. OAuth-capable clients open **Connect with lomi.** in the browser, you sign in on the dashboard, and the client stores a scoped token (`lomi_oat_*`).
 
@@ -28,7 +28,7 @@ Two entry points, one product:
 
 Revoke a connected app from **Developers → API keys → Connect MCP → Connected apps**.
 
-## Getting started
+### Getting started
 
 1. Click **Add to Cursor**, <a href={GROK_BOT_URL}>**Add to Grok Bot**</a>, <a href={buildClaudeOauthInstallUrl()}>**Add to Claude**</a>, or <a href={buildVscodeOauthInstallUrl()}>**Add to VS Code**</a> above (or paste the URL-only JSON below). OpenCode and Codex stay under the CLI sections.
 2. On first connect the client receives a `401`, fetches `https://mcp.lomi.africa/.well-known/oauth-protected-resource/mcp`, and opens **Connect with lomi.**
@@ -100,7 +100,7 @@ API-key config (fallback):
 
 Replace `YOUR_LOMI_SECRET_KEY` with your real API key, then restart your MCP client.
 
-## Sandbox agent bootstrap (no key)
+### Sandbox agent bootstrap (no key)
 
 If the client has no merchant key yet, connect `https://mcp.lomi.africa/mcp/guest` (no headers). Call **`lomi_register_agent`**: the server solves a short proof-of-work and this MCP session adopts a sandbox-only `lomi_prov_*` key.
 
@@ -108,38 +108,7 @@ Then `lomi_provision action=create_account`, `upload_document`, `complete`, and 
 
 Live money still requires `lomi_provision action=request_live` and human approval at [dashboard.lomi.africa/connect/go-live](https://dashboard.lomi.africa/connect/go-live). Live keys are only shown in the dashboard, never over MCP.
 
-## Claude Code
-
-```bash
-claude mcp add --transport http lomi https://mcp.lomi.africa/mcp
-```
-
-On first use, Claude Code opens **Connect with lomi.** in the browser.
-
-## OpenCode
-
-```bash
-opencode mcp add lomi --url https://mcp.lomi.africa/mcp
-opencode mcp auth lomi
-```
-
-## Codex
-
-```bash
-codex mcp add lomi --url https://mcp.lomi.africa/mcp
-codex mcp login lomi
-```
-
-## Agent Plugin (Cursor, Codex, Copilot)
-
-Install the lomi. plugin from your client's marketplace when it is available ([lomiafrica/agent-plugin](https://github.com/lomiafrica/agent-plugin)). You can always connect directly with the hosted MCP URL shown above; you do not need the plugin.
-
-```bash
-codex plugin marketplace add lomiafrica/agent-plugin
-codex plugin add lomi@lomi
-```
-
-## Discovery
+### Discovery
 
 - Hosted MCP: `https://mcp.lomi.africa/mcp`
 - Server card: `https://mcp.lomi.africa/server-card`
@@ -148,7 +117,49 @@ codex plugin add lomi@lomi
 - ChatGPT: add the same MCP URL in developer mode. First-party app page: [lomi.africa/chatgpt](https://lomi.africa/chatgpt)
 - Agent briefing: [lomi.africa/llms.txt](https://lomi.africa/llms.txt)
 
-## Connect with stdio (local)
+### Sandbox vs live
+
+| Mode | `LOMI_API_URL` (stdio) | API keys |
+| --- | --- | --- |
+| **Live** | `https://api.lomi.africa` | Live secret keys from the dashboard |
+| **Sandbox** | `https://sandbox.api.lomi.africa` | Sandbox secret keys from the dashboard |
+
+For HTTP MCP, tool calls use whichever API environment your `LOMI_SECRET_KEY` belongs to.
+
+## Clients
+
+### Claude Code
+
+```bash
+claude mcp add --transport http lomi https://mcp.lomi.africa/mcp
+```
+
+On first use, Claude Code opens **Connect with lomi.** in the browser.
+
+### OpenCode
+
+```bash
+opencode mcp add lomi --url https://mcp.lomi.africa/mcp
+opencode mcp auth lomi
+```
+
+### Codex
+
+```bash
+codex mcp add lomi --url https://mcp.lomi.africa/mcp
+codex mcp login lomi
+```
+
+### Agent Plugin (Cursor, Codex, Copilot)
+
+Install the lomi. plugin from your client's marketplace when it is available ([lomiafrica/agent-plugin](https://github.com/lomiafrica/agent-plugin)). You can always connect directly with the hosted MCP URL shown above; you do not need the plugin.
+
+```bash
+codex plugin marketplace add lomiafrica/agent-plugin
+codex plugin add lomi@lomi
+```
+
+### Connect with stdio (local)
 
 Runs the MCP server on your machine, no transport token needed. Good for local development.
 
@@ -175,27 +186,17 @@ npx -y @lomi./mcp
 
 Set `LOMI_API_URL` to `https://sandbox.api.lomi.africa` when working against sandbox data.
 
-## Sandbox vs live
-
-| Mode | `LOMI_API_URL` (stdio) | API keys |
-| --- | --- | --- |
-| **Live** | `https://api.lomi.africa` | Live secret keys from the dashboard |
-| **Sandbox** | `https://sandbox.api.lomi.africa` | Sandbox secret keys from the dashboard |
-
-For HTTP MCP, tool calls use whichever API environment your `LOMI_SECRET_KEY` belongs to.
-
-## Tools, resources, and prompts
+## Tools
 
 - Merchant tools are **resource tools** named `lomi_<resource>` with a required `action` (for example `lomi_customers` with `action=list`, `lomi_invoices` with `action=pdf`). Mechanical `lomi_post_*` / `lomi_get_*` aliases are not registered.
 - **`lomi_search_tools`**: search the tool catalog when your client loads tools on demand.
 - **`lomi_register_agent`**: mint a sandbox provisioning key (guest or any session).
+- **`lomi_support`**: file a complaint. Guest sessions send email (`action=file` with `email` + `message`). A merchant key opens a Settings → Support ticket (`list` / `get` / `close`). `action=status` returns the status page and `/ready`.
 - Provisioning: `lomi_provision` and `lomi_partners` (same `action` pattern).
 - **Resources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
 
-## API ↔ MCP
-
-Each MCP action below is the twin of one REST operation. Direct charges and `POST /usage/events` are not exposed over MCP.
+Each MCP action below matches one REST operation. Direct charges and `POST /usage/events` are not exposed over MCP.
 
 <McpOperationIndex />
 
@@ -242,6 +243,6 @@ Authorized platforms receive a **`lomi_partner_*`** management key from lomi adm
 
 Send `x-lomi-partner-key: lomi_partner_*` (or `Authorization: Bearer lomi_partner_*`). End users pass the returned `lomi_prov_*` to MCP or `/provisioning/*`. Monitor partners and audit events in **admin.lomi.africa → Provisioning**.
 
-## Deploying your own MCP server
+### Deploying your own MCP server
 
 Most integrators use `https://mcp.lomi.africa` or local stdio. Deploying a separate MCP instance is for **lomi. engineering and operators** only. See [Maintaining CLI and MCP](/resources/contributing/maintaining-cli-mcp).

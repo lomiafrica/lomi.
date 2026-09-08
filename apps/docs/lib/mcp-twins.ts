@@ -1,6 +1,7 @@
 /* @proprietary license */
 
 import fs from 'node:fs';
+import path from 'node:path';
 import {
   asJsonValue,
   isJsonObject,
@@ -9,8 +10,36 @@ import {
   type JsonValue,
 } from '@lomi./shared';
 import policyJson from '../../mcp/config/mcp-tool-policy.json';
+import type { McpCatalogCategory } from '@/lib/mcp-catalog';
+import {
+  REST_API_SIDEBAR_GROUPS,
+  pathToFolder,
+} from '@/lib/scripts/manual-api/constants';
+
+export type { McpCatalogCategory } from '@/lib/mcp-catalog';
+export { MCP_CATALOG_CATEGORIES } from '@/lib/mcp-catalog';
 
 export type McpAuthMode = 'merchant' | 'provisioning' | 'partner';
+
+const SIDEBAR_SEPARATOR_TO_CATEGORY: Record<string, McpCatalogCategory> = {
+  '---Accept payments---': 'accept',
+  '---Manage commerce---': 'commerce',
+  '---Move money---': 'money',
+  '---Platform---': 'platform',
+  '---Operations---': 'operations',
+};
+
+const FOLDER_TO_CATEGORY: ReadonlyMap<string, McpCatalogCategory> = (() => {
+  const map = new Map<string, McpCatalogCategory>();
+  for (const group of REST_API_SIDEBAR_GROUPS) {
+    const category = SIDEBAR_SEPARATOR_TO_CATEGORY[group.separator];
+    if (!category) continue;
+    for (const folder of group.folders) {
+      map.set(folder, category);
+    }
+  }
+  return map;
+})();
 
 export type McpTwin = {
   operationKey: string;
@@ -58,6 +87,22 @@ export function mcpTwinAnchor(tool: string, action: string): string {
 
 export function mcpTwinHref(tool: string, action: string): string {
   return `${MCP_GUIDE_PATH}#${mcpTwinAnchor(tool, action)}`;
+}
+
+export function mcpCategoryFromPath(route: string): McpCatalogCategory {
+  const folder = pathToFolder(route);
+  return FOLDER_TO_CATEGORY.get(folder) ?? 'operations';
+}
+
+export function mcpCategoryForGroup(
+  group: McpToolGroupTwins,
+): McpCatalogCategory {
+  if (group.authMode === 'provisioning' || group.authMode === 'partner') {
+    return 'agents';
+  }
+  const firstPath = group.twins[0]?.path;
+  if (!firstPath) return 'operations';
+  return mcpCategoryFromPath(firstPath);
 }
 
 function parseGroup(value: JsonValue): McpToolGroupTwins | null {
@@ -180,4 +225,48 @@ export function restDocsHrefFromMdxFile(relativePath: string): string | null {
   if (!match || !match[1] || !match[2]) return null;
   if (match[2] === 'index') return null;
   return `/api/${match[1]}/${match[2]}`;
+}
+
+let cachedRestHrefs: Map<string, string> | null = null;
+
+/**
+ * operationKey → REST docs URL. Reads hand-authored MDX on disk so the MCP
+ * page never imports the fumadocs `source` loader (that cycle remounts the
+ * page in dev).
+ */
+export function listRestDocsHrefs(): Map<string, string> {
+  if (cachedRestHrefs) return cachedRestHrefs;
+  const map = new Map<string, string>();
+  const apiRoot = path.join(process.cwd(), 'content/docs/api');
+  if (!fs.existsSync(apiRoot)) {
+    cachedRestHrefs = map;
+    return map;
+  }
+
+  for (const folder of fs.readdirSync(apiRoot, { withFileTypes: true })) {
+    if (!folder.isDirectory()) continue;
+    const folderPath = path.join(apiRoot, folder.name);
+    for (const file of fs.readdirSync(folderPath)) {
+      if (
+        !file.endsWith('.mdx') ||
+        file.endsWith('.fr.mdx') ||
+        file === 'index.mdx'
+      ) {
+        continue;
+      }
+      const content = fs.readFileSync(path.join(folderPath, file), 'utf8');
+      const methodMatch = /^method:\s*(\S+)/m.exec(content);
+      const pathMatch = /^path:\s*(.+)$/m.exec(content);
+      if (!methodMatch?.[1] || !pathMatch?.[1]) continue;
+      const routePath = pathMatch[1].trim().replace(/^['"]|['"]$/g, '');
+      const key = `${methodMatch[1].toUpperCase()} ${routePath}`;
+      const href = restDocsHrefFromMdxFile(
+        `content/docs/api/${folder.name}/${file}`,
+      );
+      if (href && !map.has(key)) map.set(key, href);
+    }
+  }
+
+  cachedRestHrefs = map;
+  return map;
 }

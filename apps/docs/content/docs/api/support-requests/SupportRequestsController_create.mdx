@@ -1,0 +1,65 @@
+---
+title: "Create support ticket"
+description: "Create support ticket"
+full: true
+method: post
+path: /support-requests
+operationId: SupportRequestsController_create
+---
+
+## Overview
+
+Create support ticket
+
+Opens a ticket in Settings → Support. The lomi. team sees it in the admin inbox and emails a confirmation.
+
+
+### When to use this
+
+Use when an agent or integration needs to file a complaint or ask for help on a live merchant account.
+
+### See also
+
+[List support tickets](/api/support-requests/SupportRequestsController_findAll) · [MCP](/build/mcp)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /support-requests`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Body
+
+`category` (`account`, `billing`, `technical`, `feature`, `other`), `message` (required), optional `subject`, and optional context ids (`transaction_id`, `customer_id`, and similar) prepended onto the message.
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Ticket created |
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/support-requests" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"category":"technical","message":"Checkout sessions stay open after a Wave pay.","subject":"Wave checkout hang"}'
+```
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_create`
+- **Operation**: `POST /support-requests`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

@@ -1,0 +1,66 @@
+---
+title: "List support tickets"
+description: "List support tickets"
+full: true
+method: get
+path: /support-requests
+operationId: SupportRequestsController_findAll
+---
+
+## Overview
+
+List support tickets
+
+Returns Settings → Support tickets for the organization behind the API key.
+
+
+### When to use this
+
+Use after filing a ticket via MCP or the dashboard to check status and resolution notes.
+
+### See also
+
+[Create support ticket](/api/support-requests/SupportRequestsController_create)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /support-requests`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Query parameters
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `cursor` | query | No | - |  |
+| `limit` | query | No | - |  |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/support-requests?limit=20" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_findAll`
+- **Operation**: `GET /support-requests`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

@@ -62,16 +62,18 @@ export async function callLomiRest(
   args: JsonObject,
   options: {
     baseUrl: string;
-    apiKey: string;
+    apiKey?: string | null;
     authHeaderName?: string;
   },
 ): Promise<LomiHttpResult> {
   const { baseUrl, apiKey, authHeaderName = 'X-API-KEY' } = options;
   type LomiRequestHeaders = { [header: string]: string };
   const headers: LomiRequestHeaders = {
-    [authHeaderName]: apiKey,
     Accept: 'application/json',
   };
+  if (apiKey) {
+    headers[authHeaderName] = apiKey;
+  }
 
   let path = spec.pathTemplate;
   for (const name of spec.pathParamNames) {

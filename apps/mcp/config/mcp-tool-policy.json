@@ -17,7 +17,11 @@
     "POST /charge/wave",
     "POST /charge/mtn",
     "POST /charge/switch",
-    "POST /usage/events"
+    "POST /usage/events",
+    "GET /support-requests",
+    "GET /support-requests/{id}",
+    "POST /support-requests",
+    "POST /support-requests/{id}/close"
   ],
   "groups": [
     {

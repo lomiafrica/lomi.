@@ -39,6 +39,7 @@ export const REST_API_SIDEBAR_GROUPS = [
     separator: '---Operations---',
     folders: [
       'disputes',
+      'support-requests',
       'risk-assessments',
       'webhooks',
       'logs',
@@ -90,6 +91,7 @@ const PUBLIC_REST_API_OPERATIONS = [
   'products',
   'refunds',
   'disputes',
+  'support-requests',
   'risk-assessments',
   'subscriptions',
   'transactions',

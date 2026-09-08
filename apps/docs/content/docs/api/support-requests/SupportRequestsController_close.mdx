@@ -1,0 +1,52 @@
+---
+title: "Close support ticket"
+description: "Close support ticket"
+full: true
+method: post
+path: /support-requests/{id}/close
+operationId: SupportRequestsController_close
+---
+
+## Overview
+
+Close support ticket
+
+Marks an open ticket as closed. The creator or an org admin can close it.
+
+
+### When to use this
+
+Use when the issue is resolved and you no longer need a reply.
+
+### See also
+
+[Get support ticket](/api/support-requests/SupportRequestsController_findOne)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /support-requests/{id}/close`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Closed |
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/support-requests/$TICKET_ID/close" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_close`
+- **Operation**: `POST /support-requests/{id}/close`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

@@ -1,0 +1,9 @@
+{
+  "title": "Assistance",
+  "pages": [
+    "SupportRequestsController_create",
+    "SupportRequestsController_findAll",
+    "SupportRequestsController_findOne",
+    "SupportRequestsController_close"
+  ]
+}

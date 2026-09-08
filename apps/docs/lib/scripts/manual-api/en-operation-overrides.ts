@@ -737,4 +737,34 @@ export const EN_OPERATION_COPY = {
     related:
       '[Choose integration](/build/choose-integration) · [Mobile money](/build/mobile-money)',
   },
+  SupportRequestsController_findAll: {
+    summary: 'List support tickets',
+    body: 'Returns Settings → Support tickets for the organization behind the API key.',
+    whenToUse:
+      'Use after filing a ticket via MCP or the dashboard to check status and resolution notes.',
+    related:
+      '[Create support ticket](/api/support-requests/SupportRequestsController_create)',
+  },
+  SupportRequestsController_findOne: {
+    summary: 'Get support ticket',
+    body: 'Returns one ticket by id, including status, subject, and any staff resolution note.',
+    whenToUse: 'Use when following up on a ticket id from create or list.',
+    related:
+      '[List support tickets](/api/support-requests/SupportRequestsController_findAll)',
+  },
+  SupportRequestsController_create: {
+    summary: 'Create support ticket',
+    body: 'Opens a ticket in Settings → Support. The lomi. team sees it in the admin inbox and emails a confirmation.',
+    whenToUse:
+      'Use when an agent or integration needs to file a complaint or ask for help on a live merchant account.',
+    related:
+      '[List support tickets](/api/support-requests/SupportRequestsController_findAll) · [MCP](/build/mcp)',
+  },
+  SupportRequestsController_close: {
+    summary: 'Close support ticket',
+    body: 'Marks an open ticket as closed. The creator or an org admin can close it.',
+    whenToUse: 'Use when the issue is resolved and you no longer need a reply.',
+    related:
+      '[Get support ticket](/api/support-requests/SupportRequestsController_findOne)',
+  },
 };

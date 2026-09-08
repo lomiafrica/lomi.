@@ -1823,10 +1823,94 @@ html.dark .docs-turnstile-mount {
   margin: 1rem 0 1.5rem;
 }
 
-.docs-mcp-index-group:not(:last-child) {
+.docs-mcp-index-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
+}
+
+.docs-mcp-index-search input {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--docs-hairline) !important;
+  border-radius: var(--docs-sidebar-radius);
+  background-color: var(--docs-sub) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--color-fd-foreground);
+  font-size: 0.875rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.docs-mcp-index-search input:hover {
+  border-color: color-mix(in oklab, var(--foreground) 24%, transparent) !important;
+}
+
+.docs-mcp-index-search input:is(:focus, :focus-visible) {
+  border-color: color-mix(in oklab, var(--foreground) 36%, transparent) !important;
+}
+
+.docs-mcp-index-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.docs-mcp-index-chip {
+  appearance: none;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--docs-hairline) !important;
+  border-radius: var(--docs-sidebar-radius);
+  background: var(--docs-sub);
+  color: var(--color-fd-muted-foreground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.docs-mcp-index-chip:hover {
+  border-color: color-mix(in oklab, var(--foreground) 24%, transparent) !important;
+  color: var(--color-fd-foreground);
+}
+
+.docs-mcp-index-chip[aria-pressed='true'] {
+  background: var(--docs-well);
+  border-color: color-mix(in oklab, var(--foreground) 28%, transparent) !important;
+  color: var(--color-fd-foreground);
+}
+
+.docs-mcp-index-empty {
+  margin: 0;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.875rem;
+}
+
+.docs-mcp-index-section + .docs-mcp-index-section {
+  margin-top: 1.25rem;
+}
+
+.docs-mcp-index-category {
+  margin: 0 0 0.5rem;
+  color: var(--color-fd-muted-foreground);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.docs-mcp-index-group {
   border-bottom: 1px solid var(--docs-hairline);
+}
+
+.docs-mcp-index-group:last-child {
+  border-bottom: 0;
 }
 
 .docs-mcp-index-tool {
@@ -1834,10 +1918,34 @@ html.dark .docs-turnstile-mount {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem 0.75rem;
-  margin: 0 0 0.5rem;
+  margin: 0;
+  padding: 0.65rem 0;
   font-size: 0.95rem;
   font-weight: 600;
   scroll-margin-top: 5rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.docs-mcp-index-tool::-webkit-details-marker {
+  display: none;
+}
+
+.docs-mcp-index-tool::before {
+  content: '';
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  margin-right: 0.15rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  opacity: 0.55;
+}
+
+.docs-mcp-index-group[open] > .docs-mcp-index-tool::before {
+  transform: rotate(45deg);
+  opacity: 0.75;
 }
 
 .docs-mcp-index-anchor {
@@ -1851,6 +1959,10 @@ html.dark .docs-turnstile-mount {
 .docs-mcp-index-tool-title {
   font-weight: 400;
   color: var(--color-fd-muted-foreground);
+}
+
+.docs-mcp-index-group[open] .docs-mcp-index-table-wrap {
+  padding-bottom: 0.75rem;
 }
 
 .docs-mcp-index-table-wrap {

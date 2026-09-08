@@ -1,0 +1,37 @@
+---
+title: "Créer une demande d'assistance"
+description: "Créer une demande d'assistance"
+full: true
+method: post
+path: /support-requests
+operationId: SupportRequestsController_create
+---
+
+## Aperçu
+
+Créer une demande d'assistance
+
+Ouvre un ticket dans Paramètres → Assistance. L'équipe lomi. le voit dans la console admin et envoie une confirmation.
+
+### Quand l'utiliser
+
+Utilisez cet endpoint pour déposer une plainte ou demander de l'aide sur un compte marchand.
+
+## Authentification
+
+Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY` (voir [Aperçu](/api)). Clé **test** contre `https://sandbox.api.lomi.africa`, clé **live** contre `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /support-requests`
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Demande créée |
+
+## OpenAPI
+
+- **operationId**: `SupportRequestsController_create`
+- **Operation**: `POST /support-requests`
