@@ -2,8 +2,60 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 22,
+  "toolCount": 27,
   "tools": [
+    {
+      "name": "lomi_api_keys",
+      "title": "API keys",
+      "description": "API keys. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List API keys (GET /api-keys). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "API keys"
+      ],
+      "write": false,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list"
+            ],
+            "description": "Which REST operation to run. One of: list."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          }
+        }
+      },
+      "readOnly": true,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "api get keys list",
+      "actions": {
+        "list": {
+          "operationKey": "GET /api-keys",
+          "method": "get",
+          "pathTemplate": "/api-keys",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "ApiKeysController_list",
+          "write": false,
+          "wantsBody": false,
+          "title": "List API keys",
+          "description": "List API keys for the organization. Values are prefix and last4 only; full secrets are never returned.",
+          "tags": [
+            "API keys"
+          ],
+          "requiredInput": []
+        }
+      }
+    },
     {
       "name": "lomi_balance",
       "title": "Account balance",
@@ -667,11 +719,11 @@
     {
       "name": "lomi_disputes",
       "title": "Disputes",
-      "description": "Disputes. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List disputes (GET /disputes). No extra required fields.\n- `get` — Get dispute (GET /disputes/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Disputes. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List disputes (GET /disputes). No extra required fields.\n- `get` — Get dispute (GET /disputes/{id}). Required: id.\n- `submit_evidence` — Submit dispute evidence (POST /disputes/{id}/evidence). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Litiges"
       ],
-      "write": false,
+      "write": true,
       "inputSchema": {
         "type": "object",
         "additionalProperties": true,
@@ -683,9 +735,10 @@
             "type": "string",
             "enum": [
               "list",
-              "get"
+              "get",
+              "submit_evidence"
             ],
-            "description": "Which REST operation to run. One of: list, get."
+            "description": "Which REST operation to run. One of: list, get, submit_evidence."
           },
           "cursor": {
             "type": "string",
@@ -708,6 +761,10 @@
           "id": {
             "description": "Dispute ID"
           },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          },
           "limit": {
             "type": "number",
             "description": "Limit"
@@ -722,10 +779,10 @@
           }
         }
       },
-      "readOnly": true,
+      "readOnly": false,
       "destructive": false,
       "alwaysLoad": false,
-      "searchHint": "disputes get list litiges",
+      "searchHint": "disputes evidence get list litiges post submit_evidence",
       "actions": {
         "list": {
           "operationKey": "GET /disputes",
@@ -764,6 +821,489 @@
           "description": "Retrieve one dispute by id with its status, reason, amount, and response deadline.",
           "tags": [
             "Litiges"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "submit_evidence": {
+          "operationKey": "POST /disputes/{id}/evidence",
+          "method": "post",
+          "pathTemplate": "/disputes/{id}/evidence",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "DisputesController_submitEvidence",
+          "write": true,
+          "wantsBody": false,
+          "title": "Submit dispute evidence",
+          "description": "Attach written evidence to a card dispute. Confirm facts with the merchant before submitting.",
+          "tags": [
+            "Litiges"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_exports",
+      "title": "Exports",
+      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Exports"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get"
+            ],
+            "description": "Which REST operation to run. One of: create, get."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "type": "string",
+            "description": "Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "create exports get post",
+      "actions": {
+        "create": {
+          "operationKey": "POST /exports",
+          "method": "post",
+          "pathTemplate": "/exports",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "MerchantExportsController_create",
+          "write": true,
+          "wantsBody": false,
+          "title": "Create export",
+          "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll get until download_url is set. For money-moving tools, confirm first.",
+          "tags": [
+            "Exports"
+          ],
+          "requiredInput": []
+        },
+        "get": {
+          "operationKey": "GET /exports/{id}",
+          "method": "get",
+          "pathTemplate": "/exports/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "MerchantExportsController_findOne",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get export",
+          "description": "Check export job status. When completed, download_url is a short-lived signed URL.",
+          "tags": [
+            "Exports"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_finance",
+      "title": "Finance",
+      "description": "Finance. Pass required `action` to choose the REST call.\n\nActions:\n- `summary` — Finance summary (GET /finance/summary). No extra required fields.\n- `cashflow` — Cashflow (GET /finance/cashflow). No extra required fields.\n- `aging` — Receivables aging (GET /finance/aging). No extra required fields.\n- `reconcile` — Reconcile (GET /finance/reconcile). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Finance"
+      ],
+      "write": false,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "cashflow",
+              "aging",
+              "reconcile"
+            ],
+            "description": "Which REST operation to run. One of: summary, cashflow, aging, reconcile."
+          },
+          "end_date": {
+            "type": "string",
+            "description": "End Date"
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Start Date"
+          }
+        }
+      },
+      "readOnly": true,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "aging cashflow finance get reconcile summary",
+      "actions": {
+        "summary": {
+          "operationKey": "GET /finance/summary",
+          "method": "get",
+          "pathTemplate": "/finance/summary",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "FinanceController_summary",
+          "write": false,
+          "wantsBody": false,
+          "title": "Finance summary",
+          "description": "Cash position, receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure.",
+          "tags": [
+            "Finance"
+          ],
+          "requiredInput": []
+        },
+        "cashflow": {
+          "operationKey": "GET /finance/cashflow",
+          "method": "get",
+          "pathTemplate": "/finance/cashflow",
+          "pathParamNames": [],
+          "queryParamNames": [
+            "end_date",
+            "start_date"
+          ],
+          "operationId": "FinanceController_cashflow",
+          "write": false,
+          "wantsBody": false,
+          "title": "Cashflow",
+          "description": "Daily inflow and outflow over a date range.",
+          "tags": [
+            "Finance"
+          ],
+          "requiredInput": []
+        },
+        "aging": {
+          "operationKey": "GET /finance/aging",
+          "method": "get",
+          "pathTemplate": "/finance/aging",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "FinanceController_aging",
+          "write": false,
+          "wantsBody": false,
+          "title": "Receivables aging",
+          "description": "Open invoice amounts bucketed by days past due.",
+          "tags": [
+            "Finance"
+          ],
+          "requiredInput": []
+        },
+        "reconcile": {
+          "operationKey": "GET /finance/reconcile",
+          "method": "get",
+          "pathTemplate": "/finance/reconcile",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "FinanceController_reconcile",
+          "write": false,
+          "wantsBody": false,
+          "title": "Reconcile",
+          "description": "Difference between completed transaction net and completed payouts.",
+          "tags": [
+            "Finance"
+          ],
+          "requiredInput": []
+        }
+      }
+    },
+    {
+      "name": "lomi_invoices",
+      "title": "Invoices",
+      "description": "Invoices. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List invoices (GET /invoices). No extra required fields.\n- `get` — Get invoice (GET /invoices/{id}). Required: id.\n- `create` — Create invoice (POST /invoices). No extra required fields.\n- `update` — Update invoice (PATCH /invoices/{id}). Required: id.\n- `pdf` — Download invoice PDF (GET /invoices/{id}/pdf). Required: id.\n- `checkout_session` — Invoice checkout session (POST /invoices/{id}/checkout-session). Required: id.\n- `finalize` — Finalize invoice (POST /invoices/{id}/finalize). Required: id.\n- `send` — Send invoice (POST /invoices/{id}/send). Required: id.\n- `remind` — Remind invoice (POST /invoices/{id}/remind). Required: id.\n- `void` — Void invoice (POST /invoices/{id}/void). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Invoices"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "pdf",
+              "checkout_session",
+              "finalize",
+              "send",
+              "remind",
+              "void"
+            ],
+            "description": "Which REST operation to run. One of: list, get, create, update, pdf, checkout_session, finalize, send, remind, void."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor"
+          },
+          "customerId": {
+            "description": "CustomerId"
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "type": "string",
+            "description": "Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit"
+          },
+          "search": {
+            "description": "Search"
+          },
+          "status": {
+            "description": "Status"
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "checkout checkout_session create finalize get invoices list patch pdf post remind send session update void",
+      "actions": {
+        "list": {
+          "operationKey": "GET /invoices",
+          "method": "get",
+          "pathTemplate": "/invoices",
+          "pathParamNames": [],
+          "queryParamNames": [
+            "limit",
+            "cursor",
+            "search",
+            "customerId",
+            "status"
+          ],
+          "operationId": "InvoicesController_findAll",
+          "write": false,
+          "wantsBody": false,
+          "title": "List invoices",
+          "description": "List customer invoices (draft, open, paid, void). Use to collect receivables or send a reminder.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": []
+        },
+        "get": {
+          "operationKey": "GET /invoices/{id}",
+          "method": "get",
+          "pathTemplate": "/invoices/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_findOne",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get invoice",
+          "description": "Retrieve one invoice including line items, hosted_url (/i/{token}), and amounts due.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "create": {
+          "operationKey": "POST /invoices",
+          "method": "post",
+          "pathTemplate": "/invoices",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_create",
+          "write": true,
+          "wantsBody": false,
+          "title": "Create invoice",
+          "description": "Create a customer invoice. Omit password-style fields; send the hosted_url to the human. Poll status until paid.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": []
+        },
+        "update": {
+          "operationKey": "PATCH /invoices/{id}",
+          "method": "patch",
+          "pathTemplate": "/invoices/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_update",
+          "write": true,
+          "wantsBody": false,
+          "title": "Update invoice",
+          "description": "Update a draft invoice (amounts, due date, line items). Paid invoices cannot be rewritten.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "pdf": {
+          "operationKey": "GET /invoices/{id}/pdf",
+          "method": "get",
+          "pathTemplate": "/invoices/{id}/pdf",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_pdf",
+          "write": false,
+          "wantsBody": false,
+          "title": "Download invoice PDF",
+          "description": "Return hosted_url and download_url for the invoice PDF. Send this link to the human. Stdio MCP and the CLI can save the file locally.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "checkout_session": {
+          "operationKey": "POST /invoices/{id}/checkout-session",
+          "method": "post",
+          "pathTemplate": "/invoices/{id}/checkout-session",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_createCheckoutSession",
+          "write": true,
+          "wantsBody": false,
+          "title": "Invoice checkout session",
+          "description": "Create or reuse a hosted checkout session so the customer can pay this invoice.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "finalize": {
+          "operationKey": "POST /invoices/{id}/finalize",
+          "method": "post",
+          "pathTemplate": "/invoices/{id}/finalize",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_finalize",
+          "write": true,
+          "wantsBody": false,
+          "title": "Finalize invoice",
+          "description": "Mark a draft invoice as sent and create a hosted pay link. Does not email the customer.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "send": {
+          "operationKey": "POST /invoices/{id}/send",
+          "method": "post",
+          "pathTemplate": "/invoices/{id}/send",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_send",
+          "write": true,
+          "wantsBody": false,
+          "title": "Send invoice",
+          "description": "Finalize the invoice, create a hosted pay link, and queue the invoice email. Send hosted_url to the human if email is unavailable.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "remind": {
+          "operationKey": "POST /invoices/{id}/remind",
+          "method": "post",
+          "pathTemplate": "/invoices/{id}/remind",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_remind",
+          "write": true,
+          "wantsBody": false,
+          "title": "Remind invoice",
+          "description": "Queue a reminder email for a sent or overdue invoice.",
+          "tags": [
+            "Invoices"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "void": {
+          "operationKey": "POST /invoices/{id}/void",
+          "method": "post",
+          "pathTemplate": "/invoices/{id}/void",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "InvoicesController_voidInvoice",
+          "write": true,
+          "wantsBody": false,
+          "title": "Void invoice",
+          "description": "Cancel a draft, sent, or overdue invoice.",
+          "tags": [
+            "Invoices"
           ],
           "requiredInput": [
             "id"
@@ -1527,7 +2067,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List payment requests",
-          "description": "List one-off payment requests (invoices) sent to customers, with status and amount.",
+          "description": "List one-off payment requests sent to customers, with status and amount. Distinct from invoices (lomi_invoices).",
           "tags": [
             "Payment Requests"
           ],
@@ -1563,7 +2103,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create payment request",
-          "description": "Create a one-off payment request (invoice) for a specific customer and amount, delivered as a payable link. Use to bill a single customer.",
+          "description": "Create a one-off payment request for a specific customer and amount, delivered as a payable link. For numbered invoices with PDF, use lomi_invoices.",
           "tags": [
             "Payment Requests"
           ],
@@ -1571,6 +2111,79 @@
             "body",
             "header_Idempotency-Key"
           ]
+        }
+      }
+    },
+    {
+      "name": "lomi_payout_methods",
+      "title": "Payout methods",
+      "description": "Payout methods. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payout methods (GET /payout-methods). No extra required fields.\n- `create` — Add payout method (POST /payout-methods). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Payout methods"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "create"
+            ],
+            "description": "Which REST operation to run. One of: list, create."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "create get list methods payout post",
+      "actions": {
+        "list": {
+          "operationKey": "GET /payout-methods",
+          "method": "get",
+          "pathTemplate": "/payout-methods",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "PayoutMethodsController_list",
+          "write": false,
+          "wantsBody": false,
+          "title": "List payout methods",
+          "description": "List destination accounts for withdrawals. Account numbers are masked.",
+          "tags": [
+            "Payout methods"
+          ],
+          "requiredInput": []
+        },
+        "create": {
+          "operationKey": "POST /payout-methods",
+          "method": "post",
+          "pathTemplate": "/payout-methods",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "PayoutMethodsController_create",
+          "write": true,
+          "wantsBody": false,
+          "title": "Add payout method",
+          "description": "Register a bank, SPI, or mobile money destination for payouts.",
+          "tags": [
+            "Payout methods"
+          ],
+          "requiredInput": []
         }
       }
     },
@@ -2660,7 +3273,7 @@
     {
       "name": "lomi_transactions",
       "title": "Transactions",
-      "description": "Transactions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List transactions (GET /transactions). No extra required fields.\n- `get` — Get transaction (GET /transactions/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Transactions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List transactions (GET /transactions). No extra required fields.\n- `get` — Get transaction (GET /transactions/{id}). Required: id.\n- `receipt_pdf` — Download receipt PDF (GET /transactions/{id}/receipt.pdf). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Transactions"
       ],
@@ -2676,9 +3289,10 @@
             "type": "string",
             "enum": [
               "list",
-              "get"
+              "get",
+              "receipt_pdf"
             ],
-            "description": "Which REST operation to run. One of: list, get."
+            "description": "Which REST operation to run. One of: list, get, receipt_pdf."
           },
           "currency": {
             "example": "XOF,USD",
@@ -2748,7 +3362,7 @@
       "readOnly": true,
       "destructive": false,
       "alwaysLoad": true,
-      "searchHint": "get list transactions",
+      "searchHint": "get list receipt.pdf receipt_pdf transactions",
       "actions": {
         "list": {
           "operationKey": "GET /transactions",
@@ -2790,6 +3404,26 @@
           "wantsBody": false,
           "title": "Get transaction",
           "description": "Retrieve one payment by id, including status, amount, channel, customer, and fees.",
+          "tags": [
+            "Transactions"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "receipt_pdf": {
+          "operationKey": "GET /transactions/{id}/receipt.pdf",
+          "method": "get",
+          "pathTemplate": "/transactions/{id}/receipt.pdf",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "TransactionsController_receiptPdf",
+          "write": false,
+          "wantsBody": false,
+          "title": "Download receipt PDF",
+          "description": "Return download_url for the transaction receipt PDF. Send the link to the human.",
           "tags": [
             "Transactions"
           ],

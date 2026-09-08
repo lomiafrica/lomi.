@@ -1,22 +1,26 @@
 /* @proprietary license */
 
-import { cookies } from 'next/headers';
+import { cache } from 'react';
 import type { Language } from '@/lib/i18n/config';
-import { Cookies } from '@lomi./shared';
-
-const VALID_LOCALES = new Set<Language>(['en', 'fr']);
+import { parseDocsLang } from '@/lib/utils/docs-routing';
 
 /**
- * Resolves the active docs content locale from the same cookie as `TranslationProvider`
- * (`lomi.language`). No URL segment is used.
+ * Per-request locale bag. Docs HTML pages set this from the `[lang]` route
+ * param (after middleware rewrite) so MDX server components never read the
+ * request cookie jar, which would opt the page into dynamic rendering.
  */
-export async function getDocsLocale(): Promise<Language> {
-  const store = await cookies();
-  const raw = store.get(Cookies.Language)?.value;
-  // SAFETY: Boundary value matches the asserted domain type at this call site.
-  if (raw && VALID_LOCALES.has(raw as Language)) {
-    // SAFETY: Boundary value matches the asserted domain type at this call site.
-    return raw as Language;
-  }
-  return 'fr';
+const localeBag = cache((): { current: Language | null } => ({ current: null }));
+
+export function setDocsLocale(locale: Language): void {
+  localeBag().current = locale;
 }
+
+/**
+ * Locale for HTML / MDX. Reads the request bag only so statically generated
+ * docs pages stay static.
+ */
+export function getDocsLocale(): Language {
+  return localeBag().current ?? 'fr';
+}
+
+export { parseDocsLang };

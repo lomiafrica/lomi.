@@ -43,6 +43,10 @@ pub struct RefundsCreateArgs {
     /// Refund type: full or partial
     #[arg(long, value_parser = ["full", "partial"])]
     pub refund_type: Option<String>,
+
+    /// Return the confirmation preview without executing
+    #[arg(long)]
+    pub preview: bool,
 }
 
 #[derive(Args, Debug)]
@@ -60,7 +64,7 @@ pub struct RefundsListArgs {
     pub offset: u32,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct CreateRefundRequest {
     transaction_id: String,
     amount: f64,
@@ -68,6 +72,8 @@ struct CreateRefundRequest {
     reason: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    confirmation_token: Option<String>,
 }
 
 pub async fn run(common: &CommonOptions, args: RefundsArgs) -> Result<()> {
@@ -126,20 +132,48 @@ async fn create_refund(common: &CommonOptions, args: RefundsCreateArgs) -> Resul
         Some(spinner)
     };
 
-    let response: serde_json::Value = client
-        .post(
-            "/refunds",
-            &CreateRefundRequest {
-                transaction_id,
-                amount,
-                reason,
-                refund_type,
-            },
-        )
-        .await?;
+    let body = CreateRefundRequest {
+        transaction_id,
+        amount,
+        reason,
+        refund_type,
+        confirmation_token: None,
+    };
+    let mut response: serde_json::Value = client.post("/refunds", &body).await?;
 
     if let Some(spinner) = spinner {
         spinner.finish_and_clear();
+    }
+
+    if response
+        .get("requires_confirmation")
+        .and_then(|v| v.as_bool())
+        == Some(true)
+    {
+        if args.preview || json {
+            if json {
+                return cli::output::print_json(&response);
+            }
+            cli::output::print_info("Confirmation required. Re-run without --preview to execute.");
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&response).unwrap_or_default()
+            );
+            return Ok(());
+        }
+        let token = response
+            .get("confirmation_token")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        response = client
+            .post(
+                "/refunds",
+                &CreateRefundRequest {
+                    confirmation_token: token,
+                    ..body
+                },
+            )
+            .await?;
     }
 
     if json {

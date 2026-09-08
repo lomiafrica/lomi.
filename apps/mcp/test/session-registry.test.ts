@@ -77,4 +77,20 @@ describe('McpSessionRegistry', () => {
     registry.updateMerchantApiKey('s1', 'key-b');
     expect(registry.getMerchantApiKey('s1')).toBe('key-b');
   });
+
+  it('rejects a new session when the per-key cap is reached', () => {
+    const registry = new McpSessionRegistry(10, 60_000, 1, 20);
+    registry.attachSession(
+      's1',
+      mockTransport(),
+      'key-a',
+      null,
+      'full',
+      null,
+      'fp-a',
+      '127.0.0.1',
+    );
+    expect(registry.canAcceptSessionFor('fp-a', '10.0.0.2').ok).toBe(false);
+    expect(registry.canAcceptSessionFor('fp-b', '10.0.0.2').ok).toBe(true);
+  });
 });

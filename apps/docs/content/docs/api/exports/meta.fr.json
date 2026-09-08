@@ -1,0 +1,7 @@
+{
+  "title": "Exports",
+  "pages": [
+    "MerchantExportsController_create",
+    "MerchantExportsController_findOne"
+  ]
+}

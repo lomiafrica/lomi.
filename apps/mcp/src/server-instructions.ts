@@ -46,7 +46,8 @@ export function buildServerInstructions(
     '- Prefer list/filter actions before destructive operations.',
     '- Use lomi_search_tools to discover tools by keyword. Resource tools take a required `action` (for example lomi_customers with action=list).',
     '- To collect money, prefer checkout-sessions / payment-links; direct charge tools are intentionally not exposed.',
-    '- Resources: lomi://docs/recipes (workflows), lomi://docs/authentication, lomi://docs/idempotency, lomi://docs/pagination, lomi://docs/webhooks, lomi://docs/money, lomi://docs/errors, lomi://tools/index.',
+    '- Resources: lomi://docs/recipes, lomi://docs/finance, lomi://docs/authentication, lomi://docs/idempotency, lomi://docs/pagination, lomi://docs/webhooks, lomi://docs/money, lomi://docs/errors, lomi://tools/index.',
+    '- Money moves (payouts, refunds, instant settlement) return a confirmation_token preview first. Resend with that token to execute. merchant.write cannot move money; reconnect with merchant.money.',
     '- Tool results use { ok, status, body } JSON; errors include an error object when ok is false, plus next_steps when a recovery action is known.',
   ].filter(Boolean);
 

@@ -15,7 +15,7 @@ import { TypeTable } from 'fumadocs-ui/components/type-table';
 import * as Preview from '@/components/preview';
 import { createMetadata, getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { source, type Page as DocsPageModel } from '@/lib/utils/source';
-import { getDocsLocale } from '@/lib/utils/docs-locale';
+import { parseDocsLang, setDocsLocale } from '@/lib/utils/docs-locale';
 import {
   buildDocsAlternates,
   buildDocsMarkdownUrl,
@@ -101,11 +101,12 @@ function serializeStructuredData(value: JsonValue): string {
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug?: string[] }>;
+  params: Promise<{ lang: string; slug?: string[] }>;
 }) {
   const resolvedParams = await params;
   const slug = effectiveSlug(resolvedParams.slug);
-  const locale = await getDocsLocale();
+  const locale = parseDocsLang(resolvedParams.lang);
+  setDocsLocale(locale);
   const { page, resolvedLocale } = resolvePageForLocale(slug, locale);
 
   if (!page) notFound();
@@ -288,11 +289,12 @@ function DocsCategory({ url, locale }: { url: string; locale: Language }) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug?: string[] }>;
+  params: Promise<{ lang: string; slug?: string[] }>;
 }): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = effectiveSlug(resolvedParams.slug);
-  const locale = await getDocsLocale();
+  const locale = parseDocsLang(resolvedParams.lang);
+  setDocsLocale(locale);
   const { page } = resolvePageForLocale(slug, locale);
   if (!page) notFound();
 
@@ -327,14 +329,21 @@ export async function generateMetadata({
 }
 
 export const dynamicParams = false;
+export const dynamic = 'error';
 
 export function generateStaticParams() {
-  const slugs = new Map<string, { slug: string[] }>();
+  const slugs = new Map<string, string[]>();
   for (const locale of ['en', 'fr'] as const) {
     for (const page of source.getPages(locale)) {
       if ((page.slugs?.length ?? 0) === 0) continue;
-      slugs.set(page.slugs.join('/'), { slug: page.slugs });
+      slugs.set(page.slugs.join('/'), page.slugs);
     }
   }
-  return [...slugs.values()];
+  const params: { lang: Language; slug: string[] }[] = [];
+  for (const lang of ['en', 'fr'] as const) {
+    for (const slug of slugs.values()) {
+      params.push({ lang, slug });
+    }
+  }
+  return params;
 }

@@ -30,6 +30,8 @@ import {
   mcpHttpBasePath,
   mcpMaxBodyBytes,
   mcpMaxSessions,
+  mcpMaxSessionsPerIp,
+  mcpMaxSessionsPerKey,
   mcpRateLimitRpm,
   mcpSessionTtlMs,
   mcpTrustProxy,
@@ -37,6 +39,10 @@ import {
 } from './env-config.js';
 import { extractSessionMerchantApiKey, extractSessionPartnerKey, extractSessionProvisioningKey, extractOAuthAccessToken } from './session-merchant-key.js';
 import { McpSessionRegistry, type MerchantAccessLevel } from './session-registry.js';
+import {
+  fingerprintSessionCredential,
+  fingerprintsEqual,
+} from './session-credential.js';
 import { mcpLog, mcpRequestAls } from './mcp-request-context.js';
 import { wireMcpServer } from './wire-mcp-server.js';
 import {
@@ -123,7 +129,11 @@ async function resolveMerchantGrantFromRequest(
   const introspected = await introspectOAuthAccessToken(oauthToken);
   if (!introspected.active || !introspected.connection_key) return null;
   const accessLevel: MerchantAccessLevel =
-    introspected.access_level === 'write' ? 'write' : 'read';
+    introspected.access_level === 'full'
+      ? 'full'
+      : introspected.access_level === 'write'
+        ? 'write'
+        : 'read';
   return {
     connectionKey: introspected.connection_key,
     accessLevel,
@@ -395,11 +405,33 @@ function hasResolvedSessionCredential(
   return Boolean(merchant || provisioning || partner || oauthMerchantGrant);
 }
 
+function sessionFingerprintFor(
+  req: Request,
+  guest: boolean,
+  merchantKey: string | null,
+  provisioningKey: string | null,
+  partnerKey: string | null,
+): string {
+  return fingerprintSessionCredential({
+    guest,
+    clientIp: clientIp(req),
+    merchantKey,
+    provisioningKey,
+    partnerKey,
+    oauthToken: extractOAuthAccessToken(req),
+  });
+}
+
 export function createHttpApplication(manifest: ToolsManifest): Express {
 
   const hostOpts = listenHostOptions();
   const app = createLomiMcpExpressApp(hostOpts);
-  const registry = new McpSessionRegistry(mcpMaxSessions(), mcpSessionTtlMs());
+  const registry = new McpSessionRegistry(
+    mcpMaxSessions(),
+    mcpSessionTtlMs(),
+    mcpMaxSessionsPerKey(),
+    mcpMaxSessionsPerIp(),
+  );
   registry.startPeriodicPrune();
   const rateBuckets = new Map<string, RateBucket>();
 
@@ -601,11 +633,39 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           registry.updatePartnerApiKey(sessionId, resolvedPartnerKey);
         }
 
+        const presentedFingerprint = sessionFingerprintFor(
+          req,
+          guest,
+          resolvedMerchantKey,
+          resolvedProvisioningKey,
+          resolvedPartnerKey,
+        );
+
         let transport: TransportEntry | undefined;
 
         if (sessionId && registry.has(sessionId)) {
-          // Existing session: id must match a server-issued registry entry.
-          transport = registry.get(sessionId)!.transport;
+          const bound = registry.get(sessionId)!;
+          if (
+            bound.credentialFingerprint &&
+            !fingerprintsEqual(presentedFingerprint, bound.credentialFingerprint)
+          ) {
+            registry.drop(sessionId);
+            applyOauthCors(res);
+            res.setHeader(
+              'WWW-Authenticate',
+              oauthUnauthorizedChallenge('invalid_token'),
+            );
+            res.status(401).json({
+              jsonrpc: '2.0',
+              error: {
+                code: -32001,
+                message: 'MCP session credential mismatch',
+              },
+              id: jsonRpcIdFromBody(req.body),
+            });
+            return;
+          }
+          transport = bound.transport;
           registry.touch(sessionId);
           store.sessionId = sessionId;
         } else if (!sessionId) {
@@ -648,11 +708,15 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             return;
           }
 
-          if (!registry.canAcceptNewSession()) {
+          const accept = registry.canAcceptSessionFor(
+            presentedFingerprint,
+            clientIp(req),
+          );
+          if (!accept.ok) {
             mcpLog(
               'mcp_session_rejected',
               {
-                reason: 'max_sessions',
+                reason: accept.reason,
                 activeSessions: registry.size,
                 maxSessions: mcpMaxSessions(),
               },
@@ -662,7 +726,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
               jsonrpc: '2.0',
               error: {
                 code: -32000,
-                message: `MCP server at session capacity (${mcpMaxSessions()}). Try again later.`,
+                message: `MCP server at session capacity (${accept.reason}). Try again later.`,
               },
               id: null,
             });
@@ -688,6 +752,8 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
                 sessionState.provisioningApiKey,
                 sessionState.merchantAccessLevel,
                 sessionState.partnerApiKey,
+                presentedFingerprint,
+                clientIp(req),
               );
               store.sessionId = sid;
             },
@@ -794,6 +860,28 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           res.status(400).send('Invalid or missing MCP session ID');
           return;
         }
+        const guest = req.path.endsWith('/guest');
+        const headerMerchantKey = extractSessionMerchantApiKey(req);
+        const headerProvisioningKey = extractSessionProvisioningKey(req);
+        const headerPartnerKey = extractSessionPartnerKey(req);
+        const merchantGrant = await resolveMerchantGrantFromRequest(req);
+        const presented = sessionFingerprintFor(
+          req,
+          guest,
+          merchantGrant?.connectionKey ?? headerMerchantKey,
+          headerProvisioningKey,
+          headerPartnerKey,
+        );
+        const bound = registry.get(sessionId)!;
+        if (
+          bound.credentialFingerprint &&
+          !fingerprintsEqual(presented, bound.credentialFingerprint)
+        ) {
+          registry.drop(sessionId);
+          applyOauthCors(res);
+          res.status(401).send('MCP session credential mismatch');
+          return;
+        }
         store.sessionId = sessionId;
         registry.touch(sessionId);
         const transport = registry.get(sessionId)!.transport;
@@ -832,6 +920,28 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           : sessionHeader;
         if (!sessionId || !registry.has(sessionId)) {
           res.status(400).send('Invalid or missing MCP session ID');
+          return;
+        }
+        const guest = req.path.endsWith('/guest');
+        const headerMerchantKey = extractSessionMerchantApiKey(req);
+        const headerProvisioningKey = extractSessionProvisioningKey(req);
+        const headerPartnerKey = extractSessionPartnerKey(req);
+        const merchantGrant = await resolveMerchantGrantFromRequest(req);
+        const presented = sessionFingerprintFor(
+          req,
+          guest,
+          merchantGrant?.connectionKey ?? headerMerchantKey,
+          headerProvisioningKey,
+          headerPartnerKey,
+        );
+        const bound = registry.get(sessionId)!;
+        if (
+          bound.credentialFingerprint &&
+          !fingerprintsEqual(presented, bound.credentialFingerprint)
+        ) {
+          registry.drop(sessionId);
+          applyOauthCors(res);
+          res.status(401).send('MCP session credential mismatch');
           return;
         }
         store.sessionId = sessionId;
@@ -920,6 +1030,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
 }
 
 export async function startHttpServer(): Promise<void> {
+  process.env.LOMI_MCP_TRANSPORT = 'http';
   ensureProductionBearer();
   const manifest = parseManifest(validateJsonValue(manifestJson));
   const app = createHttpApplication(manifest);

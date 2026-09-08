@@ -6,17 +6,19 @@ import {
   wantsDocsMarkdown,
 } from '@/lib/seo/agent-discovery';
 import {
+  buildDocsInternalLocalePath,
+  docsLocaleFromRequestCookies,
   docsMarkdownAcceptRewritePath,
   isDocsMachinePath,
   parseDocsLocalePath,
 } from '@/lib/utils/docs-routing';
 
 /**
- * Docs locale (EN/FR) is resolved in server components via `getDocsLocale()` from the
- * `lomi.language` cookie — not via Fumadocs `createI18nMiddleware`, so public URLs stay
- * unchanged (no `/{lang}/...` segment).
- *
- * Old `/en/...` and `/fr/...` links 301 to the unprefixed path.
+ * Public URLs stay unprefixed. This proxy:
+ * 1. 301s legacy `/en/...` and `/fr/...` links to the unprefixed path
+ * 2. Rewrites the unprefixed path to `/l/{locale}/...` so each locale is
+ *    statically generated. The matcher skips `/l/` so the rewritten request
+ *    is not redirected in a loop.
  *
  * Do not call Supabase auth.getSession() here: docs has no /auth or /workspace routes,
  * and reading shared *.lomi.africa cookies can trigger refresh_token rate limits.
@@ -118,11 +120,16 @@ export default function proxy(request: NextRequest) {
     }
   }
 
-  return withDiscoveryHeaders(request, NextResponse.next());
+  const locale = docsLocaleFromRequestCookies(request.cookies);
+  const url = request.nextUrl.clone();
+  url.pathname = buildDocsInternalLocalePath(locale, pathname);
+  const response = NextResponse.rewrite(url);
+  response.headers.set('Vary', 'Cookie, Accept');
+  return withDiscoveryHeaders(request, response);
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|ico|json|txt|xml)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|l/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|ico|json|txt|xml)$).*)',
   ],
 };

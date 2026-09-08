@@ -80,6 +80,7 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     registerMerchantTools(server, manifest, {
       getApiKey,
       readOnlyOnly: merchantAccessLevel === 'read',
+      excludeMoney: merchantAccessLevel === 'write',
     });
   } else {
     registerSearchToolsOnGuest(server, manifest, provisioningManifest);

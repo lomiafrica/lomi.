@@ -12,6 +12,7 @@
     "checkout-sessions",
     "payment-links",
     "payment-requests",
+    "invoices",
     "charge",
     "---Gérer votre commerce---",
     "customers",
@@ -23,6 +24,7 @@
     "transactions",
     "refunds",
     "payouts",
+    "payout-methods",
     "settlements",
     "---Plateforme---",
     "organizations",
@@ -34,6 +36,9 @@
     "webhooks",
     "logs",
     "meters",
-    "usage"
+    "usage",
+    "exports",
+    "finance",
+    "api-keys"
   ]
 }

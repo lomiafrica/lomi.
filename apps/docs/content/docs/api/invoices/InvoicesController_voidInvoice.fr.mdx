@@ -1,0 +1,83 @@
+---
+title: "Void an invoice"
+description: "Void an invoice"
+full: true
+method: post
+path: /invoices/{id}/void
+operationId: InvoicesController_voidInvoice
+---
+
+## Aperçu
+
+Void an invoice
+
+Cancel a draft, sent, or overdue invoice.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /invoices/&#123;id&#125;/void` (Void an invoice).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /invoices/{id}/void`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - |  |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+_Pas de corps JSON pour cette opération._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/invoices/value/void" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `InvoicesController_voidInvoice`
+- **Operation**: `POST /invoices/{id}/void`
+
+Schémas complets et **Try it** : [référence API](/api).

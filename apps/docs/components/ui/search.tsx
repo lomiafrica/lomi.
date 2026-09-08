@@ -9,17 +9,14 @@ import {
   SearchDialogIcon,
   SearchDialogInput,
   SearchDialogList,
+  SearchDialogListItem,
   SearchDialogOverlay,
+  TagsList,
+  TagsListItem,
+  type SearchItemType,
   type SharedProps,
 } from 'fumadocs-ui/components/dialog/search';
-import { useState, useEffect } from 'react';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from 'fumadocs-ui/components/ui/popover';
-import { ChevronDown } from 'lucide-react';
-import { buttonVariants } from 'fumadocs-ui/components/ui/button';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '@lomi./ui/cn';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
@@ -29,36 +26,22 @@ import type { SortedResult } from 'fumadocs-core/search';
 import { DOCS_SEARCH_SUGGESTED } from '@/lib/search/aliases';
 import type { Language } from '@/lib/i18n/config';
 import type { DocsSearchTag } from '@/lib/search/tags';
-
-interface OramaHit {
-  id: string;
-  document: {
-    id?: string;
-    url?: string;
-    title?: string;
-    breadcrumbs?: string[];
-    description?: string;
-    locale?: string;
-    structured?: {
-      contents?: string[];
-    };
-  };
-}
+import {
+  formatLocalResults,
+  formatOramaHits,
+  type SearchResultRow,
+} from '@/lib/search/format-results';
+import {
+  readRecentSearches,
+  rememberRecentSearch,
+  type RecentSearchHit,
+} from '@/lib/search/recent';
 
 function oramaConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_ORAMA_API_KEY &&
       process.env.NEXT_PUBLIC_ORAMA_PROJECT_ID,
   );
-}
-
-function suggestedResults(locale: Language): SortedResult[] {
-  return DOCS_SEARCH_SUGGESTED.map((item) => ({
-    type: 'page' as const,
-    id: `suggest:${item.href}`,
-    url: item.href,
-    content: item.title[locale],
-  }));
 }
 
 async function searchLocal(
@@ -75,39 +58,36 @@ async function searchLocal(
   return body as SortedResult[];
 }
 
+function sectionLabel(section: DocsSearchTag | undefined, t: (key: string) => string) {
+  switch (section) {
+    case 'start':
+      return t('search.start');
+    case 'build':
+      return t('search.build');
+    case 'api':
+      return t('search.api');
+    case 'resources':
+      return t('search.resources');
+    default:
+      return undefined;
+  }
+}
+
 export default function CustomSearchDialog(props: SharedProps) {
-  const [open, setOpen] = useState(false);
   const [tag, setTag] = useState<DocsSearchTag | undefined>();
   const [search, setSearch] = useState('');
-  const [results, setResults] = useState<SortedResult[] | 'empty' | null>(
-    'empty',
-  );
+  const [results, setResults] = useState<SearchResultRow[] | 'empty'>('empty');
   const [isLoading, setIsLoading] = useState(false);
+  const [recents, setRecents] = useState<RecentSearchHit[]>([]);
   const { currentLanguage } = useTranslation();
-  const t = (key: string) => String(translate(key, currentLanguage));
+  const t = useCallback(
+    (key: string) => String(translate(key, currentLanguage)),
+    [currentLanguage],
+  );
 
-  const items = [
-    {
-      name: t('search.all'),
-      description: t('search.allDescription'),
-      value: undefined as DocsSearchTag | undefined,
-    },
-    {
-      name: t('search.core'),
-      description: t('search.fundamentalsDescription'),
-      value: 'core' as const,
-    },
-    {
-      name: t('search.apiReference'),
-      description: t('search.apiReferenceDescription'),
-      value: 'reference' as const,
-    },
-    {
-      name: t('search.resources'),
-      description: t('search.resourcesDescription'),
-      value: 'resources' as const,
-    },
-  ];
+  useEffect(() => {
+    if (props.open) setRecents(readRecentSearches());
+  }, [props.open]);
 
   useEffect(() => {
     let cancelled = false;
@@ -122,22 +102,17 @@ export default function CustomSearchDialog(props: SharedProps) {
       setIsLoading(true);
       try {
         if (!oramaConfigured()) {
-          const local = await searchLocal(
-            search,
-            currentLanguage,
-            tag,
-          );
-          if (!cancelled) setResults(local);
+          const local = await searchLocal(search, currentLanguage, tag);
+          if (!cancelled) setResults(formatLocalResults(local, tag));
           return;
         }
 
         const datasourceId = process.env.NEXT_PUBLIC_ORAMA_DATASOURCE_ID;
         const searchOptions: OramaCloudSearchParams = {
           term: search,
-          limit: 10,
+          limit: 12,
           where: {
             locale: { eq: currentLanguage },
-            ...(tag ? { tag: { eq: tag } } : {}),
           },
         };
 
@@ -149,75 +124,7 @@ export default function CustomSearchDialog(props: SharedProps) {
         if (cancelled) return;
 
         if (response && response.hits && Array.isArray(response.hits)) {
-          const transformedResults: SortedResult[] = [];
-          const searchLower = search.toLowerCase();
-
-          response.hits.forEach((hit: OramaHit) => {
-            const doc = hit.document || {};
-            const pageUrl = doc.url || doc.id || hit.id;
-            const pageTitle = doc.title || 'Untitled';
-            const breadcrumbText =
-              doc.breadcrumbs &&
-              Array.isArray(doc.breadcrumbs) &&
-              doc.breadcrumbs.length > 0
-                ? `${doc.breadcrumbs.join(' › ')} › `
-                : '';
-
-            transformedResults.push({
-              type: 'page' as const,
-              id: doc.id || hit.id,
-              url: pageUrl,
-              content: breadcrumbText + pageTitle,
-            });
-
-            if (
-              doc.description &&
-              doc.description.toLowerCase().includes(searchLower)
-            ) {
-              transformedResults.push({
-                type: 'text' as const,
-                id: `${doc.id}-desc`,
-                url: pageUrl,
-                content: doc.description,
-              });
-            }
-
-            if (
-              doc.structured?.contents &&
-              Array.isArray(doc.structured.contents)
-            ) {
-              const matchingContents = doc.structured.contents
-                .filter(
-                  (content: string) =>
-                    content.toLowerCase().includes(searchLower) &&
-                    content.length > 20,
-                )
-                .slice(0, 2);
-
-              matchingContents.forEach((content: string, idx: number) => {
-                const maxLength = 120;
-                const index = content.toLowerCase().indexOf(searchLower);
-                let excerpt = content;
-                if (content.length > maxLength) {
-                  const start = Math.max(0, index - 40);
-                  const end = Math.min(content.length, start + maxLength);
-                  excerpt =
-                    (start > 0 ? '...' : '') +
-                    content.substring(start, end) +
-                    (end < content.length ? '...' : '');
-                }
-
-                transformedResults.push({
-                  type: 'text' as const,
-                  id: `${doc.id}-content-${idx}`,
-                  url: pageUrl,
-                  content: excerpt,
-                });
-              });
-            }
-          });
-
-          setResults(transformedResults);
+          setResults(formatOramaHits(response.hits, search, tag));
         } else {
           setResults([]);
         }
@@ -225,7 +132,7 @@ export default function CustomSearchDialog(props: SharedProps) {
         console.error('Search error:', error);
         try {
           const local = await searchLocal(search, currentLanguage, tag);
-          if (!cancelled) setResults(local);
+          if (!cancelled) setResults(formatLocalResults(local, tag));
         } catch {
           if (!cancelled) setResults([]);
         }
@@ -242,15 +149,105 @@ export default function CustomSearchDialog(props: SharedProps) {
     };
   }, [search, tag, currentLanguage]);
 
-  const listItems =
-    results === 'empty' ? suggestedResults(currentLanguage) : results;
+  const emptyItems = useMemo(() => {
+    const recentHref = new Set(recents.map((item) => item.href));
+    const recentItems: SearchResultRow[] = recents.map((item) => ({
+      type: 'page' as const,
+      id: `recent:${item.href}`,
+      url: item.href,
+      content: item.title,
+    }));
+
+    const suggested = DOCS_SEARCH_SUGGESTED.filter(
+      (item) => !recentHref.has(item.href),
+    ).map((item) => ({
+      type: 'page' as const,
+      id: `suggest:${item.href}`,
+      url: item.href,
+      content: item.title[currentLanguage as Language] ?? item.title.en,
+    }));
+
+    return [...recentItems, ...suggested];
+  }, [currentLanguage, recents]);
+
+  const listItems: SearchResultRow[] =
+    results === 'empty' ? emptyItems : results;
+
+  const firstRecentId = listItems.find((item) =>
+    item.id.startsWith('recent:'),
+  )?.id;
+  const firstSuggestId = listItems.find((item) =>
+    item.id.startsWith('suggest:'),
+  )?.id;
+
+  const handleSelect = useCallback(
+    (item: SearchItemType) => {
+      if (item.type === 'action') return;
+      const title = typeof item.content === 'string' ? item.content : '';
+      if (!item.url || !title) return;
+      setRecents(rememberRecentSearch({ href: item.url, title }));
+    },
+    [],
+  );
+
+  const renderItem = useCallback(
+    ({ item, onClick }: { item: SearchItemType; onClick: () => void }) => {
+      if (item.type === 'action') {
+        return <SearchDialogListItem item={item} onClick={onClick} />;
+      }
+
+      const row = listItems.find((entry) => entry.id === item.id);
+      const groupLabel =
+        item.id === firstRecentId
+          ? t('search.recent')
+          : item.id === firstSuggestId
+            ? t('search.suggested')
+            : undefined;
+      const section = sectionLabel(row?.section, t);
+      const snippet =
+        results === 'empty' ? undefined : row?.snippet;
+
+      return (
+        <>
+          {groupLabel ? (
+            <p className="px-2.5 pt-2 pb-1 text-[11px] font-medium text-fd-muted-foreground">
+              {groupLabel}
+            </p>
+          ) : null}
+          <SearchDialogListItem
+            item={item}
+            onClick={onClick}
+            className="rounded-sm py-1.5"
+          >
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="min-w-0 truncate font-medium">{item.content}</p>
+                {section ? (
+                  <span className="shrink-0 text-[11px] text-fd-muted-foreground">
+                    {section}
+                  </span>
+                ) : null}
+              </div>
+              {snippet ? (
+                <p className="line-clamp-2 text-xs text-fd-muted-foreground">
+                  {snippet}
+                </p>
+              ) : null}
+            </div>
+          </SearchDialogListItem>
+        </>
+      );
+    },
+    [firstRecentId, firstSuggestId, listItems, results, t],
+  );
 
   return (
     <SearchDialog
+      {...props}
       search={search}
       onSearchChange={setSearch}
       isLoading={isLoading}
-      {...props}
+      onSelect={handleSelect}
     >
       <SearchDialogOverlay />
       <SearchDialogContent>
@@ -259,48 +256,38 @@ export default function CustomSearchDialog(props: SharedProps) {
           <SearchDialogInput />
           <SearchDialogClose />
         </SearchDialogHeader>
-        <SearchDialogList items={listItems} />
-        <SearchDialogFooter className="flex flex-row flex-wrap gap-2 items-center">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger
-              className={buttonVariants({
-                size: 'sm',
-                color: 'ghost',
-                className: '-m-1.5 me-auto',
-              })}
-            >
-              <span className="text-fd-muted-foreground/80 me-2">
-                {t('search.filter')}
-              </span>
-              {items.find((item) => item.value === tag)?.name}
-              <ChevronDown className="size-3.5 text-fd-muted-foreground" />
-            </PopoverTrigger>
-            <PopoverContent className="flex flex-col p-1 gap-1" align="start">
-              {items.map((item) => {
-                const isSelected = item.value === tag;
-
-                return (
-                  <button
-                    key={item.name}
-                    type="button"
-                    onClick={() => {
-                      setTag(item.value);
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      'rounded-sm text-start px-2 py-1.5',
-                      isSelected
-                        ? 'text-fd-primary bg-fd-primary/10'
-                        : 'hover:text-fd-accent-foreground hover:bg-fd-accent',
-                    )}
-                  >
-                    <p className="font-medium mb-0.5">{item.name}</p>
-                    <p className="text-xs opacity-70">{item.description}</p>
-                  </button>
-                );
-              })}
-            </PopoverContent>
-          </Popover>
+        <SearchDialogList
+          items={listItems}
+          Item={renderItem}
+          Empty={() => (
+            <div className="px-3 py-10 text-center text-sm text-fd-muted-foreground">
+              {t('ui.searchNoResult')}
+            </div>
+          )}
+        />
+        <SearchDialogFooter className="flex flex-row flex-wrap items-center gap-2">
+          <TagsList
+            tag={tag ?? 'all'}
+            onTagChange={(value) => {
+              if (value === 'all' || !value) {
+                setTag(undefined);
+                return;
+              }
+              if (
+                value === 'start' ||
+                value === 'build' ||
+                value === 'api'
+              ) {
+                setTag(value);
+              }
+            }}
+            className={cn('w-full')}
+          >
+            <TagsListItem value="all">{t('search.all')}</TagsListItem>
+            <TagsListItem value="start">{t('search.start')}</TagsListItem>
+            <TagsListItem value="build">{t('search.build')}</TagsListItem>
+            <TagsListItem value="api">{t('search.api')}</TagsListItem>
+          </TagsList>
         </SearchDialogFooter>
       </SearchDialogContent>
     </SearchDialog>

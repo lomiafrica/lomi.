@@ -1,0 +1,7 @@
+{
+  "title": "Méthodes de virement",
+  "pages": [
+    "PayoutMethodsController_create",
+    "PayoutMethodsController_list"
+  ]
+}

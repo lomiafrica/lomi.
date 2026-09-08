@@ -21,6 +21,7 @@ describe('oauth-introspection', () => {
     expect(metadata.scopes_supported).toContain('provisioning.onboard');
     expect(metadata.scopes_supported).toContain('merchant.read');
     expect(metadata.scopes_supported).toContain('merchant.write');
+    expect(metadata.scopes_supported).toContain('merchant.money');
   });
 
   it('builds path-scoped protected resource metadata URL', () => {

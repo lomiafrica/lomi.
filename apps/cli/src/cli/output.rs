@@ -116,6 +116,37 @@ pub fn should_use_json(common: &CommonOptions) -> bool {
     common.use_json()
 }
 
+pub fn print_table(headers: &[&str], rows: &[Vec<String>]) {
+    if rows.is_empty() {
+        print_dim("No rows.");
+        return;
+    }
+    let mut widths: Vec<usize> = headers.iter().map(|h| h.len()).collect();
+    for row in rows {
+        for (i, cell) in row.iter().enumerate() {
+            if i < widths.len() {
+                widths[i] = widths[i].max(cell.len());
+            }
+        }
+    }
+    let header_line = headers
+        .iter()
+        .enumerate()
+        .map(|(i, h)| format!("{:width$}", h, width = widths[i]))
+        .collect::<Vec<_>>()
+        .join("  ");
+    println!("{}", header_line.bright_black());
+    for row in rows {
+        let line = row
+            .iter()
+            .enumerate()
+            .map(|(i, cell)| format!("{:width$}", cell, width = widths.get(i).copied().unwrap_or(0)))
+            .collect::<Vec<_>>()
+            .join("  ");
+        println!("{line}");
+    }
+}
+
 pub fn print_json<T: Serialize>(value: &T) -> anyhow::Result<()> {
     println!("{}", serde_json::to_string_pretty(value)?);
     Ok(())

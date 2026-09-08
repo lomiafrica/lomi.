@@ -1,0 +1,74 @@
+---
+title: "List payout methods"
+description: "List payout methods"
+full: true
+method: get
+path: /payout-methods
+operationId: PayoutMethodsController_list
+---
+
+## Overview
+
+List payout methods
+
+### When to use this
+
+Use this endpoint when your flow needs `GET /payout-methods` (List payout methods).
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /payout-methods`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/payout-methods" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `PayoutMethodsController_list`
+- **Operation**: `GET /payout-methods`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

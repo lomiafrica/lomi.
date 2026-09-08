@@ -23,6 +23,14 @@ export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
     'onboarding',
     'sandbox to live',
   ],
+  '/start/create-account': [
+    'sign up',
+    'register',
+    'create account',
+    'onboarding',
+    'kyc',
+    'starter business',
+  ],
   '/start/api-keys': [
     'api key',
     'secret key',
@@ -193,8 +201,11 @@ export const DOCS_SEARCH_SUGGESTED = [
     title: { en: 'What is lomi.?', fr: "Qu'est-ce que lomi. ?" },
   },
   {
-    href: '/start/integration-journey',
-    title: { en: 'Integration journey', fr: 'Parcours d’intégration' },
+    href: '/start/create-account',
+    title: {
+      en: 'How do I create an account?',
+      fr: 'Comment créer un compte ?',
+    },
   },
   {
     href: '/start/api-keys',

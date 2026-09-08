@@ -1,0 +1,79 @@
+---
+title: "Download receipt PDF"
+description: "Download receipt PDF"
+full: true
+method: get
+path: /transactions/{id}/receipt.pdf
+operationId: TransactionsController_receiptPdf
+---
+
+## Aperçu
+
+Download receipt PDF
+
+Returns hosted_url and download_url for the transaction receipt PDF.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `GET /transactions/&#123;id&#125;/receipt.pdf` (Download receipt PDF).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /transactions/{id}/receipt.pdf`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | UUID de la transaction |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Account` | header | Non | - | Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/transactions/value/receipt.pdf" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `TransactionsController_receiptPdf`
+- **Operation**: `GET /transactions/{id}/receipt.pdf`
+
+Schémas complets et **Try it** : [référence API](/api).

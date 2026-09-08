@@ -1,0 +1,84 @@
+---
+title: "Submit dispute evidence"
+description: "Submit dispute evidence"
+full: true
+method: post
+path: /disputes/{id}/evidence
+operationId: DisputesController_submitEvidence
+---
+
+## Aperçu
+
+Submit dispute evidence
+
+Attach written evidence (and optional file metadata) to a card dispute before the due date.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /disputes/&#123;id&#125;/evidence` (Submit dispute evidence).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /disputes/{id}/evidence`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | Dispute ID |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Account` | header | Non | - | Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+_Pas de corps JSON pour cette opération._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Evidence recorded |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/disputes/value/evidence" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `DisputesController_submitEvidence`
+- **Operation**: `POST /disputes/{id}/evidence`
+
+Schémas complets et **Try it** : [référence API](/api).

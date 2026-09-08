@@ -1,0 +1,9 @@
+{
+  "title": "Finance",
+  "pages": [
+    "FinanceController_aging",
+    "FinanceController_cashflow",
+    "FinanceController_reconcile",
+    "FinanceController_summary"
+  ]
+}

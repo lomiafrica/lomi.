@@ -214,6 +214,28 @@ export function mcpSessionTtlMs(): number {
   );
 }
 
+/** Max concurrent HTTP sessions per credential fingerprint. Default 8. */
+export function mcpMaxSessionsPerKey(): number {
+  return parseEnvIntInRange(
+    process.env.LOMI_MCP_MAX_SESSIONS_PER_KEY,
+    'LOMI_MCP_MAX_SESSIONS_PER_KEY',
+    8,
+    1,
+    1_000,
+  );
+}
+
+/** Max concurrent HTTP sessions per client IP. Default 20. */
+export function mcpMaxSessionsPerIp(): number {
+  return parseEnvIntInRange(
+    process.env.LOMI_MCP_MAX_SESSIONS_PER_IP,
+    'LOMI_MCP_MAX_SESSIONS_PER_IP',
+    20,
+    1,
+    10_000,
+  );
+}
+
 /** Max JSON body size for Express (bytes). Default 1 MiB. */
 export function mcpMaxBodyBytes(): number {
   return parseEnvIntInRange(

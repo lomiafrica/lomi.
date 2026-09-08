@@ -2,32 +2,25 @@
 
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Provider } from './provider';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { SiteJsonLd } from '@/components/seo/site-json-ld';
-import { getDocsLocale } from '@/lib/utils/docs-locale';
 
 const docsOrigin = getDocsSiteOrigin();
 
 const title = 'lomi.';
-const descriptionEn =
-  'Payment infrastructure for francophone West Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.';
 const descriptionFr =
   "Suite d'API pour le traitement des paiements en ligne et le commerce en Afrique de l'Ouest francophone. Encaissez, versez et automatisez vos flux financiers.";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getDocsLocale();
-  const description = locale === 'en' ? descriptionEn : descriptionFr;
-
+export function generateMetadata(): Metadata {
   return {
     title: {
       default: title,
       template: 'lomi. | %s',
     },
-    description,
+    description: descriptionFr,
     keywords: [
       'payment processing',
       'online payments',
@@ -93,7 +86,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       url: docsOrigin,
       title,
-      description,
+      description: descriptionFr,
       siteName: 'lomi.',
       locale: 'fr_FR',
       alternateLocale: ['en_US'],
@@ -109,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: 'summary_large_image',
       title,
-      description,
+      description: descriptionFr,
       images: [
         'https://res.cloudinary.com/dzrdlevfn/image/upload/v1759315964/x_banner_vu16vp.webp',
       ],
@@ -142,11 +135,6 @@ export const viewport: Viewport = {
   ],
 };
 
-async function DocsProviders({ children }: { children: ReactNode }) {
-  const initialLanguage = await getDocsLocale();
-  return <Provider initialLanguage={initialLanguage}>{children}</Provider>;
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -161,7 +149,7 @@ export default function RootLayout({
     >
       <body className="relative flex min-h-screen flex-col">
         <SiteJsonLd />
-        <DocsProviders>{children}</DocsProviders>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

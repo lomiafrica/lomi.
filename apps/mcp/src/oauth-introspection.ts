@@ -119,6 +119,7 @@ export function buildProtectedResourceMetadata() {
       'provisioning.onboard',
       'merchant.read',
       'merchant.write',
+      'merchant.money',
     ],
     bearer_methods_supported: ['header'],
   };

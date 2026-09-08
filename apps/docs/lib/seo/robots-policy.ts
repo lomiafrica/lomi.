@@ -8,6 +8,7 @@ export const ROBOTS_DISALLOW = [
   '/api/tryit-prefs',
   '/api/support/',
   '/tryit/',
+  '/l/',
   '/_next/',
 ] as const;
 

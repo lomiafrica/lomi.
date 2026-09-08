@@ -23,6 +23,7 @@ pub enum OutputFormat {
     #[default]
     Human,
     Json,
+    Table,
 }
 
 impl FromStr for OutputFormat {
@@ -32,8 +33,9 @@ impl FromStr for OutputFormat {
         match value.to_lowercase().as_str() {
             "human" => Ok(Self::Human),
             "json" => Ok(Self::Json),
+            "table" => Ok(Self::Table),
             _ => Err(format!(
-                "Unknown output format: {value}. Use human or json."
+                "Unknown output format: {value}. Use human, json, or table."
             )),
         }
     }
@@ -61,8 +63,8 @@ pub struct CommonOptions {
     #[arg(long, global = true)]
     pub json: bool,
 
-    /// Output format (human or json)
-    #[arg(long, global = true, value_enum, hide = true)]
+    /// Output format (human, json, or table)
+    #[arg(long, global = true, value_enum)]
     pub output: Option<OutputFormat>,
 
     /// Disable colored output
@@ -75,6 +77,13 @@ pub struct CommonOptions {
 }
 
 impl CommonOptions {
+    pub fn use_table(&self) -> bool {
+        matches!(self.output, Some(OutputFormat::Table))
+            || std::env::var("LOMI_OUTPUT")
+                .map(|value| value.eq_ignore_ascii_case("table"))
+                .unwrap_or(false)
+    }
+
     pub fn use_json(&self) -> bool {
         if self.json {
             return true;

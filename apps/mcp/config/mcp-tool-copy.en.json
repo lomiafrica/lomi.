@@ -125,7 +125,7 @@
   },
   "GET /payment-requests": {
     "title": "List payment requests",
-    "description": "List one-off payment requests (invoices) sent to customers, with status and amount."
+    "description": "List one-off payment requests sent to customers, with status and amount. Distinct from invoices (lomi_invoices)."
   },
   "GET /payment-requests/{id}": {
     "title": "Get payment request",
@@ -285,7 +285,7 @@
   },
   "POST /payment-requests": {
     "title": "Create payment request",
-    "description": "Create a one-off payment request (invoice) for a specific customer and amount, delivered as a payable link. Use to bill a single customer."
+    "description": "Create a one-off payment request for a specific customer and amount, delivered as a payable link. For numbered invoices with PDF, use lomi_invoices."
   },
   "POST /payouts": {
     "title": "Create payout",
@@ -346,5 +346,89 @@
   "POST /webhooks/{id}/deliveries/{deliveryId}/retry": {
     "title": "Retry webhook delivery",
     "description": "Re-send a previously failed webhook delivery. Pass the webhook id and the delivery log id from the delivery logs."
+  },
+  "GET /api-keys": {
+    "title": "List API keys",
+    "description": "List API keys for the organization. Values are prefix and last4 only; full secrets are never returned."
+  },
+  "GET /invoices": {
+    "title": "List invoices",
+    "description": "List customer invoices (draft, open, paid, void). Use to collect receivables or send a reminder."
+  },
+  "GET /invoices/{id}": {
+    "title": "Get invoice",
+    "description": "Retrieve one invoice including line items, hosted_url (/i/{token}), and amounts due."
+  },
+  "GET /invoices/{id}/pdf": {
+    "title": "Download invoice PDF",
+    "description": "Return hosted_url and download_url for the invoice PDF. Send this link to the human. Stdio MCP and the CLI can save the file locally."
+  },
+  "PATCH /invoices/{id}": {
+    "title": "Update invoice",
+    "description": "Update a draft invoice (amounts, due date, line items). Paid invoices cannot be rewritten."
+  },
+  "POST /invoices": {
+    "title": "Create invoice",
+    "description": "Create a customer invoice. Omit password-style fields; send the hosted_url to the human. Poll status until paid."
+  },
+  "POST /invoices/{id}/checkout-session": {
+    "title": "Invoice checkout session",
+    "description": "Create or reuse a hosted checkout session so the customer can pay this invoice."
+  },
+  "POST /invoices/{id}/finalize": {
+    "title": "Finalize invoice",
+    "description": "Mark a draft invoice as sent and create a hosted pay link. Does not email the customer."
+  },
+  "POST /invoices/{id}/send": {
+    "title": "Send invoice",
+    "description": "Finalize the invoice, create a hosted pay link, and queue the invoice email. Send hosted_url to the human if email is unavailable."
+  },
+  "POST /invoices/{id}/remind": {
+    "title": "Remind invoice",
+    "description": "Queue a reminder email for a sent or overdue invoice."
+  },
+  "POST /invoices/{id}/void": {
+    "title": "Void invoice",
+    "description": "Cancel a draft, sent, or overdue invoice."
+  },
+  "GET /transactions/{id}/receipt.pdf": {
+    "title": "Download receipt PDF",
+    "description": "Return download_url for the transaction receipt PDF. Send the link to the human."
+  },
+  "POST /disputes/{id}/evidence": {
+    "title": "Submit dispute evidence",
+    "description": "Attach written evidence to a card dispute. Confirm facts with the merchant before submitting."
+  },
+  "POST /exports": {
+    "title": "Create export",
+    "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll get until download_url is set. For money-moving tools, confirm first."
+  },
+  "GET /exports/{id}": {
+    "title": "Get export",
+    "description": "Check export job status. When completed, download_url is a short-lived signed URL."
+  },
+  "GET /finance/summary": {
+    "title": "Finance summary",
+    "description": "Cash position, receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure."
+  },
+  "GET /finance/cashflow": {
+    "title": "Cashflow",
+    "description": "Daily inflow and outflow over a date range."
+  },
+  "GET /finance/aging": {
+    "title": "Receivables aging",
+    "description": "Open invoice amounts bucketed by days past due."
+  },
+  "GET /finance/reconcile": {
+    "title": "Reconcile",
+    "description": "Difference between completed transaction net and completed payouts."
+  },
+  "GET /payout-methods": {
+    "title": "List payout methods",
+    "description": "List destination accounts for withdrawals. Account numbers are masked."
+  },
+  "POST /payout-methods": {
+    "title": "Add payout method",
+    "description": "Register a bank, SPI, or mobile money destination for payouts."
   }
 }

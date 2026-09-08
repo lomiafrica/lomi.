@@ -6,14 +6,14 @@ import { DocsMobileSearchBanner } from '@/components/docs/docs-mobile-search-ban
 import { DocsSidebarLocaleAndTheme } from '@/components/docs/sidebar-locale-theme';
 import { baseOptions, linkItems, logo } from '@/lib/utils/layout.shared';
 import { source } from '@/lib/utils/source';
-import { getDocsLocale } from '@/lib/utils/docs-locale';
+import { parseDocsLang, setDocsLocale } from '@/lib/utils/docs-locale';
+import { Provider } from '@/app/provider';
 import { isString } from '@lomi./shared';
 import type { CSSProperties, ReactNode } from 'react';
 import type { LayoutTab } from 'fumadocs-ui/layouts/shared';
 import type { Folder, Node, Root } from 'fumadocs-core/page-tree';
 import { t as translate } from '@/lib/i18n/translations';
 import type { Language } from '@/lib/i18n/config';
-import 'katex/dist/katex.min.css';
 
 function getFirstPageUrl(node: Folder): string | undefined {
   if (node.index?.url) return node.index.url;
@@ -127,8 +127,20 @@ function localizeTree(root: Root, locale: Language): Root {
   };
 }
 
-export default async function Layout({ children }: { children: ReactNode }) {
-  const locale = await getDocsLocale();
+export function generateStaticParams() {
+  return [{ lang: 'en' }, { lang: 'fr' }];
+}
+
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  const locale = parseDocsLang(lang);
+  setDocsLocale(locale);
   const requestedTree = source.getPageTree(locale);
   const fallbackLocale: Language = locale === 'fr' ? 'en' : 'fr';
   const treeLocale =
@@ -170,6 +182,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
   });
 
   return (
+    <Provider initialLanguage={locale}>
     <DocsAppLayout
       {...base}
       i18n={false}
@@ -202,5 +215,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
       <DocsHashScroll />
       {children}
     </DocsAppLayout>
+    </Provider>
   );
 }

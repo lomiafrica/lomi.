@@ -2,6 +2,7 @@
   "title": "Disputes",
   "pages": [
     "DisputesController_findAll",
-    "DisputesController_findOne"
+    "DisputesController_findOne",
+    "DisputesController_submitEvidence"
   ]
 }

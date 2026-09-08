@@ -24,6 +24,11 @@ export function registerLomiPrompts(
   const createWebhook = toolRefForOperation(manifest, 'POST /webhooks');
   const listTransactions = toolRefForOperation(manifest, 'GET /transactions');
   const getTransaction = toolRefForOperation(manifest, 'GET /transactions/{id}');
+  const financeSummary = toolRefForOperation(manifest, 'GET /finance/summary');
+  const financeAging = toolRefForOperation(manifest, 'GET /finance/aging');
+  const createExport = toolRefForOperation(manifest, 'POST /exports');
+  const getExport = toolRefForOperation(manifest, 'GET /exports/{id}');
+  const listInvoices = toolRefForOperation(manifest, 'GET /invoices');
   const testWebhook = toolRefForOperation(manifest, 'POST /webhooks/{id}/test');
   const listWebhookLogs = toolRefForOperation(
     manifest,
@@ -215,6 +220,35 @@ export function registerLomiPrompts(
               `6. ${createCheckout}, first delegated payment with header Lomi-Account: acct_...`,
               '',
               'Use sandbox keys first. Document each step outcome.',
+            ].join('\n'),
+          },
+        },
+      ],
+    }),
+  );
+
+  server.registerPrompt(
+    'month_end_close',
+    {
+      title: 'Month-end close',
+      description:
+        'Pull a statement, list overdue invoices, send reminders, and export a journal.',
+    },
+    async () => ({
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: [
+              'Run month-end close on lomi.:',
+              `1. ${financeSummary}, snapshot cash, receivables, refunds, disputes`,
+              `2. ${financeAging}, list overdue buckets`,
+              `3. ${listInvoices}, find open/overdue invoices and send hosted_url reminders (do not invent emails)`,
+              `4. ${createExport} type=statement_pdf, then ${getExport} until download_url`,
+              `5. ${createExport} type=journal_csv, then ${getExport} for the accounting file`,
+              '',
+              'Do not create payouts or refunds during close unless the merchant confirms the confirmation_token preview.',
             ].join('\n'),
           },
         },

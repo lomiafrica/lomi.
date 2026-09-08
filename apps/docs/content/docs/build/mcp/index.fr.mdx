@@ -186,12 +186,12 @@ En HTTP MCP, les appels utilisent l’environnement API associé à votre `LOMI_
 
 ## Outils, ressources et prompts
 
-- Les outils marchands sont **~22 outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés.
+- Les outils marchands sont des **outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`, `lomi_invoices` avec `action=pdf`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés.
 - **`lomi_search_tools`**: recherche dans le catalogue d’outils quand le client charge les outils à la demande.
 - **`lomi_register_agent`**: émet une clé de provisioning sandbox (session invitée ou authentifiée).
 - Provisioning : `lomi_provision` et `lomi_partners` (même schéma `action`).
-- **Ressources**: `lomi://docs/getting-started`, `lomi://docs/errors`, `lomi://tools/index`.
-- **Prompts**: `provision_merchant_from_zero` (onboarding 0→1), `onboard_merchant` (intégration après inscription), `debug_failed_payment`, `setup_webhook`.
+- **Ressources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
+- **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
 
 ## API ↔ MCP
 

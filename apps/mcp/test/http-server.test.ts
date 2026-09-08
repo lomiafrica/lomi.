@@ -617,6 +617,54 @@ describe('createHttpApplication', () => {
     }
     expect(sawListChanged).toBe(true);
   });
+
+  it('rejects resuming an authenticated session with a different API key', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    process.env.LOMI_SECRET_KEY = 'lomi_sk_test_session_bind_a';
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'x-lomi-api-key': 'lomi_sk_test_session_bind_a',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'bind-test', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const mismatch = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId!,
+        'x-lomi-api-key': 'lomi_sk_test_session_bind_b',
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'tools/list', id: 2 }),
+    });
+    expect(mismatch.status).toBe(401);
+    const body = (await mismatch.json()) as JsonObject;
+    expect(String((body.error as JsonObject)?.message ?? '')).toMatch(
+      /credential mismatch/,
+    );
+  });
 });
 
 function parseSseJsonRpc(text: string): JsonObject {

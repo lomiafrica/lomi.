@@ -50,9 +50,12 @@ pub struct PayoutsCreateArgs {
     pub recipient_phone: Option<String>,
     #[arg(long)]
     pub reason: Option<String>,
+    /// Return the confirmation preview without executing
+    #[arg(long)]
+    pub preview: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct CreatePayoutRequest {
     destination: String,
     rail: String,
@@ -64,9 +67,11 @@ struct CreatePayoutRequest {
     recipient: Option<Recipient>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reason: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    confirmation_token: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct Recipient {
     name: String,
     phone: String,
@@ -150,20 +155,47 @@ async fn create_payout(common: &CommonOptions, args: PayoutsCreateArgs) -> Resul
         bail!("--payout-method-id is required for self payouts");
     }
 
-    let response: serde_json::Value = client
-        .post(
-            "/payouts",
-            &CreatePayoutRequest {
-                destination,
-                rail,
-                amount,
-                currency_code: args.currency,
-                payout_method_id: args.payout_method_id,
-                recipient,
-                reason: args.reason,
-            },
-        )
-        .await?;
+    let body = CreatePayoutRequest {
+        destination,
+        rail,
+        amount,
+        currency_code: args.currency,
+        payout_method_id: args.payout_method_id,
+        recipient,
+        reason: args.reason,
+        confirmation_token: None,
+    };
+    let mut response: serde_json::Value = client.post("/payouts", &body).await?;
+    if response
+        .get("requires_confirmation")
+        .and_then(|v| v.as_bool())
+        == Some(true)
+    {
+        if args.preview || json {
+            if json {
+                return cli::output::print_json(&response);
+            }
+            cli::output::print_info("Confirmation required. Re-run without --preview to execute.");
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&response).unwrap_or_default()
+            );
+            return Ok(());
+        }
+        let token = response
+            .get("confirmation_token")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        response = client
+            .post(
+                "/payouts",
+                &CreatePayoutRequest {
+                    confirmation_token: token,
+                    ..body
+                },
+            )
+            .await?;
+    }
 
     if json {
         return cli::output::print_json(&response);

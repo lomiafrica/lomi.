@@ -52,11 +52,19 @@ lomi checkout create --amount 10000 --currency XOF \
 | `init` | Initialize project with SDK, examples, and `.env` |
 | `quickstart` | Golden-path checks and next steps |
 | `listen` | Cloud webhook relay (sandbox-first); prints signing secret on connect |
-| `trigger <event>` | Emit synthetic sandbox webhook event |
+| `trigger <event>` | Emit synthetic sandbox webhook event (`--list` for the catalog) |
 | `probe` | Integration health checks |
 | `webhooks list` / `webhooks test` / `webhooks resend` | Manage, test, and replay webhook deliveries |
-| `mcp config` | Print HTTP MCP config for Cursor or Claude |
+| `mcp config` / `mcp serve` | Print HTTP MCP config, or run stdio MCP locally |
 | `products list` | List products and prices |
+| `customers list` / `customers get` | List or retrieve customers |
+| `invoices list` / `invoices get` / `invoices pdf` | Invoices, including `pdf --out ./INV-0001.pdf` |
+| `receipts pdf <id>` | Download a transaction receipt PDF |
+| `balance` | Show account balance |
+| `api-keys list` | List API keys (prefix and last4 only) |
+| `exports create` / `get` / `download` | Create and download CSV/PDF exports |
+| `logs list` / `logs tail` | List or poll API logs |
+| `open [path]` | Open the merchant dashboard |
 | `transactions list` / `transactions get` | List or retrieve transactions |
 | `refunds create` / `list` / `get` | Create, list, or retrieve refunds |
 | `payouts list` / `get` / `create` | Manage payouts |
@@ -78,7 +86,7 @@ lomi switch sandbox
 lomi init --profile sandbox
 ```
 
-Global config: `~/.config/lomi/config.json` (Linux) or `~/Library/Preferences/lomi/config.json` (macOS).
+Global config: `~/.config/lomi/config.json` (Linux) or `~/Library/Application Support/lomi/config.json` (macOS).
 
 ## Headless / CI
 

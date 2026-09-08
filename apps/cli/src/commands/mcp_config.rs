@@ -1,7 +1,8 @@
-use anyhow::Result;
+use anyhow::{bail, Context, Result};
 use clap::{Args, Subcommand};
 use colored::Colorize;
 
+use crate::auth::session::ensure_authenticated;
 use crate::cli::{self, CommonOptions};
 
 #[derive(Args, Debug)]
@@ -14,6 +15,15 @@ pub struct McpArgs {
 pub enum McpCommand {
     /// Print HTTP MCP configuration for Cursor or Claude
     Config(McpConfigArgs),
+    /// Run the stdio MCP server locally
+    Serve(McpServeArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct McpServeArgs {
+    /// Override the merchant secret key (defaults to the CLI login token)
+    #[arg(long)]
+    pub api_key: Option<String>,
 }
 
 #[derive(Args, Debug)]
@@ -30,6 +40,7 @@ pub struct McpConfigArgs {
 pub async fn run(common: &CommonOptions, args: McpArgs) -> Result<()> {
     match args.command {
         McpCommand::Config(config) => run_config(common, config).await,
+        McpCommand::Serve(serve) => run_serve(common, serve).await,
     }
 }
 
@@ -83,4 +94,38 @@ async fn run_config(common: &CommonOptions, args: McpConfigArgs) -> Result<()> {
         );
     }
     Ok(())
+}
+
+async fn run_serve(common: &CommonOptions, args: McpServeArgs) -> Result<()> {
+    let auth = ensure_authenticated(common, true, false, false).await?;
+    let api_key = args
+        .api_key
+        .or(std::env::var("LOMI_SECRET_KEY").ok())
+        .unwrap_or(auth.cli_token.clone());
+
+    let mut command = if which("lomi-mcp") {
+        std::process::Command::new("lomi-mcp")
+    } else {
+        let mut cmd = std::process::Command::new("npx");
+        cmd.args(["-y", "@lomi./mcp"]);
+        cmd
+    };
+    command.env("LOMI_SECRET_KEY", api_key);
+    command.env("LOMI_API_URL", auth.api_url);
+    if std::env::var_os("LOMI_MCP_DOWNLOAD_DIR").is_none() {
+        command.env("LOMI_MCP_DOWNLOAD_DIR", std::env::current_dir()?);
+    }
+    let status = command
+        .status()
+        .context("Failed to start stdio MCP (install @lomi./mcp or lomi-mcp)")?;
+    if !status.success() {
+        bail!("MCP server exited with {status}");
+    }
+    Ok(())
+}
+
+fn which(bin: &str) -> bool {
+    std::env::var_os("PATH").is_some_and(|paths| {
+        std::env::split_paths(&paths).any(|dir| dir.join(bin).is_file())
+    })
 }

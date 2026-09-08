@@ -115,9 +115,25 @@ function buildMoneyDoc(manifest: ToolsManifest): string {
   return `# Money, currency, and reconciliation
 
 - **Amounts** are integers in minor units of \`currency_code\`. \`10000\` is 10,000 XOF (exponent 0) or 100.00 USD/EUR (exponent 2). Reject fractions.
-- **Before paying out:** check funds with \`${balance}\` (all currencies) or \`${checkBalance}\` (one currency), then call \`${payout}\`.
+- **Before paying out:** check funds with \`${balance}\` (all currencies) or \`${checkBalance}\` (one currency), then call \`${payout}\`. The first payout/refund/instant-settlement call returns a preview with \`confirmation_token\`; send that token on the second call to execute. \`merchant.write\` cannot move money; reconnect with \`merchant.money\`.
 - **Reconciliation:** \`${settlements}\` lists settlement periods; each \`settlement_id\` is \`{currency}:{YYYY-MM-DD}\` (UTC). \`${settlementTx}\` lists the transactions inside one period so you can tie a payout to underlying payments.
 - **Collecting money as an agent:** use \`${checkout}\` (hosted checkout) or \`${link}\` (shareable link) and hand the returned URL to the customer. Direct charge endpoints are intentionally **not** exposed here because they require client-side card collection or an interactive end-user prompt.
+`;
+}
+
+function buildFinanceDoc(manifest: ToolsManifest): string {
+  const n = (key: string) => nameFor(manifest, key);
+  return `# Finance partner
+
+Use these tools as a bookkeeper, not only a REST proxy.
+
+- **Snapshot:** \`${n('GET /finance/summary')}\` (cash, receivables, overdue, payouts, refunds, disputes).
+- **Aging:** \`${n('GET /finance/aging')}\` for open invoices by days past due.
+- **Cashflow:** \`${n('GET /finance/cashflow')}\` daily in/out.
+- **Reconcile:** \`${n('GET /finance/reconcile')}\` completed net vs payouts.
+- **Invoices:** \`${n('POST /invoices')}\` then \`${n('GET /invoices/{id}/pdf')}\`. Send hosted_url to the human.
+- **Exports:** \`${n('POST /exports')}\` with type transactions_csv, statement_pdf, or journal_csv. Poll \`${n('GET /exports/{id}')}\` for download_url.
+- **Money moves** require a confirmation_token from the first create call, and the merchant.money OAuth scope.
 `;
 }
 
@@ -134,7 +150,12 @@ Task-oriented sequences. Pass \`idempotency_key\` on every write. Use \`lomi_sea
 
 ## Bill one specific customer
 1. \`${n('POST /customers')}\` (or find them with \`${n('GET /customers')}\`).
-2. \`${n('POST /payment-requests')}\` for that customer and amount; send them the payable link.
+2. \`${n('POST /invoices')}\` for a numbered invoice with PDF, or \`${n('POST /payment-requests')}\` for a one-off payable link.
+
+## Month-end close
+1. \`${n('GET /finance/summary')}\` and \`${n('GET /finance/aging')}\`.
+2. \`${n('POST /exports')}\` type=statement_pdf and type=journal_csv; poll \`${n('GET /exports/{id}')}\`.
+3. Send reminders on overdue invoices; do not move money without a confirmation_token.
 
 ## Start a subscription
 1. \`${n('GET /products')}\` (or \`${n('POST /products')}\` first) to pick a plan.
@@ -237,6 +258,13 @@ export function registerLomiResources(
       title: 'lomi. common workflows',
       description: 'End-to-end task recipes referencing the right tools.',
       text: buildRecipesDoc(manifest),
+    },
+    {
+      name: 'finance',
+      uri: 'lomi://docs/finance',
+      title: 'lomi. finance partner',
+      description: 'Summary, aging, cashflow, reconcile, invoices, and exports.',
+      text: buildFinanceDoc(manifest),
     },
     {
       name: 'errors',

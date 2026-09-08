@@ -1,0 +1,15 @@
+{
+  "title": "Factures",
+  "pages": [
+    "InvoicesController_create",
+    "InvoicesController_createCheckoutSession",
+    "InvoicesController_finalize",
+    "InvoicesController_findAll",
+    "InvoicesController_findOne",
+    "InvoicesController_pdf",
+    "InvoicesController_remind",
+    "InvoicesController_send",
+    "InvoicesController_update",
+    "InvoicesController_voidInvoice"
+  ]
+}

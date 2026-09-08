@@ -70,7 +70,7 @@ async function persistTryitOrg(organizationId: string): Promise<boolean> {
 }
 
 export function DocsWorkspaceProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [pending, setPending] = useState(false);
   const [ctx, setCtx] = useState<TryitContextResponse | null>(null);
 
@@ -82,7 +82,6 @@ export function DocsWorkspaceProvider({ children }: { children: ReactNode }) {
         const body = await fetchTryitContext();
         if (cancelled) return;
         if (!body) {
-          setReady(true);
           return;
         }
         if (
@@ -97,7 +96,6 @@ export function DocsWorkspaceProvider({ children }: { children: ReactNode }) {
             if (cancelled) return;
             if (refreshed) {
               setCtx(refreshed);
-              setReady(true);
               return;
             }
           }

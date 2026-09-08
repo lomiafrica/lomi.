@@ -47,7 +47,7 @@
     "format:fix": "prettier --write .",
     "test": "pnpm test:seo && pnpm test:tryit",
     "test:seo": "node --import tsx --test lib/seo/docs-seo.test.mjs",
-    "test:tryit": "node --import tsx --test lib/openapi-secure-proxy.allowlist.test.ts lib/openapi/sandbox-document.test.ts lib/openapi/operation-tryit.test.ts lib/tryit/gating.test.ts lib/mcp-twins.test.ts",
+    "test:tryit": "node --import tsx --test lib/openapi-secure-proxy.allowlist.test.ts lib/openapi/sandbox-document.test.ts lib/openapi/operation-tryit.test.ts lib/tryit/gating.test.ts lib/mcp-twins.test.ts lib/utils/docs-routing.test.ts",
     "screenshots:verify": "pnpm exec tsx ./lib/scripts/verify-docs-screenshots.ts"
   },
   "dependencies": {

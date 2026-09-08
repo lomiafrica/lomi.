@@ -1,0 +1,76 @@
+---
+title: "Daily cash in and out over a date range"
+description: "Daily cash in and out over a date range"
+full: true
+method: get
+path: /finance/cashflow
+operationId: FinanceController_cashflow
+---
+
+## Aperçu
+
+Daily cash in and out over a date range
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `GET /finance/cashflow` (Daily cash in and out over a date range).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /finance/cashflow`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `end_date` | query | Non | - |  |
+| `start_date` | query | Non | - |  |
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/finance/cashflow?end_date=value&start_date=value" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `FinanceController_cashflow`
+- **Operation**: `GET /finance/cashflow`
+
+Schémas complets et **Try it** : [référence API](/api).

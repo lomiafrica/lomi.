@@ -16,6 +16,7 @@ pub fn verify_from_headers(
     raw_body: &str,
     headers: &[(String, String)],
 ) -> Result<Option<String>, String> {
+    let mut lomi_sig_v1 = None;
     let mut lomi_sig = None;
     let mut legacy_sig = None;
     let mut event_type = None;
@@ -23,6 +24,7 @@ pub fn verify_from_headers(
     for (key, value) in headers {
         let lower = key.to_ascii_lowercase();
         match lower.as_str() {
+            "x-lomi-signature-v1" => lomi_sig_v1 = Some(value.clone()),
             "x-lomi-signature" => lomi_sig = Some(value.clone()),
             "x-lomi-event" => event_type = Some(value.clone()),
             "lomi-signature" => legacy_sig = Some(value.clone()),
@@ -33,6 +35,11 @@ pub fn verify_from_headers(
     let secret = std::env::var("LOMI_WEBHOOK_SECRET")
         .map_err(|_| "LOMI_WEBHOOK_SECRET not set".to_string())?;
 
+    if let Some(signature_header) = lomi_sig_v1 {
+        verify_v1_signature(raw_body, &signature_header, &secret)?;
+        return Ok(event_type);
+    }
+
     if let Some(signature) = lomi_sig {
         verify_lomi_signature(raw_body, &signature, &secret)?;
         return Ok(event_type);
@@ -40,13 +47,35 @@ pub fn verify_from_headers(
 
     if let Some(signature_header) = legacy_sig {
         eprintln!(
-            "Warning: lomi-signature is deprecated. Production webhooks use X-Lomi-Signature."
+            "Warning: lomi-signature is deprecated. Production webhooks use X-Lomi-Signature-V1."
         );
         verify_legacy_signature(raw_body, &signature_header, &secret)?;
         return Ok(event_type);
     }
 
-    Err("Missing X-Lomi-Signature header".to_string())
+    Err("Missing X-Lomi-Signature-V1 header".to_string())
+}
+
+fn verify_v1_signature(
+    raw_body: &str,
+    signature_header: &str,
+    secret: &str,
+) -> Result<(), String> {
+    let mut timestamp = None;
+    let mut signature = None;
+    for part in signature_header.split(',') {
+        let part = part.trim();
+        if let Some(value) = part.strip_prefix("t=") {
+            timestamp = Some(value);
+        } else if let Some(value) = part.strip_prefix("v1=") {
+            signature = Some(value);
+        }
+    }
+
+    let timestamp = timestamp.ok_or_else(|| "Invalid V1 signature header".to_string())?;
+    let signature = signature.ok_or_else(|| "Invalid V1 signature header".to_string())?;
+    let signed_payload = format!("{timestamp}.{raw_body}");
+    verify_lomi_signature(&signed_payload, signature, secret)
 }
 
 fn verify_legacy_signature(

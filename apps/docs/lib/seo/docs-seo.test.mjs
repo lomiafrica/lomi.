@@ -25,7 +25,7 @@ test('docs markdown copy URLs point at the llms.mdx route', async () => {
   );
   assert.equal(buildDocsMarkdownUrl('/'), '/llms.mdx');
 
-  const pageSource = read('app/(docs)/[[...slug]]/page.tsx');
+  const pageSource = read('app/(docs)/l/[lang]/[[...slug]]/page.tsx');
   assert.match(pageSource, /buildDocsMarkdownUrl\(page\.url\)/);
   assert.doesNotMatch(pageSource, /\$\{page\.url\}\.mdx/);
 });
@@ -66,16 +66,21 @@ test('dynamic sitemap is the only docs sitemap source', () => {
   assert.doesNotMatch(read('app/sitemap.ts'), /alternates:/);
 });
 
-test('docs locale is resolved from the language cookie, not the URL', () => {
+test('docs locale is cookie-driven with an internal static rewrite', () => {
   const localeSource = read('lib/utils/docs-locale.ts');
   const proxySource = read('proxy.ts');
   const routingSource = read('lib/utils/docs-routing.ts');
 
-  assert.match(localeSource, /\bcookies\b/);
-  assert.match(localeSource, /lomi\.language|Cookies\.Language/);
+  assert.match(localeSource, /setDocsLocale/);
+  assert.doesNotMatch(localeSource, /from 'next\/headers'/);
+  const cookieLocaleSource = read('lib/utils/docs-locale-cookie.ts');
+  assert.match(cookieLocaleSource, /\bcookies\b/);
+  assert.match(cookieLocaleSource, /lomi\.language|Cookies\.Language/);
   assert.match(proxySource, /301/);
+  assert.match(proxySource, /buildDocsInternalLocalePath/);
   assert.match(proxySource, /developers\.lomi\.africa/);
   assert.match(proxySource, /docs\.lomi\.africa/);
+  assert.match(routingSource, /DOCS_INTERNAL_LOCALE_PREFIX/);
   assert.match(routingSource, /Paths are never locale-prefixed/);
 });
 
@@ -108,6 +113,7 @@ test('robots.txt does not block sitemap API reference pages', async () => {
   );
   assert.equal(isRobotsDisallowedPath('/api/authentication'), false);
   assert.equal(isRobotsDisallowedPath('/start/overview'), false);
+  assert.equal(isRobotsDisallowedPath('/l/fr/start/overview'), true);
   assert.equal(isRobotsDisallowedPath('/api/search'), true);
   assert.equal(isRobotsDisallowedPath('/api/proxy'), true);
   assert.equal(isRobotsDisallowedPath('/tryit/handoff'), true);
@@ -122,8 +128,8 @@ test('robots.txt does not block sitemap API reference pages', async () => {
 });
 
 test('page metadata emits locale-aware Open Graph and structured data', () => {
-  const pageSource = read('app/(docs)/[[...slug]]/page.tsx');
-  const docsLayoutSource = read('app/(docs)/layout.tsx');
+  const pageSource = read('app/(docs)/l/[lang]/[[...slug]]/page.tsx');
+  const docsLayoutSource = read('app/(docs)/l/[lang]/layout.tsx');
   const ogSource = read('app/og/[...slug]/route.tsx');
   const layoutSource = read('app/layout.tsx');
   const notFoundSource = read('app/not-found.tsx');

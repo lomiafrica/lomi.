@@ -9,7 +9,7 @@ import { Logo } from './logo';
  *
  * you can customise layouts individually from:
  * Home Layout: app/(home)/layout.tsx
- * Docs Layout: app/(docs)/layout.tsx
+ * Docs Layout: app/(docs)/l/[lang]/layout.tsx
  */
 export const logo = <Logo priority />;
 

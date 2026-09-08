@@ -74,11 +74,28 @@
       }
     },
     {
+      "name": "lomi_invoices",
+      "title": "Invoices",
+      "actions": {
+        "list": "GET /invoices",
+        "get": "GET /invoices/{id}",
+        "create": "POST /invoices",
+        "update": "PATCH /invoices/{id}",
+        "pdf": "GET /invoices/{id}/pdf",
+        "checkout_session": "POST /invoices/{id}/checkout-session",
+        "finalize": "POST /invoices/{id}/finalize",
+        "send": "POST /invoices/{id}/send",
+        "remind": "POST /invoices/{id}/remind",
+        "void": "POST /invoices/{id}/void"
+      }
+    },
+    {
       "name": "lomi_transactions",
       "title": "Transactions",
       "actions": {
         "list": "GET /transactions",
-        "get": "GET /transactions/{id}"
+        "get": "GET /transactions/{id}",
+        "receipt_pdf": "GET /transactions/{id}/receipt.pdf"
       }
     },
     {
@@ -151,7 +168,41 @@
       "title": "Disputes",
       "actions": {
         "list": "GET /disputes",
-        "get": "GET /disputes/{id}"
+        "get": "GET /disputes/{id}",
+        "submit_evidence": "POST /disputes/{id}/evidence"
+      }
+    },
+    {
+      "name": "lomi_exports",
+      "title": "Exports",
+      "actions": {
+        "create": "POST /exports",
+        "get": "GET /exports/{id}"
+      }
+    },
+    {
+      "name": "lomi_finance",
+      "title": "Finance",
+      "actions": {
+        "summary": "GET /finance/summary",
+        "cashflow": "GET /finance/cashflow",
+        "aging": "GET /finance/aging",
+        "reconcile": "GET /finance/reconcile"
+      }
+    },
+    {
+      "name": "lomi_payout_methods",
+      "title": "Payout methods",
+      "actions": {
+        "list": "GET /payout-methods",
+        "create": "POST /payout-methods"
+      }
+    },
+    {
+      "name": "lomi_api_keys",
+      "title": "API keys",
+      "actions": {
+        "list": "GET /api-keys"
       }
     },
     {

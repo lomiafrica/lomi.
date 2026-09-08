@@ -6,21 +6,53 @@ import { callLomiRest, formatHttpResult } from "./lomi-http.js";
 import { getLomiApiBaseUrl, getOptionalMerchantApiKey } from "./env-config.js";
 import { mcpLog } from "./mcp-request-context.js";
 import { truncateToolResultText } from "./truncate-result.js";
-import { registerSearchToolsMetaTool } from "./register-search-tools.js";
+import { maybeWriteLocalDownload } from "./save-local-download.js";
 import { resolveManifestAction, restCallSpecFor } from "./resolve-action.js";
+import { registerSearchToolsMetaTool } from "./register-search-tools.js";
 import {
   isJsonObject,
+  readString,
   validateJsonValue,
   type JsonObject,
 } from "@lomi./shared";
+
+const MONEY_TOOLS = new Set(["lomi_payouts", "lomi_refunds", "lomi_settlements"]);
 
 export type ToolRegistrationContext = {
   baseUrl: string;
   getApiKey: () => string | null;
   readOnlyOnly?: boolean;
+  /** Omit payouts, refunds, and instant settlement (merchant.write without merchant.money). */
+  excludeMoney?: boolean;
   /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
   skipSearchTool?: boolean;
 };
+
+function resourceLinkFromResult(bodyText: string): {
+  type: "resource_link";
+  uri: string;
+  name: string;
+  mimeType: string;
+} | null {
+  try {
+    const parsed = validateJsonValue(JSON.parse(bodyText));
+    const envelope = isJsonObject(parsed) ? parsed : {};
+    const inner = isJsonObject(envelope.body) ? envelope.body : envelope;
+    const uri =
+      readString(inner, "download_url") ??
+      readString(inner, "hosted_url") ??
+      readString(inner, "pdf_url");
+    if (!uri || !uri.startsWith("https://")) return null;
+    return {
+      type: "resource_link",
+      uri,
+      name: readString(inner, "filename") ?? "invoice.pdf",
+      mimeType: readString(inner, "mime_type") ?? "application/pdf",
+    };
+  } catch {
+    return null;
+  }
+}
 
 function registerOneTool(
   server: McpServer,
@@ -105,9 +137,32 @@ function registerOneTool(
         );
         const text = truncateToolResultText(formatHttpResult(result));
         const ok = result.status >= 200 && result.status < 300;
-        const response = {
-          content: [{ type: "text", text }],
-        } satisfies { content: Array<{ type: "text"; text: string }> };
+        const content: Array<
+          | { type: "text"; text: string }
+          | {
+              type: "resource_link";
+              uri: string;
+              name: string;
+              mimeType: string;
+            }
+        > = [{ type: "text", text }];
+        if (ok) {
+          const link = resourceLinkFromResult(result.bodyText);
+          if (link) {
+            content.push(link);
+            const saved = await maybeWriteLocalDownload({
+              uri: link.uri,
+              name: link.name,
+            });
+            if (saved) {
+              content.push({
+                type: "text",
+                text: `Saved locally: ${saved}`,
+              });
+            }
+          }
+        }
+        const response = { content };
         if (!ok) return { ...response, isError: true };
         return response;
       } catch (err) {
@@ -129,7 +184,13 @@ export function registerMerchantTools(
   const baseUrl = ctx?.baseUrl ?? getLomiApiBaseUrl();
   const getApiKey = ctx?.getApiKey ?? getOptionalMerchantApiKey;
   const readOnlyOnly = ctx?.readOnlyOnly ?? false;
-  const fullCtx: ToolRegistrationContext = { baseUrl, getApiKey, readOnlyOnly };
+  const excludeMoney = ctx?.excludeMoney ?? false;
+  const fullCtx: ToolRegistrationContext = {
+    baseUrl,
+    getApiKey,
+    readOnlyOnly,
+    excludeMoney,
+  };
 
   if (!ctx?.skipSearchTool) {
     registerSearchToolsMetaTool(server, manifest);
@@ -137,6 +198,7 @@ export function registerMerchantTools(
 
   for (const tool of manifest.tools) {
     if (readOnlyOnly && !tool.readOnly) continue;
+    if (excludeMoney && MONEY_TOOLS.has(tool.name)) continue;
     registerOneTool(server, tool, fullCtx);
   }
 }

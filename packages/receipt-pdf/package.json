@@ -1,6 +1,6 @@
 {
   "name": "@lomi./receipt-pdf",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "private": true,
   "description": "Shared receipt layout and PDF generation for lomi. checkout and dashboard",
   "type": "module",
@@ -11,6 +11,12 @@
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./node": {
+      "types": "./dist/render-receipt-pdf-buffer.d.ts",
+      "import": "./dist/render-receipt-pdf-buffer.js",
+      "require": "./dist/render-receipt-pdf-buffer.js",
+      "default": "./dist/render-receipt-pdf-buffer.js"
     }
   },
   "files": [
@@ -47,12 +53,14 @@
   },
   "dependencies": {
     "@lomi./shared": "file:../shared",
-    "@react-pdf/renderer": "^4.5.1"
+    "@react-pdf/renderer": "^4.5.1",
+    "react": "^19.2.3"
   },
   "peerDependencies": {
     "react": ">=18"
   },
   "devDependencies": {
+    "@types/node": "^26.5.0",
     "@types/react": "^19.2.15",
     "react": "^19.2.3",
     "typescript": "^5.9.3"

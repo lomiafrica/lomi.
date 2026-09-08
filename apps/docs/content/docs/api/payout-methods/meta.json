@@ -1,0 +1,7 @@
+{
+  "title": "Payout Methods",
+  "pages": [
+    "PayoutMethodsController_create",
+    "PayoutMethodsController_list"
+  ]
+}

@@ -61,6 +61,22 @@ pub enum Commands {
     Products(crate::commands::products::ProductsArgs),
     /// List transactions
     Transactions(crate::commands::transactions::TransactionsArgs),
+    /// Manage invoices
+    Invoices(crate::commands::invoices::InvoicesArgs),
+    /// Manage customers
+    Customers(crate::commands::customers::CustomersArgs),
+    /// Show account balance
+    Balance(crate::commands::balance::BalanceArgs),
+    /// List API keys for the current session
+    ApiKeys(crate::commands::api_keys::ApiKeysArgs),
+    /// Create and download exports
+    Exports(crate::commands::exports::ExportsArgs),
+    /// Tail or list API logs
+    Logs(crate::commands::logs::LogsArgs),
+    /// Open the dashboard
+    Open(crate::commands::open_cmd::OpenArgs),
+    /// Download a transaction receipt PDF
+    Receipts(crate::commands::receipts::ReceiptsArgs),
     /// Manage refunds
     Refunds(crate::commands::refunds::RefundsArgs),
     /// Manage payouts

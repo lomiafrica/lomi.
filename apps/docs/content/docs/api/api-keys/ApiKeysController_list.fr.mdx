@@ -1,0 +1,77 @@
+---
+title: "List API keys"
+description: "List API keys"
+full: true
+method: get
+path: /api-keys
+operationId: ApiKeysController_list
+---
+
+## Aperçu
+
+List API keys
+
+Returns key name, type, prefix/last4, and status. Secret values are never returned.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `GET /api-keys` (List API keys).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /api-keys`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/api-keys" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `ApiKeysController_list`
+- **Operation**: `GET /api-keys`
+
+Schémas complets et **Try it** : [référence API](/api).

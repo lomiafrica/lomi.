@@ -1,6 +1,6 @@
 /* @proprietary license */
 
-export type DocsSearchTag = 'core' | 'reference' | 'resources';
+export type DocsSearchTag = 'start' | 'build' | 'api' | 'resources';
 
 /** Map the top-level docs section to the search-dialog filter chips. */
 export function searchTagFromSection(
@@ -9,11 +9,9 @@ export function searchTagFromSection(
   switch (section) {
     case 'start':
     case 'build':
-      return 'core';
     case 'api':
-      return 'reference';
     case 'resources':
-      return 'resources';
+      return section;
     default:
       return undefined;
   }

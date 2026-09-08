@@ -3,7 +3,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getLLMText, getLLMTextFallback } from '@/lib/utils/get-llm-text';
 import { source } from '@/lib/utils/source';
-import { getDocsLocale } from '@/lib/utils/docs-locale';
+import { getDocsLocaleFromCookie } from '@/lib/utils/docs-locale-cookie';
 import {
   DISCOVERY_MARKDOWN_HEADERS,
   buildDocsNotFoundMarkdown,
@@ -31,7 +31,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string[] }> },
 ) {
   const { slug } = await params;
-  const locale = await getDocsLocale();
+  const locale = await getDocsLocaleFromCookie();
   const page =
     source.getPage(slug, locale) ??
     source.getPage(slug, fallbackLocale(locale));

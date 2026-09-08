@@ -1,0 +1,79 @@
+---
+title: "Créer une facture"
+description: "Créer une facture"
+full: true
+method: post
+path: /invoices
+operationId: InvoicesController_create
+---
+
+## Aperçu
+
+Créer une facture
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /invoices` (Créer une facture).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /invoices`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+_Pas de corps JSON pour cette opération._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/invoices" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `InvoicesController_create`
+- **Operation**: `POST /invoices`
+
+Schémas complets et **Try it** : [référence API](/api).

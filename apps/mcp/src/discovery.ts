@@ -91,6 +91,7 @@ export function buildAuthorizationServerPointer() {
       'provisioning.onboard',
       'merchant.read',
       'merchant.write',
+      'merchant.money',
     ],
   };
 }

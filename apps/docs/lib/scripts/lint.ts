@@ -600,7 +600,7 @@ async function checkLinks() {
 
   const scanned = await scanURLs({
     populate: {
-      '(docs)/[[...slug]]': await Promise.all(docs),
+      '(docs)/l/[lang]/[[...slug]]': await Promise.all(docs),
     },
   });
 

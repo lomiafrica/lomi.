@@ -925,6 +925,64 @@
         ]
       }
     },
+    "/transactions/{id}/receipt.pdf": {
+      "get": {
+        "description": "Returns hosted_url and download_url for the transaction receipt PDF.",
+        "operationId": "TransactionsController_receiptPdf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la transaction",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoicePdfResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Download receipt PDF",
+        "tags": [
+          "Transactions"
+        ]
+      }
+    },
     "/transactions/{id}": {
       "get": {
         "description": "Renvoie une transaction. Réponse 404 si elle n'existe pas ou n'est pas accessible avec cette clé API.",
@@ -2009,7 +2067,7 @@
     },
     "/refunds": {
       "post": {
-        "description": "Refunds a completed transaction (card, Wave, or MTN). Merchant balance updates immediately. Supports full and partial refunds. In test mode, MTN refunds are ledger-only (no MTN API call). In live mode, MTN requires a RequestToPay reference on the original transaction.",
+        "description": "Refunds a completed transaction (card, Wave, or MTN). Merchant balance updates immediately. Supports full and partial refunds. In test mode, MTN refunds are ledger-only (no MTN API call). In live mode, MTN requires a RequestToPay reference on the original transaction. First call without confirmation_token returns a preview. Second call with that token executes.",
         "operationId": "RefundsController_create",
         "parameters": [
           {
@@ -3830,7 +3888,7 @@
     },
     "/payouts": {
       "post": {
-        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary).",
+        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary). First call without confirmation_token returns a preview. Second call with that token executes.",
         "operationId": "PayoutsUnifiedController_create",
         "parameters": [
           {
@@ -4067,6 +4125,55 @@
         ]
       }
     },
+    "/disputes/{id}/evidence": {
+      "post": {
+        "description": "Attach written evidence (and optional file metadata) to a card dispute before the due date.",
+        "operationId": "DisputesController_submitEvidence",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Dispute ID",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evidence recorded"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Submit dispute evidence",
+        "tags": [
+          "Litiges"
+        ]
+      }
+    },
     "/disputes/{id}": {
       "get": {
         "operationId": "DisputesController_findOne",
@@ -4189,7 +4296,7 @@
     },
     "/settlements/instant": {
       "post": {
-        "description": "Rail mode records a Nitro fee on an existing payout. Advance mode unlocks held card funds up to the org cap. Requires Idempotency-Key.",
+        "description": "Rail mode records a Nitro fee on an existing payout. Advance mode unlocks held card funds up to the org cap. Requires Idempotency-Key. First call without confirmation_token returns a preview. Second call with that token executes.",
         "operationId": "SettlementsController_createInstant",
         "parameters": [
           {
@@ -5401,6 +5508,739 @@
         ]
       }
     },
+    "/invoices": {
+      "post": {
+        "operationId": "InvoicesController_create",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Créer une facture",
+        "tags": [
+          "Invoices"
+        ]
+      },
+      "get": {
+        "operationId": "InvoicesController_findAll",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "customerId",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvoiceResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Lister les factures",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/pdf": {
+      "get": {
+        "description": "Returns a hosted invoice URL and a download_url for the PDF. Send download_url to the human, or save the file locally from stdio MCP / the CLI.",
+        "operationId": "InvoicesController_pdf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoicePdfResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Invoice PDF",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}": {
+      "get": {
+        "operationId": "InvoicesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Obtenir une facture",
+        "tags": [
+          "Invoices"
+        ]
+      },
+      "patch": {
+        "operationId": "InvoicesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Modifier une facture",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/checkout-session": {
+      "post": {
+        "operationId": "InvoicesController_createCheckoutSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Créer ou récupérer une session de paiement de facture",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/finalize": {
+      "post": {
+        "description": "Marks the invoice as sent and creates a hosted checkout session. Does not email the customer.",
+        "operationId": "InvoicesController_finalize",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Finalize a draft invoice",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/send": {
+      "post": {
+        "description": "Finalize the invoice, create a hosted pay link, and queue the invoice email when a customer email exists.",
+        "operationId": "InvoicesController_send",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Send an invoice",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/remind": {
+      "post": {
+        "description": "Queue a reminder email for a sent or overdue invoice.",
+        "operationId": "InvoicesController_remind",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Send an invoice reminder",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/void": {
+      "post": {
+        "description": "Cancel a draft, sent, or overdue invoice.",
+        "operationId": "InvoicesController_voidInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Void an invoice",
+        "tags": [
+          "Invoices"
+        ]
+      }
+    },
+    "/exports": {
+      "post": {
+        "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll GET /exports/:id for download_url.",
+        "operationId": "MerchantExportsController_create",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create an export job",
+        "tags": [
+          "Exports"
+        ]
+      }
+    },
+    "/exports/{id}": {
+      "get": {
+        "operationId": "MerchantExportsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Get export job status and download URL",
+        "tags": [
+          "Exports"
+        ]
+      }
+    },
+    "/finance/summary": {
+      "get": {
+        "description": "Cash position, receivables outstanding, overdue invoices, upcoming payouts, refund rate, and dispute exposure.",
+        "operationId": "FinanceController_summary",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Finance summary",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/finance/cashflow": {
+      "get": {
+        "operationId": "FinanceController_cashflow",
+        "parameters": [
+          {
+            "name": "end_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Daily cash in and out over a date range",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/finance/aging": {
+      "get": {
+        "operationId": "FinanceController_aging",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Receivables aging buckets",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/finance/reconcile": {
+      "get": {
+        "operationId": "FinanceController_reconcile",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Reconcile settlements vs transactions vs payouts",
+        "tags": [
+          "Finance"
+        ]
+      }
+    },
+    "/payout-methods": {
+      "get": {
+        "operationId": "PayoutMethodsController_list",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List payout methods",
+        "tags": [
+          "Payout methods"
+        ]
+      },
+      "post": {
+        "operationId": "PayoutMethodsController_create",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Add a payout method",
+        "tags": [
+          "Payout methods"
+        ]
+      }
+    },
     "/meters": {
       "post": {
         "description": "Defines a billable metric for usage-based products. Events with matching code update meter balances.",
@@ -6029,6 +6869,38 @@
           "Usage"
         ]
       }
+    },
+    "/api-keys": {
+      "get": {
+        "description": "Returns key name, type, prefix/last4, and status. Secret values are never returned.",
+        "operationId": "ApiKeysController_list",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List API keys",
+        "tags": [
+          "API keys"
+        ]
+      }
     }
   },
   "info": {
@@ -6042,6 +6914,9 @@
     }
   },
   "tags": [
+    {
+      "name": "API keys"
+    },
     {
       "name": "Advanced Direct Charges"
     },
@@ -6058,6 +6933,15 @@
       "name": "Customers"
     },
     {
+      "name": "Exports"
+    },
+    {
+      "name": "Finance"
+    },
+    {
+      "name": "Invoices"
+    },
+    {
       "name": "Logs"
     },
     {
@@ -6068,6 +6952,9 @@
     },
     {
       "name": "Payment Requests"
+    },
+    {
+      "name": "Payout methods"
     },
     {
       "name": "Payouts"
@@ -6128,7 +7015,8 @@
             "scopes": {
               "provisioning.onboard": "Create and complete merchant onboarding",
               "merchant.read": "Read merchant resources",
-              "merchant.write": "Write merchant resources"
+              "merchant.write": "Write merchant resources (no payouts, refunds, or instant settlement)",
+              "merchant.money": "Move money: payouts, refunds, and instant settlement"
             }
           }
         },
@@ -6818,6 +7706,37 @@
           "updated_at"
         ]
       },
+      "InvoicePdfResponseDto": {
+        "type": "object",
+        "properties": {
+          "hosted_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "download_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "filename": {
+            "type": "string"
+          },
+          "mime_type": {
+            "type": "string",
+            "example": "application/pdf"
+          },
+          "expires_at": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "hosted_url",
+          "download_url",
+          "filename",
+          "mime_type",
+          "expires_at"
+        ]
+      },
       "CustomerResponseDto": {
         "type": "object",
         "properties": {
@@ -7297,6 +8216,10 @@
               "pause",
               "none"
             ]
+          },
+          "confirmation_token": {
+            "type": "string",
+            "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
           }
         },
         "required": [
@@ -8270,6 +9193,10 @@
           "payout_id": {
             "type": "string",
             "description": "Required for rail mode after a payout is created"
+          },
+          "confirmation_token": {
+            "type": "string",
+            "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
           }
         },
         "required": [
@@ -8950,6 +9877,14 @@
           "ecom_ip": {
             "type": "string",
             "description": "Customer IP for EComIp"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "required": [
@@ -9190,6 +10125,115 @@
         "required": [
           "success",
           "data"
+        ]
+      },
+      "InvoiceResponseDto": {
+        "type": "object",
+        "properties": {
+          "customer_invoice_id": {
+            "type": "string"
+          },
+          "organization_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoice_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number"
+          },
+          "amount_due": {
+            "type": "number"
+          },
+          "amount_remaining": {
+            "type": "number"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string",
+            "nullable": true
+          },
+          "hosted_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "pdf_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "payment_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer": {
+            "type": "object",
+            "nullable": true
+          },
+          "line_items": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "customer_invoice_id",
+          "organization_id",
+          "customer_id",
+          "invoice_number",
+          "amount",
+          "amount_due",
+          "amount_remaining",
+          "currency_code",
+          "status",
+          "origin",
+          "due_date",
+          "hosted_url",
+          "pdf_url",
+          "payment_url",
+          "customer",
+          "line_items"
+        ]
+      },
+      "ExportResponseDto": {
+        "type": "object",
+        "properties": {
+          "export_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "download_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "filename": {
+            "type": "string",
+            "nullable": true
+          },
+          "mime_type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "export_id",
+          "status"
         ]
       },
       "MeterResponseDto": {
