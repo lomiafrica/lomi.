@@ -3,35 +3,34 @@ title: MCP for AI clients
 description: Connect Cursor, Claude Desktop, or other MCP clients to the lomi. merchant API.
 ---
 
-import { Callout } from '@/components/docs/docs-callout';
 import { McpOauthConnect } from '@/components/docs/mcp-oauth-connect';
 import { McpOperationIndex } from '@/components/docs/mcp-operation-index';
+import {
+  GROK_BOT_URL,
+  buildClaudeOauthInstallUrl,
+  buildVscodeOauthInstallUrl,
+} from '@/lib/mcp/oauth-connect';
 
 # MCP for AI clients
 
-The **Model Context Protocol (MCP)** lets AI assistants (Cursor, Claude Desktop, custom agents) call the **lomi. merchant API** for you, create checkouts, list payments, debug webhooks, without writing every HTTP request by hand.
-
-<Callout type="info" title="Who this is for">
-  MCP connects **your IDE or AI assistant** to **your organization’s merchant API** (same scopes as your API key). Use it while building integrations.
-
-  It is **not** for lomi. staff admin tools or running your own payment stack. Most teams should use the hosted server at `https://mcp.lomi.africa` or local stdio with `npx @lomi./mcp`.
-</Callout>
+The **Model Context Protocol (MCP)** lets AI assistants (Cursor, Claude Desktop, custom agents) call the **lomi. merchant API** for you: create checkouts, list payments, debug webhooks, without writing every HTTP request by hand. Most teams use the hosted server at `https://mcp.lomi.africa` or local stdio with `npx @lomi./mcp`. Access is scoped to your organization, the same as your API key.
 
 ## Connect with OAuth
 
 Recommended: add the hosted MCP URL with **no API key**. OAuth-capable clients open **Connect with lomi.** in the browser, you sign in on the dashboard, and the client stores a scoped token (`lomi_oat_*`).
 
+Two entry points, one product:
+
+- **You have a lomi. account (or want one):** use the one-click buttons below. The consent page signs in or signs up, then returns to approve access.
+- **Agent with no account yet:** connect `https://mcp.lomi.africa/mcp/guest`, call `lomi_register_agent`, then `lomi_provision`. Once `api_keys` returns a test key, the same session gains the merchant tools. See [Sandbox agent bootstrap](#sandbox-agent-bootstrap-no-key).
+
 <McpOauthConnect />
 
 Revoke a connected app from **Developers → API keys → Connect MCP → Connected apps**.
 
-<Callout type="info" title="Feature flag">
-  Merchant OAuth connections require `LOMI_MERCHANT_OAUTH_ENABLED=true` on the API and `VITE_LOMI_MERCHANT_OAUTH_ENABLED=true` in the dashboard.
-</Callout>
-
 ## Getting started
 
-1. Click **Add to Cursor**, **[Add to Grok Bot](https://x.ai/bot/AI8k2PosuIifICyNJcS1s)**, **Add to Claude**, **Add to OpenCode**, or **Add to Codex** above (or paste the URL-only JSON below).
+1. Click **Add to Cursor**, <a href={GROK_BOT_URL}>**Add to Grok Bot**</a>, <a href={buildClaudeOauthInstallUrl()}>**Add to Claude**</a>, or <a href={buildVscodeOauthInstallUrl()}>**Add to VS Code**</a> above (or paste the URL-only JSON below). OpenCode and Codex stay under the CLI sections.
 2. On first connect the client receives a `401`, fetches `https://mcp.lomi.africa/.well-known/oauth-protected-resource/mcp`, and opens **Connect with lomi.**
 3. Sign in to the dashboard, choose your organization, and approve access (read-only by default).
 4. The client can call MCP tools immediately.
@@ -61,11 +60,7 @@ The MCP server introspects the token and scopes every tool call to your organiza
 | --- | --- | --- |
 | **Secret key (`LOMI_SECRET_KEY`)** | `x-lomi-api-key` (HTTP) or `LOMI_SECRET_KEY` (stdio) | [Dashboard](https://dashboard.lomi.africa) → **Developers → API keys**: any **secret** key (`lomi_sk_…`) or an MCP key (`lomi_mcp_…`) from **Connect MCP** |
 
-Your **`LOMI_SECRET_KEY`** unlocks lomi.’s hosted MCP endpoint and scopes every tool call to your organization.
-
-<Callout type="info" title="Transport secret is optional">
-  A shared transport secret (`Authorization: Bearer <LOMI_MCP_BEARER_TOKEN>`) is still accepted for legacy operator setups, but merchants do not need one. Send your API key in `x-lomi-api-key` and leave `Authorization` out.
-</Callout>
+Your **`LOMI_SECRET_KEY`** unlocks lomi.’s hosted MCP endpoint and scopes every tool call to your organization. Send it in `x-lomi-api-key` and leave `Authorization` empty.
 
 ## Hosted MCP (HTTP)
 
@@ -109,7 +104,17 @@ Replace `YOUR_LOMI_SECRET_KEY` with your real API key, then restart your MCP cli
 
 If the client has no merchant key yet, connect `https://mcp.lomi.africa/mcp/guest` (no headers). Call **`lomi_register_agent`**: the server solves a short proof-of-work and this MCP session adopts a sandbox-only `lomi_prov_*` key.
 
-Then `lomi_provision action=create_account`. Live money still requires `lomi_provision action=request_live` and human approval at [dashboard.lomi.africa/connect/go-live](https://dashboard.lomi.africa/connect/go-live).
+Then `lomi_provision action=create_account`, `upload_document`, `complete`, and `api_keys`. As soon as a `lomi_sk_test_*` key comes back, the guest session upgrades in place: the merchant tools (`lomi_checkout`, `lomi_customers`, `lomi_webhooks`, ...) are registered on the live session and the server sends `notifications/tools/list_changed`, so the client refreshes its tool list without reconnecting. Everything runs in TEST mode.
+
+Live money still requires `lomi_provision action=request_live` and human approval at [dashboard.lomi.africa/connect/go-live](https://dashboard.lomi.africa/connect/go-live). Live keys are only shown in the dashboard, never over MCP.
+
+## Claude Code
+
+```bash
+claude mcp add --transport http lomi https://mcp.lomi.africa/mcp
+```
+
+On first use, Claude Code opens **Connect with lomi.** in the browser.
 
 ## OpenCode
 
@@ -197,6 +202,8 @@ Each MCP action below is the twin of one REST operation. Direct charges and `POS
 ## Agent-driven onboarding (0 to 1)
 
 Provisioning tools let an agent create a merchant account, upload KYC documents, complete onboarding, and retrieve **test** API keys before any merchant secret exists. MCP exposes this as **`lomi_provision`** with `action` (`create_account`, `upload_document`, `extract`, `complete`, `status`, `api_keys`, `request_live`, `live_status`).
+
+**Human claim link.** `create_account` needs `email`, `full_name`, `terms_accepted_at`, and `terms_version`. Leave `password` out: the response includes a `claim_url` (`dashboard.lomi.africa/connect/claim?token=...`, valid 7 days, single use). Send this link to the human; they set their own password there and own the account. `status` reports `human_claimed` and re-issues `claim_url` until it flips to `true`. `request_live` returns `human_claimed` too: the human must claim before approving live mode.
 
 | Value | Header / env | Purpose |
 | --- | --- | --- |

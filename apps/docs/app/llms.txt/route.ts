@@ -14,7 +14,6 @@ const LLMS_CURATED_SLUGS = [
   'build/reliability/verify-payments',
   'build/reliability/payment-lifecycle',
   'build/payment-channels',
-  'api/payment-state-machine',
   'build/mcp',
   'build/accept/checkout',
 ] as const;
@@ -184,7 +183,7 @@ export async function GET() {
   );
   lines.push('');
   lines.push(
-    '**MCP checkout (agents):** 1. `lomi_checkout action=create` and persist `id` plus `checkout_url`. 2. Send the customer `checkout_url`. 3. Create a webhook (`lomi_webhooks action=create`) and persist the signing secret. 4. After the webhook, confirm with `lomi_transactions action=get` before fulfilling. Guest bootstrap without a key: connect `https://mcp.lomi.africa/mcp/guest`, call `lomi_register_agent`, then `lomi_provision action=create_account`. Live still needs `lomi_provision action=request_live` and human approval at https://dashboard.lomi.africa/connect/go-live.',
+    '**MCP checkout (agents):** 1. `lomi_checkout action=create` and persist `id` plus `checkout_url`. 2. Send the customer `checkout_url`. 3. Create a webhook (`lomi_webhooks action=create`) and persist the signing secret. 4. After the webhook, confirm with `lomi_transactions action=get` before fulfilling. Guest bootstrap without a key: connect `https://mcp.lomi.africa/mcp/guest`, call `lomi_register_agent`, then `lomi_provision action=create_account` → `upload_document` → `complete` → `api_keys`; once a `lomi_sk_test_*` key is returned the same session gains the merchant tools (`notifications/tools/list_changed`), no reconnect. Humans with an account use the one-click OAuth buttons on `https://mcp.lomi.africa/mcp` instead. Live still needs `lomi_provision action=request_live` and human approval at https://dashboard.lomi.africa/connect/go-live.',
   );
   lines.push('');
   const hostedCheckout = pages.find(
@@ -320,6 +319,14 @@ export async function GET() {
     '5. Connect MCP with `Authorization: Bearer <access_token>`; session auto-adopts merchant `lomi_sk_test_*` after onboarding completes.',
   );
   lines.push('');
+  lines.push(
+    '**Two entry points, one product:** humans with (or wanting) a lomi. account use the one-click OAuth buttons; the consent page signs in or signs up, then resumes approval. Agents with no account use `https://mcp.lomi.africa/mcp/guest` + `lomi_register_agent`; the guest session upgrades to test merchant tools in place once `lomi_provision action=api_keys` returns a key. Live keys are dashboard-only.',
+  );
+  lines.push('');
+  lines.push(
+    '**Human claim link:** `POST /provisioning/accounts` without `password` returns `claim_url` (dashboard `/connect/claim?token=`, 7 days, single use). Send this link to the human; they set their own password and own the account. `GET .../onboarding/status` reports `human_claimed` and re-issues `claim_url` until true. Live approval requires a claimed account.',
+  );
+  lines.push('');
   lines.push('**Test → live (human-gated):**');
   lines.push('');
   lines.push(
@@ -366,16 +373,6 @@ export async function GET() {
   if (paymentMethodsHub) {
     lines.push(
       `- [${paymentMethodsHub.data.title ?? 'Payment methods'}](${docsOrigin}${paymentMethodsHub.url})`,
-    );
-  }
-  const psm = pageBySlugPath(pages, 'api/payment-state-machine');
-  if (psm) {
-    lines.push(
-      `- [${psm.data.title ?? 'Payment state machine'}](${docsOrigin}${psm.url}), status transitions and balances`,
-    );
-  } else {
-    lines.push(
-      `- [Payment state machine](${docsOrigin}/api/payment-state-machine), status transitions and balances`,
     );
   }
   const mcp = pageBySlugPath(pages, 'build/mcp');

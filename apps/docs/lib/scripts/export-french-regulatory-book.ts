@@ -36,7 +36,6 @@ const API_CONCEPT_PAGES = [
   'authentication.fr.mdx',
   'errors.fr.mdx',
   'data-models.fr.mdx',
-  'payment-state-machine.fr.mdx',
 ] as const;
 
 const EXTRA_API_SECTIONS = ['organization'] as const;

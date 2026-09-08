@@ -1,29 +1,22 @@
 /* @proprietary license */
 
-import { NotFoundPage } from '@/components/not-found-page';
-import { getDocsLocale } from '@/lib/utils/docs-locale';
-import { translate } from '@/lib/i18n/translations';
+import { DocsNotFoundView } from '@/components/docs-not-found-view';
 import { buildDocsNotFoundMarkdown } from '@/lib/seo/agent-discovery';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  title: 'This page could not be found',
   robots: {
     index: false,
     follow: false,
   },
 };
 
-export default async function NotFound() {
-  const locale = await getDocsLocale();
-
+export default function NotFound() {
   return (
     <>
       <pre className="sr-only">{buildDocsNotFoundMarkdown()}</pre>
-      <NotFoundPage
-        title={translate('ui.notFoundTitle', locale)}
-        description={translate('ui.notFoundDescription', locale)}
-        homeLabel={translate('ui.notFoundHome', locale)}
-      />
+      <DocsNotFoundView />
     </>
   );
 }

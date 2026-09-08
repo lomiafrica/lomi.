@@ -225,15 +225,18 @@ export function mcpMaxBodyBytes(): number {
   );
 }
 
+/** Default per-IP MCP request budget; matches the Rill and Beecargo hosted MCPs. */
+export const DEFAULT_MCP_RATE_LIMIT_RPM = 120;
+
 /**
- * Per-client IP max MCP requests per rolling 60s window on /mcp routes.
- * 0 = disabled (default).
+ * Per-client IP max MCP requests per rolling 60s window on /mcp routes
+ * (including the anonymous /mcp/guest transport). Default 120. Set 0 to disable.
  */
 export function mcpRateLimitRpm(): number {
   return parseEnvIntInRange(
     process.env.LOMI_MCP_RATE_LIMIT_RPM,
     'LOMI_MCP_RATE_LIMIT_RPM',
-    0,
+    DEFAULT_MCP_RATE_LIMIT_RPM,
     0,
     100_000,
   );

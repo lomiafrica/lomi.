@@ -6,7 +6,7 @@ Welcome to the documentation of [lomi.](https://lomi.africa), a payment processi
 
 To start using lomi. for your payment processing needs:
 
-1. Create a lomi. account at [https://dashboard.lomi.africa/signup](https://dashboard.lomi.africa/signup)
+1. Create a lomi. account at [https://dashboard.lomi.africa](https://dashboard.lomi.africa)
 2. Integrate lomi. into your application using our API and SDKs
 3. Test your integration in our sandbox environment
 4. Go live and start making money

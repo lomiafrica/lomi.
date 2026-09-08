@@ -28,7 +28,7 @@ Définissez `docType` dans le frontmatter des nouveaux guides :
 | --- | --- | --- |
 | `tutorial` | Parcours d'apprentissage linéaire | [Parcours d'intégration](/start/integration-journey) |
 | `how-to` | Étapes orientées tâche | [Vérifier les paiements](/build/reliability/verify-payments) |
-| `explanation` | Concepts et compromis | [Choisir l'intégration](/build/choose-integration), [Statuts des paiements](/api/payment-state-machine) |
+| `explanation` | Concepts et compromis | [Choisir l'intégration](/build/choose-integration), [Cycle de vie des paiements](/build/reliability/payment-lifecycle) |
 | `reference` | Schémas et endpoints | Pages d'opération API |
 
 ## Voix et structure
@@ -70,7 +70,9 @@ Voir [Rédaction référence API](/resources/contributing/api-reference-authorin
 - [Paiements sandbox](/start/sandbox-payments)
 - [Choisir l'intégration](/build/choose-integration)
 - [Recevoir les webhooks](/build/reliability/handling-webhooks)
-- [Statuts des paiements](/api/payment-state-machine)
+- [Cycle de vie des paiements](/build/reliability/payment-lifecycle)
+
+Quand vous changez la sémantique des statuts de paiement dans `apps/api`, mettez à jour [Cycle de vie des paiements](/build/reliability/payment-lifecycle) et lancez `pnpm docs:drift` dans `apps/docs`.
 
 ## Contrôles anti-dérive
 

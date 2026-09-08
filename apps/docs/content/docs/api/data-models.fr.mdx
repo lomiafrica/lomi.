@@ -72,22 +72,43 @@ Renvoyé par les endpoints [Produits](/api/products), checkout et abonnements.
 
 ## Session checkout
 
-Une session checkout crée une page de paiement hébergée. Votre application redirige le client vers l’URL de checkout, puis suit le statut via les redirections et les webhooks.
+Une session checkout crée une page de paiement hébergée. Votre application redirige le client vers `checkout_url`, puis suit le statut via les redirections et les webhooks.
+
+Le statut est `open`, `completed` ou `expired`.
 
 Renvoyée par [Sessions checkout](/api/checkout-sessions).
 
 ```json filename="Session checkout"
 {
-  "id": "cs_123",
-  "status": "pending",
+  "checkout_session_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "open",
   "amount": 15000,
   "currency_code": "XOF",
-  "checkout_url": "https://checkout.lomi.africa/cs_123",
+  "checkout_url": "https://checkout.lomi.africa/checkout/123e4567-e89b-12d3-a456-426614174000",
   "success_url": "https://example.com/success",
   "cancel_url": "https://example.com/cancel",
+  "expires_at": "2026-02-14T11:30:00.000Z",
   "metadata": {
     "order_id": "order_481"
   }
+}
+```
+
+## Lien de paiement
+
+Un lien de paiement est une URL hébergée durable que vous pouvez partager. Le champ `url` est sur `pay.lomi.africa`. L’ouvrir crée une session checkout.
+
+Renvoyé par [Liens de paiement](/api/payment-links).
+
+```json filename="Lien de paiement"
+{
+  "link_id": "plink_123",
+  "title": "Forfait Pro",
+  "amount": 15000,
+  "currency_code": "XOF",
+  "url": "https://pay.lomi.africa/ABCDEFGHJKLMNP",
+  "is_active": true,
+  "environment": "live"
 }
 ```
 
@@ -95,26 +116,29 @@ Renvoyée par [Sessions checkout](/api/checkout-sessions).
 
 Un encaissement direct lance un paiement spécifique à un prestataire sans checkout hébergé. Utilisez-le seulement si vous devez contrôler vous-même l’expérience de paiement.
 
+`POST /charge/wave` et `POST /charge/mtn` sont les rails actifs. `POST /charge/card` et `POST /charge/switch` renvoient `503 service_unavailable` tant que ces rails restent mutés.
+
 Renvoyé par [Encaissements directs avancés](/api/charge).
 
-```json filename="Encaissement direct"
+```json filename="Encaissement Wave ou MTN"
 {
-  "id": "ch_123",
+  "success": true,
+  "transaction_id": "123e4567-e89b-12d3-a456-426614174000",
   "status": "pending",
-  "amount": 5000,
-  "currency_code": "XOF",
-  "provider_code": "WAVE",
-  "payment_method_code": "MOBILE_MONEY",
-  "provider_transaction_id": "wave_abc123",
-  "metadata": {
-    "order_id": "order_481"
+  "next_action": {
+    "type": "redirect",
+    "url": "https://pay.wave.com/c/abc123"
   }
 }
 ```
 
+Wave peut aussi renvoyer `wave_launch_url` ou `checkout_url`. MTN enveloppe la transaction dans `data` (`data.transaction_id`, `data.status`). Suivez toujours `next_action` lorsqu’il est présent.
+
 ## Abonnement
 
-Un abonnement représente un accès récurrent pour un client. La section abonnements regroupe les opérations générales et les opérations rattachées à un client.
+Un abonnement représente un accès récurrent pour un client.
+
+Le statut est `pending`, `active`, `past_due`, `cancelled`, `trial`, `paused` ou `expired`.
 
 Renvoyé par [Abonnements](/api/subscriptions).
 
@@ -123,12 +147,11 @@ Renvoyé par [Abonnements](/api/subscriptions).
   "subscription_id": "sub_123",
   "customer_id": "cus_123",
   "product_id": "prod_123",
+  "price_id": "price_123",
   "status": "active",
-  "amount": 15000,
-  "currency_code": "XOF",
-  "billing_frequency": "monthly",
-  "current_period_start": "2026-02-01T00:00:00.000Z",
-  "current_period_end": "2026-03-01T00:00:00.000Z",
+  "start_date": "2026-02-01",
+  "end_date": null,
+  "next_billing_date": "2026-03-01",
   "metadata": {
     "workspace_id": "wk_42"
   }
@@ -139,11 +162,13 @@ Renvoyé par [Abonnements](/api/subscriptions).
 
 Une transaction est l’enregistrement comptable d’un mouvement d’argent. Utilisez-la pour la réconciliation, le reporting et le support.
 
+Le statut est `pending`, `completed`, `failed`, `refunded`, `expired` ou `held`. Voir [Cycle de vie des paiements](/build/reliability/payment-lifecycle).
+
 Renvoyée par [Transactions](/api/transactions).
 
 ```json filename="Transaction"
 {
-  "transaction_id": "txn_123",
+  "transaction_id": "123e4567-e89b-12d3-a456-426614174000",
   "gross_amount": 5000,
   "fee_amount": 125,
   "net_amount": 4875,
@@ -151,7 +176,7 @@ Renvoyée par [Transactions](/api/transactions).
   "transaction_type": "payment",
   "status": "completed",
   "provider_code": "WAVE",
-  "provider_transaction_id": "wave_abc123",
+  "payment_method_code": "MOBILE_MONEY",
   "metadata": {
     "order_id": "order_481"
   },
@@ -159,31 +184,61 @@ Renvoyée par [Transactions](/api/transactions).
 }
 ```
 
+## Remboursement
+
+Un remboursement restitue de l’argent sur une transaction `completed`.
+
+Renvoyé par [Remboursements](/api/refunds).
+
+```json filename="Remboursement"
+{
+  "refund_id": "123e4567-e89b-12d3-a456-426614174000",
+  "transaction_id": "123e4567-e89b-12d3-a456-426614174000",
+  "refunded_amount": 5000,
+  "status": "completed"
+}
+```
+
+## Virement
+
+Un virement sort des fonds de votre solde lomi. `kind` vaut `withdrawal` (vers vous) ou `beneficiary` (vers un tiers). Le statut passe en général par `pending` → `processing` → `completed` ou `failed`.
+
+Renvoyé par [Virements](/api/payouts).
+
+```json filename="Virement"
+{
+  "success": true,
+  "payout_id": "123e4567-e89b-12d3-a456-426614174000",
+  "kind": "withdrawal",
+  "status": "processing"
+}
+```
+
 ## Solde
 
-Un solde montre l’argent disponible et en attente par devise. Utilisez-le avant un payout ou pour comprendre le calendrier de règlement.
+`GET /accounts/balance` renvoie le montant courant par devise.
 
 Renvoyé par [Soldes](/api/balances).
 
 ```json filename="Solde"
 {
   "currency_code": "XOF",
-  "available_amount": 275000,
-  "pending_amount": 42500,
-  "reserved_amount": 0,
-  "updated_at": "2026-02-14T10:45:00.000Z"
+  "balance": 275000,
+  "last_updated": "2026-02-14T10:45:00.000Z"
 }
 ```
 
+Le disponible vs en attente est sur l’endpoint de répartition (`available_balance`, `pending_balance`, `total_balance`). Voir [Solde et règlement](/build/money/balance-and-settlement).
+
 ## Endpoint webhook
 
-Un endpoint webhook indique à lomi. où livrer les événements. Stockez le secret de signature de façon sûre et vérifiez chaque événement entrant.
+Un endpoint webhook indique à lomi. où livrer les événements. Le `secret` de signature n’est renvoyé qu’à la **création**. Les listes et lectures utilisent `webhook_id` et n’incluent pas le secret.
 
 Renvoyé par [Webhooks](/api/webhooks).
 
-```json filename="Endpoint webhook"
+```json filename="Endpoint webhook (création)"
 {
-  "id": "wh_123",
+  "webhook_id": "123e4567-e89b-12d3-a456-426614174000",
   "url": "https://example.com/webhooks/lomi",
   "authorized_events": ["PAYMENT_SUCCEEDED", "PAYMENT_FAILED"],
   "is_active": true,
@@ -194,32 +249,34 @@ Renvoyé par [Webhooks](/api/webhooks).
 
 ## Journal de livraison webhook
 
-Un journal de livraison décrit une tentative d’envoi webhook. Utilisez-le pour diagnostiquer les retries, les endpoints en échec et les problèmes de livraison.
+Un journal de livraison décrit une tentative d’envoi webhook.
 
 Renvoyé dans [Webhooks](/api/webhooks).
 
 ```json filename="Journal de livraison webhook"
 {
-  "id": "wdl_123",
-  "webhook_id": "wh_123",
+  "log_id": "123e4567-e89b-12d3-a456-426614174000",
+  "webhook_id": "123e4567-e89b-12d3-a456-426614174000",
   "event_type": "PAYMENT_SUCCEEDED",
-  "delivery_status": "failed",
+  "success": false,
   "response_status": 500,
-  "attempt_count": 3,
-  "next_retry_at": "2026-02-14T10:45:00.000Z"
+  "attempt_number": 3,
+  "created_at": "2026-02-14T10:45:00.000Z"
 }
 ```
 
 ## Erreur
 
-Les erreurs renvoient un message lisible et, lorsque disponible, des détails structurés que votre application peut journaliser.
+Les erreurs renvoient un code machine, un message lisible et, lorsque disponible, des détails structurés.
 
 ```json filename="Erreur"
 {
   "error": {
+    "code": "unauthorized",
     "message": "Invalid API key",
     "details": "The provided API key is invalid or does not exist"
-  }
+  },
+  "request_id": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 

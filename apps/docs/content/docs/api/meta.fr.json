@@ -8,7 +8,6 @@
     "authentication",
     "errors",
     "data-models",
-    "payment-state-machine",
     "---Encaisser des paiements---",
     "checkout-sessions",
     "payment-links",

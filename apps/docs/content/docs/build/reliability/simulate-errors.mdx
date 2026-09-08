@@ -27,7 +27,7 @@ Use this index to exercise failure paths in **sandbox**. This page is the **scen
 | Direct MoMo `pending` (test) | `X-Scenario-Key: pending` on `POST /charge/mtn` or `/charge/wave` | Charge stays `PENDING`; no auto-complete | [Sandbox payments: scenarios](/start/sandbox-payments#testing-mobile-money) |
 | Direct MoMo `failed` (test) | `X-Scenario-Key: failed` on `POST /charge/mtn` or `/charge/wave` | `400` error response | Same section |
 | MTN (live) | Real MSISDN, live key | Starts `PENDING` | [Verify payments](/build/reliability/verify-payments) |
-| Pending expiration | Wait beyond session/transaction TTL | `expired` or `failed` | [Payment state machine](/api/payment-state-machine) |
+| Pending expiration | Wait beyond session/transaction TTL | `expired` or `failed` | [Payment and payout lifecycle](/build/reliability/payment-lifecycle) |
 | Webhook signature failure | POST without valid `X-Lomi-Signature` | Your endpoint returns 4xx; lomi. retries | [Handling webhooks](/build/reliability/handling-webhooks) |
 | Duplicate webhook | Replay same event `id` | Your handler dedupes; no double fulfill | [Webhook reliability](/build/reliability/webhook-reliability) |
 | Insufficient balance payout | Test payout rules in sandbox | `400` or `failed` payout | [Payouts in test mode](/start/sandbox-payments#payouts-in-test-mode) |

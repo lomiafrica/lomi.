@@ -3,15 +3,21 @@ title: 'Authentification'
 description: "Les requêtes lomi. s’authentifient avec des clés API. Une requête sans clé valide renvoie une erreur d’authentification."
 ---
 
-Pour un parcours guidé depuis votre premier `curl` jusqu’aux pages OpenAPI, SDK et pièges webhooks : **[Intégration API](/start/first-payment)**.
+Pour un parcours guidé depuis votre premier `curl` jusqu’aux pages OpenAPI, SDK et pièges webhooks : **[Intégration API](/start/first-payment)**.
 
-Deux types de clés correspondent aux environnements **Test** et **Live**.
+Deux types de clés secrètes correspondent aux environnements **Test** et **Live**.
 
 ## Clés API
 
 Les requêtes doivent être en HTTPS. Le HTTP nu échoue. Sans authentification, échec également.
 
-Une clé API doit figurer dans l’en-tête `` `X-API-Key` `` pour chaque requête.
+Envoyez votre clé **secrète** sur chaque requête REST marchande. Les clés publiables (`lomi_pk_test_...` / `lomi_pk_live_...`) servent uniquement aux flux carte navigateur ou mobile. Ne les envoyez pas dans `X-API-Key`.
+
+En-têtes acceptés (insensibles à la casse) :
+
+- `X-API-Key` (ou `X-API-KEY`)
+- `X-Lomi-API-Key`
+- `Authorization: Bearer <secret>`
 
 ```http filename="API request header"
 GET /accounts/balance HTTP/1.1
@@ -19,15 +25,13 @@ Host: api.lomi.africa
 X-API-Key: your_api_key
 ```
 
-Les noms d’en-têtes sont insensibles à la casse : `` `X-API-Key` `` ou `` `X-API-KEY` ``.
-
 Remplacez `your_api_key` par votre clé secrète.
 
 Le tableau compact des en-têtes (idempotence, scénario, Network) est sur **[Clés API](/start/api-keys#request-headers)**.
 
 ## Ciblage de compte réseau
 
-Les opérateurs lomi. Network approuvés peuvent cibler un compte membre connecté en ajoutant l’en-tête optionnel `` `Lomi-Account` ``.
+Les opérateurs lomi. Network approuvés peuvent cibler un compte membre connecté en ajoutant l’en-tête optionnel `Lomi-Account`.
 
 ```http filename="Network request header"
 POST /checkout-sessions HTTP/1.1
@@ -36,7 +40,7 @@ X-API-Key: your_operator_api_key
 Lomi-Account: acct_1234567890
 ```
 
-Sans `` `Lomi-Account` ``, les requêtes se comportent comme des appels API marchands classiques. Avec cet en-tête, la clé API identifie l’opérateur et le compte `` `acct_...` `` est le compte membre ciblé. Voir **[lomi. Network](/build/platform/network)** pour les endpoints pris en charge et les capacités requises.
+Sans `Lomi-Account`, les requêtes se comportent comme des appels API marchands classiques. Avec cet en-tête, la clé API identifie l’opérateur et le compte `acct_...` est le compte membre ciblé. Voir **[lomi. Network](/build/platform/network)** pour les endpoints pris en charge et les capacités requises.
 
 ## Environnements test et production
 
@@ -44,10 +48,9 @@ Sans `` `Lomi-Account` ``, les requêtes se comportent comme des appels API marc
 
 Développement et tests sans traiter des fonds réels ni affecter les données live. Fonctionnement proche du live.
 
-- **Clés :** préfixe `` `lomi_sk_test_` ``.
-- **Base URL :** `` `https://sandbox.api.lomi.africa` ``.
-- **Limites :** 120 requêtes/minute et 20 000/jour.
-- **Données :** données simulées ; champ du type `` `"environment": "test"` ``.
+- **Clés :** préfixe `lomi_sk_test_`.
+- **Base URL :** `https://sandbox.api.lomi.africa`.
+- **Données :** données simulées ; champ du type `"environment": "test"`.
 
 Pour simuler les paiements carte et mobile money (numéros de test, Wave, MTN), voir **[Paiements en bac à sable](/start/sandbox-payments)**.
 
@@ -55,30 +58,38 @@ Pour simuler les paiements carte et mobile money (numéros de test, Wave, MTN), 
 
 Opérations réelles et transactions véritables.
 
-- **Clés :** préfixe `` `lomi_sk_live_` ``.
-- **Base URL :** `` `https://api.lomi.africa` ``.
-- **Limites :** 60 requêtes/minute et 10 000/jour.
-- **Données :** données réelles ; champ du type `` `"environment": "live"` ``.
+- **Clés :** préfixe `lomi_sk_live_`.
+- **Base URL :** `https://api.lomi.africa`.
+- **Données :** données réelles ; champ du type `"environment": "live"`.
 
-Utilisez la paire base URL + clé adaptée à l’environnement.
+Utilisez la paire base URL + clé adaptée à l’environnement. Les limites de débit sont les mêmes en test et en live.
+
+## Limites de débit
+
+La même politique s’applique à la sandbox et au live :
+
+| Périmètre | Limite |
+| --- | --- |
+| Défaut | 5000 requêtes par 15 minutes |
+| Écritures (`POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /charge/*`) | 120 requêtes par minute |
+
+Les réponses réussies incluent `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Window-Seconds`, et les en-têtes IETF `RateLimit` / `RateLimit-Policy`. Un `429` inclut `Retry-After` et `error.details.retry_after_seconds`. Voir **[Erreurs](/api/errors)**.
 
 ## Obtenir les clés
 
-Après inscription et vérification :
-
-1.  Connectez-vous au [tableau de bord](https://lomi.africa/portal).
-2.  Section **Developers** ou **Paramètres API**.
-3.  Générez des clés **Test** et **Live**.
+1. Connectez-vous au [tableau de bord](https://dashboard.lomi.africa).
+2. Ouvrez **Settings → Access tokens**.
+3. Utilisez des clés secrètes distinctes pour **Test** et **Live**.
 
 ## Gestion et sécurité des clés
 
 Traitez les clés comme des secrets confidentiels (génération, révocation, usage surveillés dans le tableau de bord marchand).
 
-Bonnes pratiques :
+Bonnes pratiques :
 
-- **Confidentialité** : pas de partage imprudent ; secrets ou coffre sécurisé.
-- **Jamais côté client** : pas dans le front navigateur ou mobile.
-- **Pas dans le dépôt** : ne pas committer les secrets.
-- **Test en développement** : les clés live réservées à la production.
-- **Rotation** : périodique ou en cas de suspicion de compromission.
-- **Accès interne** : limiter qui voit les clés.
+- **Confidentialité** : pas de partage imprudent ; secrets ou coffre sécurisé.
+- **Jamais côté client** : pas dans le front navigateur ou mobile.
+- **Pas dans le dépôt** : ne pas committer les secrets.
+- **Test en développement** : les clés live réservées à la production.
+- **Rotation** : périodique ou en cas de suspicion de compromission.
+- **Accès interne** : limiter qui voit les clés.

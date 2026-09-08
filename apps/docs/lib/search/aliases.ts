@@ -158,13 +158,15 @@ export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
     'environment',
   ],
   '/api/errors': ['401', '404', '429', 'rate limit', 'idempotency'],
-  '/api/payment-state-machine': [
+  '/api/index': ['centimes', 'minor units', 'amount', 'currency_code'],
+  '/build/reliability/payment-lifecycle': [
     'status',
     'pending',
     'completed',
     'failed',
-    'centimes',
-    'minor units',
+    'held',
+    'expired',
+    'refunded',
   ],
   '/start/merchant-of-record/pricing': [
     'fees',

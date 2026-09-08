@@ -19,6 +19,15 @@ describe('env-config validation', () => {
     expect(cfg.getLomiApiBaseUrl()).toBe('https://sandbox.api.lomi.africa');
   });
 
+  it('defaults MCP rate limit to 120 rpm and allows 0 to disable', async () => {
+    delete process.env.LOMI_MCP_RATE_LIMIT_RPM;
+    let cfg = await loadEnvConfig();
+    expect(cfg.mcpRateLimitRpm()).toBe(120);
+    process.env.LOMI_MCP_RATE_LIMIT_RPM = '0';
+    cfg = await loadEnvConfig();
+    expect(cfg.mcpRateLimitRpm()).toBe(0);
+  });
+
   it('throws helpful error for malformed host allowlist entry', async () => {
     process.env.LOMI_MCP_ALLOWED_HOSTS =
       'mcp.lomi.africa,https://bad.example.com/mcp';

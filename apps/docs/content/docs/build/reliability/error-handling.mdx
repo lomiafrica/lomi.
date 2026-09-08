@@ -1,179 +1,124 @@
 ---
 title: 'Error handling'
-description: "When integrating with lomi., it's essential to handle errors gracefully to provide a smooth payment experience for your customers."
+description: "When integrating with lomi., handle API errors so customers get a clear payment outcome and your logs stay useful."
 ---
 
-This page is integration advice: how to parse API errors in your app. The code list lives on [Errors](/api/errors).
+This page is integration advice: how to parse API errors in your app. The envelope, status codes, and stable `error.code` list live on [Errors](/api/errors).
 
-lomi. uses conventional HTTP response codes and returns meaningful error messages that you can use to troubleshoot issues and inform your customers about the status of their transactions.
-
-Refer to the [Error reference](/api/errors) for a detailed list of status codes and common error responses.
-
-## Error response format
-
-All API errors follow a consistent JSON structure:
-
-```json filename="Example error response structure"
-{
-  "error": {
-    "code": "bad_request",
-    "message": "A human-readable description of the error.",
-    "details": "Optional: Additional context or structured data about the error."
-  },
-  "request_id": "550e8400-e29b-41d4-a716-446655440000"
-}
-```
+lomi. uses conventional HTTP response codes. Use `error.code` for branching, `error.message` for logs, and `request_id` when you contact support.
 
 ## Handling common error types
+
+The TypeScript SDK throws `LomiError` subclasses (`LomiValidationError`, `LomiAuthError`, `LomiNotFoundError`, `LomiRateLimitError`). There is no `LomiApiError` class.
 
 ### Validation errors (HTTP 400)
 
 These occur when the request data is invalid or missing required fields.
 
-```typescript filename="Handling validation errors (example)"
-import { LomiSDK, LomiError } from '@lomi./sdk'; // Assuming SDK exports error type
+```typescript filename="Handling validation errors"
+import { LomiSDK, LomiValidationError, LomiError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: process.env.LOMI_SECRET_KEY! });
 
 try {
-  const session = await lomi.checkoutSessions.createCheckoutSession({
-    amount: -100, // Invalid: must be positive
-    currency_code: 'INVALID', // Invalid enum value
-    // Missing required fields like success_url, cancel_url
+  await lomi.checkoutSessions.create({
+    amount: -100,
+    currency_code: 'INVALID',
   });
 } catch (error) {
-  if (error instanceof LomiApiError && error.statusCode === 400) {
-    console.error('Validation failed:', error.message);
-    // Log or display specific details if available in error.details
-    console.error('Details:', error.details);
-    // Inform the user about the specific input issues
-  } else {
-    // Handle other types of errors
-    console.error('An unexpected error occurred:', error);
+  if (error instanceof LomiValidationError) {
+    console.error('Validation failed:', error.message, error.details);
+  } else if (error instanceof LomiError) {
+    console.error('API error:', error.statusCode, error.message);
   }
 }
 ```
 
 ### Authentication errors (HTTP 401)
 
-These occur when the `LOMI_SECRET_KEY` is missing, invalid, or doesn't have the necessary permissions.
+These occur when the secret key is missing, invalid, or does not have the necessary permissions.
 
-```typescript filename="Handling authentication errors (example)"
-import { LomiSDK, LomiError } from '@lomi./sdk';
+```typescript filename="Handling authentication errors"
+import { LomiSDK, LomiAuthError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: 'invalid-key' });
 
 try {
-  await lomi.providers.list(); // Example request
+  await lomi.providers.list();
 } catch (error) {
-  if (error instanceof LomiApiError && error.statusCode === 401) {
-    console.error('Authentication failed:', error.message);
-    // Check common issues:
-    if (!process.env.LOMI_SECRET_KEY) {
-      console.error(
-        'Suggestion: LOMI_SECRET_KEY environment variable might be missing.',
-      );
-    } else {
-      console.error(
-        'Suggestion: Verify the LOMI_SECRET_KEY is correct and active.',
-      );
-    }
-  } else {
-    console.error('An unexpected error occurred:', error);
+  if (error instanceof LomiAuthError) {
+    console.error('Authentication failed:', error.message, error.requestId);
   }
 }
 ```
 
 ### Rate limit errors (HTTP 429)
 
-Occur when you exceed the allowed number of requests within a given time window (e.g., 100 requests per 15 minutes).
+These occur when you exceed the allowed number of requests. Default is 5000 requests per 15 minutes; money-moving writes are 120 per minute. See [Errors](/api/errors#rate-limits).
 
-```typescript filename="Handling rate limit errors (example)"
-import { LomiSDK, LomiError } from '@lomi./sdk';
+```typescript filename="Handling rate limit errors"
+import { LomiSDK, LomiRateLimitError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: process.env.LOMI_SECRET_KEY! });
 
-async function makeRequestWithRateLimitHandling() {
-  try {
-    const response = await lomi.providers.list();
-    // Process successful response
-  } catch (error) {
-    if (error instanceof LomiApiError && error.statusCode === 429) {
-      console.warn('Rate limit exceeded. Retrying after delay...');
-      // Extract Retry-After header if available (implementation depends on SDK/fetch)
-      const retryAfterSeconds = error.headers?.['retry-after']
-        ? parseInt(error.headers['retry-after'], 10)
+try {
+  await lomi.providers.list();
+} catch (error) {
+  if (error instanceof LomiRateLimitError) {
+    const details = error.body?.error?.details;
+    const retryAfterSeconds =
+      details &&
+      typeof details === 'object' &&
+      !Array.isArray(details) &&
+      typeof details.retry_after_seconds === 'number'
+        ? details.retry_after_seconds
         : 60;
-      await new Promise((resolve) =>
-        setTimeout(resolve, retryAfterSeconds * 1000),
-      );
-      // Retry the request (implement proper retry logic, see below)
-      // await makeRequestWithRateLimitHandling();
-    } else {
-      console.error('An unexpected error occurred:', error);
-    }
+    console.warn('Rate limit exceeded. Retry after', retryAfterSeconds, 's');
   }
 }
 ```
 
 ### Server errors (HTTP 5xx)
 
-These indicate a problem on lomi.'s side. These should be rare. It's generally safe to retry these requests after a delay.
+These indicate a problem on lomi.'s side. They should be rare. Retry after a delay. A `503` can also mean a muted rail such as `POST /charge/card`.
 
 ## Best practices
 
-1.  **Graceful Degradation:**
-    - Anticipate potential API failures.
-    - Provide user-friendly feedback instead of raw error messages.
-    - Have fallback mechanisms if a critical operation fails (e.g., allow manual order processing).
-    - Log detailed error information (including request IDs if available) on your server for debugging, but don't expose sensitive details to the client.
+1. **Graceful degradation:** show a user-friendly message, not the raw API body. Log `request_id` on your server.
+2. **Retry with exponential backoff and jitter** for network errors, `429`, and `5xx`. Do not retry other `4xx` responses until you fix the request. Pair retries with [idempotency keys](/build/reliability/idempotency-keys) on money-moving writes.
+3. **Monitor:** track error rates in production and alert on spikes.
 
-2.  **Retry Strategy (with Exponential Backoff & Jitter):**
-    Implement a retry mechanism for network errors, rate limiting (`429`), and server errors (`5xx`). Avoid retrying client errors (`4xx` other than `429`) as they usually require correcting the request.
+```typescript filename="Retries with exponential backoff"
+import { LomiError } from '@lomi./sdk';
 
-    ```typescript filename="Implementing retries with exponential backoff"
-    async function withRetry<T>(
-      asyncFn: () => Promise<T>,
-      maxRetries = 3,
-      initialDelayMs = 1000,
-    ): Promise<T> {
-      let attempts = 0;
-      while (true) {
-        try {
-          return await asyncFn();
-        } catch (error: any) {
-          attempts++;
-          const isRetryable =
-            error instanceof LomiError &&
-            (error.statusCode === 429 || error.statusCode >= 500);
+async function withRetry<T>(
+  asyncFn: () => Promise<T>,
+  maxRetries = 3,
+  initialDelayMs = 1000,
+): Promise<T> {
+  let attempts = 0;
+  while (true) {
+    try {
+      return await asyncFn();
+    } catch (error) {
+      attempts++;
+      const isRetryable =
+        error instanceof LomiError &&
+        (error.statusCode === 429 || (error.statusCode ?? 0) >= 500);
 
-          if (!isRetryable || attempts >= maxRetries) {
-            // Don't retry client errors (except 429) or if max retries exceeded
-            throw error;
-          }
-
-          // Calculate delay with exponential backoff and jitter
-          const delay = initialDelayMs * Math.pow(2, attempts - 1);
-          const jitter = delay * 0.2 * Math.random(); // Add +/- 10% jitter
-          const waitTime = Math.max(100, delay + jitter); // Ensure minimum wait
-
-          console.warn(
-            `Attempt ${attempts} failed. Retrying in ${waitTime.toFixed(0)}ms...`,
-            error.message,
-          );
-          await new Promise((resolve) => setTimeout(resolve, waitTime));
-        }
+      if (!isRetryable || attempts >= maxRetries) {
+        throw error;
       }
+
+      const delay = initialDelayMs * Math.pow(2, attempts - 1);
+      const jitter = delay * 0.2 * Math.random();
+      const waitTime = Math.max(100, delay + jitter);
+
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
-
-    // Example usage:
-    // const providers = await withRetry(() => lomi.providers.list());
-    ```
-
-3.  **Error Monitoring:**
-    - Use an application monitoring service (e.g., Sentry, Datadog) to track errors in production.
-    - Monitor error rates and patterns to identify systemic issues.
-    - Set up alerts for critical errors or unusual spikes in error rates.
+  }
+}
+```
 
 <DocsNextSteps>
   <DocsNextStep href="/build/reliability/idempotency-keys" hint="Safe retries">

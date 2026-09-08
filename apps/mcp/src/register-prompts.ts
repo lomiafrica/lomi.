@@ -86,7 +86,7 @@ export function registerLomiPrompts(
             type: 'text',
             text: [
               'Provision a new merchant on lomi. from zero using provisioning MCP tools (requires LOMI_PROVISIONING_KEY / x-lomi-provisioning-key):',
-              `1. ${createAccount}, create merchant account with terms acceptance metadata`,
+              `1. ${createAccount}, create merchant account with terms acceptance metadata. Omit password: send the returned claim_url to the human so they set their own credentials; poll status for human_claimed`,
               `2. ${uploadDocument}, upload identity (and RCCM/address docs if registered business)`,
               `3. ${extractOnboarding}, extract fields from documents or website`,
               `4. ${completeOnboarding}, complete onboarding and submit KYC`,

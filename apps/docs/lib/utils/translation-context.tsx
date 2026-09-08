@@ -82,6 +82,8 @@ export function TranslationProvider({
     // Only run on client side
     if (!('window' in globalThis) || globalThis.window === undefined) return;
 
+    document.documentElement.lang = currentLanguage === 'fr' ? 'fr' : 'en';
+
     if (isInitialized && currentLanguage) {
       document.cookie = `${LocalStorageKeys.Language}=${currentLanguage}; path=/; max-age=31536000; SameSite=Lax`;
     }

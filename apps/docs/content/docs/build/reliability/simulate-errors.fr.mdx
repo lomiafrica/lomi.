@@ -27,7 +27,7 @@ Utilisez cet index en **bac à sable**. Cette page est la **matrice des scénari
 | MoMo direct `pending` (test) | `X-Scenario-Key: pending` sur `POST /charge/mtn` ou `/charge/wave` | Charge reste `PENDING` ; pas d’auto-complétion | [Bac à sable : scénarios](/start/sandbox-payments#testing-mobile-money) |
 | MoMo direct `failed` (test) | `X-Scenario-Key: failed` sur `POST /charge/mtn` ou `/charge/wave` | Réponse d’erreur `400` | Même section |
 | MTN (live) | numéro de téléphone réel, clé live | `PENDING` | [Vérifier les paiements](/build/reliability/verify-payments) |
-| Expiration | Dépassement TTL session/transaction | `expired` / `failed` | [Machine à états](/api/payment-state-machine) |
+| Expiration | Dépassement TTL session/transaction | `expired` / `failed` | [Cycle de vie](/build/reliability/payment-lifecycle) |
 | Signature webhook invalide | POST sans `X-Lomi-Signature` | 4xx + retries lomi. | [Gestion webhooks](/build/reliability/handling-webhooks) |
 | Webhook dupliqué | Rejouer le même `id` | Déduplication côté vous | [Fiabilité webhooks](/build/reliability/webhook-reliability) |
 | Reversement solde insuffisant | Règles test payout | `400` / `failed` | [Reversements test](/start/sandbox-payments#payouts-in-test-mode) |

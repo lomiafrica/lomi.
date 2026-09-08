@@ -119,7 +119,7 @@
     {
       "name": "lomi_checkout",
       "title": "Checkout sessions",
-      "description": "Checkout sessions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List checkout sessions (GET /checkout-sessions). No extra required fields.\n- `get` — Get checkout session (GET /checkout-sessions/{id}). Required: id.\n- `create` — Create checkout session (POST /checkout-sessions). Required: body, header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Checkout sessions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List checkout sessions (GET /checkout-sessions). No extra required fields.\n- `get` — Get checkout session (GET /checkout-sessions/{id}). Required: id.\n- `create` — Create checkout session (POST /checkout-sessions). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Checkout Sessions"
       ],
@@ -151,7 +151,7 @@
           },
           "header_Idempotency-Key": {
             "type": "string",
-            "description": "Required unique key for this write. Replays return the original response."
+            "description": "Optional unique key. Replays return the original response."
           },
           "header_Lomi-Account": {
             "type": "string",
@@ -247,8 +247,7 @@
             "Checkout Sessions"
           ],
           "requiredInput": [
-            "body",
-            "header_Idempotency-Key"
+            "body"
           ]
         }
       }

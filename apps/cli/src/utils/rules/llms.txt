@@ -92,7 +92,6 @@ Agents can onboard **new merchants** (0→1) via MCP provisioning tools or the `
 - [Verify payments](https://docs.lomi.africa/build/guides/verify-payments)
 - [Payment lifecycle](https://docs.lomi.africa/build/guides/payment-lifecycle)
 - [Payment channels](https://docs.lomi.africa/build/payment-channels)
-- [Payment state machine](https://docs.lomi.africa/api/payment-state-machine), status transitions and balances
 - [MCP for AI clients](https://docs.lomi.africa/build/mcp)
 
 ## Contact and support

@@ -76,15 +76,12 @@ const MOVED_DOC_REDIRECTS = [
     '/resources/merchant-of-record/pricing',
     '/start/merchant-of-record/pricing',
   ],
-  ['/resources/merchant-of-record/terms', '/start/merchant-of-record/terms'],
-  [
-    '/resources/merchant-of-record/privacy',
-    '/start/merchant-of-record/privacy',
-  ],
-  [
-    '/resources/merchant-of-record/cookies',
-    '/start/merchant-of-record/cookies',
-  ],
+  ['/resources/merchant-of-record/terms', 'https://lomi.africa/terms'],
+  ['/start/merchant-of-record/terms', 'https://lomi.africa/terms'],
+  ['/resources/merchant-of-record/privacy', 'https://lomi.africa/privacy'],
+  ['/start/merchant-of-record/privacy', 'https://lomi.africa/privacy'],
+  ['/resources/merchant-of-record/cookies', 'https://lomi.africa/privacy'],
+  ['/start/merchant-of-record/cookies', 'https://lomi.africa/privacy'],
   [
     '/resources/merchant-of-record/acceptable-use',
     '/start/merchant-of-record/acceptable-use',

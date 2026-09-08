@@ -30,7 +30,7 @@ const EXPECTED_QUERIES: { query: string; href: string }[] = [
   { query: 'go live', href: '/start/go-live' },
   { query: 'chargeback', href: '/build/money/disputes' },
   { query: 'settlement', href: '/build/money/balance-and-settlement' },
-  { query: 'centimes', href: '/api/payment-state-machine' },
+  { query: 'centimes', href: '/api/index' },
 ];
 
 function aliasesMatch(href: string, query: string): boolean {

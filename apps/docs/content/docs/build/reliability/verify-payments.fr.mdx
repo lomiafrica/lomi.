@@ -29,7 +29,7 @@ Après le paiement du client :
 2. Sur `success_url`, affichez un état « traitement en cours »-pas « payé »-jusqu’à confirmation backend.
 3. À réception de `transaction.completed` (ou de votre type d’événement), faites correspondre `metadata.order_id` puis livrez.
 
-Voir [Machine à états du paiement](/api/payment-state-machine) et [Gestion des webhooks](/build/reliability/handling-webhooks).
+Voir [Cycle de vie des paiements](/build/reliability/payment-lifecycle) et [Gestion des webhooks](/build/reliability/handling-webhooks).
 
 ## Charges directes (Wave, MTN, carte)
 

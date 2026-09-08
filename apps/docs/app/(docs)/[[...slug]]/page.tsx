@@ -326,7 +326,15 @@ export async function generateMetadata({
   });
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  const list = source.getPages('en').map((p) => ({ slug: p.slugs }));
-  return list.filter((p) => (p.slug?.length ?? 0) > 0);
+  const slugs = new Map<string, { slug: string[] }>();
+  for (const locale of ['en', 'fr'] as const) {
+    for (const page of source.getPages(locale)) {
+      if ((page.slugs?.length ?? 0) === 0) continue;
+      slugs.set(page.slugs.join('/'), { slug: page.slugs });
+    }
+  }
+  return [...slugs.values()];
 }

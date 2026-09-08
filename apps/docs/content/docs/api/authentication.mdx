@@ -5,13 +5,19 @@ description: "All lomi. requests are authenticated using API keys. Any request t
 
 For a guided path from your first `curl` to the OpenAPI pages, SDKs, and webhook caveats, see **[API integration](/start/first-payment)**.
 
-There are two types of API keys corresponding to lomi.'s two environments: Test and Live.
+There are two types of secret API keys corresponding to lomi.'s two environments: Test and Live.
 
 ## API keys
 
 All API requests must be made over HTTPS. Requests made over plain HTTP will fail. API requests without authentication will also fail.
 
-You must include an API key in the `` `X-API-Key` `` header for every request.
+Send your **secret** key on every merchant REST request. Publishable keys (`lomi_pk_test_...` / `lomi_pk_live_...`) are for browser or mobile card flows only. Do not send them as `X-API-Key`.
+
+Accepted headers (case-insensitive):
+
+- `X-API-Key` (or `X-API-KEY`)
+- `X-Lomi-API-Key`
+- `Authorization: Bearer <secret>`
 
 ```http filename="API request header"
 GET /accounts/balance HTTP/1.1
@@ -19,15 +25,13 @@ Host: api.lomi.africa
 X-API-Key: your_api_key
 ```
 
-HTTP header names are case-insensitive; clients may send `` `X-API-Key` `` or `` `X-API-KEY` ``.
-
-Replace `your_api_key` with your specific secret API key.
+Replace `your_api_key` with your secret API key.
 
 The compact request-header table (idempotency, scenario key, Network) lives on **[API keys](/start/api-keys#request-headers)**.
 
 ## Network account targeting
 
-Approved lomi. Network Operators can target a connected Member Account by adding the optional `` `Lomi-Account` `` header.
+Approved lomi. Network Operators can target a connected Member Account by adding the optional `Lomi-Account` header.
 
 ```http filename="Network request header"
 POST /checkout-sessions HTTP/1.1
@@ -36,7 +40,7 @@ X-API-Key: your_operator_api_key
 Lomi-Account: acct_1234567890
 ```
 
-When `` `Lomi-Account` `` is absent, requests behave like normal merchant API calls. When it is present, the API key organization is the Operator and the `` `acct_...` `` account is the target Member Account. See **[lomi. Network](/build/platform/network)** for supported endpoints and required capabilities.
+When `Lomi-Account` is absent, requests behave like normal merchant API calls. When it is present, the API key organization is the Operator and the `acct_...` account is the target Member Account. See **[lomi. Network](/build/platform/network)** for supported endpoints and required capabilities.
 
 ## Test vs. Live environments
 
@@ -46,10 +50,9 @@ lomi. provides two distinct environments to separate development and testing fro
 
 Use the test environment to develop and test your integration without processing real transactions or affecting live data. It mirrors the functionality of the live environment.
 
-- **API Keys:** Test API keys start with `` `lomi_sk_test_` ``.
-- **Base URL:** `` `https://sandbox.api.lomi.africa` ``
-- **Rate Limits:** 120 requests per minute / 20,000 requests per day.
-- **Data:** Uses simulated data. Responses may include environment flags like `` `"environment": "test"` ``.
+- **API Keys:** Test API keys start with `lomi_sk_test_`.
+- **Base URL:** `https://sandbox.api.lomi.africa`
+- **Data:** Uses simulated data. Responses may include environment flags like `"environment": "test"`.
 
 To simulate card and mobile money payments (test card numbers, Wave, MTN), see **[Sandbox payments](/start/sandbox-payments)**.
 
@@ -57,20 +60,28 @@ To simulate card and mobile money payments (test card numbers, Wave, MTN), see *
 
 Use the live environment for production operations involving real transactions.
 
-- **API Keys:** Live API keys start with `` `lomi_sk_live_` ``.
-- **Base URL:** `` `https://api.lomi.africa` ``
-- **Rate Limits:** 60 requests per minute / 10,000 requests per day.
-- **Data:** Processes real data. Responses may include environment flags like `` `"environment": "live"` ``.
+- **API Keys:** Live API keys start with `lomi_sk_live_`.
+- **Base URL:** `https://api.lomi.africa`
+- **Data:** Processes real data. Responses may include environment flags like `"environment": "live"`.
 
-To switch between environments, simply use the appropriate API key and base URL.
+To switch between environments, use the matching API key and base URL. Rate limits are the same in both environments.
+
+## Rate limits
+
+The same throttling policy applies to sandbox and live:
+
+| Scope | Limit |
+| --- | --- |
+| Default | 5000 requests per 15 minutes |
+| Writes (`POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /charge/*`) | 120 requests per minute |
+
+Successful responses include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Window-Seconds`, and IETF `RateLimit` / `RateLimit-Policy`. A `429` includes `Retry-After` and `error.details.retry_after_seconds`. See **[Errors](/api/errors)**.
 
 ## Obtaining API keys
 
-You can obtain your API keys after signing up and completing verification:
-
-1.  Log in to the [dashboard](https://lomi.africa/portal).
-2.  Navigate to the **Developers** or **API Settings** section.
-3.  Generate separate API keys for the **Test** and **Live** environments.
+1. Log in to the [dashboard](https://dashboard.lomi.africa).
+2. Open **Settings → Access tokens**.
+3. Use separate secret keys for the **Test** and **Live** environments.
 
 ## Key management and security
 
@@ -78,9 +89,9 @@ Treat your API keys as sensitive credentials. You can manage them (generate, rev
 
 Best practices:
 
-- **Keep keys confidential:** Do not share your secret keys. Store them securely (e.g., environment variables, secrets management service).
-- **Never expose keys client-side:** Do not embed API keys in frontend code.
+- **Keep keys confidential:** Do not share your secret keys. Store them securely (for example environment variables or a secrets manager).
+- **Never expose keys client-side:** Do not embed secret API keys in frontend code.
 - **Avoid version control:** Do not commit keys to your codebase.
 - **Use test keys for development:** Only use live keys for production applications.
-- **Rotate keys:** Consider rotating keys periodically or if you suspect a compromise.
+- **Rotate keys:** Rotate keys periodically or if you suspect a compromise.
 - **Limit access:** Restrict access to API keys within your organization.

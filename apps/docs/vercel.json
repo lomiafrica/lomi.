@@ -77,7 +77,7 @@
   "devCommand": "next dev",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "regions": ["iad1"],
+  "regions": ["fra1"],
   "env": {
     "NEXT_TELEMETRY_DISABLED": "1"
   }

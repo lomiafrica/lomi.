@@ -493,4 +493,164 @@ describe('createHttpApplication', () => {
     );
     expect(res.headers.get('access-control-allow-origin')).toBe('*');
   });
+
+  it('guest session gains merchant tools once provisioning returns a test key', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    delete process.env.LOMI_PROVISIONING_KEY;
+    delete process.env.LOMI_SECRET_KEY;
+    delete process.env.X_API_KEY;
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input, init) => {
+        const url = String(input);
+        if (url.includes('/provisioning/merchants/') && url.endsWith('/api-keys')) {
+          return new Response(
+            JSON.stringify({
+              test_secret_key: 'lomi_sk_test_guest_upgrade_key',
+              test_publishable_key: 'lomi_pk_test_guest_upgrade_key',
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } },
+          );
+        }
+        return realFetch(input, init);
+      },
+    );
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp/guest`;
+
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'x-lomi-provisioning-key': 'lomi_prov_guest_upgrade',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'guest-upgrade-test', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const rpc = async (body: JsonObject): Promise<JsonObject> => {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json, text/event-stream',
+          'mcp-session-id': sessionId!,
+        },
+        body: JSON.stringify(body),
+      });
+      expect(res.status).toBe(200);
+      return parseSseJsonRpc(await res.text());
+    };
+    const toolNames = async (id: number): Promise<string[]> => {
+      const result = await rpc({ jsonrpc: '2.0', method: 'tools/list', id });
+      const tools = (result.result as JsonObject).tools as JsonObject[];
+      return tools.map((t) => String(t.name));
+    };
+
+    const before = await toolNames(2);
+    expect(before).toContain('lomi_provision');
+    expect(before).toContain('lomi_search_tools');
+    expect(before).not.toContain('lomi_checkout');
+
+    // Standalone SSE stream receives server notifications.
+    const streamController = new AbortController();
+    const stream = await fetch(base, {
+      headers: {
+        Accept: 'text/event-stream',
+        'mcp-session-id': sessionId!,
+      },
+      signal: streamController.signal,
+    });
+    expect(stream.status).toBe(200);
+    const notifications = collectSseUntil(
+      stream,
+      'notifications/tools/list_changed',
+      5000,
+    );
+
+    const call = await rpc({
+      jsonrpc: '2.0',
+      method: 'tools/call',
+      id: 3,
+      params: {
+        name: 'lomi_provision',
+        arguments: {
+          action: 'api_keys',
+          merchantId: '6f1d2c3e-4b5a-4c6d-8e9f-0a1b2c3d4e5f',
+        },
+      },
+    });
+    const callResult = call.result as JsonObject;
+    expect(callResult.isError, JSON.stringify(callResult.content)).not.toBe(true);
+
+    const after = await toolNames(4);
+    expect(after).toContain('lomi_checkout');
+    expect(after).toContain('lomi_customers');
+    expect(after.filter((n) => n === 'lomi_search_tools')).toHaveLength(1);
+
+    let sawListChanged = false;
+    try {
+      sawListChanged = await notifications;
+    } finally {
+      streamController.abort();
+      fetchMock.mockRestore();
+      await fetch(base, {
+        method: 'DELETE',
+        headers: { 'mcp-session-id': sessionId! },
+      }).catch(() => undefined);
+    }
+    expect(sawListChanged).toBe(true);
+  });
 });
+
+function parseSseJsonRpc(text: string): JsonObject {
+  const trimmed = text.trim();
+  if (trimmed.startsWith('{')) return JSON.parse(trimmed) as JsonObject;
+  const dataLines = trimmed
+    .split('\n')
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice(5).trim());
+  const last = dataLines[dataLines.length - 1];
+  if (!last) throw new Error(`no SSE data in response: ${text}`);
+  return JSON.parse(last) as JsonObject;
+}
+
+async function collectSseUntil(
+  res: Response,
+  needle: string,
+  timeoutMs: number,
+): Promise<boolean> {
+  const reader = res.body?.getReader();
+  if (!reader) return false;
+  const decoder = new TextDecoder();
+  let buffer = '';
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const chunk = await Promise.race([
+      reader.read(),
+      new Promise<{ done: true; value: undefined }>((resolve) =>
+        setTimeout(() => resolve({ done: true, value: undefined }), deadline - Date.now()),
+      ),
+    ]);
+    if (chunk.value) buffer += decoder.decode(chunk.value, { stream: true });
+    if (buffer.includes(needle)) return true;
+    if (chunk.done) break;
+  }
+  return buffer.includes(needle);
+}

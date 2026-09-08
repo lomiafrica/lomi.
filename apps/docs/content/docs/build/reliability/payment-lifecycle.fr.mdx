@@ -1,6 +1,6 @@
 ---
 title: 'Cycle de vie des paiements et reversements'
-description: 'Comment les statuts encaissement et décaissement s’articulent, liens vers la machine à états, soldes et webhooks.'
+description: 'Comment les statuts d’encaissement et de décaissement s’articulent, quand un paiement pending expire, et comment la complétion crédite votre solde.'
 docType: explanation
 ---
 
@@ -8,18 +8,71 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 
 <DocsAgentIndex />
 
-Cette page est la **carte marchande** des statuts de paiement et de reversement. Pour les tableaux de transition et diagrammes complets, voir **[Machine à états du paiement](/api/payment-state-machine)**.
+Cette page est la carte marchande des statuts de paiement et de reversement.
 
 ## Encaissement
 
-| Phase | Statut typique | Impact pour vous |
-| --- | --- | --- |
-| Le client commence | `pending` | UI en attente ; ne pas livrer |
-| Confirmation prestataire | `completed` | Crédit solde test/live ; livrer après [vérification](/build/reliability/verify-payments) |
-| Délai / abandon | `failed` ou `expired` | Libérer le stock ; proposer une nouvelle tentative |
-| Remboursement | `refunded` | Annuler la livraison si besoin |
+```mermaid
+stateDiagram-v2
+  [*] --> pending: paiement en production
+  [*] --> completed: paiement test (sandbox)
+  pending --> completed: confirmé par le prestataire
+  pending --> failed: refus ou échec
+  pending --> expired: délai dépassé
+  completed --> refunded: remboursement
+  completed --> held: retenue plateforme
+  held --> completed: retenue levée
+  held --> refunded: remboursement
+  failed --> [*]
+  expired --> [*]
+  refunded --> [*]
+```
 
-**Test vs live :** les clés test complètent souvent le mobile money immédiatement ; en live le statut reste `pending` jusqu’à approbation sur l’appareil.
+En **test**, un paiement est souvent `completed` tout de suite. En **production**, il reste en général `pending` jusqu’à ce que le client valide (mobile money, carte, etc.).
+
+### Statuts des paiements
+
+| Statut | Ce que ça veut dire |
+| --- | --- |
+| `pending` | Paiement lancé, résultat pas encore connu (fréquent en production). Ne pas livrer. |
+| `completed` | Paiement réussi. Crédit du solde test ou live ; livrer après [vérification](/build/reliability/verify-payments). |
+| `held` | Paiement capturé mais bloqué par la plateforme. Non retirable, hors revenus tant que la retenue n’est pas levée ou remboursée. |
+| `failed` | Le paiement n’a pas abouti. Libérer le stock ; proposer une nouvelle tentative. |
+| `expired` | Le client n’a pas finalisé à temps. Libérer le stock ; proposer une nouvelle tentative. |
+| `refunded` | Remboursement effectué sur ce paiement. Annuler la livraison si besoin. |
+
+### Côté prestataire
+
+Chaque statut transaction a un équivalent côté prestataire (`provider_payment_status`) :
+
+| Statut transaction | Statut prestataire |
+| --- | --- |
+| `completed` | `succeeded` |
+| `held` | `succeeded` |
+| `pending` | `processing` |
+| `failed` | `cancelled` |
+| `expired` | `expired` |
+| `refunded` | `refunded` |
+
+Voir [Transactions](/build/money/transactions) pour les champs dans les réponses API.
+
+### Expiration
+
+Un paiement `pending` peut expirer automatiquement :
+
+- après un certain **délai** ;
+- ou quand la **session prestataire** expire (par exemple Wave `when_expires`).
+
+L’info d’expiration est stockée dans `expiration_info` sur la transaction.
+
+### Effets d’un paiement `completed`
+
+La complétion est idempotente. Un webhook en double ne crédite pas le solde deux fois : lomi. fusionne les métadonnées et ne crédite qu’une fois.
+
+- Le coupon utilisé peut être comptabilisé.
+- Un abonnement lié peut passer de `pending` à `active`.
+
+Pour le délai de disponibilité des fonds, voir [Solde et règlement](/build/money/balance-and-settlement).
 
 ## Décaissement (reversements et remboursements)
 

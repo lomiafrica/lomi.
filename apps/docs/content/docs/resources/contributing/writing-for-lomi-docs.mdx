@@ -28,7 +28,7 @@ Set `docType` in frontmatter on new guide pages:
 | --- | --- | --- |
 | `tutorial` | Linear learning path | [Integration journey](/start/integration-journey) |
 | `how-to` | Task-focused steps | [Verify payments](/build/reliability/verify-payments) |
-| `explanation` | Concepts and trade-offs | [Choose integration](/build/choose-integration), [Payment state machine](/api/payment-state-machine) |
+| `explanation` | Concepts and trade-offs | [Choose integration](/build/choose-integration), [Payment and payout lifecycle](/build/reliability/payment-lifecycle) |
 | `reference` | Schemas and endpoints | API operation pages |
 
 ## Voice and structure
@@ -63,7 +63,9 @@ See [API reference authoring](/resources/contributing/api-reference-authoring) a
 - [Sandbox payments](/start/sandbox-payments)
 - [Choose integration](/build/choose-integration)
 - [Handling webhooks](/build/reliability/handling-webhooks)
-- [Payment state machine](/api/payment-state-machine)
+- [Payment and payout lifecycle](/build/reliability/payment-lifecycle)
+
+When you change payment status semantics in `apps/api`, update [Payment and payout lifecycle](/build/reliability/payment-lifecycle) and run `pnpm docs:drift` in `apps/docs`.
 
 ## Drift checks
 

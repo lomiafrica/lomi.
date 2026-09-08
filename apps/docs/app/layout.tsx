@@ -2,7 +2,6 @@
 
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Body } from '@/app/layout.client';
 import { Provider } from './provider';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
@@ -143,27 +142,29 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({
+async function DocsProviders({ children }: { children: ReactNode }) {
+  const initialLanguage = await getDocsLocale();
+  return <Provider initialLanguage={initialLanguage}>{children}</Provider>;
+}
+
+export default function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const initialLanguage = await getDocsLocale();
-  const htmlLang = initialLanguage === 'fr' ? 'fr' : 'en';
-
   return (
     <html
-      lang={htmlLang}
+      lang="fr"
       className={font.className}
       style={font.style}
       suppressHydrationWarning
     >
-      <Body>
+      <body className="relative flex min-h-screen flex-col">
         <SiteJsonLd />
-        <Provider initialLanguage={initialLanguage}>{children}</Provider>
+        <DocsProviders>{children}</DocsProviders>
         <Analytics />
         <SpeedInsights />
-      </Body>
+      </body>
     </html>
   );
 }

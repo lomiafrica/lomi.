@@ -7,6 +7,7 @@ import {
   use,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -26,11 +27,6 @@ import {
 } from 'fumadocs-ui/layouts/docs';
 import { isLayoutTabActive, type LayoutTab } from 'fumadocs-ui/layouts/shared';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from 'fumadocs-ui/components/ui/popover';
 import type { Root } from 'fumadocs-core/page-tree';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
@@ -145,8 +141,34 @@ export function DocsMobileSectionSwitch() {
   const preview = useMobileSectionPreview();
   const pathname = usePathname();
   const { currentLanguage } = useTranslation();
+  const { open: drawerOpen, mode } = useSidebar();
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const t = (key: string) => translate(key, currentLanguage);
+
+  useEffect(() => {
+    if (!drawerOpen || mode !== 'drawer') setOpen(false);
+  }, [drawerOpen, mode]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: PointerEvent) {
+      if (rootRef.current?.contains(event.target as Node)) return;
+      setOpen(false);
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpen(false);
+    }
+
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
 
   if (!preview || preview.tabs.length === 0) return null;
 
@@ -154,13 +176,18 @@ export function DocsMobileSectionSwitch() {
     preview.tabs.find((tab) => tab.url === preview.previewUrl) ??
     lastMatchingTab(preview.tabs, pathname) ??
     preview.tabs[0];
+  const sectionNav = t('docs.shell.sectionNav');
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
+    <div ref={rootRef} className="docs-mobile-section-switch-root md:hidden">
+      <button
         type="button"
-        className="docs-mobile-section-switch flex items-center gap-2 rounded-lg border md:hidden"
-        title={t('docs.shell.sectionNav')}
+        className="docs-mobile-section-switch flex items-center gap-2 rounded-lg border"
+        title={sectionNav}
+        aria-label={sectionNav}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        onClick={() => setOpen((value) => !value)}
       >
         {selected?.icon ? (
           <div className="docs-mobile-section-icon size-4 shrink-0">
@@ -171,40 +198,43 @@ export function DocsMobileSectionSwitch() {
           {selected?.title}
         </span>
         <ChevronsUpDown className="ms-auto size-4 shrink-0 text-fd-muted-foreground" />
-      </PopoverTrigger>
-      <PopoverContent className="flex w-(--radix-popover-trigger-width) flex-col gap-1 p-1 fd-scroll-container">
-        {preview.tabs.map((tab) => {
-          const isActive = selected?.url === tab.url;
-          return (
-            <button
-              key={tab.url}
-              type="button"
-              className={cn(
-                'flex items-center gap-2 rounded-lg p-1.5 text-start hover:bg-fd-accent hover:text-fd-accent-foreground',
-              )}
-              onClick={() => {
-                preview.setPreviewUrl(tab.url);
-                setOpen(false);
-              }}
-            >
-              {tab.icon ? (
-                <div className="docs-mobile-section-icon size-4 shrink-0">
-                  {tab.icon}
-                </div>
-              ) : null}
-              <span className="min-w-0 flex-1 text-sm font-medium leading-none">
-                {tab.title}
-              </span>
-              <Check
-                className={cn(
-                  'ms-auto size-3.5 shrink-0 text-fd-primary',
-                  !isActive && 'invisible',
-                )}
-              />
-            </button>
-          );
-        })}
-      </PopoverContent>
-    </Popover>
+      </button>
+      {open ? (
+        <div role="listbox" aria-label={sectionNav} className="docs-mobile-section-menu">
+          {preview.tabs.map((tab) => {
+            const isActive = selected?.url === tab.url;
+            return (
+              <button
+                key={tab.url}
+                type="button"
+                role="option"
+                aria-selected={isActive}
+                data-active={isActive}
+                className="docs-mobile-section-option"
+                onClick={() => {
+                  preview.setPreviewUrl(tab.url);
+                  setOpen(false);
+                }}
+              >
+                {tab.icon ? (
+                  <div className="docs-mobile-section-icon size-4 shrink-0">
+                    {tab.icon}
+                  </div>
+                ) : null}
+                <span className="min-w-0 flex-1 truncate text-start text-sm font-medium">
+                  {tab.title}
+                </span>
+                <Check
+                  className={cn(
+                    'ms-auto size-4 shrink-0 text-fd-muted-foreground',
+                    !isActive && 'invisible',
+                  )}
+                />
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
   );
 }

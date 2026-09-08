@@ -1,6 +1,6 @@
 ---
 title: 'Payment and payout lifecycle'
-description: 'How money-in and money-out statuses connect, links to the canonical state machine, balances, and webhooks.'
+description: 'How money-in and money-out statuses connect, when pending payments expire, and how completion credits your balance.'
 docType: explanation
 ---
 
@@ -8,18 +8,71 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 
 <DocsAgentIndex />
 
-Use this page as the **merchant-facing map** for payment and payout status. For the full transition tables and diagrams, see **[Payment state machine](/api/payment-state-machine)**.
+Use this page as the merchant-facing map for payment and payout status.
 
 ## Money in (payments)
 
-| Phase | Typical status | What it means for you |
-| --- | --- | --- |
-| Customer starts pay | `pending` | Show a pending UI; do not fulfill |
-| Provider confirms | `completed` | Credit test/live balance; safe to fulfill after [verification](/build/reliability/verify-payments) |
-| Timeout / abandon | `failed` or `expired` | Release inventory; offer retry |
-| Refund issued | `refunded` | Reverse fulfillment if applicable |
+```mermaid
+stateDiagram-v2
+  [*] --> pending: live payment initiated
+  [*] --> completed: test payment (sandbox)
+  pending --> completed: provider confirms success
+  pending --> failed: provider decline or hard failure
+  pending --> expired: timeout or session expiry
+  completed --> refunded: refund processed
+  completed --> held: platform risk hold
+  held --> completed: hold released
+  held --> refunded: refund processed
+  failed --> [*]
+  expired --> [*]
+  refunded --> [*]
+```
 
-**Test vs live:** test keys often complete mobile money immediately; live keys stay `pending` until the customer approves on device.
+In **test**, new payments often start as `completed` immediately. In **live**, they typically start `pending` until the customer approves mobile money or the card issuer confirms.
+
+### Transaction statuses
+
+| Status | Meaning |
+| --- | --- |
+| `pending` | Payment initiated; final outcome not yet confirmed (typical in **live**). Do not fulfill. |
+| `completed` | Payment succeeded. Credit test or live balance; fulfill after [verification](/build/reliability/verify-payments). |
+| `held` | Captured payment frozen by the platform. Not withdrawable and excluded from revenue until released or refunded. |
+| `failed` | Payment did not succeed. Release inventory; offer retry. |
+| `expired` | Pending payment timed out. Release inventory; offer retry. |
+| `refunded` | Refund processed against the original payment. Reverse fulfillment if applicable. |
+
+### Provider-facing status mapping
+
+Platform `transaction_status` is reflected in `provider_payment_status` on linked provider records:
+
+| Transaction status | Provider payment status |
+| --- | --- |
+| `completed` | `succeeded` |
+| `held` | `succeeded` |
+| `pending` | `processing` |
+| `failed` | `cancelled` |
+| `expired` | `expired` |
+| `refunded` | `refunded` |
+
+See [Transactions](/build/money/transactions) for field names in API responses.
+
+### Pending expiration
+
+Pending transactions can expire automatically:
+
+- By **age** (older than the platform TTL).
+- Optionally by **provider session expiry** (for example Wave `when_expires`).
+
+Expired rows carry `expiration_info` in metadata describing why they closed.
+
+### What happens on `completed`
+
+Completion is idempotent. A duplicate completion does not credit the balance twice: metadata is merged, but the balance is credited once.
+
+- Coupon usage may be incremented.
+- Subscriptions linked to the transaction may move from `pending` to `active`.
+
+For balance timing, see [Balance and settlement](/build/money/balance-and-settlement).
 
 ## Money out (payouts and refunds)
 

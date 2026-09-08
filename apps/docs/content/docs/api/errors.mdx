@@ -5,11 +5,13 @@ description: 'Understanding and handling API error responses.'
 
 We use conventional HTTP status codes to indicate the success or failure of an API request. In general:
 
-- Codes in the `` `2xx` `` range indicate success.
-- Codes in the `` `4xx` `` range indicate a client-side error (e.g., a required parameter was omitted, invalid data was sent, etc.).
-- Codes in the `` `5xx` `` range indicate an error with our servers (these are rare), in case of doubt you can visit our [status page](https://status.lomi.africa).
+- Codes in the `2xx` range indicate success.
+- Codes in the `4xx` range indicate a client-side error (for example a required parameter was omitted, or invalid data was sent).
+- Codes in the `5xx` range indicate an error with our servers (these are rare). In case of doubt, visit our [status page](https://status.lomi.africa).
 
-When an API request fails (returns a `` `4xx` `` or `` `5xx` `` status code), the response body will contain a JSON object detailing the error.
+When an API request fails (returns a `4xx` or `5xx` status code), the response body contains a JSON object detailing the error.
+
+For how to parse these in your app with the TypeScript SDK, see [Error handling](/build/reliability/error-handling).
 
 ## Error response structure
 
@@ -26,75 +28,107 @@ All error responses follow a consistent JSON format:
 }
 ```
 
-| Property          | Type                             | Description                                                                                                                     |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `` `error` ``     | `` `object` ``                   | Container for the error information.                                                                                          |
-| `` `error.code` ``| `` `string` ``                   | Machine-readable code (e.g. `unauthorized`, `idempotency_key_required`, `validation_failed`).                                              |
-| `` `message` ``   | `` `string` ``                   | A brief, human-readable summary of the error.                                                                                    |
-| `` `details` ``   | `` `string` `` or `` `object` `` | Optional. Provides more specific context or structured data about the error (e.g., validation failures, conflicting resources). |
-| `` `request_id` ``| `` `string` `` (UUID)            | Correlates the response with server logs; also sent as the `` `X-Request-Id` `` response header.                                |
+| Property | Type | Description |
+| --- | --- | --- |
+| `error` | `object` | Container for the error information. |
+| `error.code` | `string` | Machine-readable code (see [Stable error codes](#stable-error-codes)). |
+| `error.message` | `string` | A brief, human-readable summary of the error. |
+| `error.details` | `string` or `object` | Optional. More specific context (validation failures, `retry_after_seconds`, conflicting resources). |
+| `request_id` | `string` (UUID) | Correlates the response with server logs. Also sent as the `X-Request-Id` response header. |
 
 ## HTTP status codes
 
-Here are some common HTTP status codes you might encounter:
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `200` | OK | The request was successful. |
+| `201` | Created | The request was successful and a resource was created (for example creating a webhook). |
+| `204` | No Content | The request was successful but there is no representation to return (for example deleting a webhook). |
+| `400` | Bad Request | The request was unacceptable, often due to a missing required parameter or invalid data. |
+| `401` | Unauthorized | No valid API key provided. |
+| `403` | Forbidden | The API key does not have permissions to perform the request. |
+| `404` | Not Found | The requested resource does not exist. |
+| `409` | Conflict | The request conflicts with the current state of the resource (for example an idempotency key reused with a different body). |
+| `429` | Too Many Requests | Rate limits have been exceeded. |
+| `500` | Internal Server Error | Something went wrong on lomi.'s end (these are rare). |
+| `503` | Service Unavailable | Temporary unavailability, including muted rails such as `POST /charge/card` and `POST /charge/switch`. Retry later, or use hosted checkout. |
 
-| Code        | Status                | Meaning                                                                                         |
-| ----------- | --------------------- | ----------------------------------------------------------------------------------------------- |
-| `` `200` `` | OK                    | The request was successful.                                                                     |
-| `` `201` `` | Created               | The request was successful and a resource was created (e.g., creating a webhook).               |
-| `` `204` `` | No Content            | The request was successful but there is no representation to return (e.g., deleting a webhook). |
-| `` `400` `` | Bad Request           | The request was unacceptable, often due to missing a required parameter or invalid data format. |
-| `` `401` `` | Unauthorized          | No valid API key provided.                                                                      |
-| `` `403` `` | Forbidden             | The API key doesn't have permissions to perform the request.                                    |
-| `` `404` `` | Not Found             | The requested resource doesn't exist.                                                           |
-| `` `409` `` | Conflict              | The request conflicts with the current state of the resource (e.g., duplicate webhook URL).     |
-| `` `429` `` | Too Many Requests     | Rate limits have been exceeded.                                                                 |
-| `` `500` `` | Internal Server Error | Something went wrong on lomi.'s end (these are rare).                                            |
-| `` `503` `` | Service Unavailable   | We're temporarily offline for maintenance. Please try again later.                              |
+## Stable error codes
+
+| Code | Typical HTTP status |
+| --- | --- |
+| `bad_request` | 400 |
+| `validation_failed` | 400 |
+| `amount_invalid` | 400 |
+| `invalid_cursor` | 400 |
+| `unauthorized` | 401 |
+| `forbidden` | 403 |
+| `not_found` | 404 |
+| `conflict` | 409 |
+| `idempotency_key_required` | 400 |
+| `idempotency_key_reused` | 409 |
+| `idempotency_in_progress` | 409 |
+| `rate_limit_exceeded` | 429 |
+| `api_access_suspended` | 403 |
+| `service_unavailable` | 503 |
+| `internal_error` | 500 |
+
+## Rate limits
+
+The same policy applies to sandbox and live. See [Authentication](/api/authentication#rate-limits).
+
+| Scope | Limit |
+| --- | --- |
+| Default | 5000 requests per 15 minutes |
+| Writes (`POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /charge/*`) | 120 requests per minute |
+
+A `429` includes:
+
+- `Retry-After` (seconds)
+- `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Window-Seconds`
+- IETF `RateLimit` / `RateLimit-Policy`
+- `error.details.retry_after_seconds` and `error.details.limit`
 
 ## Common error messages
 
-While the specific `` `message` `` and `` `details` `` will vary, here are examples associated with common status codes:
+The specific `message` and `details` vary. Typical patterns:
 
-**`` `400` `` Bad Request:**
+**`400` Bad Request:**
 
-- `"message": "Invalid request"`, `"details": "Missing required field: \`url\`"`
-- `"message": "Invalid request"`, `"details": "Invalid \`Webhook ID\` format."`
-- `"message": "Invalid request body"`
+- `"code": "validation_failed"` with field-level `details`
+- `"code": "amount_invalid"`
+- `"code": "idempotency_key_required"`
+- `"code": "invalid_cursor"`
 
-**`` `401` `` Unauthorized:**
+**`401` Unauthorized:**
 
-- `"message": "Invalid API key"`, `"details": "The provided API key is invalid or does not exist"`
-- `"message": "Missing API key"`, `"details": "API key is required for authentication"`
-- `"message": "Authentication required"`
+- `"code": "unauthorized"`, `"message": "Invalid API key"`
+- `"code": "unauthorized"`, `"message": "Missing API key"`
 
-**`` `404` `` Not Found:**
+**`404` Not Found:**
 
-- `"message": "Webhook not found"`, `"details": "Webhook with ID \`wh\_...\` does not exist or does not belong to this organization."`
-- `"message": "Resource not found"`
+- `"code": "not_found"`
 
-**`` `409` `` Conflict:**
+**`409` Conflict:**
 
 - `"code": "idempotency_key_reused"`, `"message": "Idempotency-Key was reused with a different request payload"`
 - `"code": "idempotency_in_progress"`, `"message": "A request with this Idempotency-Key is already in progress"`
 
-**`` `429` `` Too Many Requests:**
+**`429` Too Many Requests:**
 
-- `"code": "rate_limit_exceeded"`. Response includes `Retry-After`.
+- `"code": "rate_limit_exceeded"`, `"message": "Too many requests"`
 
-Stable codes also include `validation_failed` (field-level `details`), `amount_invalid`, `invalid_cursor`, and `api_access_suspended`.
+**`500` Internal Server Error:**
 
-**`` `500` `` Internal Server Error:**
+- `"code": "internal_error"`, `"message": "Internal server error"`
 
-- `"message": "Internal server error"`
-- `"message": "Database error"`, `"details": "Failed to execute database query."`
+**`503` Service Unavailable:**
+
+- `"code": "service_unavailable"` (maintenance, or a muted direct-charge rail)
 
 ## Handling errors
 
-Your integration should gracefully handle potential API errors:
-
-1.  **Check the HTTP Status Code:** Determine the general outcome of the request.
-2.  **Parse the Response Body:** If the status code indicates an error (`` `4xx` `` or `` `5xx` ``), parse the JSON response body.
-3.  **Use Error Information:** Use the `` `message` `` and `` `details` `` from the parsed JSON to understand the specific problem.
-4.  **Implement Logic:** Based on the error type, implement appropriate logic (e.g., prompt the user to fix input for a `` `400` `` error, check credentials for `` `401` ``, retry later for `` `429` `` or `` `5xx` `` errors).
-5.  **Log Errors:** Log errors, including the full response body and potentially the request ID (if provided in headers), to aid debugging.
+1. Check the HTTP status code.
+2. Parse the JSON body for `4xx` or `5xx` responses.
+3. Use `error.code`, `error.message`, and `error.details`.
+4. Retry `429` and `5xx` with backoff. Do not retry other `4xx` responses until you fix the request.
+5. Log `request_id` (body and `X-Request-Id` header) for support.

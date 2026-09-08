@@ -25,7 +25,7 @@ export function baseOptions(): BaseLayoutProps {
     // see fumadocs-ui navigation links
     links: linkItems,
     themeSwitch: {
-      // Sidebar bottom bar: language + default light/dark toggle (Fumadocs same row as icon links)
+      // Full-width Beecargo-style user nav (Dashboard, Language, Theme, MCP, backlinks)
       component: <DocsSidebarLocaleAndTheme />,
     },
   };

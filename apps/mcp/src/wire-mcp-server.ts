@@ -17,6 +17,7 @@ import {
 } from './env-config.js';
 import { registerSearchToolsMetaTool } from './register-search-tools.js';
 import { registerLomiRegisterAgent } from './register-agent.js';
+import { mcpLog } from './mcp-request-context.js';
 import { validateJsonValue } from "@lomi./shared";
 
 export type WireMcpServerOptions = {
@@ -40,7 +41,8 @@ export type WireMcpServerOptions = {
   onProvisioningKeyDiscovered?: (key: string) => void;
   /**
    * Guest bootstrap transport: register_agent, search, provisioning (no partner
-   * or merchant REST tools), plus docs resources.
+   * tools), plus docs resources and prompts. Merchant REST tools are added to
+   * the live session once provisioning yields a test secret key.
    */
   guest?: boolean;
 };
@@ -69,7 +71,9 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
   registerProvisioningTools(server, provisioningManifest, {
     getProvisioningKey,
     getPartnerKey,
-    onMerchantKeyDiscovered,
+    onMerchantKeyDiscovered: guest
+      ? guestUpgradeOnMerchantKey(server, manifest, getApiKey, onMerchantKeyDiscovered)
+      : onMerchantKeyDiscovered,
     skipPartner: guest,
   });
   if (!guest) {
@@ -81,14 +85,44 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     registerSearchToolsOnGuest(server, manifest, provisioningManifest);
   }
   registerLomiResources(server, manifest);
-  if (!guest) {
-    registerLomiPrompts(server, manifest, provisioningManifest);
-  }
+  // Prompts are registered on guest too: the SDK locks capabilities at
+  // connect, so they cannot be added during the guest upgrade.
+  registerLomiPrompts(server, manifest, provisioningManifest);
   return server;
 }
 
+/**
+ * Guest sessions start without merchant REST tools. When lomi_provision returns
+ * a test secret key (api_keys / complete), adopt it and register the merchant
+ * tools on the live server. The SDK emits notifications/tools/list_changed, so
+ * the client picks up lomi_checkout, lomi_customers, etc. without reconnecting.
+ */
+function guestUpgradeOnMerchantKey(
+  server: McpServer,
+  manifest: ToolsManifest,
+  getApiKey: () => string | null,
+  onMerchantKeyDiscovered: ((secretKey: string) => void) | undefined,
+): (secretKey: string) => void {
+  let upgraded = false;
+  return (secretKey) => {
+    onMerchantKeyDiscovered?.(secretKey);
+    if (upgraded) return;
+    upgraded = true;
+    registerMerchantTools(server, manifest, {
+      getApiKey,
+      readOnlyOnly: false,
+      skipSearchTool: true,
+    });
+    mcpLog(
+      'guest_session_upgraded',
+      { toolCount: manifest.tools.length },
+      'info',
+    );
+  };
+}
+
 function registerSearchToolsOnGuest(
-  server: import('@modelcontextprotocol/sdk/server/mcp.js').McpServer,
+  server: McpServer,
   merchantManifest: ToolsManifest,
   provisioningManifest: ProvisioningToolsManifest,
 ): void {

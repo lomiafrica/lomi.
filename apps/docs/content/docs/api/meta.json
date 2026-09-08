@@ -8,7 +8,6 @@
     "authentication",
     "errors",
     "data-models",
-    "payment-state-machine",
     "---Accept payments---",
     "checkout-sessions",
     "payment-links",

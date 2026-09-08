@@ -9,7 +9,6 @@ export const REST_API_CONCEPT_PAGES = [
   'authentication',
   'errors',
   'data-models',
-  'payment-state-machine',
 ] as const;
 
 /** Theme groups in the API sidebar (English separators; French lives in meta.fr.json). */

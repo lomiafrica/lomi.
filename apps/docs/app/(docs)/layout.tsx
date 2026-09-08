@@ -188,7 +188,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
             key="docs-mobile-locale-theme"
             className="docs-mobile-locale-theme-footer md:hidden"
           >
-            <DocsSidebarLocaleAndTheme />
+            <DocsSidebarLocaleAndTheme mobile />
           </div>
         ),
       }}

@@ -18,6 +18,8 @@ export type ToolRegistrationContext = {
   baseUrl: string;
   getApiKey: () => string | null;
   readOnlyOnly?: boolean;
+  /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
+  skipSearchTool?: boolean;
 };
 
 function registerOneTool(
@@ -129,7 +131,9 @@ export function registerMerchantTools(
   const readOnlyOnly = ctx?.readOnlyOnly ?? false;
   const fullCtx: ToolRegistrationContext = { baseUrl, getApiKey, readOnlyOnly };
 
-  registerSearchToolsMetaTool(server, manifest);
+  if (!ctx?.skipSearchTool) {
+    registerSearchToolsMetaTool(server, manifest);
+  }
 
   for (const tool of manifest.tools) {
     if (readOnlyOnly && !tool.readOnly) continue;

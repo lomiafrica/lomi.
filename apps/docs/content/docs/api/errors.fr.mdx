@@ -5,11 +5,13 @@ description: 'Comprendre et traiter les erreurs renvoyées par l’API.'
 
 Nous utilisons les codes HTTP usuels pour signaler le succès ou l’échec d’une requête :
 
-- Plage `` `2xx` `` : succès.
-- Plage `` `4xx` `` : erreur côté client (paramètre manquant, données invalides, etc.).
-- Plage `` `5xx` `` : erreur côté nos serveurs (rare) ; en cas de doute, voir notre [page de statut](https://status.lomi.africa).
+- Plage `2xx` : succès.
+- Plage `4xx` : erreur côté client (paramètre manquant, données invalides, etc.).
+- Plage `5xx` : erreur côté nos serveurs (rare). En cas de doute, voir notre [page de statut](https://status.lomi.africa).
 
-En cas d’échec (`` `4xx` `` ou `` `5xx` ``), le corps de la réponse contient un objet JSON décrivant l’erreur.
+En cas d’échec (`4xx` ou `5xx`), le corps de la réponse contient un objet JSON décrivant l’erreur.
+
+Pour parser ces erreurs dans votre application avec le SDK TypeScript, voir [Gestion des erreurs](/build/reliability/error-handling).
 
 ## Structure de la réponse d’erreur
 
@@ -26,71 +28,107 @@ Format JSON cohérent :
 }
 ```
 
-| Champ          | Type                             | Description                                                                                                                     |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `` `error` ``     | `` `object` ``                   | Conteneur d’informations d’erreur.                                                                                          |
-| `` `error.code` ``| `` `string` ``                   | Code machine (ex. `unauthorized`, `rate_limit_exceeded`, `not_found`).                                              |
-| `` `message` ``   | `` `string` ``                   | Résumé bref lisible par un humain.                                                                                    |
-| `` `details` ``   | `` `string` `` ou `` `object` `` | Optionnel. Contexte ou données structurées (échecs de validation, ressources en conflit, etc.). |
-| `` `request_id` ``| `` `string` `` (UUID)            | Permet la corrélation avec les journaux serveur ; également renvoyé dans l’en-tête `` `X-Request-Id` ``.                                |
+| Champ | Type | Description |
+| --- | --- | --- |
+| `error` | `object` | Conteneur d’informations d’erreur. |
+| `error.code` | `string` | Code machine (voir le tableau des codes stables ci-dessous). |
+| `error.message` | `string` | Résumé bref lisible par un humain. |
+| `error.details` | `string` ou `object` | Optionnel. Contexte plus précis (échecs de validation, `retry_after_seconds`, ressources en conflit). |
+| `request_id` | `string` (UUID) | Corrélation avec les journaux serveur. Aussi renvoyé dans l’en-tête `X-Request-Id`. |
 
 ## Codes HTTP courants
 
-| Code        | Statut                | Signification                                                                                         |
-| ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `` `200` `` | OK                    | Requête réussie.                                                                     |
-| `` `201` `` | Created               | Ressource créée (ex. webhook).               |
-| `` `204` `` | No Content            | Succès sans corps utile (ex. suppression). |
-| `` `400` `` | Bad Request           | Requête incorrecte ou paramètres invalides / manquants. |
-| `` `401` `` | Unauthorized          | Pas de clé API valide.                                                                      |
-| `` `403` `` | Forbidden             | La clé n’a pas les droits pour cette opération.                                    |
-| `` `404` `` | Not Found             | La ressource demandée est introuvable.                                                           |
-| `` `409` `` | Conflict              | Conflit avec l’état actuel (ex. doublon d’URL webhook).     |
-| `` `429` `` | Too Many Requests     | Plafonds de débit dépassés.                                                                 |
-| `` `500` `` | Internal Server Error | Erreur côté lomi. (exceptionnelle).                                            |
-| `` `503` `` | Service Unavailable   | Indisponibilité temporaire ; réessayez plus tard.                              |
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `200` | OK | Requête réussie. |
+| `201` | Created | Ressource créée (par exemple un webhook). |
+| `204` | No Content | Succès sans corps utile (par exemple une suppression). |
+| `400` | Bad Request | Requête incorrecte ou paramètres invalides / manquants. |
+| `401` | Unauthorized | Pas de clé API valide. |
+| `403` | Forbidden | La clé n’a pas les droits pour cette opération. |
+| `404` | Not Found | La ressource demandée est introuvable. |
+| `409` | Conflict | Conflit avec l’état actuel (par exemple une clé d’idempotence réutilisée avec un autre corps). |
+| `429` | Too Many Requests | Plafonds de débit dépassés. |
+| `500` | Internal Server Error | Erreur côté lomi. (exceptionnelle). |
+| `503` | Service Unavailable | Indisponibilité temporaire, y compris les rails mutés comme `POST /charge/card` et `POST /charge/switch`. Réessayez plus tard, ou utilisez le checkout hébergé. |
+
+## Codes d’erreur stables
+
+| Code | Statut HTTP typique |
+| --- | --- |
+| `bad_request` | 400 |
+| `validation_failed` | 400 |
+| `amount_invalid` | 400 |
+| `invalid_cursor` | 400 |
+| `unauthorized` | 401 |
+| `forbidden` | 403 |
+| `not_found` | 404 |
+| `conflict` | 409 |
+| `idempotency_key_required` | 400 |
+| `idempotency_key_reused` | 409 |
+| `idempotency_in_progress` | 409 |
+| `rate_limit_exceeded` | 429 |
+| `api_access_suspended` | 403 |
+| `service_unavailable` | 503 |
+| `internal_error` | 500 |
+
+## Limites de débit
+
+La même politique s’applique à la sandbox et au live. Voir [Authentification](/api/authentication#rate-limits).
+
+| Périmètre | Limite |
+| --- | --- |
+| Défaut | 5000 requêtes par 15 minutes |
+| Écritures (`POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /charge/*`) | 120 requêtes par minute |
+
+Un `429` inclut :
+
+- `Retry-After` (secondes)
+- `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Window-Seconds`
+- IETF `RateLimit` / `RateLimit-Policy`
+- `error.details.retry_after_seconds` et `error.details.limit`
 
 ## Exemples de messages courants
 
-Les champs `` `message` `` et `` `details` `` varient ; exemples selon les statuts :
+Les champs `message` et `details` varient. Motifs typiques :
 
-**`` `400` `` Bad Request:**
+**`400` Bad Request :**
 
-- `"message": "Invalid request"`, `"details": "Missing required field: \`url\`"`
-- `"message": "Invalid request"`, `"details": "Invalid \`Webhook ID\` format."`
-- `"message": "Invalid request body"`
+- `"code": "validation_failed"` avec `details` par champ
+- `"code": "amount_invalid"`
+- `"code": "idempotency_key_required"`
+- `"code": "invalid_cursor"`
 
-**`` `401` `` Unauthorized:**
+**`401` Unauthorized :**
 
-- `"message": "Invalid API key"`, `"details": "The provided API key is invalid or does not exist"`
-- `"message": "Missing API key"`, `"details": "API key is required for authentication"`
-- `"message": "Authentication required"`
+- `"code": "unauthorized"`, `"message": "Invalid API key"`
+- `"code": "unauthorized"`, `"message": "Missing API key"`
 
-**`` `404` `` Not Found:**
+**`404` Not Found :**
 
-- `"message": "Webhook not found"`, `"details": "Webhook with ID \`wh\_...\` does not exist or does not belong to this organization."`
-- `"message": "Resource not found"`
+- `"code": "not_found"`
 
-**`` `409` `` Conflict:**
+**`409` Conflict :**
 
-- `"code": "idempotency_key_reused"` : la clé a été réutilisée avec un autre corps.
-- `"code": "idempotency_in_progress"` : une requête avec cette clé est encore en cours.
+- `"code": "idempotency_key_reused"`
+- `"code": "idempotency_in_progress"`
 
-**`` `429` `` Too Many Requests:**
+**`429` Too Many Requests :**
 
-- `"code": "rate_limit_exceeded"`. La réponse inclut `Retry-After`.
+- `"code": "rate_limit_exceeded"`, `"message": "Too many requests"`
 
-Autres codes stables : `validation_failed` (détails par champ), `amount_invalid`, `invalid_cursor`, `api_access_suspended`.
+**`500` Internal Server Error :**
 
-**`` `500` `` Internal Server Error:**
+- `"code": "internal_error"`, `"message": "Internal server error"`
 
-- `"message": "Internal server error"`
-- `"message": "Database error"`, `"details": "Failed to execute database query."`
+**`503` Service Unavailable :**
+
+- `"code": "service_unavailable"` (maintenance, ou un rail d’encaissement direct muté)
 
 ## Traiter les erreurs
 
-1.  **Lire le code HTTP** pour le diagnostic global.
-2.  **Analyser le corps JSON** pour les erreurs `` `4xx` `` ou `` `5xx` ``.
-3.  **Utiliser** `` `message` `` et `` `details` `` pour le détail fonctionnel.
-4.  **Adapter la logique** : correction utilisateur pour `` `400` ``, vérif credentials pour `` `401` ``, backoff pour `` `429` `` ou `` `5xx` ``.
-5.  **Journaliser** le corps complet et l’identifiant de requête (en-tête) pour le débogage.
+1. Lire le code HTTP.
+2. Analyser le corps JSON pour les erreurs `4xx` ou `5xx`.
+3. Utiliser `error.code`, `error.message` et `error.details`.
+4. Réessayer `429` et `5xx` avec un backoff. Ne pas réessayer les autres `4xx` tant que la requête n’est pas corrigée.
+5. Journaliser `request_id` (corps et en-tête `X-Request-Id`) pour le support.

@@ -1,4 +1,8 @@
 {
+  "POST /provisioning/accounts": {
+    "title": "Create a merchant account",
+    "description": "Create a merchant account for agent-driven onboarding. body: email, full_name, terms_accepted_at (ISO 8601), terms_version, optional preferred_language. Leave password out: the response then includes claim_url. Send this link to the human; they set their own password there and own the account. Poll status for human_claimed. Only pass password if the human explicitly gave you one."
+  },
   "POST /provisioning/merchants/{merchantId}/onboarding/documents": {
     "title": "Upload a KYC document",
     "description": "Upload a KYC/identity document (ID, business registration, proof of address) for a merchant's onboarding. Pass the merchantId and the document; submit required documents before calling onboarding/complete."
@@ -9,6 +13,10 @@
   },
   "GET /provisioning/merchants/{merchantId}/onboarding/status": {
     "title": "Get onboarding status",
-    "description": "Return the merchant's onboarding progress plus KYC and verification state. Poll this to see what remains before calling onboarding/complete."
+    "description": "Return the merchant's onboarding progress plus KYC, verification state, and human_claimed. While human_claimed is false the response re-issues claim_url: send it to the human. Poll this to see what remains before calling onboarding/complete or request_live."
+  },
+  "POST /provisioning/merchants/{merchantId}/live-activation/request": {
+    "title": "Request live mode activation",
+    "description": "Ask to move the merchant from TEST to LIVE. Returns merchant_approval_path (the human approves on the dashboard) and human_claimed. If human_claimed is false, send claim_url to the human first, then merchant_approval_path. Live secret keys are never returned here; the human reads them in the dashboard."
   }
 }

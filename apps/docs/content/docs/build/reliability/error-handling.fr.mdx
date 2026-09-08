@@ -1,179 +1,124 @@
 ---
 title: 'Gestion des erreurs'
-description: "Lors de l’intégration avec lomi., il est essentiel de gérer les erreurs proprement afin d’offrir une expérience de paiement fluide à vos clients."
+description: "Lors de l’intégration avec lomi., traitez les erreurs API pour que vos clients voient un résultat clair et que vos journaux restent utiles."
 ---
 
-Cette page explique comment traiter les erreurs API dans votre application. La liste des codes est sur [Erreurs](/api/errors).
+Cette page explique comment traiter les erreurs API dans votre application. L’enveloppe, les codes HTTP et la liste stable de `error.code` sont sur [Erreurs](/api/errors).
 
-lomi. utilise les codes de réponse HTTP habituels et renvoie des messages d’erreur exploitables pour diagnostiquer les problèmes et informer vos clients de l’état de leurs transactions.
-
-Consultez la [référence des erreurs](/api/errors) pour la liste détaillée des codes de statut et des réponses d’erreur courantes.
-
-## Format des réponses d’erreur
-
-Toutes les erreurs d’API suivent une structure JSON cohérente :
-
-```json filename="Exemple de structure de réponse d’erreur"
-{
-  "error": {
-    "code": "bad_request",
-    "message": "Description lisible de l’erreur.",
-    "details": "Facultatif : contexte ou données structurées supplémentaires sur l’erreur."
-  },
-  "request_id": "550e8400-e29b-41d4-a716-446655440000"
-}
-```
+lomi. utilise les codes HTTP habituels. Branchez-vous sur `error.code`, journalisez `error.message`, et gardez `request_id` pour le support.
 
 ## Gestion des types d’erreurs courants
+
+Le SDK TypeScript lève des sous-classes de `LomiError` (`LomiValidationError`, `LomiAuthError`, `LomiNotFoundError`, `LomiRateLimitError`). Il n’existe pas de classe `LomiApiError`.
 
 ### Erreurs de validation (HTTP 400)
 
 Elles surviennent lorsque les données de la requête sont invalides ou que des champs obligatoires manquent.
 
-```typescript filename="Gestion des erreurs de validation (exemple)"
-import { LomiSDK, LomiError } from '@lomi./sdk'; // En supposant que le SDK exporte le type d’erreur
+```typescript filename="Gestion des erreurs de validation"
+import { LomiSDK, LomiValidationError, LomiError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: process.env.LOMI_SECRET_KEY! });
 
 try {
-  const session = await lomi.checkoutSessions.createCheckoutSession({
-    amount: -100, // Invalide : doit être positif
-    currency_code: 'INVALID', // Valeur d’énumération invalide
-    // Champs obligatoires manquants comme success_url, cancel_url
+  await lomi.checkoutSessions.create({
+    amount: -100,
+    currency_code: 'INVALID',
   });
 } catch (error) {
-  if (error instanceof LomiApiError && error.statusCode === 400) {
-    console.error('Validation failed:', error.message);
-    // Journaliser ou afficher les détails disponibles dans error.details
-    console.error('Details:', error.details);
-    // Informer l’utilisateur des problèmes de saisie précis
-  } else {
-    // Gérer les autres types d’erreurs
-    console.error('An unexpected error occurred:', error);
+  if (error instanceof LomiValidationError) {
+    console.error('Validation failed:', error.message, error.details);
+  } else if (error instanceof LomiError) {
+    console.error('API error:', error.statusCode, error.message);
   }
 }
 ```
 
 ### Erreurs d’authentification (HTTP 401)
 
-Elles surviennent lorsque la `LOMI_SECRET_KEY` est absente, invalide ou ne dispose pas des autorisations nécessaires.
+Elles surviennent lorsque la clé secrète est absente, invalide ou n’a pas les autorisations nécessaires.
 
-```typescript filename="Gestion des erreurs d’authentification (exemple)"
-import { LomiSDK, LomiError } from '@lomi./sdk';
+```typescript filename="Gestion des erreurs d’authentification"
+import { LomiSDK, LomiAuthError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: 'invalid-key' });
 
 try {
-  await lomi.providers.list(); // Exemple de requête
+  await lomi.providers.list();
 } catch (error) {
-  if (error instanceof LomiApiError && error.statusCode === 401) {
-    console.error('Authentication failed:', error.message);
-    // Vérifications courantes :
-    if (!process.env.LOMI_SECRET_KEY) {
-      console.error(
-        'Suggestion : la variable d’environnement LOMI_SECRET_KEY est peut-être absente.',
-      );
-    } else {
-      console.error(
-        'Suggestion : vérifiez que LOMI_SECRET_KEY est correcte et active.',
-      );
-    }
-  } else {
-    console.error('An unexpected error occurred:', error);
+  if (error instanceof LomiAuthError) {
+    console.error('Authentication failed:', error.message, error.requestId);
   }
 }
 ```
 
 ### Erreurs de limite de débit (HTTP 429)
 
-Elles surviennent lorsque vous dépassez le nombre de requêtes autorisées sur une fenêtre donnée (par ex. 100 requêtes par 15 minutes).
+Elles surviennent lorsque vous dépassez le nombre de requêtes autorisées. Défaut : 5000 requêtes par 15 minutes ; écritures qui bougent de l’argent : 120 par minute. Voir [Erreurs](/api/errors#rate-limits).
 
-```typescript filename="Gestion des erreurs de limite de débit (exemple)"
-import { LomiSDK, LomiError } from '@lomi./sdk';
+```typescript filename="Gestion des erreurs de limite de débit"
+import { LomiSDK, LomiRateLimitError } from '@lomi./sdk';
 
 const lomi = new LomiSDK({ apiKey: process.env.LOMI_SECRET_KEY! });
 
-async function makeRequestWithRateLimitHandling() {
-  try {
-    const response = await lomi.providers.list();
-    // Traiter la réponse en cas de succès
-  } catch (error) {
-    if (error instanceof LomiApiError && error.statusCode === 429) {
-      console.warn('Rate limit exceeded. Retrying after delay...');
-      // Extraire l’en-tête Retry-After si disponible (selon le SDK ou fetch)
-      const retryAfterSeconds = error.headers?.['retry-after']
-        ? parseInt(error.headers['retry-after'], 10)
+try {
+  await lomi.providers.list();
+} catch (error) {
+  if (error instanceof LomiRateLimitError) {
+    const details = error.body?.error?.details;
+    const retryAfterSeconds =
+      details &&
+      typeof details === 'object' &&
+      !Array.isArray(details) &&
+      typeof details.retry_after_seconds === 'number'
+        ? details.retry_after_seconds
         : 60;
-      await new Promise((resolve) =>
-        setTimeout(resolve, retryAfterSeconds * 1000),
-      );
-      // Réessayer la requête (logique de nouvelle tentative adaptée ; voir ci-dessous)
-      // await makeRequestWithRateLimitHandling();
-    } else {
-      console.error('An unexpected error occurred:', error);
-    }
+    console.warn('Rate limit exceeded. Retry after', retryAfterSeconds, 's');
   }
 }
 ```
 
 ### Erreurs serveur (HTTP 5xx)
 
-Elles indiquent un problème côté lomi. Elles doivent rester rares. Il est généralement acceptable de réessayer ces requêtes après un délai.
+Elles indiquent un problème côté lomi. Elles doivent rester rares. Réessayez après un délai. Un `503` peut aussi signifier un rail muté comme `POST /charge/card`.
 
 ## Bonnes pratiques
 
-1.  **Dégradation gracieuse :**
-    - Anticipez les échecs d’API possibles.
-    - Proposez un retour utilisateur clair plutôt que le message d’erreur brut.
-    - Prévoyez des mécanismes de secours si une opération critique échoue (par ex. traitement manuel de la commande).
-    - Journalisez les détails côté serveur (y compris les identifiants de requête si disponibles) pour le débogage, sans exposer d’informations sensibles au client.
+1. **Dégradation gracieuse :** message utilisateur clair, pas le corps API brut. Journalisez `request_id` côté serveur.
+2. **Nouvelles tentatives avec recul exponentiel et jitter** pour les erreurs réseau, `429` et `5xx`. Ne réessayez pas les autres `4xx` tant que la requête n’est pas corrigée. Associez les retries aux [clés d’idempotence](/build/reliability/idempotency-keys) sur les écritures qui bougent de l’argent.
+3. **Surveillance :** suivez les taux d’erreur en production et alertez sur les pics.
 
-2.  **Stratégie de nouvelle tentative (recul exponentiel et jitter) :**
-    Mettez en place une logique de nouvelle tentative pour les erreurs réseau, les limites de débit (`429`) et les erreurs serveur (`5xx`). Évitez de réessayer les erreurs client (`4xx` sauf `429`) : elles exigent en général de corriger la requête.
+```typescript filename="Nouvelles tentatives avec recul exponentiel"
+import { LomiError } from '@lomi./sdk';
 
-    ```typescript filename="Nouvelles tentatives avec recul exponentiel"
-    async function withRetry<T>(
-      asyncFn: () => Promise<T>,
-      maxRetries = 3,
-      initialDelayMs = 1000,
-    ): Promise<T> {
-      let attempts = 0;
-      while (true) {
-        try {
-          return await asyncFn();
-        } catch (error: any) {
-          attempts++;
-          const isRetryable =
-            error instanceof LomiError &&
-            (error.statusCode === 429 || error.statusCode >= 500);
+async function withRetry<T>(
+  asyncFn: () => Promise<T>,
+  maxRetries = 3,
+  initialDelayMs = 1000,
+): Promise<T> {
+  let attempts = 0;
+  while (true) {
+    try {
+      return await asyncFn();
+    } catch (error) {
+      attempts++;
+      const isRetryable =
+        error instanceof LomiError &&
+        (error.statusCode === 429 || (error.statusCode ?? 0) >= 500);
 
-          if (!isRetryable || attempts >= maxRetries) {
-            // Ne pas réessayer les erreurs client (sauf 429) ni au-delà du max
-            throw error;
-          }
-
-          // Délai avec recul exponentiel et jitter
-          const delay = initialDelayMs * Math.pow(2, attempts - 1);
-          const jitter = delay * 0.2 * Math.random(); // Environ +/- 10 % de jitter
-          const waitTime = Math.max(100, delay + jitter); // Délai minimum
-
-          console.warn(
-            `Attempt ${attempts} failed. Retrying in ${waitTime.toFixed(0)}ms...`,
-            error.message,
-          );
-          await new Promise((resolve) => setTimeout(resolve, waitTime));
-        }
+      if (!isRetryable || attempts >= maxRetries) {
+        throw error;
       }
+
+      const delay = initialDelayMs * Math.pow(2, attempts - 1);
+      const jitter = delay * 0.2 * Math.random();
+      const waitTime = Math.max(100, delay + jitter);
+
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
-
-    // Exemple d’usage :
-    // const providers = await withRetry(() => lomi.providers.list());
-    ```
-
-3.  **Surveillance des erreurs :**
-    - Utilisez un service de monitoring applicatif (par ex. Sentry, Datadog) pour suivre les erreurs en production.
-    - Surveillez les taux et schémas d’erreurs pour repérer les problèmes systémiques.
-    - Configurez des alertes sur les erreurs critiques ou les pics inhabituels.
+  }
+}
+```
 
 <DocsNextSteps>
   <DocsNextStep href="/build/reliability/idempotency-keys" hint="Réessais sûrs">

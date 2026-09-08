@@ -41,7 +41,6 @@ const LLMS_REQUIRED_SLUGS = [
   'build/reliability/verify-payments',
   'build/reliability/payment-lifecycle',
   'build/payment-channels',
-  'api/payment-state-machine',
   'build/mcp',
   'build/accept/checkout',
 ] as const;

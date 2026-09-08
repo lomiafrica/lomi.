@@ -37,7 +37,7 @@
 
 ## About lomi.
 
-lomi. is **payment infrastructure** for merchants and their customers across West Africa and beyond. We publish integrator tooling (API, SDKs, CLI, plugins) as open source. Production payment processing is not self-hostable today. Merchants use [lomi.africa](https://lomi.africa/sign-up).
+lomi. is **payment infrastructure** for merchants and their customers across West Africa and beyond. We publish integrator tooling (API, SDKs, CLI, plugins) as open source. Production payment processing is not self-hostable today. Merchants use [dashboard.lomi.africa](https://dashboard.lomi.africa).
 
 Our platform simplifies product, services, usage, and subscription billing while ensuring the highest levels of security, reliability, and compliance.
 

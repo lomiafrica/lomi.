@@ -29,7 +29,7 @@ After the customer pays:
 2. On `success_url`, show a “processing” state, not “paid”-until your backend confirms.
 3. When you receive `transaction.completed` (or your configured event type), match `metadata.order_id` and fulfill.
 
-See [Payment state machine](/api/payment-state-machine) for status meanings and [Handling webhooks](/build/reliability/handling-webhooks) for signature verification.
+See [Payment and payout lifecycle](/build/reliability/payment-lifecycle) for status meanings and [Handling webhooks](/build/reliability/handling-webhooks) for signature verification.
 
 ## Direct charges (Wave, MTN, card)
 

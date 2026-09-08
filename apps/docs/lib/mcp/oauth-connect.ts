@@ -9,7 +9,7 @@ export const MCP_SERVICE_NAME = 'lomi';
 /** Brand label. Cursor and Claude Desktop show the mcp.json / deeplink name. */
 export const MCP_DISPLAY_NAME = 'lomi.';
 
-export type McpOauthClientId = 'cursor' | 'claude' | 'opencode' | 'codex';
+export type McpOauthClientId = 'cursor' | 'claude' | 'vscode';
 
 /** UTF-8 safe base64url used by Cursor deeplinks. */
 export function base64UrlEncode(input: string): string {
@@ -65,6 +65,32 @@ export function buildCodexManualCommands(
 }
 
 export const CLAUDE_CONNECTORS_URL = 'https://claude.ai/customize/connectors';
+
+/** One-click Claude.ai custom connector with name and URL prefilled. */
+export function buildClaudeOauthInstallUrl(
+  mcpUrl: string = MCP_OAUTH_ENDPOINT,
+): string {
+  const params = new URLSearchParams({
+    modal: 'add-custom-connector',
+    connectorName: MCP_DISPLAY_NAME,
+    connectorUrl: mcpUrl,
+  });
+  return `${CLAUDE_CONNECTORS_URL}?${params.toString()}`;
+}
+
+/** One-click VS Code install (`vscode:mcp/install`) with URL-only OAuth config. */
+export function buildVscodeOauthInstallUrl(
+  mcpUrl: string = MCP_OAUTH_ENDPOINT,
+  insiders = false,
+): string {
+  const config = {
+    name: MCP_DISPLAY_NAME,
+    type: 'http',
+    url: mcpUrl,
+  };
+  const scheme = insiders ? 'vscode-insiders' : 'vscode';
+  return `${scheme}:mcp/install?${encodeURIComponent(JSON.stringify(config))}`;
+}
 
 /** Official Grok Bot install page (Add to Grok Bot). */
 export const GROK_BOT_URL = 'https://x.ai/bot/AI8k2PosuIifICyNJcS1s';

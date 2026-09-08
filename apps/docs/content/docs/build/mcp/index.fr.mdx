@@ -3,35 +3,34 @@ title: MCP pour clients IA
 description: Connectez Cursor, Claude Desktop ou tout client MCP à l’API marchande lomi..
 ---
 
-import { Callout } from '@/components/docs/docs-callout';
 import { McpOauthConnect } from '@/components/docs/mcp-oauth-connect';
 import { McpOperationIndex } from '@/components/docs/mcp-operation-index';
+import {
+  GROK_BOT_URL,
+  buildClaudeOauthInstallUrl,
+  buildVscodeOauthInstallUrl,
+} from '@/lib/mcp/oauth-connect';
 
 # MCP pour clients IA
 
-Le **Model Context Protocol (MCP)** permet à vos assistants IA (Cursor, Claude Desktop, agents maison) d’appeler **l’API marchande lomi.**: créer des checkouts, lister des paiements, déboguer des webhooks, sans écrire chaque requête HTTP à la main.
-
-<Callout type="info" title="Pour qui">
-  MCP connecte **votre IDE ou assistant IA** à **l’API marchande de votre organisation** (mêmes périmètres que votre clé API). Utilisez-le pendant l’intégration.
-
-  Ce n’est **pas** pour les outils admin internes de lomi. ni pour exploiter votre propre stack paiement. La plupart des équipes utilisent le serveur hébergé `https://mcp.lomi.africa` ou le stdio local avec `npx @lomi./mcp`.
-</Callout>
+Le **Model Context Protocol (MCP)** permet à vos assistants IA (Cursor, Claude Desktop, agents maison) d’appeler **l’API marchande lomi.** : créer des checkouts, lister des paiements, déboguer des webhooks, sans écrire chaque requête HTTP à la main. La plupart des équipes utilisent le serveur hébergé `https://mcp.lomi.africa` ou le stdio local avec `npx @lomi./mcp`. L’accès est limité à votre organisation, comme avec votre clé API.
 
 ## Connexion OAuth
 
 Recommandé : ajoutez l’URL MCP hébergée **sans clé API**. Les clients compatibles OAuth ouvrent **Connect with lomi.** dans le navigateur, vous vous connectez au tableau de bord, et le client stocke un jeton limité (`lomi_oat_*`).
 
+Deux portes d’entrée, un seul produit :
+
+- **Vous avez un compte lomi. (ou vous en voulez un) :** utilisez les boutons en un clic ci-dessous. La page de consentement vous connecte ou crée le compte, puis revient à l’approbation.
+- **Agent sans compte :** connectez `https://mcp.lomi.africa/mcp/guest`, appelez `lomi_register_agent`, puis `lomi_provision`. Dès que `api_keys` renvoie une clé test, la même session obtient les outils marchands. Voir [Bootstrap agent sandbox](#bootstrap-agent-sandbox-sans-clé).
+
 <McpOauthConnect />
 
 Révoquez une application depuis **Développeurs → Clés API → Connecter MCP → Applications connectées**.
 
-<Callout type="info" title="Feature flag">
-  Les connexions OAuth marchandes nécessitent `LOMI_MERCHANT_OAUTH_ENABLED=true` sur l’API et `VITE_LOMI_MERCHANT_OAUTH_ENABLED=true` dans le dashboard.
-</Callout>
-
 ## Pour commencer
 
-1. Cliquez sur **Ajouter à Cursor**, **[Ajouter à Grok Bot](https://x.ai/bot/AI8k2PosuIifICyNJcS1s)**, **Ajouter à Claude**, **Ajouter à OpenCode** ou **Ajouter à Codex** ci-dessus (ou collez le JSON URL seule ci-dessous).
+1. Cliquez sur **Ajouter à Cursor**, <a href={GROK_BOT_URL}>**Ajouter à Grok Bot**</a>, <a href={buildClaudeOauthInstallUrl()}>**Ajouter à Claude**</a> ou <a href={buildVscodeOauthInstallUrl()}>**Ajouter à VS Code**</a> ci-dessus (ou collez le JSON URL seule ci-dessous). OpenCode et Codex restent dans les sections CLI.
 2. À la première connexion, le client reçoit un `401`, récupère `https://mcp.lomi.africa/.well-known/oauth-protected-resource/mcp`, puis ouvre **Connect with lomi.**
 3. Connectez-vous au tableau de bord, choisissez votre organisation et approuvez l’accès (lecture seule par défaut).
 4. Le client peut appeler les outils MCP tout de suite.
@@ -61,11 +60,7 @@ Le serveur MCP introspecte le jeton et limite chaque appel d’outil à votre or
 | --- | --- | --- |
 | **Clé secrète (`LOMI_SECRET_KEY`)** | `x-lomi-api-key` (HTTP) ou `LOMI_SECRET_KEY` (stdio) | [Tableau de bord](https://dashboard.lomi.africa) → **Développeurs → Clés API**: toute clé **secrète** (`lomi_sk_…`) ou clé MCP (`lomi_mcp_…`) depuis **Connecter MCP** |
 
-Votre **`LOMI_SECRET_KEY`** ouvre l’accès au point de terminaison MCP hébergé par lomi. et limite chaque appel d’outil à votre organisation.
-
-<Callout type="info" title="Le secret de transport est optionnel">
-  Un secret de transport partagé (`Authorization: Bearer <LOMI_MCP_BEARER_TOKEN>`) reste accepté pour les anciens déploiements des opérateurs, mais les marchands n’en ont pas besoin. Envoyez votre clé API dans `x-lomi-api-key` et laissez `Authorization` de côté.
-</Callout>
+Votre **`LOMI_SECRET_KEY`** ouvre l’accès au point de terminaison MCP hébergé par lomi. et limite chaque appel d’outil à votre organisation. Envoyez-la dans `x-lomi-api-key` et laissez `Authorization` vide.
 
 ## MCP hébergé (HTTP)
 
@@ -109,7 +104,17 @@ Remplacez `YOUR_LOMI_SECRET_KEY` par votre vraie clé API, puis redémarrez votr
 
 Si le client n’a pas encore de clé marchande, connectez `https://mcp.lomi.africa/mcp/guest` (sans en-têtes). Appelez **`lomi_register_agent`** : le serveur résout une courte preuve de travail et la session MCP adopte une clé `lomi_prov_*` sandbox uniquement.
 
-Puis `lomi_provision action=create_account`. L’argent live exige encore `lomi_provision action=request_live` et l’approbation humaine sur [dashboard.lomi.africa/connect/go-live](https://dashboard.lomi.africa/connect/go-live).
+Puis `lomi_provision action=create_account`, `upload_document`, `complete` et `api_keys`. Dès qu’une clé `lomi_sk_test_*` revient, la session invitée est mise à niveau sur place : les outils marchands (`lomi_checkout`, `lomi_customers`, `lomi_webhooks`, ...) sont enregistrés sur la session active et le serveur envoie `notifications/tools/list_changed` ; le client rafraîchit sa liste d’outils sans se reconnecter. Tout se passe en mode TEST.
+
+L’argent live exige encore `lomi_provision action=request_live` et l’approbation humaine sur [dashboard.lomi.africa/connect/go-live](https://dashboard.lomi.africa/connect/go-live). Les clés live ne s’affichent que dans le tableau de bord, jamais via MCP.
+
+## Claude Code
+
+```bash
+claude mcp add --transport http lomi https://mcp.lomi.africa/mcp
+```
+
+À la première utilisation, Claude Code ouvre **Connect with lomi.** dans le navigateur.
 
 ## OpenCode
 
@@ -197,6 +202,8 @@ Chaque action MCP ci-dessous correspond à une opération de l’API. Les charge
 ## Onboarding piloté par agent (0 à 1)
 
 Les outils de provisioning permettent à un agent de créer un compte marchand, déposer les documents KYC, finaliser l’onboarding et récupérer les clés API **test** avant toute clé secrète marchand. Le MCP expose cela via **`lomi_provision`** avec `action` (`create_account`, `upload_document`, `extract`, `complete`, `status`, `api_keys`, `request_live`, `live_status`).
+
+**Lien de réclamation humain.** `create_account` attend `email`, `full_name`, `terms_accepted_at` et `terms_version`. N’envoyez pas de `password` : la réponse contient alors un `claim_url` (`dashboard.lomi.africa/connect/claim?token=...`, valable 7 jours, usage unique). Transmettez ce lien à l’humain ; il y définit son propre mot de passe et devient propriétaire du compte. `status` renvoie `human_claimed` et réémet `claim_url` tant qu’il vaut `false`. `request_live` renvoie aussi `human_claimed` : l’humain doit réclamer le compte avant d’approuver le mode live.
 
 | Valeur | En-tête / env | Rôle |
 | --- | --- | --- |

@@ -60,7 +60,7 @@ Envoyez la clé secrète dans l’en-tête `X-API-Key` depuis votre serveur.
 ## Règles de contrat
 
 - **Montants :** les champs `amount` publics sont des entiers en unités mineures. `10000` vaut 10 000 XOF, ou 100,00 USD/EUR. Envoyez toujours `currency_code`.
-- **Idempotence :** `Idempotency-Key` est obligatoire sur `POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /settlements/instant` et `POST /charge/*`. Voir [Clés d’idempotence](/build/reliability/idempotency-keys).
+- **Idempotence :** `Idempotency-Key` est obligatoire sur `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /settlements/instant` et `POST /charge/*`. Il est optionnel sur `POST /checkout-sessions`. Voir [Clés d’idempotence](/build/reliability/idempotency-keys).
 - **Listes :** interrogez avec `cursor` et `limit` (défaut 20, max 100). Réponse `{ object: "list", data, has_more, next_cursor, limit }`.
 - **Erreurs :** `{ error: { code, message, details }, request_id }`. Voir [Gestion des erreurs](/api/errors).
 - **Limites :** les réponses réussies incluent `X-RateLimit-Remaining` et les en-têtes IETF `RateLimit` / `RateLimit-Policy`. Un `429` inclut `Retry-After`.

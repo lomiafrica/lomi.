@@ -132,8 +132,13 @@ test('page metadata emits locale-aware Open Graph and structured data', () => {
   assert.match(pageSource, /application\/ld\+json/);
   assert.doesNotMatch(ogSource, /getPage\(slug\.slice\(0, -1\), 'en'\)/);
   assert.doesNotMatch(layoutSource, /buildDocsAlternates/);
+  assert.match(layoutSource, /<body className=/);
+  assert.doesNotMatch(layoutSource, /layout\.client/);
   assert.match(notFoundSource, /index:\s*false/);
   assert.match(notFoundSource, /buildDocsNotFoundMarkdown/);
+  assert.match(notFoundSource, /DocsNotFoundView/);
+  assert.doesNotMatch(notFoundSource, /not-found-page/);
+  assert.match(pageSource, /dynamicParams\s*=\s*false/);
   assert.doesNotMatch(docsLayoutSource, /localizeDocsPath/);
   assert.doesNotMatch(pageSource, /localizeDocsPath/);
 });

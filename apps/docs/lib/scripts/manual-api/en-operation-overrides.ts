@@ -464,7 +464,7 @@ export const EN_OPERATION_COPY = {
     whenToUse:
       'Use as the primary reconciliation feed for payments, refunds, and payouts visible to your org.',
     related:
-      'See also [payment state machine](/api/payment-state-machine) for status semantics.',
+      'See also [Payment and payout lifecycle](/build/reliability/payment-lifecycle) for status semantics.',
   },
   TransactionsController_findOne: {
     summary: 'Retrieve transaction',

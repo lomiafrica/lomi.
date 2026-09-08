@@ -56,11 +56,11 @@ Send these on merchant REST calls. Header names are case-insensitive.
 | --- | --- | --- |
 | `X-API-Key` (or `X-API-KEY`) | Yes | Every merchant request. Alias: `x-lomi-api-key`. `Authorization: Bearer <secret>` is also accepted. |
 | `Content-Type` | On JSON bodies | `application/json` for POST/PATCH with a body |
-| `Idempotency-Key` | On money-moving writes | Required on `POST /checkout-sessions`, `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /settlements/instant`, and `POST /charge/*`. See [Idempotency keys](/build/reliability/idempotency-keys). |
+| `Idempotency-Key` | On money-moving writes | Required on `POST /payment-requests`, `POST /refunds`, `POST /payouts`, `POST /settlements/instant`, and `POST /charge/*`. Recommended on `POST /checkout-sessions` (optional so existing merchant apps can create a hosted page without it). See [Idempotency keys](/build/reliability/idempotency-keys). |
 | `X-Scenario-Key` | No | Sandbox **direct** Wave/MTN only (`pending` or `failed`). Hosted checkout and cards ignore it. See [Simulate errors](/build/reliability/simulate-errors). |
 | `Lomi-Account` | No | lomi. Network: operator key targeting a member `acct_...`. See [Network](/build/platform/network). |
 
-There is no request tracing header today.
+Responses include `X-Request-Id` (also `request_id` on error bodies). You do not send a tracing header.
 
 <DocsNextSteps>
   <DocsNextStep href="/start/first-payment" hint="First money in sandbox">

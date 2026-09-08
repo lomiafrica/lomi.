@@ -7,7 +7,7 @@
     {
       "name": "lomi_provision",
       "title": "Merchant provisioning",
-      "description": "Merchant provisioning. Pass required `action` to choose the REST call.\n\nActions:\n- `create_account` — Create a merchant account for agent-driven onboarding (POST /provisioning/accounts). No extra required fields.\n- `upload_document` — Upload a KYC document (POST /provisioning/merchants/{merchantId}/onboarding/documents). Required: merchantId.\n- `extract` — Extract onboarding data (POST /provisioning/merchants/{merchantId}/onboarding/extract). Required: merchantId.\n- `complete` — Complete merchant onboarding and submit KYC (POST /provisioning/merchants/{merchantId}/onboarding/complete). Required: merchantId.\n- `status` — Get onboarding status (GET /provisioning/merchants/{merchantId}/onboarding/status). Required: merchantId.\n- `api_keys` — Retrieve provisioned test API keys for the merchant (GET /provisioning/merchants/{merchantId}/api-keys). Required: merchantId.\n- `request_live` — Request live mode activation (requires merchant approval) (POST /provisioning/merchants/{merchantId}/live-activation/request). Required: merchantId.\n- `live_status` — Get live activation request status (GET /provisioning/merchants/{merchantId}/live-activation/status). Required: merchantId.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Merchant provisioning. Pass required `action` to choose the REST call.\n\nActions:\n- `create_account` — Create a merchant account (POST /provisioning/accounts). Required: body.\n- `upload_document` — Upload a KYC document (POST /provisioning/merchants/{merchantId}/onboarding/documents). Required: body, merchantId.\n- `extract` — Extract onboarding data (POST /provisioning/merchants/{merchantId}/onboarding/extract). Required: body, merchantId.\n- `complete` — Complete merchant onboarding and submit KYC (POST /provisioning/merchants/{merchantId}/onboarding/complete). Required: body, merchantId.\n- `status` — Get onboarding status (GET /provisioning/merchants/{merchantId}/onboarding/status). Required: merchantId.\n- `api_keys` — Retrieve provisioned test API keys for the merchant (GET /provisioning/merchants/{merchantId}/api-keys). Required: merchantId.\n- `request_live` — Request live mode activation (POST /provisioning/merchants/{merchantId}/live-activation/request). Required: body, merchantId.\n- `live_status` — Get live activation request status (GET /provisioning/merchants/{merchantId}/live-activation/status). Required: merchantId.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Provisioning"
       ],
@@ -32,6 +32,11 @@
               "live_status"
             ],
             "description": "Which REST operation to run. One of: create_account, upload_document, extract, complete, status, api_keys, request_live, live_status."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -62,13 +67,15 @@
           "queryParamNames": [],
           "operationId": "ProvisioningController_createAccount",
           "write": true,
-          "wantsBody": false,
-          "title": "Create a merchant account for agent-driven onboarding",
-          "description": "Creates a Supabase auth user and merchant record. Requires terms acceptance metadata.",
+          "wantsBody": true,
+          "title": "Create a merchant account",
+          "description": "Create a merchant account for agent-driven onboarding. body: email, full_name, terms_accepted_at (ISO 8601), terms_version, optional preferred_language. Leave password out: the response then includes claim_url. Send this link to the human; they set their own password there and own the account. Poll status for human_claimed. Only pass password if the human explicitly gave you one.",
           "tags": [
             "Provisioning"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "upload_document": {
           "operationKey": "POST /provisioning/merchants/{merchantId}/onboarding/documents",
@@ -80,13 +87,14 @@
           "queryParamNames": [],
           "operationId": "ProvisioningController_uploadDocument",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Upload a KYC document",
           "description": "Upload a KYC/identity document (ID, business registration, proof of address) for a merchant's onboarding. Pass the merchantId and the document; submit required documents before calling onboarding/complete.",
           "tags": [
             "Provisioning"
           ],
           "requiredInput": [
+            "body",
             "merchantId"
           ]
         },
@@ -100,13 +108,14 @@
           "queryParamNames": [],
           "operationId": "ProvisioningController_extractOnboarding",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Extract onboarding data",
           "description": "Auto-extract onboarding details from the merchant's website or uploaded documents to pre-fill their profile. Pass the merchantId; review the extracted fields before completing onboarding.",
           "tags": [
             "Provisioning"
           ],
           "requiredInput": [
+            "body",
             "merchantId"
           ]
         },
@@ -120,13 +129,14 @@
           "queryParamNames": [],
           "operationId": "ProvisioningController_completeOnboarding",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Complete merchant onboarding and submit KYC",
           "description": "Atomically creates the organization, provisions test API keys, and queues KYC review.",
           "tags": [
             "Provisioning"
           ],
           "requiredInput": [
+            "body",
             "merchantId"
           ]
         },
@@ -142,7 +152,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get onboarding status",
-          "description": "Return the merchant's onboarding progress plus KYC and verification state. Poll this to see what remains before calling onboarding/complete.",
+          "description": "Return the merchant's onboarding progress plus KYC, verification state, and human_claimed. While human_claimed is false the response re-issues claim_url: send it to the human. Poll this to see what remains before calling onboarding/complete or request_live.",
           "tags": [
             "Provisioning"
           ],
@@ -180,13 +190,14 @@
           "queryParamNames": [],
           "operationId": "ProvisioningController_requestLiveActivation",
           "write": true,
-          "wantsBody": false,
-          "title": "Request live mode activation (requires merchant approval)",
-          "description": "Creates a live activation request. The merchant must approve on the dashboard before platform review. Live secret keys are never returned via provisioning.",
+          "wantsBody": true,
+          "title": "Request live mode activation",
+          "description": "Ask to move the merchant from TEST to LIVE. Returns merchant_approval_path (the human approves on the dashboard) and human_claimed. If human_claimed is false, send claim_url to the human first, then merchant_approval_path. Live secret keys are never returned here; the human reads them in the dashboard.",
           "tags": [
             "Provisioning"
           ],
           "requiredInput": [
+            "body",
             "merchantId"
           ]
         },

@@ -15,7 +15,7 @@ export function buildServerInstructions(
     `Default API base URL: ${baseUrl}. Override with LOMI_API_URL (sandbox: https://sandbox.api.lomi.africa).`,
     '',
     guest
-      ? 'Guest bootstrap: this session has no merchant key yet. Call lomi_register_agent (solves a short proof-of-work) to mint a sandbox-only lomi_prov_* key on this session. Then lomi_provision action=create_account. Live money still needs lomi_provision action=request_live and human approval at https://dashboard.lomi.africa/connect/go-live. Guest URL: https://mcp.lomi.africa/mcp/guest.'
+      ? 'Guest bootstrap: this session has no merchant key yet. Call lomi_register_agent (solves a short proof-of-work) to mint a sandbox-only lomi_prov_* key on this session. Then lomi_provision action=create_account, upload_document, complete, api_keys. As soon as a test secret key comes back, this same session gains the merchant tools (lomi_checkout, lomi_customers, ...) in TEST mode; refresh the tool list, no reconnect needed. Live money still needs lomi_provision action=request_live and human approval at https://dashboard.lomi.africa/connect/go-live; live keys are only shown in the dashboard. Guest URL: https://mcp.lomi.africa/mcp/guest.'
       : '',
     '',
     'Authentication:',
