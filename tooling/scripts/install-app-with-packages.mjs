@@ -30,6 +30,7 @@
 
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -110,6 +111,15 @@ function rewritePnpmScriptsForNpm(appDir) {
   );
 }
 
+function pathExists(p) {
+  try {
+    lstatSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function hoistNodeModules(fromDir) {
   const fromNm = path.join(fromDir, "node_modules");
   if (!existsSync(fromNm)) return;
@@ -123,12 +133,12 @@ function hoistNodeModules(fromDir) {
       mkdirSync(to, { recursive: true });
       for (const child of readdirSync(from)) {
         const childTo = path.join(to, child);
-        if (existsSync(childTo)) continue;
+        if (pathExists(childTo)) continue;
         symlinkSync(path.join(from, child), childTo);
       }
       continue;
     }
-    if (existsSync(to)) continue;
+    if (pathExists(to)) continue;
     symlinkSync(from, to);
   }
   console.log(
