@@ -12,8 +12,7 @@ export const SAMPLE_PRODUCT_ID = 'prod_1234567890abcdef';
 export const SAMPLE_CHECKOUT_ID = 'cs_1234567890abcdef';
 
 export type ApiKeyResolution =
-  | { kind: 'full'; value: string }
-  | { kind: 'placeholder' };
+  { kind: 'full'; value: string } | { kind: 'placeholder' };
 
 export type PersonalizeOptions = {
   apiKey: ApiKeyResolution;
@@ -51,10 +50,7 @@ export function personalizeSnippet(
     for (const placeholder of API_KEY_PLACEHOLDERS) {
       out = replaceAllLiteral(out, placeholder, options.apiKey.value);
     }
-    out = out.replace(
-      /lomi_sk_test_[A-Za-z0-9]+/g,
-      options.apiKey.value,
-    );
+    out = out.replace(/lomi_sk_test_[A-Za-z0-9]+/g, options.apiKey.value);
     out = replaceAllLiteral(out, '$LOMI_SECRET_KEY', options.apiKey.value);
     out = replaceAllLiteral(
       out,

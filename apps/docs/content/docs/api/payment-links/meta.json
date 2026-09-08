@@ -1,8 +1,10 @@
 {
   "title": "Payment Links",
   "pages": [
+    "PaymentLinksController_archive",
     "PaymentLinksController_create",
     "PaymentLinksController_findAll",
-    "PaymentLinksController_findOne"
+    "PaymentLinksController_findOne",
+    "PaymentLinksController_update"
   ]
 }

@@ -53,7 +53,7 @@ export function Provider({
 }
 
 function RootProviderWithLanguage({ children }: { children: ReactNode }) {
-  const { currentLanguage } = useTranslation();
+  const { currentLanguage, setLanguage } = useTranslation();
   const t = (key: string) => translate(key, currentLanguage);
 
   return (
@@ -75,6 +75,9 @@ function RootProviderWithLanguage({ children }: { children: ReactNode }) {
           locale: lang.code,
           name: lang.name,
         })),
+        onLocaleChange: (locale) => {
+          if (locale === 'en' || locale === 'fr') setLanguage(locale);
+        },
         translations: {
           search: t('search.search'),
           searchNoResult: t('ui.searchNoResult'),

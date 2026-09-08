@@ -140,9 +140,7 @@ function buildServicesSections(): BookSection[] {
     },
     {
       title: 'lomi. Network',
-      files: existingFiles([
-        docsPath('resources/network.fr.mdx'),
-      ]),
+      files: existingFiles([docsPath('resources/network.fr.mdx')]),
     },
     {
       title: 'Produits et catalogue',

@@ -1,6 +1,8 @@
 {
   "title": "Api Keys",
   "pages": [
-    "ApiKeysController_list"
+    "ApiKeysController_create",
+    "ApiKeysController_list",
+    "ApiKeysController_remove"
   ]
 }

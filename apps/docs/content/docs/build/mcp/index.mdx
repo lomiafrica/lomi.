@@ -191,7 +191,12 @@ Set `LOMI_API_URL` to `https://sandbox.api.lomi.africa` when working against san
 - Merchant tools are **resource tools** named `lomi_<resource>` with a required `action` (for example `lomi_customers` with `action=list`, `lomi_invoices` with `action=pdf`). Mechanical `lomi_post_*` / `lomi_get_*` aliases are not registered.
 - **`lomi_search_tools`**: search the tool catalog when your client loads tools on demand.
 - **`lomi_register_agent`**: mint a sandbox provisioning key (guest or any session).
-- **`lomi_support`**: file a complaint. Guest sessions send email (`action=file` with `email` + `message`). A merchant key opens a Settings → Support ticket (`list` / `get` / `close`). `action=status` returns the status page and `/ready`.
+- **`lomi_support`**: file a complaint. Guest sessions send email (`action=file` with `email` + `message`). A merchant key opens a Settings → Support ticket (`list` / `get` / `close`). `action=status` returns the status page and `/ready`. Merchant-only: `action=export` (GDPR bundle for the current org) and `action=delete_account` (preview + `confirmation_token`).
+- **`lomi_organization`**: `create` and `use` mint a secret for a new or existing org and adopt it on the session. Guest stays on `lomi_provision`.
+- **`lomi_team`** / **`lomi_settings`**: members and invites; checkout and storefront settings (not payment sessions).
+- **`lomi_logs`**: `type` is required (`api_request`, `api_error`, `webhook_delivery`, `activity`). Webhook debugging: `lomi_webhooks` deliveries/retry or `lomi_logs type=webhook_delivery`. Merchant-only: `export` (GDPR bundle for the current org) and `delete_account` (preview + `confirmation_token`).
+- **`lomi_organization`**: `create` / `use` mint a secret and switch the MCP session to that org. Guest stays on `lomi_provision`.
+- **`lomi_team`** and **`lomi_settings`**: invite/roles and checkout/storefront settings. `lomi_logs` requires `type`. Webhook deliveries are also on `lomi_webhooks`.
 - Provisioning: `lomi_provision` and `lomi_partners` (same `action` pattern).
 - **Resources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.

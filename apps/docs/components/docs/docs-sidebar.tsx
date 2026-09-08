@@ -200,7 +200,11 @@ export function DocsMobileSectionSwitch() {
         <ChevronsUpDown className="ms-auto size-4 shrink-0 text-fd-muted-foreground" />
       </button>
       {open ? (
-        <div role="listbox" aria-label={sectionNav} className="docs-mobile-section-menu">
+        <div
+          role="listbox"
+          aria-label={sectionNav}
+          className="docs-mobile-section-menu"
+        >
           {preview.tabs.map((tab) => {
             const isActive = selected?.url === tab.url;
             return (

@@ -18,7 +18,11 @@ function hrefToMdx(href: string): string {
 function hrefExists(href: string): boolean {
   const file = hrefToMdx(href);
   if (existsSync(file)) return true;
-  const indexFile = path.join(CONTENT_ROOT, href.replace(/^\//, ''), 'index.mdx');
+  const indexFile = path.join(
+    CONTENT_ROOT,
+    href.replace(/^\//, ''),
+    'index.mdx',
+  );
   return existsSync(indexFile);
 }
 

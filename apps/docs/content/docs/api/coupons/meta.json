@@ -4,6 +4,7 @@
     "DiscountCouponsController_create",
     "DiscountCouponsController_findAll",
     "DiscountCouponsController_findOne",
-    "DiscountCouponsController_getPerformance"
+    "DiscountCouponsController_getPerformance",
+    "DiscountCouponsController_remove"
   ]
 }

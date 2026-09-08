@@ -20,7 +20,9 @@ function isRecentSearchHit(value: unknown): value is RecentSearchHit {
   if (!value || typeof value !== 'object') return false;
   const href = 'href' in value ? value.href : null;
   const title = 'title' in value ? value.title : null;
-  return typeof href === 'string' && href.length > 0 && typeof title === 'string';
+  return (
+    typeof href === 'string' && href.length > 0 && typeof title === 'string'
+  );
 }
 
 export function readRecentSearches(): RecentSearchHit[] {

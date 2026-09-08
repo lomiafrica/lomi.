@@ -2,7 +2,12 @@
 
 'use client';
 
-import { useEffect, useRef, useState, type ComponentPropsWithoutRef } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+} from 'react';
 import { Check, Clipboard } from 'lucide-react';
 import {
   Tabs,
@@ -61,7 +66,9 @@ function InstallCommand({ code }: { code: string }) {
         options={{
           themes: codeThemes,
           components: {
-            pre: (props: ComponentPropsWithoutRef<'pre'> & { node?: unknown }) => {
+            pre: (
+              props: ComponentPropsWithoutRef<'pre'> & { node?: unknown },
+            ) => {
               const rest = { ...props };
               delete rest.node;
               return (

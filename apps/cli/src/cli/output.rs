@@ -140,7 +140,13 @@ pub fn print_table(headers: &[&str], rows: &[Vec<String>]) {
         let line = row
             .iter()
             .enumerate()
-            .map(|(i, cell)| format!("{:width$}", cell, width = widths.get(i).copied().unwrap_or(0)))
+            .map(|(i, cell)| {
+                format!(
+                    "{:width$}",
+                    cell,
+                    width = widths.get(i).copied().unwrap_or(0)
+                )
+            })
             .collect::<Vec<_>>()
             .join("  ");
         println!("{line}");

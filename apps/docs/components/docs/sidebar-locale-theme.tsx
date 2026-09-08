@@ -110,7 +110,8 @@ export function DocsSidebarLocaleAndTheme({
   const router = useRouter();
   const { currentLanguage, setLanguage } = useTranslation();
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const { signedIn, organizations, selectedOrganizationId } = useDocsWorkspace();
+  const { signedIn, organizations, selectedOrganizationId } =
+    useDocsWorkspace();
   const t = (key: string) => translate(key, currentLanguage);
   const selectedOrg =
     organizations.find((org) => org.id === selectedOrganizationId) ??
@@ -357,7 +358,9 @@ export function DocsSidebarLocaleAndTheme({
             className={itemClass(mobile)}
           >
             <AppWindow className="size-4 shrink-0" />
-            <span className="min-w-0 flex-1 truncate">{t('docs.shell.dashboard')}</span>
+            <span className="min-w-0 flex-1 truncate">
+              {t('docs.shell.dashboard')}
+            </span>
           </a>
 
           <div
@@ -375,7 +378,9 @@ export function DocsSidebarLocaleAndTheme({
               className={itemClass(mobile)}
             >
               <Languages className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">{t('docs.shell.language')}</span>
+              <span className="min-w-0 flex-1 truncate">
+                {t('docs.shell.language')}
+              </span>
               <SubmenuChevron open={submenu === 'language'} mobile={mobile} />
             </button>
             {flyout(
@@ -419,7 +424,9 @@ export function DocsSidebarLocaleAndTheme({
               className={itemClass(mobile)}
             >
               <SunMoon className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">{t('docs.shell.theme')}</span>
+              <span className="min-w-0 flex-1 truncate">
+                {t('docs.shell.theme')}
+              </span>
               <SubmenuChevron open={submenu === 'theme'} mobile={mobile} />
             </button>
             {flyout(
@@ -465,7 +472,9 @@ export function DocsSidebarLocaleAndTheme({
               className={itemClass(mobile)}
             >
               <McpBrandIcon className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">{t('docs.shell.mcp')}</span>
+              <span className="min-w-0 flex-1 truncate">
+                {t('docs.shell.mcp')}
+              </span>
               <SubmenuChevron open={submenu === 'mcp'} mobile={mobile} />
             </button>
             {flyout(
@@ -507,7 +516,9 @@ export function DocsSidebarLocaleAndTheme({
               className={itemClass(mobile)}
             >
               <link.Icon className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">{t(link.labelKey)}</span>
+              <span className="min-w-0 flex-1 truncate">
+                {t(link.labelKey)}
+              </span>
             </a>
           ))}
         </div>

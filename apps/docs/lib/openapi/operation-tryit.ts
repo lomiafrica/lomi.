@@ -1,10 +1,6 @@
 /* @proprietary license */
 
-import {
-  isJsonObject,
-  type JsonObject,
-  type JsonValue,
-} from '@lomi./shared';
+import { isJsonObject, type JsonObject, type JsonValue } from '@lomi./shared';
 import {
   toOpenApiHttpMethod,
   type OpenApiHttpMethod,

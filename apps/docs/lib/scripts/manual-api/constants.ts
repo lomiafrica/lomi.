@@ -29,11 +29,18 @@ export const REST_API_SIDEBAR_GROUPS = [
   },
   {
     separator: '---Move money---',
-    folders: ['balances', 'transactions', 'refunds', 'payouts', 'payout-methods', 'settlements'],
+    folders: [
+      'balances',
+      'transactions',
+      'refunds',
+      'payouts',
+      'payout-methods',
+      'settlements',
+    ],
   },
   {
     separator: '---Platform---',
-    folders: ['organizations', 'merchants', 'providers'],
+    folders: ['organizations', 'team', 'settings', 'merchants', 'providers'],
   },
   {
     separator: '---Operations---',
@@ -48,6 +55,7 @@ export const REST_API_SIDEBAR_GROUPS = [
       'exports',
       'finance',
       'api-keys',
+      'account',
     ],
   },
 ] as const;
@@ -107,6 +115,9 @@ const PUBLIC_REST_API_OPERATIONS = [
   'finance',
   'payout-methods',
   'api-keys',
+  'team',
+  'settings',
+  'account',
 ] as const;
 
 export type RestApiFolder = (typeof REST_API_SECTION_ORDER)[number];

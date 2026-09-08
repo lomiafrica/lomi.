@@ -26,10 +26,7 @@ test('internal locale paths', () => {
     buildDocsInternalLocalePath('fr', '/start/overview'),
     '/l/fr/start/overview',
   );
-  assert.equal(
-    buildDocsInternalLocalePath('en', '/'),
-    '/l/en/start/overview',
-  );
+  assert.equal(buildDocsInternalLocalePath('en', '/'), '/l/en/start/overview');
   assert.equal(isDocsInternalLocalePath('/l/fr/api'), true);
   assert.equal(isDocsInternalLocalePath('/api'), false);
   assert.deepEqual(parseDocsInternalLocalePath('/l/en/build/cli'), {

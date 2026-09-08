@@ -53,7 +53,12 @@ async fn list_invoices(common: &CommonOptions, args: InvoicesListArgs) -> Result
     let payload: serde_json::Value = client
         .get(&format!("/invoices?limit={}", args.limit))
         .await?;
-    print_rows(common, "Invoices", &payload, &["customer_invoice_id", "invoice_number", "status", "amount"])
+    print_rows(
+        common,
+        "Invoices",
+        &payload,
+        &["customer_invoice_id", "invoice_number", "status", "amount"],
+    )
 }
 
 async fn get_invoice(common: &CommonOptions, id: &str) -> Result<()> {
@@ -69,9 +74,7 @@ async fn get_invoice(common: &CommonOptions, id: &str) -> Result<()> {
 async fn download_pdf(common: &CommonOptions, args: InvoicePdfArgs) -> Result<()> {
     let auth = ensure_authenticated(common, true, false, false).await?;
     let client = ApiClient::new(&auth)?;
-    let meta: serde_json::Value = client
-        .get(&format!("/invoices/{}/pdf", args.id))
-        .await?;
+    let meta: serde_json::Value = client.get(&format!("/invoices/{}/pdf", args.id)).await?;
     let url = meta
         .get("download_url")
         .or_else(|| meta.get("hosted_url"))

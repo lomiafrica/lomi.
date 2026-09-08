@@ -40,7 +40,7 @@ import {
 function oramaConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_ORAMA_API_KEY &&
-      process.env.NEXT_PUBLIC_ORAMA_PROJECT_ID,
+    process.env.NEXT_PUBLIC_ORAMA_PROJECT_ID,
   );
 }
 
@@ -58,7 +58,10 @@ async function searchLocal(
   return body as SortedResult[];
 }
 
-function sectionLabel(section: DocsSearchTag | undefined, t: (key: string) => string) {
+function sectionLabel(
+  section: DocsSearchTag | undefined,
+  t: (key: string) => string,
+) {
   switch (section) {
     case 'start':
       return t('search.start');
@@ -180,15 +183,12 @@ export default function CustomSearchDialog(props: SharedProps) {
     item.id.startsWith('suggest:'),
   )?.id;
 
-  const handleSelect = useCallback(
-    (item: SearchItemType) => {
-      if (item.type === 'action') return;
-      const title = typeof item.content === 'string' ? item.content : '';
-      if (!item.url || !title) return;
-      setRecents(rememberRecentSearch({ href: item.url, title }));
-    },
-    [],
-  );
+  const handleSelect = useCallback((item: SearchItemType) => {
+    if (item.type === 'action') return;
+    const title = typeof item.content === 'string' ? item.content : '';
+    if (!item.url || !title) return;
+    setRecents(rememberRecentSearch({ href: item.url, title }));
+  }, []);
 
   const renderItem = useCallback(
     ({ item, onClick }: { item: SearchItemType; onClick: () => void }) => {
@@ -204,8 +204,7 @@ export default function CustomSearchDialog(props: SharedProps) {
             ? t('search.suggested')
             : undefined;
       const section = sectionLabel(row?.section, t);
-      const snippet =
-        results === 'empty' ? undefined : row?.snippet;
+      const snippet = results === 'empty' ? undefined : row?.snippet;
 
       return (
         <>
@@ -273,11 +272,7 @@ export default function CustomSearchDialog(props: SharedProps) {
                 setTag(undefined);
                 return;
               }
-              if (
-                value === 'start' ||
-                value === 'build' ||
-                value === 'api'
-              ) {
+              if (value === 'start' || value === 'build' || value === 'api') {
                 setTag(value);
               }
             }}

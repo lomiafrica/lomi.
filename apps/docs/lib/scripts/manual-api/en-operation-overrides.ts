@@ -554,11 +554,11 @@ export const EN_OPERATION_COPY = {
   },
   OrganizationsController_findAll: {
     summary: 'List organizations',
-    body: 'Returns organizations visible to the authenticated API key (typically your active organization).',
+    body: 'Returns every organization the merchant belongs to, with is_current for the key in use. Use this as the org switcher.',
     whenToUse:
-      'Use to read organization profile fields, pricing mode, and settings scoped to your integration key.',
+      'Use to pick another space, then POST /organizations/:id/keys (MCP action=use) to adopt a secret for that org.',
     related:
-      '[Organization metrics](/api/organizations/OrganizationsController_getMetrics) · [Organizations guide](/build/platform/organizations)',
+      '[Create organization](/api/organizations/OrganizationsController_create) · [Mint org key](/api/organizations/OrganizationsController_createKey)',
   },
   OrganizationsController_findOne: {
     summary: 'Retrieve organization',
@@ -766,5 +766,243 @@ export const EN_OPERATION_COPY = {
     whenToUse: 'Use when the issue is resolved and you no longer need a reply.',
     related:
       '[Get support ticket](/api/support-requests/SupportRequestsController_findOne)',
+  },
+  OrganizationsController_create: {
+    summary: 'Create organization',
+    body: 'Opens a new space for the merchant on the API key and returns a secret key once (same environment as the caller).',
+    whenToUse:
+      'Use when the merchant needs another organization. MCP action=create adopts the returned secret.',
+    related:
+      '[List organizations](/api/organizations/OrganizationsController_findAll) · [Mint org key](/api/organizations/OrganizationsController_createKey)',
+  },
+  OrganizationsController_createKey: {
+    summary: 'Mint organization secret',
+    body: 'Creates a secret API key for an organization the merchant already belongs to. Returns the secret once.',
+    whenToUse:
+      'Use to switch the agent session to another org (MCP lomi_organization action=use).',
+    related:
+      '[Create organization](/api/organizations/OrganizationsController_create) · [Create API key](/api/api-keys/ApiKeysController_create)',
+  },
+  ApiKeysController_list: {
+    summary: 'List API keys',
+    body: 'Returns key name, type, prefix/last4, and status. Secret values are never returned.',
+    whenToUse: 'Use to audit keys before creating or revoking one.',
+  },
+  ApiKeysController_create: {
+    summary: 'Create API key',
+    body: 'Mints a secret or publishable key and returns the full secret once. Does not switch the MCP session.',
+    whenToUse:
+      'Use to add a named key. To switch org, use POST /organizations/:id/keys instead.',
+    related: '[Revoke API key](/api/api-keys/ApiKeysController_remove)',
+  },
+  ApiKeysController_remove: {
+    summary: 'Revoke API key',
+    body: 'Soft-revokes a key. Pass the key value or masked prefix as the id.',
+    whenToUse: 'Use when a key leaked or is no longer needed.',
+  },
+  ProductsController_update: {
+    summary: 'Update product',
+    body: 'Updates name, description, visibility, images, SKU, and inventory. Product type cannot change.',
+    whenToUse:
+      'Use after catalog review or to hide a product from the storefront.',
+    related: '[Archive product](/api/products/ProductsController_archive)',
+  },
+  ProductsController_archive: {
+    summary: 'Archive product',
+    body: 'Soft-archives a product (delete_product). Existing checkouts keep their snapshot.',
+    whenToUse: 'Use when the product should no longer be sold.',
+  },
+  PaymentLinksController_update: {
+    summary: 'Update payment link',
+    body: 'Patches title, URLs, checkout field flags, expiry, or instant-link amount.',
+    whenToUse: 'Use to change a live link without minting a new URL.',
+  },
+  PaymentLinksController_archive: {
+    summary: 'Archive payment link',
+    body: 'Deactivates the link (safe_delete_payment_link). The URL stops accepting payments.',
+    whenToUse:
+      'Use when a campaign or invoice link should no longer be shared.',
+  },
+  DiscountCouponsController_remove: {
+    summary: 'Delete coupon',
+    body: 'Deletes a discount coupon from the organization.',
+    whenToUse: 'Use when a promotion is over and the code must stop working.',
+  },
+  TeamController_list: {
+    summary: 'List team',
+    body: 'Returns members and pending invitations for the organization on the API key.',
+    whenToUse: 'Use before inviting or changing roles.',
+  },
+  TeamController_listRoles: {
+    summary: 'List team roles',
+    body: 'Returns Admin/Member and any custom roles already created in the dashboard.',
+    whenToUse: 'Use to pick a role_id when inviting or assigning.',
+  },
+  TeamController_invite: {
+    summary: 'Invite team member',
+    body: 'Sends an invitation email. The human accepts in the browser. role Admin/Member or role_id.',
+    whenToUse:
+      'Use when an Admin needs to add a teammate. Agents cannot accept invites.',
+  },
+  TeamController_revokeInvite: {
+    summary: 'Revoke invitation',
+    body: 'Cancels a pending invitation by email.',
+    whenToUse: 'Use when the invite was sent to the wrong address.',
+  },
+  TeamController_updateRole: {
+    summary: 'Update member role',
+    body: 'Sets Admin/Member via role, or a custom role via role_id. You cannot change your own role.',
+    whenToUse: 'Use to promote or demote a teammate.',
+  },
+  TeamController_remove: {
+    summary: 'Remove team member',
+    body: 'Removes the member from the organization. Self-remove is blocked.',
+    whenToUse: 'Use when someone should lose access immediately.',
+  },
+  SettingsController_getCheckout: {
+    summary: 'Get checkout settings',
+    body: 'Returns language, URLs, pay button, fee pass-through, analytics, and custom fields.',
+    whenToUse: 'Use before updating Settings → Checkout.',
+  },
+  SettingsController_updateCheckout: {
+    summary: 'Update checkout settings',
+    body: 'Patches the same checkout settings object the dashboard uses.',
+    whenToUse:
+      'Use to change success/cancel URLs, language, or fee pass-through.',
+  },
+  SettingsController_getStorefront: {
+    summary: 'Get storefront settings',
+    body: 'Returns enablement, slug, announcement, shipping, and tax config.',
+    whenToUse: 'Use before changing the public store.',
+  },
+  SettingsController_updateStorefront: {
+    summary: 'Update storefront settings',
+    body: 'Enables or disables the store, changes the slug, announcement, or shipping/tax.',
+    whenToUse:
+      'Use when launching or pausing the storefront. Changing slug breaks old links.',
+  },
+  MerchantExportsController_findAll: {
+    summary: 'List exports',
+    body: 'Returns recent export jobs so you can poll without remembering ids.',
+    whenToUse:
+      'Use after POST /exports to find jobs and then GET /exports/:id for download_url.',
+  },
+  MerchantExportsController_create: {
+    summary: 'Create export',
+    body: 'Starts a CSV or PDF export (transactions, customers, customers_pdf, statement, journal, logs_csv, webhook_deliveries_csv, or account_export). Poll GET /exports/:id for download_url.',
+    whenToUse:
+      'Use for books, customer lists, log dumps, or a GDPR-shaped account bundle.',
+  },
+  AccountController_export: {
+    summary: 'Export account data',
+    body: 'Queues a GDPR-shaped bundle for the current organization (customers, transactions, webhooks, team, settings). No confirmation.',
+    whenToUse:
+      'Use from lomi_support action=export. Poll GET /exports/:id for the file.',
+  },
+  AccountController_deleteAccount: {
+    summary: 'Delete merchant account',
+    body: 'First call returns a confirmation_token preview. Resend with that token to soft-delete the merchant.',
+    whenToUse:
+      'Use from lomi_support action=delete_account. Merchant key only. Irreversible for the merchant row.',
+  },
+  MerchantExportsController_findOne: {
+    summary: 'Get export',
+    body: 'Returns job status and download_url when the file is ready.',
+    whenToUse: 'Use after POST /exports or GET /exports to poll a job id.',
+  },
+  DisputesController_submitEvidence: {
+    summary: 'Submit dispute evidence',
+    body: 'Attaches written evidence and optional file metadata to a card dispute before the due date.',
+    whenToUse:
+      'Use when a cardholder disputes a charge and you have a response ready.',
+  },
+  FinanceController_summary: {
+    summary: 'Finance summary',
+    body: 'Cash position, receivables, overdue invoices, upcoming payouts, refund rate, and dispute exposure.',
+    whenToUse:
+      'Use for a merchant finance snapshot on Home or a reporting agent.',
+  },
+  FinanceController_cashflow: {
+    summary: 'Cashflow',
+    body: 'Daily inflow and outflow over a date range.',
+    whenToUse: 'Use to explain a balance change between two dates.',
+  },
+  FinanceController_aging: {
+    summary: 'Receivables aging',
+    body: 'Open invoice amounts bucketed by days past due.',
+    whenToUse: 'Use to prioritize collection on overdue invoices.',
+  },
+  FinanceController_reconcile: {
+    summary: 'Reconcile',
+    body: 'Difference between completed transaction net and completed payouts.',
+    whenToUse: 'Use when books do not match payout totals.',
+  },
+  InvoicesController_findAll: {
+    summary: 'List invoices',
+    body: 'Lists invoices for the organization with status and amounts.',
+    whenToUse:
+      'Use to find an invoice before sending, reminding, or voiding it.',
+  },
+  InvoicesController_findOne: {
+    summary: 'Get invoice',
+    body: 'Returns one invoice by id, including line items and payment status.',
+    whenToUse: 'Use after list or create to inspect a single invoice.',
+  },
+  InvoicesController_create: {
+    summary: 'Create invoice',
+    body: 'Creates a draft invoice for a customer with line items and due date.',
+    whenToUse: 'Use when billing a customer outside hosted checkout.',
+  },
+  InvoicesController_update: {
+    summary: 'Update invoice',
+    body: 'Patches a draft invoice. Finalized invoices cannot change amounts.',
+    whenToUse: 'Use before finalize to correct lines or due date.',
+  },
+  InvoicesController_pdf: {
+    summary: 'Invoice PDF',
+    body: 'Returns hosted_url and download_url for the invoice PDF.',
+    whenToUse: 'Use to send or archive a printable invoice.',
+  },
+  InvoicesController_createCheckoutSession: {
+    summary: 'Invoice checkout session',
+    body: 'Opens a hosted checkout session so the customer can pay the invoice.',
+    whenToUse:
+      'Use when the customer should pay online instead of a bank transfer.',
+  },
+  InvoicesController_finalize: {
+    summary: 'Finalize invoice',
+    body: 'Locks the draft and assigns the invoice number.',
+    whenToUse: 'Use when the draft is ready to send.',
+  },
+  InvoicesController_send: {
+    summary: 'Send invoice',
+    body: 'Emails the finalized invoice to the customer.',
+    whenToUse: 'Use after finalize when the customer should receive the PDF.',
+  },
+  InvoicesController_remind: {
+    summary: 'Remind invoice',
+    body: 'Sends a payment reminder for an open invoice.',
+    whenToUse: 'Use when an invoice is unpaid past the due date.',
+  },
+  InvoicesController_voidInvoice: {
+    summary: 'Void invoice',
+    body: 'Voids an open invoice so it can no longer be paid.',
+    whenToUse: 'Use when the invoice was issued in error.',
+  },
+  PayoutMethodsController_list: {
+    summary: 'List payout methods',
+    body: 'Lists destination accounts for withdrawals. Account numbers are masked.',
+    whenToUse: 'Use before creating a payout.',
+  },
+  PayoutMethodsController_create: {
+    summary: 'Add payout method',
+    body: 'Registers a bank, SPI, or mobile money destination for payouts.',
+    whenToUse: 'Use when the merchant needs a new withdrawal destination.',
+  },
+  TransactionsController_receiptPdf: {
+    summary: 'Receipt PDF',
+    body: 'Returns hosted_url and download_url for the transaction receipt PDF.',
+    whenToUse:
+      'Use after a successful payment when the customer needs a receipt.',
   },
 };

@@ -35,9 +35,9 @@ const MERCHANT_CATEGORIES = [
 
 const inputSchema = {
   action: z
-    .enum(['file', 'list', 'get', 'close', 'status'])
+    .enum(['file', 'list', 'get', 'close', 'status', 'export', 'delete_account'])
     .describe(
-      'file: send a complaint (guest email or merchant ticket). list/get/close: merchant tickets. status: platform status URLs.',
+      'file: send a complaint (guest email or merchant ticket). list/get/close: merchant tickets. status: platform status URLs. export: GDPR bundle for the current org. delete_account: preview then confirmation_token.',
     ),
   email: z
     .string()
@@ -72,6 +72,10 @@ const inputSchema = {
   webhook_id: z.string().optional(),
   payout_id: z.string().optional(),
   meter_id: z.string().optional(),
+  confirmation_token: z
+    .string()
+    .optional()
+    .describe('Required to execute delete_account after the preview'),
 };
 
 function textResult(text: string, isError = false) {
@@ -126,7 +130,7 @@ export function registerLomiSupport(
     {
       title: 'Contact lomi. support',
       description:
-        'File a complaint or support request. Guest sessions email lomi. (email + message). A merchant key creates a real Settings → Support ticket you can list, get, and close. action=status returns the status page and /ready URL.',
+        'File a complaint or support request. Guest sessions email lomi. (email + message). A merchant key creates a real Settings → Support ticket you can list, get, and close. action=status returns the status page and /ready URL. Merchant-only: action=export downloads a GDPR bundle for the current org; action=delete_account returns a confirmation_token then soft-deletes the merchant.',
       inputSchema,
       annotations: {
         readOnlyHint: false,
@@ -250,6 +254,42 @@ export function registerLomiSupport(
 
       if (!apiKey) {
         return connectHint();
+      }
+
+      if (input.action === 'export') {
+        const result = await callLomiRest(
+          {
+            method: 'post',
+            pathTemplate: '/account/export',
+            pathParamNames: [],
+            queryParamNames: [],
+            wantsBody: false,
+            inputSchema: {},
+          },
+          {},
+          { baseUrl, apiKey },
+        );
+        return textResult(formatHttpResult(result), result.status >= 400);
+      }
+
+      if (input.action === 'delete_account') {
+        const result = await callLomiRest(
+          {
+            method: 'post',
+            pathTemplate: '/account/delete',
+            pathParamNames: [],
+            queryParamNames: [],
+            wantsBody: true,
+            inputSchema: {},
+          },
+          {
+            body: compactJson({
+              confirmation_token: input.confirmation_token,
+            }),
+          },
+          { baseUrl, apiKey },
+        );
+        return textResult(formatHttpResult(result), result.status >= 400);
       }
 
       if (input.action === 'list') {

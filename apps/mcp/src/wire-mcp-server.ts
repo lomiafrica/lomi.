@@ -83,6 +83,7 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
       getApiKey,
       readOnlyOnly: merchantAccessLevel === 'read',
       excludeMoney: merchantAccessLevel === 'write',
+      onMerchantKeyDiscovered,
     });
   } else {
     registerSearchToolsOnGuest(server, manifest, provisioningManifest);
@@ -115,6 +116,7 @@ function guestUpgradeOnMerchantKey(
       getApiKey,
       readOnlyOnly: false,
       skipSearchTool: true,
+      onMerchantKeyDiscovered,
     });
     mcpLog(
       'guest_session_upgraded',

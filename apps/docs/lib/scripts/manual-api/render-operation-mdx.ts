@@ -75,9 +75,7 @@ export function isEnOperationId(
   return Object.hasOwn(EN_OPERATION_COPY, id);
 }
 
-function isFrOperationId(
-  id: string,
-): id is keyof typeof FR_OPERATION_COPY {
+function isFrOperationId(id: string): id is keyof typeof FR_OPERATION_COPY {
   return Object.hasOwn(FR_OPERATION_COPY, id);
 }
 

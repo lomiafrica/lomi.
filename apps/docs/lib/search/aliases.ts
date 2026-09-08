@@ -60,7 +60,11 @@ export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
     'collect money',
     'hosted checkout task',
   ],
-  '/build/accept/payment-links': ['payment link', 'shareable link', 'invoice link'],
+  '/build/accept/payment-links': [
+    'payment link',
+    'shareable link',
+    'invoice link',
+  ],
   '/build/payment-channels': [
     'payment methods',
     'rails',
@@ -220,7 +224,10 @@ export const DOCS_SEARCH_SUGGESTED = [
   },
   {
     href: '/build/accept/checkout',
-    title: { en: 'How do I use checkout?', fr: 'Comment utiliser le checkout ?' },
+    title: {
+      en: 'How do I use checkout?',
+      fr: 'Comment utiliser le checkout ?',
+    },
   },
 ] as const;
 

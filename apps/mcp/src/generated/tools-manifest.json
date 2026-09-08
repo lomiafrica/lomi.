@@ -2,16 +2,16 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 27,
+  "toolCount": 29,
   "tools": [
     {
       "name": "lomi_api_keys",
       "title": "API keys",
-      "description": "API keys. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List API keys (GET /api-keys). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "API keys. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List API keys (GET /api-keys). No extra required fields.\n- `create` — Create API key (POST /api-keys). Required: body.\n- `revoke` — Revoke API key (DELETE /api-keys/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "API keys"
       ],
-      "write": false,
+      "write": true,
       "inputSchema": {
         "type": "object",
         "additionalProperties": true,
@@ -22,21 +22,36 @@
           "action": {
             "type": "string",
             "enum": [
-              "list"
+              "list",
+              "create",
+              "revoke"
             ],
-            "description": "Which REST operation to run. One of: list."
+            "description": "Which REST operation to run. One of: list, create, revoke."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "header_Lomi-Version": {
             "type": "string",
             "example": "1.2.0",
             "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "type": "string",
+            "description": "Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
           }
         }
       },
-      "readOnly": true,
-      "destructive": false,
+      "readOnly": false,
+      "destructive": true,
       "alwaysLoad": false,
-      "searchHint": "api get keys list",
+      "searchHint": "api create delete get keys list post revoke",
       "actions": {
         "list": {
           "operationKey": "GET /api-keys",
@@ -53,6 +68,44 @@
             "API keys"
           ],
           "requiredInput": []
+        },
+        "create": {
+          "operationKey": "POST /api-keys",
+          "method": "post",
+          "pathTemplate": "/api-keys",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "ApiKeysController_create",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create API key",
+          "description": "Create a secret or publishable key. Returns the full secret once. Does not switch the MCP session.",
+          "tags": [
+            "API keys"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "revoke": {
+          "operationKey": "DELETE /api-keys/{id}",
+          "method": "delete",
+          "pathTemplate": "/api-keys/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ApiKeysController_remove",
+          "write": true,
+          "wantsBody": false,
+          "title": "Revoke API key",
+          "description": "Soft-revoke an API key. Pass the key value or masked prefix.",
+          "tags": [
+            "API keys"
+          ],
+          "requiredInput": [
+            "id"
+          ]
         }
       }
     },
@@ -307,7 +360,7 @@
     {
       "name": "lomi_coupons",
       "title": "Coupons",
-      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). No extra required fields.\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). No extra required fields.\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n- `delete` — Delete coupon (DELETE /coupons/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Coupons"
       ],
@@ -325,9 +378,10 @@
               "list",
               "get",
               "create",
-              "performance"
+              "performance",
+              "delete"
             ],
-            "description": "Which REST operation to run. One of: list, get, create, performance."
+            "description": "Which REST operation to run. One of: list, get, create, performance, delete."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -345,9 +399,9 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
-      "searchHint": "coupons create get list performance post",
+      "searchHint": "coupons create delete get list performance post",
       "actions": {
         "list": {
           "operationKey": "GET /coupons",
@@ -414,6 +468,26 @@
           "wantsBody": false,
           "title": "Get coupon performance",
           "description": "Return redemption count and revenue impact for a coupon. Use to measure how a promotion is performing.",
+          "tags": [
+            "Coupons"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "delete": {
+          "operationKey": "DELETE /coupons/{id}",
+          "method": "delete",
+          "pathTemplate": "/coupons/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "DiscountCouponsController_remove",
+          "write": true,
+          "wantsBody": false,
+          "title": "Delete coupon",
+          "description": "Delete a discount coupon from the organization.",
           "tags": [
             "Coupons"
           ],
@@ -851,7 +925,7 @@
     {
       "name": "lomi_exports",
       "title": "Exports",
-      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). No extra required fields.\n- `list` — List exports (GET /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Exports"
       ],
@@ -867,9 +941,10 @@
             "type": "string",
             "enum": [
               "create",
+              "list",
               "get"
             ],
-            "description": "Which REST operation to run. One of: create, get."
+            "description": "Which REST operation to run. One of: create, list, get."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -889,7 +964,7 @@
       "readOnly": false,
       "destructive": false,
       "alwaysLoad": false,
-      "searchHint": "create exports get post",
+      "searchHint": "create exports get list post",
       "actions": {
         "create": {
           "operationKey": "POST /exports",
@@ -901,7 +976,23 @@
           "write": true,
           "wantsBody": false,
           "title": "Create export",
-          "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll get until download_url is set. For money-moving tools, confirm first.",
+          "description": "Start a CSV or PDF export: transactions_csv, transactions_pdf, customers_csv, customers_pdf, statement_pdf, journal_csv, logs_csv (filters.type), webhook_deliveries_csv, or account_export. Poll list or get until download_url is set.",
+          "tags": [
+            "Exports"
+          ],
+          "requiredInput": []
+        },
+        "list": {
+          "operationKey": "GET /exports",
+          "method": "get",
+          "pathTemplate": "/exports",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "MerchantExportsController_findAll",
+          "write": false,
+          "wantsBody": false,
+          "title": "List exports",
+          "description": "List recent export jobs for the current organization so you can poll without remembering ids.",
           "tags": [
             "Exports"
           ],
@@ -1429,7 +1520,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List logs",
-          "description": "List organization logs. Set the `type` query param to pick a stream: api_request, api_error, webhook_delivery, or activity (audit). Use to debug API calls or trace events.",
+          "description": "`type` is required: api_request, api_error, webhook_delivery, or activity. Webhook debugging can also use lomi_webhooks deliveries/retry. Use to debug API calls or trace events.",
           "tags": [
             "Logs"
           ],
@@ -1754,11 +1845,11 @@
     {
       "name": "lomi_organization",
       "title": "Organization",
-      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body.\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Organisations"
       ],
-      "write": false,
+      "write": true,
       "inputSchema": {
         "type": "object",
         "additionalProperties": true,
@@ -1771,9 +1862,21 @@
             "enum": [
               "list",
               "get",
-              "metrics"
+              "metrics",
+              "create",
+              "use"
             ],
-            "description": "Which REST operation to run. One of: list, get, metrics."
+            "description": "Which REST operation to run. One of: list, get, metrics, create, use."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Lomi-Account": {
+            "type": "string",
+            "example": "acct_1234567890",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -1783,13 +1886,17 @@
           "id": {
             "type": "string",
             "description": "Path parameter \"id\" for `/organizations/{id}`."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
           }
         }
       },
-      "readOnly": true,
+      "readOnly": false,
       "destructive": false,
       "alwaysLoad": false,
-      "searchHint": "get list metrics organisations organization organizations",
+      "searchHint": "create get keys list metrics organisations organization organizations post use",
       "actions": {
         "list": {
           "operationKey": "GET /organizations",
@@ -1842,13 +1949,52 @@
             "Organisations"
           ],
           "requiredInput": []
+        },
+        "create": {
+          "operationKey": "POST /organizations",
+          "method": "post",
+          "pathTemplate": "/organizations",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "OrganizationsController_create",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create organization",
+          "description": "Open a new organization and return a secret key once. MCP adopts that key on the session (action=create).",
+          "tags": [
+            "Organisations"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "use": {
+          "operationKey": "POST /organizations/{id}/keys",
+          "method": "post",
+          "pathTemplate": "/organizations/{id}/keys",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "OrganizationsController_createKey",
+          "write": true,
+          "wantsBody": true,
+          "title": "Use organization",
+          "description": "Mint a secret key for an organization this merchant already belongs to. MCP adopts that key (action=use).",
+          "tags": [
+            "Organisations"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
         }
       }
     },
     {
       "name": "lomi_payment_links",
       "title": "Payment links",
-      "description": "Payment links. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment links (GET /payment-links). No extra required fields.\n- `get` — Get payment link (GET /payment-links/{id}). Required: id.\n- `create` — Create payment link (POST /payment-links). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payment links. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment links (GET /payment-links). No extra required fields.\n- `get` — Get payment link (GET /payment-links/{id}). Required: id.\n- `create` — Create payment link (POST /payment-links). Required: body.\n- `update` — Update payment link (PATCH /payment-links/{id}). Required: body, id.\n- `archive` — Archive payment link (DELETE /payment-links/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Payment Links"
       ],
@@ -1865,9 +2011,11 @@
             "enum": [
               "list",
               "get",
-              "create"
+              "create",
+              "update",
+              "archive"
             ],
-            "description": "Which REST operation to run. One of: list, get, create."
+            "description": "Which REST operation to run. One of: list, get, create, update, archive."
           },
           "body": {
             "type": "object",
@@ -1911,9 +2059,9 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": true,
-      "searchHint": "create get links list payment post",
+      "searchHint": "archive create delete get links list patch payment post update",
       "actions": {
         "list": {
           "operationKey": "GET /payment-links",
@@ -1972,6 +2120,47 @@
           ],
           "requiredInput": [
             "body"
+          ]
+        },
+        "update": {
+          "operationKey": "PATCH /payment-links/{id}",
+          "method": "patch",
+          "pathTemplate": "/payment-links/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "PaymentLinksController_update",
+          "write": true,
+          "wantsBody": true,
+          "title": "Update payment link",
+          "description": "Update title, URLs, checkout fields, expiry, or amount (instant links).",
+          "tags": [
+            "Payment Links"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
+        },
+        "archive": {
+          "operationKey": "DELETE /payment-links/{id}",
+          "method": "delete",
+          "pathTemplate": "/payment-links/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "PaymentLinksController_archive",
+          "write": true,
+          "wantsBody": false,
+          "title": "Archive payment link",
+          "description": "Deactivate a payment link. Existing paid checkouts stay.",
+          "tags": [
+            "Payment Links"
+          ],
+          "requiredInput": [
+            "id"
           ]
         }
       }
@@ -2319,7 +2508,7 @@
     {
       "name": "lomi_products",
       "title": "Products",
-      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). No extra required fields.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: id.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). No extra required fields.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: id.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: id.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Products"
       ],
@@ -2338,9 +2527,11 @@
               "get",
               "create",
               "add_price",
-              "set_default_price"
+              "set_default_price",
+              "update",
+              "archive"
             ],
-            "description": "Which REST operation to run. One of: list, get, create, add_price, set_default_price."
+            "description": "Which REST operation to run. One of: list, get, create, add_price, set_default_price, update, archive."
           },
           "cursor": {
             "type": "string",
@@ -2375,9 +2566,9 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": true,
-      "searchHint": "add_price create default get list post prices products set_default_price",
+      "searchHint": "add_price archive create default delete get list patch post prices products set_default_price update",
       "actions": {
         "list": {
           "operationKey": "GET /products",
@@ -2475,6 +2666,46 @@
           "requiredInput": [
             "id",
             "priceId"
+          ]
+        },
+        "update": {
+          "operationKey": "PATCH /products/{id}",
+          "method": "patch",
+          "pathTemplate": "/products/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ProductsController_update",
+          "write": true,
+          "wantsBody": false,
+          "title": "Update product",
+          "description": "Update name, description, visibility, images, SKU, or inventory. Product type cannot change after creation.",
+          "tags": [
+            "Products"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "archive": {
+          "operationKey": "DELETE /products/{id}",
+          "method": "delete",
+          "pathTemplate": "/products/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ProductsController_archive",
+          "write": true,
+          "wantsBody": false,
+          "title": "Archive product",
+          "description": "Soft-archive a product so it no longer appears in the catalog.",
+          "tags": [
+            "Products"
+          ],
+          "requiredInput": [
+            "id"
           ]
         }
       }
@@ -2891,6 +3122,122 @@
       }
     },
     {
+      "name": "lomi_settings",
+      "title": "Checkout and storefront settings",
+      "description": "Checkout and storefront settings. Pass required `action` to choose the REST call.\n\nActions:\n- `get_checkout` — Get checkout settings (GET /settings/checkout). No extra required fields.\n- `update_checkout` — Update checkout settings (PATCH /settings/checkout). Required: body.\n- `get_storefront` — Get storefront settings (GET /settings/storefront). No extra required fields.\n- `update_storefront` — Update storefront settings (PATCH /settings/storefront). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Paramètres"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get_checkout",
+              "update_checkout",
+              "get_storefront",
+              "update_storefront"
+            ],
+            "description": "Which REST operation to run. One of: get_checkout, update_checkout, get_storefront, update_storefront."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "checkout get get_checkout get_storefront paramètres patch settings storefront update_checkout update_storefront",
+      "actions": {
+        "get_checkout": {
+          "operationKey": "GET /settings/checkout",
+          "method": "get",
+          "pathTemplate": "/settings/checkout",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "SettingsController_getCheckout",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get checkout settings",
+          "description": "Language, success/cancel URLs, pay button, fee pass-through, analytics, and custom fields.",
+          "tags": [
+            "Paramètres"
+          ],
+          "requiredInput": []
+        },
+        "update_checkout": {
+          "operationKey": "PATCH /settings/checkout",
+          "method": "patch",
+          "pathTemplate": "/settings/checkout",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "SettingsController_updateCheckout",
+          "write": true,
+          "wantsBody": true,
+          "title": "Update checkout settings",
+          "description": "Pass a settings object with the same fields as Settings → Checkout.",
+          "tags": [
+            "Paramètres"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "get_storefront": {
+          "operationKey": "GET /settings/storefront",
+          "method": "get",
+          "pathTemplate": "/settings/storefront",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "SettingsController_getStorefront",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get storefront settings",
+          "description": "Enabled flag, slug, announcement, shipping, and tax config.",
+          "tags": [
+            "Paramètres"
+          ],
+          "requiredInput": []
+        },
+        "update_storefront": {
+          "operationKey": "PATCH /settings/storefront",
+          "method": "patch",
+          "pathTemplate": "/settings/storefront",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "SettingsController_updateStorefront",
+          "write": true,
+          "wantsBody": true,
+          "title": "Update storefront settings",
+          "description": "Enable/disable the storefront, change slug, announcement, or shipping/tax.",
+          "tags": [
+            "Paramètres"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        }
+      }
+    },
+    {
       "name": "lomi_settlements",
       "title": "Settlements",
       "description": "Settlements. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List settlement periods (GET /settlements). No extra required fields.\n- `transactions` — List transactions in a settlement (GET /settlements/{id}/transactions). Required: id.\n- `create_instant` — Request an instant settlement (POST /settlements/instant). Required: body, header_Idempotency-Key.\n- `get_instant` — Get an instant settlement (GET /settlements/instant/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
@@ -3266,6 +3613,167 @@
           ],
           "requiredInput": [
             "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_team",
+      "title": "Team",
+      "description": "Team. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List team (GET /team). No extra required fields.\n- `list_roles` — List team roles (GET /team/roles). No extra required fields.\n- `invite` — Invite team member (POST /team/invitations). Required: body.\n- `revoke_invite` — Revoke team invitation (DELETE /team/invitations). No extra required fields.\n- `update_role` — Update team member role (PATCH /team/members/{memberId}). Required: body, memberId.\n- `remove` — Remove team member (DELETE /team/members/{memberId}). Required: memberId.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Équipe"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "list_roles",
+              "invite",
+              "revoke_invite",
+              "update_role",
+              "remove"
+            ],
+            "description": "Which REST operation to run. One of: list, list_roles, invite, revoke_invite, update_role, remove."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          },
+          "memberId": {
+            "type": "string",
+            "description": "MemberId"
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": true,
+      "alwaysLoad": false,
+      "searchHint": "delete get invitations invite list list_roles members patch post remove revoke_invite roles team update_role équipe",
+      "actions": {
+        "list": {
+          "operationKey": "GET /team",
+          "method": "get",
+          "pathTemplate": "/team",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TeamController_list",
+          "write": false,
+          "wantsBody": false,
+          "title": "List team",
+          "description": "List members and pending invitations for the current organization.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": []
+        },
+        "list_roles": {
+          "operationKey": "GET /team/roles",
+          "method": "get",
+          "pathTemplate": "/team/roles",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TeamController_listRoles",
+          "write": false,
+          "wantsBody": false,
+          "title": "List team roles",
+          "description": "List Admin/Member and any custom roles already created.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": []
+        },
+        "invite": {
+          "operationKey": "POST /team/invitations",
+          "method": "post",
+          "pathTemplate": "/team/invitations",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TeamController_invite",
+          "write": true,
+          "wantsBody": true,
+          "title": "Invite team member",
+          "description": "Invite by email with Admin/Member or role_id. The human accepts in the browser.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "revoke_invite": {
+          "operationKey": "DELETE /team/invitations",
+          "method": "delete",
+          "pathTemplate": "/team/invitations",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TeamController_revokeInvite",
+          "write": true,
+          "wantsBody": false,
+          "title": "Revoke team invitation",
+          "description": "Cancel a pending invitation by email.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": []
+        },
+        "update_role": {
+          "operationKey": "PATCH /team/members/{memberId}",
+          "method": "patch",
+          "pathTemplate": "/team/members/{memberId}",
+          "pathParamNames": [
+            "memberId"
+          ],
+          "queryParamNames": [],
+          "operationId": "TeamController_updateRole",
+          "write": true,
+          "wantsBody": true,
+          "title": "Update team member role",
+          "description": "Set Admin/Member or assign a custom role_id. You cannot change your own role.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": [
+            "body",
+            "memberId"
+          ]
+        },
+        "remove": {
+          "operationKey": "DELETE /team/members/{memberId}",
+          "method": "delete",
+          "pathTemplate": "/team/members/{memberId}",
+          "pathParamNames": [
+            "memberId"
+          ],
+          "queryParamNames": [],
+          "operationId": "TeamController_remove",
+          "write": true,
+          "wantsBody": false,
+          "title": "Remove team member",
+          "description": "Remove a member from the organization. You cannot remove yourself.",
+          "tags": [
+            "Équipe"
+          ],
+          "requiredInput": [
+            "memberId"
           ]
         }
       }
@@ -3883,7 +4391,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List webhook deliveries",
-          "description": "List outbound webhook delivery attempts with response status and retries. Use to debug why an endpoint didn't receive events.",
+          "description": "List outbound webhook delivery attempts with response status and retries. Same stream as lomi_logs action=list type=webhook_delivery. Use retry on a failed delivery id.",
           "tags": [
             "Webhooks"
           ],

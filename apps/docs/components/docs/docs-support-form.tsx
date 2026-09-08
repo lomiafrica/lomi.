@@ -278,7 +278,9 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
         </div>
       ) : null}
 
-      <div className={siteKey ? 'mt-3 flex justify-end' : 'mt-4 flex justify-end'}>
+      <div
+        className={siteKey ? 'mt-3 flex justify-end' : 'mt-4 flex justify-end'}
+      >
         <Button type="submit" disabled={pending}>
           {pending ? t('support.submitting') : t('support.submit')}
         </Button>

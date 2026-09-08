@@ -2,9 +2,11 @@
   "title": "Products",
   "pages": [
     "ProductsController_addPrice",
+    "ProductsController_archive",
     "ProductsController_create",
     "ProductsController_findAll",
     "ProductsController_findOne",
-    "ProductsController_setDefaultPrice"
+    "ProductsController_setDefaultPrice",
+    "ProductsController_update"
   ]
 }

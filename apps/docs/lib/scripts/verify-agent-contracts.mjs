@@ -62,7 +62,8 @@ function isStringValue(value) {
 
 function isObjectValue(value) {
   return (
-    value !== null && Object.prototype.toString.call(value) === '[object Object]'
+    value !== null &&
+    Object.prototype.toString.call(value) === '[object Object]'
   );
 }
 
@@ -133,8 +134,10 @@ if (
 if (!merchantSpec.components?.schemas?.ErrorResponse) {
   throw new Error('openapi.json: missing ErrorResponse schema');
 }
-if (!merchantSpec.components?.parameters?.['Idempotency-Key'] &&
-    !merchantSpec.components?.parameters?.IdempotencyKey) {
+if (
+  !merchantSpec.components?.parameters?.['Idempotency-Key'] &&
+  !merchantSpec.components?.parameters?.IdempotencyKey
+) {
   throw new Error('openapi.json: missing Idempotency-Key parameter');
 }
 if (!merchantSpec.components?.securitySchemes?.oauth2) {
@@ -142,11 +145,7 @@ if (!merchantSpec.components?.securitySchemes?.oauth2) {
 }
 
 const agentSpec = mustParseJson('agent OpenAPI', paths.agentOpenApi);
-if (
-  !agentSpec.openapi ||
-  !agentSpec.paths ||
-  !isObjectValue(agentSpec.paths)
-) {
+if (!agentSpec.openapi || !agentSpec.paths || !isObjectValue(agentSpec.paths)) {
   throw new Error(
     'agent-openapi.json: invalid OpenAPI document (run apps/api: pnpm run openapi:export:agent)',
   );
@@ -354,7 +353,9 @@ if (!docsDiscovery.includes("AGENT_SKILL_NAME = 'lomi-payments'")) {
   throw new Error('docs agent-discovery must publish skill name lomi-payments');
 }
 if (!docsDiscovery.includes('MCP_ORIGIN')) {
-  throw new Error('docs agent-discovery must import MCP_ORIGIN for the hosted MCP URL');
+  throw new Error(
+    'docs agent-discovery must import MCP_ORIGIN for the hosted MCP URL',
+  );
 }
 if (!docsDiscovery.includes('BRAND_DEFINITION')) {
   throw new Error('docs agent-discovery must reuse BRAND_DEFINITION');

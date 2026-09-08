@@ -1,6 +1,8 @@
 {
   "title": "Organizations",
   "pages": [
+    "OrganizationsController_create",
+    "OrganizationsController_createKey",
     "OrganizationsController_findAll",
     "OrganizationsController_findOne",
     "OrganizationsController_getMetrics",

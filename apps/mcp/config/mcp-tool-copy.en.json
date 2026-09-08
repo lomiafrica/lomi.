@@ -65,7 +65,7 @@
   },
   "GET /logs": {
     "title": "List logs",
-    "description": "List organization logs. Set the `type` query param to pick a stream: api_request, api_error, webhook_delivery, or activity (audit). Use to debug API calls or trace events."
+    "description": "`type` is required: api_request, api_error, webhook_delivery, or activity. Webhook debugging can also use lomi_webhooks deliveries/retry. Use to debug API calls or trace events."
   },
   "GET /logs/{id}": {
     "title": "Get a log entry",
@@ -225,7 +225,7 @@
   },
   "GET /webhooks/deliveries": {
     "title": "List webhook deliveries",
-    "description": "List outbound webhook delivery attempts with response status and retries. Use to debug why an endpoint didn't receive events."
+    "description": "List outbound webhook delivery attempts with response status and retries. Same stream as lomi_logs action=list type=webhook_delivery. Use retry on a failed delivery id."
   },
   "GET /webhooks/deliveries/{id}": {
     "title": "Get webhook delivery",
@@ -401,11 +401,91 @@
   },
   "POST /exports": {
     "title": "Create export",
-    "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll get until download_url is set. For money-moving tools, confirm first."
+    "description": "Start a CSV or PDF export: transactions_csv, transactions_pdf, customers_csv, customers_pdf, statement_pdf, journal_csv, logs_csv (filters.type), webhook_deliveries_csv, or account_export. Poll list or get until download_url is set."
+  },
+  "GET /exports": {
+    "title": "List exports",
+    "description": "List recent export jobs for the current organization so you can poll without remembering ids."
   },
   "GET /exports/{id}": {
     "title": "Get export",
     "description": "Check export job status. When completed, download_url is a short-lived signed URL."
+  },
+  "POST /organizations": {
+    "title": "Create organization",
+    "description": "Open a new organization and return a secret key once. MCP adopts that key on the session (action=create)."
+  },
+  "POST /organizations/{id}/keys": {
+    "title": "Use organization",
+    "description": "Mint a secret key for an organization this merchant already belongs to. MCP adopts that key (action=use)."
+  },
+  "POST /api-keys": {
+    "title": "Create API key",
+    "description": "Create a secret or publishable key. Returns the full secret once. Does not switch the MCP session."
+  },
+  "DELETE /api-keys/{id}": {
+    "title": "Revoke API key",
+    "description": "Soft-revoke an API key. Pass the key value or masked prefix."
+  },
+  "PATCH /products/{id}": {
+    "title": "Update product",
+    "description": "Update name, description, visibility, images, SKU, or inventory. Product type cannot change after creation."
+  },
+  "DELETE /products/{id}": {
+    "title": "Archive product",
+    "description": "Soft-archive a product so it no longer appears in the catalog."
+  },
+  "PATCH /payment-links/{id}": {
+    "title": "Update payment link",
+    "description": "Update title, URLs, checkout fields, expiry, or amount (instant links)."
+  },
+  "DELETE /payment-links/{id}": {
+    "title": "Archive payment link",
+    "description": "Deactivate a payment link. Existing paid checkouts stay."
+  },
+  "DELETE /coupons/{id}": {
+    "title": "Delete coupon",
+    "description": "Delete a discount coupon from the organization."
+  },
+  "GET /team": {
+    "title": "List team",
+    "description": "List members and pending invitations for the current organization."
+  },
+  "GET /team/roles": {
+    "title": "List team roles",
+    "description": "List Admin/Member and any custom roles already created."
+  },
+  "POST /team/invitations": {
+    "title": "Invite team member",
+    "description": "Invite by email with Admin/Member or role_id. The human accepts in the browser."
+  },
+  "DELETE /team/invitations": {
+    "title": "Revoke team invitation",
+    "description": "Cancel a pending invitation by email."
+  },
+  "PATCH /team/members/{memberId}": {
+    "title": "Update team member role",
+    "description": "Set Admin/Member or assign a custom role_id. You cannot change your own role."
+  },
+  "DELETE /team/members/{memberId}": {
+    "title": "Remove team member",
+    "description": "Remove a member from the organization. You cannot remove yourself."
+  },
+  "GET /settings/checkout": {
+    "title": "Get checkout settings",
+    "description": "Language, success/cancel URLs, pay button, fee pass-through, analytics, and custom fields."
+  },
+  "PATCH /settings/checkout": {
+    "title": "Update checkout settings",
+    "description": "Pass a settings object with the same fields as Settings → Checkout."
+  },
+  "GET /settings/storefront": {
+    "title": "Get storefront settings",
+    "description": "Enabled flag, slug, announcement, shipping, and tax config."
+  },
+  "PATCH /settings/storefront": {
+    "title": "Update storefront settings",
+    "description": "Enable/disable the storefront, change slug, announcement, or shipping/tax."
   },
   "GET /finance/summary": {
     "title": "Finance summary",

@@ -2,6 +2,7 @@
   "title": "Exports",
   "pages": [
     "MerchantExportsController_create",
+    "MerchantExportsController_findAll",
     "MerchantExportsController_findOne"
   ]
 }

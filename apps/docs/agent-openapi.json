@@ -22,9 +22,7 @@
           }
         },
         "summary": "Négociation des capacités de l'agent (surface de découverte non authentifiée)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/register/challenge": {
@@ -48,9 +46,7 @@
           }
         },
         "summary": "Issue a proof-of-work challenge for sandbox agent bootstrap",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/register": {
@@ -74,9 +70,7 @@
           }
         },
         "summary": "Mint a sandbox-only bootstrap provisioning key after solving the PoW challenge",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/events": {
@@ -105,9 +99,7 @@
           }
         ],
         "summary": "Flux Server-Sent Events (limité à l'organisation, signaux de maintien de connexion)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/subscriptions": {
@@ -136,9 +128,7 @@
           }
         ],
         "summary": "S'inscrire aux notifications adaptées à l'agent (persistant + relais SSE Redis)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       },
       "get": {
         "operationId": "AgentSubscriptionsController_list",
@@ -165,9 +155,7 @@
           }
         ],
         "summary": "Lister les abonnements de l'agent",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/subscriptions/{id}": {
@@ -206,9 +194,7 @@
           }
         ],
         "summary": "Supprimer un abonnement",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/workflows": {
@@ -247,9 +233,7 @@
           }
         ],
         "summary": "Démarrer un workflow multi-étapes (idempotence sur idempotency_key, persistant)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/workflows/{runId}": {
@@ -284,9 +268,7 @@
           }
         ],
         "summary": "Obtenir l'état d'une exécution de workflow",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/workflows/{runId}/steps/{stepId}": {
@@ -337,9 +319,7 @@
           }
         ],
         "summary": "Faire avancer une étape du workflow (primitive d'orchestration)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/handoff": {
@@ -378,9 +358,7 @@
           }
         ],
         "summary": "Transfert inter-services / inter-agents (contexte + enveloppe de tâche)",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/agent/handoff/{id}": {
@@ -415,9 +393,7 @@
           }
         ],
         "summary": "Récupérer un enregistrement de transfert",
-        "tags": [
-          "Agent"
-        ]
+        "tags": ["Agent"]
       }
     },
     "/provisioning/accounts": {
@@ -457,9 +433,7 @@
           }
         ],
         "summary": "Create a merchant account for agent-driven onboarding",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/onboarding/documents": {
@@ -507,9 +481,7 @@
           }
         ],
         "summary": "Upload a KYC document for onboarding",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/onboarding/extract": {
@@ -557,9 +529,7 @@
           }
         ],
         "summary": "Extract onboarding data from website or uploaded documents",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/onboarding/complete": {
@@ -608,9 +578,7 @@
           }
         ],
         "summary": "Complete merchant onboarding and submit KYC",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/onboarding/status": {
@@ -648,9 +616,7 @@
           }
         ],
         "summary": "Get onboarding, KYC, and verification status",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/api-keys": {
@@ -689,9 +655,7 @@
           }
         ],
         "summary": "Retrieve provisioned test API keys for the merchant",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/live-activation/request": {
@@ -740,9 +704,7 @@
           }
         ],
         "summary": "Request live mode activation (requires merchant approval)",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/provisioning/merchants/{merchantId}/live-activation/status": {
@@ -781,9 +743,7 @@
           }
         ],
         "summary": "Get live activation request status",
-        "tags": [
-          "Provisioning"
-        ]
+        "tags": ["Provisioning"]
       }
     },
     "/partners/provisioning-keys": {
@@ -813,9 +773,7 @@
           }
         ],
         "summary": "Mint a per-user provisioning key",
-        "tags": [
-          "Partners"
-        ]
+        "tags": ["Partners"]
       },
       "get": {
         "operationId": "PartnersController_listProvisioningKeys",
@@ -842,9 +800,7 @@
           }
         ],
         "summary": "List provisioning keys minted by this partner",
-        "tags": [
-          "Partners"
-        ]
+        "tags": ["Partners"]
       }
     },
     "/partners/provisioning-keys/{provisioningKeyId}": {
@@ -882,9 +838,7 @@
           }
         ],
         "summary": "Revoke a provisioning key",
-        "tags": [
-          "Partners"
-        ]
+        "tags": ["Partners"]
       }
     },
     "/partners/usage": {
@@ -913,9 +867,7 @@
           }
         ],
         "summary": "Partner provisioning usage summary",
-        "tags": [
-          "Partners"
-        ]
+        "tags": ["Partners"]
       }
     },
     "/.well-known/oauth-authorization-server": {
@@ -939,9 +891,7 @@
           }
         },
         "summary": "OAuth 2.1 authorization server metadata (RFC 8414)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/.well-known/openid-configuration": {
@@ -965,9 +915,7 @@
           }
         },
         "summary": "OpenID Provider metadata alias of RFC 8414 (OAuth 2.1 AS)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/.well-known/oauth-protected-resource": {
@@ -991,9 +939,7 @@
           }
         },
         "summary": "OAuth protected resource metadata for the REST API (RFC 9728)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/register": {
@@ -1028,9 +974,7 @@
           }
         },
         "summary": "Dynamic client registration (RFC 7591)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/clients/{clientId}": {
@@ -1054,9 +998,7 @@
           }
         },
         "summary": "Public OAuth client identity (name, redirect URIs, scopes)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/authorize": {
@@ -1080,9 +1022,7 @@
           }
         },
         "summary": "Start OAuth authorization (redirects to dashboard consent)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/token": {
@@ -1106,9 +1046,7 @@
           }
         },
         "summary": "OAuth token endpoint",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/introspect": {
@@ -1132,9 +1070,7 @@
           }
         },
         "summary": "Token introspection (RFC 7662)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/introspect/mcp": {
@@ -1158,9 +1094,7 @@
           }
         },
         "summary": "MCP-internal token introspection (includes provisioning_key)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/revoke": {
@@ -1184,9 +1118,7 @@
           }
         },
         "summary": "Token revocation (RFC 7009)",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     },
     "/oauth/consent": {
@@ -1210,9 +1142,7 @@
           }
         },
         "summary": "Approve or deny OAuth consent after dashboard login",
-        "tags": [
-          "OAuth"
-        ]
+        "tags": ["OAuth"]
       }
     }
   },
@@ -1325,23 +1255,14 @@
             "example": "fr"
           }
         },
-        "required": [
-          "email",
-          "full_name",
-          "terms_accepted_at",
-          "terms_version"
-        ]
+        "required": ["email", "full_name", "terms_accepted_at", "terms_version"]
       },
       "UploadProvisioningDocumentDto": {
         "type": "object",
         "properties": {
           "document_type": {
             "type": "string",
-            "enum": [
-              "identity",
-              "business_registration",
-              "address_proof"
-            ]
+            "enum": ["identity", "business_registration", "address_proof"]
           },
           "content_base64": {
             "type": "string",
@@ -1384,19 +1305,14 @@
             "type": "string"
           }
         },
-        "required": [
-          "identity_proof_path"
-        ]
+        "required": ["identity_proof_path"]
       },
       "ExtractProvisioningOnboardingDto": {
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
-            "enum": [
-              "website",
-              "documents"
-            ]
+            "enum": ["website", "documents"]
           },
           "website_url": {
             "type": "string",
@@ -1413,9 +1329,7 @@
             "$ref": "#/components/schemas/ProvisioningDocumentPathsDto"
           }
         },
-        "required": [
-          "type"
-        ]
+        "required": ["type"]
       },
       "CompleteProvisioningOnboardingDto": {
         "type": "object",
@@ -1597,10 +1511,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "client_name",
-          "redirect_uris"
-        ]
+        "required": ["client_name", "redirect_uris"]
       }
     }
   }

@@ -56,11 +56,7 @@ pub fn verify_from_headers(
     Err("Missing X-Lomi-Signature-V1 header".to_string())
 }
 
-fn verify_v1_signature(
-    raw_body: &str,
-    signature_header: &str,
-    secret: &str,
-) -> Result<(), String> {
+fn verify_v1_signature(raw_body: &str, signature_header: &str, secret: &str) -> Result<(), String> {
     let mut timestamp = None;
     let mut signature = None;
     for part in signature_header.split(',') {

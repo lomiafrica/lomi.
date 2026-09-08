@@ -202,6 +202,56 @@
         "tags": [
           "Organisations"
         ]
+      },
+      "post": {
+        "description": "Ouvre un nouvel espace (comme Paramètres → Nouvelle organisation) et renvoie une clé secrète une fois.",
+        "operationId": "OrganizationsController_create",
+        "parameters": [
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organisation créée"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Créer une organisation",
+        "tags": [
+          "Organisations"
+        ]
       }
     },
     "/organizations/metrics": {
@@ -370,6 +420,58 @@
           }
         ],
         "summary": "Organisation par ID",
+        "tags": [
+          "Organisations"
+        ]
+      }
+    },
+    "/organizations/{id}/keys": {
+      "post": {
+        "description": "Mint une clé secrète pour un espace auquel le marchand appartient déjà. L’agent MCP peut l’adopter (action=use).",
+        "operationId": "OrganizationsController_createKey",
+        "parameters": [
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clé créée"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Créer une clé secrète pour une organisation",
         "tags": [
           "Organisations"
         ]
@@ -2438,6 +2540,91 @@
         "tags": [
           "Products"
         ]
+      },
+      "patch": {
+        "description": "Met à jour nom, description, visibilité, images, SKU et stock. Le type de produit ne change pas.",
+        "operationId": "ProductsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID du produit",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Mettre à jour un produit",
+        "tags": [
+          "Products"
+        ]
+      },
+      "delete": {
+        "description": "Archive le produit (delete_product, soft).",
+        "operationId": "ProductsController_archive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID du produit",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Archiver un produit",
+        "tags": [
+          "Products"
+        ]
       }
     },
     "/products/{id}/prices": {
@@ -3201,6 +3388,45 @@
         "tags": [
           "Coupons"
         ]
+      },
+      "delete": {
+        "description": "Supprime le coupon de l’organisation (delete_discount_coupon).",
+        "operationId": "DiscountCouponsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID du coupon",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Supprimer un coupon",
+        "tags": [
+          "Coupons"
+        ]
       }
     },
     "/checkout-sessions": {
@@ -3881,6 +4107,99 @@
           }
         ],
         "summary": "Obtenir un lien de paiement par ID",
+        "tags": [
+          "Payment Links"
+        ]
+      },
+      "patch": {
+        "description": "Titre, URLs, champs checkout, expiration, ou montant (lien instantané).",
+        "operationId": "PaymentLinksController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentLinkResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Mettre à jour un lien de paiement",
+        "tags": [
+          "Payment Links"
+        ]
+      },
+      "delete": {
+        "description": "Désactive le lien (safe_delete_payment_link).",
+        "operationId": "PaymentLinksController_archive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Archiver un lien de paiement",
         "tags": [
           "Payment Links"
         ]
@@ -6160,7 +6479,7 @@
     },
     "/exports": {
       "post": {
-        "description": "Start a CSV or PDF export (transactions, customers, monthly statement, or accounting journal). Poll GET /exports/:id for download_url.",
+        "description": "Start a CSV or PDF export (transactions, customers, customers_pdf, statement, journal, logs_csv, webhook_deliveries_csv, or account_export). Poll GET /exports or GET /exports/:id for download_url.",
         "operationId": "MerchantExportsController_create",
         "parameters": [
           {
@@ -6192,6 +6511,46 @@
           }
         ],
         "summary": "Create an export job",
+        "tags": [
+          "Exports"
+        ]
+      },
+      "get": {
+        "description": "Recent export jobs for the current organization.",
+        "operationId": "MerchantExportsController_findAll",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExportResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List export jobs",
         "tags": [
           "Exports"
         ]
@@ -6240,6 +6599,80 @@
         "summary": "Get export job status and download URL",
         "tags": [
           "Exports"
+        ]
+      }
+    },
+    "/account/export": {
+      "post": {
+        "description": "Démarre un export GDPR (clients, transactions, factures, webhooks, équipe, réglages) pour l’organisation courante. Pas de confirmation.",
+        "operationId": "AccountController_export",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Exporter les données du compte",
+        "tags": [
+          "Compte"
+        ]
+      }
+    },
+    "/account/delete": {
+      "post": {
+        "description": "Renvoie un confirmation_token au premier appel, puis soft_delete_merchant.",
+        "operationId": "AccountController_deleteAccount",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Supprimer le compte marchand",
+        "tags": [
+          "Compte"
         ]
       }
     },
@@ -7103,6 +7536,464 @@
         "tags": [
           "API keys"
         ]
+      },
+      "post": {
+        "description": "Renvoie le secret une seule fois. Ne change pas la clé de session MCP (utiliser POST /organizations/:id/keys pour cela).",
+        "operationId": "ApiKeysController_create",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Créer une clé API",
+        "tags": [
+          "API keys"
+        ]
+      }
+    },
+    "/api-keys/{id}": {
+      "delete": {
+        "description": "Désactive la clé (delete_api_key). Passer la valeur de clé ou le préfixe masqué.",
+        "operationId": "ApiKeysController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Révoquer une clé API",
+        "tags": [
+          "API keys"
+        ]
+      }
+    },
+    "/team": {
+      "get": {
+        "description": "Membres et invitations de l’organisation de la clé.",
+        "operationId": "TeamController_list",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Lister l’équipe",
+        "tags": [
+          "Équipe"
+        ]
+      }
+    },
+    "/team/roles": {
+      "get": {
+        "description": "Rôles Admin/Member (et rôles custom déjà créés).",
+        "operationId": "TeamController_listRoles",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Lister les rôles",
+        "tags": [
+          "Équipe"
+        ]
+      }
+    },
+    "/team/invitations": {
+      "post": {
+        "description": "Envoie une invitation. L’humain accepte dans le navigateur. role Admin/Member ou role_id.",
+        "operationId": "TeamController_invite",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteTeamMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Inviter un membre",
+        "tags": [
+          "Équipe"
+        ]
+      },
+      "delete": {
+        "description": "Annule une invitation en attente par email.",
+        "operationId": "TeamController_revokeInvite",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeTeamInviteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Révoquer une invitation",
+        "tags": [
+          "Équipe"
+        ]
+      }
+    },
+    "/team/members/{memberId}": {
+      "patch": {
+        "description": "Admin/Member via role, ou rôle custom via role_id.",
+        "operationId": "TeamController_updateRole",
+        "parameters": [
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeamMemberRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Changer le rôle d’un membre",
+        "tags": [
+          "Équipe"
+        ]
+      },
+      "delete": {
+        "description": "Retire le membre de l’organisation. Pas de self-remove.",
+        "operationId": "TeamController_remove",
+        "parameters": [
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Retirer un membre",
+        "tags": [
+          "Équipe"
+        ]
+      }
+    },
+    "/settings/checkout": {
+      "get": {
+        "description": "Langue, URLs, bouton payer, frais, analytics et champs custom (Paramètres → Checkout).",
+        "operationId": "SettingsController_getCheckout",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Lire les réglages checkout",
+        "tags": [
+          "Paramètres"
+        ]
+      },
+      "patch": {
+        "description": "Passe un objet settings (même forme que le dashboard).",
+        "operationId": "SettingsController_updateCheckout",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCheckoutSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Mettre à jour les réglages checkout",
+        "tags": [
+          "Paramètres"
+        ]
+      }
+    },
+    "/settings/storefront": {
+      "get": {
+        "description": "Activation, slug, annonce, livraison et taxes.",
+        "operationId": "SettingsController_getStorefront",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Lire la vitrine",
+        "tags": [
+          "Paramètres"
+        ]
+      },
+      "patch": {
+        "description": "Active/désactive, change le slug, l’annonce, ou shipping/tax.",
+        "operationId": "SettingsController_updateStorefront",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStorefrontSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Mettre à jour la vitrine",
+        "tags": [
+          "Paramètres"
+        ]
       }
     }
   },
@@ -7482,6 +8373,19 @@
           "is_deleted"
         ]
       },
+      "CreateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "OrganizationMetricsResponseDto": {
         "type": "object",
         "properties": {
@@ -7546,6 +8450,15 @@
           },
           "stripe_radar_passthrough": {
             "type": "boolean"
+          }
+        }
+      },
+      "CreateOrganizationKeyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 80
           }
         }
       },
@@ -9344,6 +10257,53 @@
           "url"
         ]
       },
+      "UpdatePaymentLinkDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "expires_at": {
+            "type": "string"
+          },
+          "success_url": {
+            "type": "string"
+          },
+          "cancel_url": {
+            "type": "string"
+          },
+          "allow_coupon_code": {
+            "type": "boolean"
+          },
+          "allow_quantity": {
+            "type": "boolean"
+          },
+          "require_billing_address": {
+            "type": "boolean"
+          },
+          "require_email": {
+            "type": "boolean"
+          },
+          "require_phone": {
+            "type": "boolean"
+          },
+          "require_name": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
       "CreatePayoutResponseDto": {
         "type": "object",
         "properties": {
@@ -10490,6 +11450,14 @@
           "status"
         ]
       },
+      "DeleteAccountDto": {
+        "type": "object",
+        "properties": {
+          "confirmation_token": {
+            "type": "string"
+          }
+        }
+      },
       "MeterResponseDto": {
         "type": "object",
         "properties": {
@@ -10672,6 +11640,122 @@
         "required": [
           "subscription_id"
         ]
+      },
+      "CreateApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "key_type": {
+            "type": "string",
+            "enum": [
+              "secret",
+              "publishable"
+            ]
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "live",
+              "test"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "InviteTeamMemberDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "Admin",
+              "Member"
+            ]
+          },
+          "role_id": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "RevokeTeamInviteDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "UpdateTeamMemberRoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "Admin",
+              "Member"
+            ]
+          },
+          "role_id": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateCheckoutSettingsDto": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object"
+          }
+        }
+      },
+      "UpdateStorefrontSettingsDto": {
+        "type": "object",
+        "properties": {
+          "storefront_enabled": {
+            "type": "boolean"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 60
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "announcement_text": {
+            "type": "string"
+          },
+          "announcement_active": {
+            "type": "boolean"
+          },
+          "shipping_config": {
+            "type": "object"
+          },
+          "tax_config": {
+            "type": "object"
+          }
+        }
       },
       "ErrorResponse": {
         "type": "object",

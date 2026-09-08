@@ -4,11 +4,7 @@ import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { useDocsWorkspace } from '@/lib/docs/workspace-context';
 
 /** Client layer that swaps test-key placeholders in already-highlighted docs code. */
-export function PersonalizedCodeSurface({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function PersonalizedCodeSurface({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const originalHtmlRef = useRef<string | null>(null);
   const { personalizeSnippet, apiKeyResolution } = useDocsWorkspace();

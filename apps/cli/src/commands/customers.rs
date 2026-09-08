@@ -27,7 +27,8 @@ pub async fn run(common: &CommonOptions, args: CustomersArgs) -> Result<()> {
     let client = ApiClient::new(&auth)?;
     match args.command {
         CustomersCommand::List { limit } => {
-            let payload: serde_json::Value = client.get(&format!("/customers?limit={limit}")).await?;
+            let payload: serde_json::Value =
+                client.get(&format!("/customers?limit={limit}")).await?;
             if cli::output::should_use_json(common) {
                 return cli::output::print_json(&payload);
             }

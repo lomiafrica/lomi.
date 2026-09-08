@@ -125,7 +125,6 @@ async fn run_serve(common: &CommonOptions, args: McpServeArgs) -> Result<()> {
 }
 
 fn which(bin: &str) -> bool {
-    std::env::var_os("PATH").is_some_and(|paths| {
-        std::env::split_paths(&paths).any(|dir| dir.join(bin).is_file())
-    })
+    std::env::var_os("PATH")
+        .is_some_and(|paths| std::env::split_paths(&paths).any(|dir| dir.join(bin).is_file()))
 }

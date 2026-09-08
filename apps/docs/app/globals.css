@@ -135,7 +135,11 @@
   --docs-shadow-lift:
     0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.11);
   --docs-link-underline: color-mix(in oklab, currentColor 20%, transparent);
-  --docs-link-underline-hover: color-mix(in oklab, currentColor 42%, transparent);
+  --docs-link-underline-hover: color-mix(
+    in oklab,
+    currentColor 42%,
+    transparent
+  );
   --docs-link-underline-thickness: 1px;
   --docs-link-underline-offset: 0.28em;
 }
@@ -390,11 +394,22 @@ button:active:focus {
 .docs-support-form input:not([tabindex='-1']):hover,
 .docs-support-form textarea:hover,
 .docs-support-form .docs-support-select:hover {
-  border-color: color-mix(in oklab, var(--foreground) 24%, transparent) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--foreground) 24%,
+    transparent
+  ) !important;
 }
 
-.docs-support-form input:not([tabindex='-1']):is(:focus, :focus-visible, :hover:focus, :active:focus),
-.docs-support-form textarea:is(:focus, :focus-visible, :hover:focus, :active:focus),
+.docs-support-form
+  input:not([tabindex='-1']):is(
+    :focus,
+    :focus-visible,
+    :hover:focus,
+    :active:focus
+  ),
+.docs-support-form
+  textarea:is(:focus, :focus-visible, :hover:focus, :active:focus),
 .docs-support-form .docs-support-select:focus-within {
   border: 1px solid color-mix(in oklab, var(--foreground) 36%, transparent) !important;
   box-shadow: none !important;
@@ -727,7 +742,9 @@ html.dark .docs-turnstile-mount {
 
 /* Desktop: search and section switcher share one control height. */
 #nd-sidebar [data-search-full],
-#nd-sidebar > div.flex.flex-col.gap-3.p-4.pb-2 > button:not([data-search-full]) {
+#nd-sidebar
+  > div.flex.flex-col.gap-3.p-4.pb-2
+  > button:not([data-search-full]) {
   height: 2rem;
   min-height: 2rem;
   padding-block: 0;
@@ -774,7 +791,9 @@ html.dark .docs-turnstile-mount {
   box-shadow: inset 0 0 0 1px var(--docs-sidebar-hairline-soft);
 }
 
-#nd-sidebar > div.flex.flex-col.gap-3.p-4.pb-2 > button:not([data-search-full]) {
+#nd-sidebar
+  > div.flex.flex-col.gap-3.p-4.pb-2
+  > button:not([data-search-full]) {
   padding-block: 0;
 }
 
@@ -800,7 +819,9 @@ html.dark .docs-turnstile-mount {
   > button:not([data-search-full])[data-state='open'],
 #nd-sidebar-mobile
   > div.flex.flex-col.gap-3.p-4.pb-2
-  > button:not([data-search-full]):not(.docs-mobile-section-switch)[data-state='open'] {
+  > button:not([data-search-full]):not(
+    .docs-mobile-section-switch
+  )[data-state='open'] {
   background: var(--docs-sidebar-well);
   color: var(--foreground);
 }
@@ -973,7 +994,9 @@ html.dark .docs-turnstile-mount {
 
   /* Compact desktop chip lives in the drawer chrome; language + theme move
      to the full-width footer below the nav. */
-  #nd-sidebar-mobile > div.flex.flex-col.gap-3.p-4.pb-2 > div.flex.items-center {
+  #nd-sidebar-mobile
+    > div.flex.flex-col.gap-3.p-4.pb-2
+    > div.flex.items-center {
     display: none;
   }
 
@@ -1180,7 +1203,6 @@ html.dark .docs-turnstile-mount {
     text-transform: uppercase;
     color: var(--muted-foreground);
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1578,7 +1600,9 @@ html.dark .docs-turnstile-mount {
 }
 
 /* Pills inside callouts lift off the box fill instead of using the page chip. */
-.docs-aside .docs-aside-body :is(.docs-inline-code, .docs-inline-command, code) {
+.docs-aside
+  .docs-aside-body
+  :is(.docs-inline-code, .docs-inline-command, code) {
   background: color-mix(in oklab, var(--foreground) 14%, transparent);
   border-color: color-mix(in oklab, var(--foreground) 20%, transparent);
 }
@@ -1846,11 +1870,19 @@ html.dark .docs-turnstile-mount {
 }
 
 .docs-mcp-index-search input:hover {
-  border-color: color-mix(in oklab, var(--foreground) 24%, transparent) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--foreground) 24%,
+    transparent
+  ) !important;
 }
 
 .docs-mcp-index-search input:is(:focus, :focus-visible) {
-  border-color: color-mix(in oklab, var(--foreground) 36%, transparent) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--foreground) 36%,
+    transparent
+  ) !important;
 }
 
 .docs-mcp-index-chips {
@@ -1876,13 +1908,21 @@ html.dark .docs-turnstile-mount {
 }
 
 .docs-mcp-index-chip:hover {
-  border-color: color-mix(in oklab, var(--foreground) 24%, transparent) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--foreground) 24%,
+    transparent
+  ) !important;
   color: var(--color-fd-foreground);
 }
 
 .docs-mcp-index-chip[aria-pressed='true'] {
   background: var(--docs-well);
-  border-color: color-mix(in oklab, var(--foreground) 28%, transparent) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--foreground) 28%,
+    transparent
+  ) !important;
   color: var(--color-fd-foreground);
 }
 

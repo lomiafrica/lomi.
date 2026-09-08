@@ -8,7 +8,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { isPublicRestApiOperation } from '@/lib/scripts/manual-api/constants';
-import { collectPublicOperations, isEnOperationId } from '@/lib/scripts/manual-api/render-operation-mdx';
+import {
+  collectPublicOperations,
+  isEnOperationId,
+} from '@/lib/scripts/manual-api/render-operation-mdx';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const openApiPath = join(__dirname, '..', '..', '..', 'openapi.json');

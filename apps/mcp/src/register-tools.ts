@@ -15,6 +15,7 @@ import {
   validateJsonValue,
   type JsonObject,
 } from "@lomi./shared";
+import { extractMerchantSecretKey } from "./extract-secret-key.js";
 
 const MONEY_TOOLS = new Set(["lomi_payouts", "lomi_refunds", "lomi_settlements"]);
 
@@ -26,6 +27,8 @@ export type ToolRegistrationContext = {
   excludeMoney?: boolean;
   /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
   skipSearchTool?: boolean;
+  /** Adopt a secret returned by lomi_organization create/use. */
+  onMerchantKeyDiscovered?: (secretKey: string) => void;
 };
 
 function resourceLinkFromResult(bodyText: string): {
@@ -137,6 +140,22 @@ function registerOneTool(
         );
         const text = truncateToolResultText(formatHttpResult(result));
         const ok = result.status >= 200 && result.status < 300;
+        if (
+          ok &&
+          tool.name === "lomi_organization" &&
+          (input["action"] === "create" || input["action"] === "use") &&
+          ctx.onMerchantKeyDiscovered
+        ) {
+          const secretKey = extractMerchantSecretKey(result.bodyText);
+          if (secretKey) {
+            ctx.onMerchantKeyDiscovered(secretKey);
+            mcpLog(
+              "organization_merchant_key_promoted",
+              { tool: tool.name, action: input["action"] },
+              "info",
+            );
+          }
+        }
         const content: Array<
           | { type: "text"; text: string }
           | {
@@ -190,6 +209,7 @@ export function registerMerchantTools(
     getApiKey,
     readOnlyOnly,
     excludeMoney,
+    onMerchantKeyDiscovered: ctx?.onMerchantKeyDiscovered,
   };
 
   if (!ctx?.skipSearchTool) {

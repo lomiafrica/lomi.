@@ -2,10 +2,7 @@
 
 'use client';
 
-import {
-  StatusPage,
-  StatusPageActionLink,
-} from '@lomi./ui/status-page';
+import { StatusPage, StatusPageActionLink } from '@lomi./ui/status-page';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
 

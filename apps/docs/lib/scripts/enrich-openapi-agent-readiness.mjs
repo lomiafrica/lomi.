@@ -60,7 +60,8 @@ function errorResponse(description) {
     },
     headers: {
       RateLimit: {
-        description: 'IETF rate limit remaining (draft-ietf-httpapi-ratelimit-headers)',
+        description:
+          'IETF rate limit remaining (draft-ietf-httpapi-ratelimit-headers)',
         schema: { type: 'string' },
       },
       'RateLimit-Policy': {
@@ -82,7 +83,8 @@ function enrichMerchantSpec(spec) {
     url: 'https://docs.lomi.africa',
     email: 'hello@lomi.africa',
   };
-  spec.info.description = `${spec.info.description ?? ''}\n\nRoutes stay unversioned. OpenAPI info.version is the schema release. Send optional Lomi-Version to pin a known schema. Compatibility is additive.`.trim();
+  spec.info.description =
+    `${spec.info.description ?? ''}\n\nRoutes stay unversioned. OpenAPI info.version is the schema release. Send optional Lomi-Version to pin a known schema. Compatibility is additive.`.trim();
 
   spec.components = spec.components ?? {};
   spec.components.schemas = spec.components.schemas ?? {};
@@ -144,7 +146,9 @@ function enrichMerchantSpec(spec) {
             param.name === 'Idempotency-Key',
         );
         if (!hasIdempotency) {
-          op.parameters.push({ $ref: '#/components/parameters/IdempotencyKey' });
+          op.parameters.push({
+            $ref: '#/components/parameters/IdempotencyKey',
+          });
         }
       }
       op.responses = op.responses ?? {};
@@ -218,11 +222,16 @@ function enrichAgentSpec(spec) {
 
 const merchantPath = join(docsRoot, 'openapi.json');
 const agentPath = join(docsRoot, 'agent-openapi.json');
-const merchant = enrichMerchantSpec(JSON.parse(readFileSync(merchantPath, 'utf-8')));
+const merchant = enrichMerchantSpec(
+  JSON.parse(readFileSync(merchantPath, 'utf-8')),
+);
 const agent = enrichAgentSpec(JSON.parse(readFileSync(agentPath, 'utf-8')));
 writeFileSync(merchantPath, `${JSON.stringify(merchant, null, 2)}\n`);
 writeFileSync(agentPath, `${JSON.stringify(agent, null, 2)}\n`);
-writeFileSync(join(websitePublic, 'openapi.json'), `${JSON.stringify(merchant, null, 2)}\n`);
+writeFileSync(
+  join(websitePublic, 'openapi.json'),
+  `${JSON.stringify(merchant, null, 2)}\n`,
+);
 writeFileSync(
   join(websitePublic, 'agent-openapi.json'),
   `${JSON.stringify(agent, null, 2)}\n`,

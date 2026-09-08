@@ -24,12 +24,12 @@ apps/docs/public/docs/images/
 
 **Theme toggle**
 
-| App                 | Where to switch theme                              |
-| ------------------- | -------------------------------------------------- |
-| Dashboard           | Portal theme toggle                                |
-| Checkout            | Checkout theme (if available) or system appearance |
-| Customer portal     | Portal theme                                       |
-| Docs                 | Docs site theme toggle (top bar)                   |
+| App             | Where to switch theme                              |
+| --------------- | -------------------------------------------------- |
+| Dashboard       | Portal theme toggle                                |
+| Checkout        | Checkout theme (if available) or system appearance |
+| Customer portal | Portal theme                                       |
+| Docs            | Docs site theme toggle (top bar)                   |
 
 ---
 
@@ -242,7 +242,7 @@ Capture each pair in light and dark:
 | ----------- | ---------------------------------------------------------------------------------------------------- |
 | **Save as** | `build/woocommerce-webhook-dashboard-light.webp` and `build/woocommerce-webhook-dashboard-dark.webp` |
 | **Open**    | dashboard.lomi.africa → **Developers → Webhooks** → endpoint with Woo store URL                      |
-| **Show**    | `PAYMENT_SUCCEEDED` and `REFUND_COMPLETED` enabled (or events visible).                     |
+| **Show**    | `PAYMENT_SUCCEEDED` and `REFUND_COMPLETED` enabled (or events visible).                              |
 
 ---
 

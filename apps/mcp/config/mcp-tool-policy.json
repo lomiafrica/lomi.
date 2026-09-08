@@ -21,7 +21,9 @@
     "GET /support-requests",
     "GET /support-requests/{id}",
     "POST /support-requests",
-    "POST /support-requests/{id}/close"
+    "POST /support-requests/{id}/close",
+    "POST /account/export",
+    "POST /account/delete"
   ],
   "groups": [
     {
@@ -47,7 +49,9 @@
         "get": "GET /products/{id}",
         "create": "POST /products",
         "add_price": "POST /products/{id}/prices",
-        "set_default_price": "POST /products/{id}/prices/{priceId}/default"
+        "set_default_price": "POST /products/{id}/prices/{priceId}/default",
+        "update": "PATCH /products/{id}",
+        "archive": "DELETE /products/{id}"
       }
     },
     {
@@ -65,7 +69,9 @@
       "actions": {
         "list": "GET /payment-links",
         "get": "GET /payment-links/{id}",
-        "create": "POST /payment-links"
+        "create": "POST /payment-links",
+        "update": "PATCH /payment-links/{id}",
+        "archive": "DELETE /payment-links/{id}"
       }
     },
     {
@@ -164,7 +170,8 @@
         "list": "GET /coupons",
         "get": "GET /coupons/{id}",
         "create": "POST /coupons",
-        "performance": "GET /coupons/{id}/performance"
+        "performance": "GET /coupons/{id}/performance",
+        "delete": "DELETE /coupons/{id}"
       }
     },
     {
@@ -181,6 +188,7 @@
       "title": "Exports",
       "actions": {
         "create": "POST /exports",
+        "list": "GET /exports",
         "get": "GET /exports/{id}"
       }
     },
@@ -206,7 +214,9 @@
       "name": "lomi_api_keys",
       "title": "API keys",
       "actions": {
-        "list": "GET /api-keys"
+        "list": "GET /api-keys",
+        "create": "POST /api-keys",
+        "revoke": "DELETE /api-keys/{id}"
       }
     },
     {
@@ -233,7 +243,9 @@
       "actions": {
         "list": "GET /organizations",
         "get": "GET /organizations/{id}",
-        "metrics": "GET /organizations/metrics"
+        "metrics": "GET /organizations/metrics",
+        "create": "POST /organizations",
+        "use": "POST /organizations/{id}/keys"
       }
     },
     {
@@ -284,6 +296,28 @@
         "transactions": "GET /settlements/{id}/transactions",
         "create_instant": "POST /settlements/instant",
         "get_instant": "GET /settlements/instant/{id}"
+      }
+    },
+    {
+      "name": "lomi_team",
+      "title": "Team",
+      "actions": {
+        "list": "GET /team",
+        "list_roles": "GET /team/roles",
+        "invite": "POST /team/invitations",
+        "revoke_invite": "DELETE /team/invitations",
+        "update_role": "PATCH /team/members/{memberId}",
+        "remove": "DELETE /team/members/{memberId}"
+      }
+    },
+    {
+      "name": "lomi_settings",
+      "title": "Checkout and storefront settings",
+      "actions": {
+        "get_checkout": "GET /settings/checkout",
+        "update_checkout": "PATCH /settings/checkout",
+        "get_storefront": "GET /settings/storefront",
+        "update_storefront": "PATCH /settings/storefront"
       }
     },
     {

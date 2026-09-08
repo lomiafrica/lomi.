@@ -23,10 +23,7 @@ import {
   DocsSecurityForm,
 } from '@/components/docs/docs-support-form';
 import { DocsTierCallout } from '@/components/docs/docs-tier-callout';
-import {
-  DocsNextStep,
-  DocsNextSteps,
-} from '@/components/docs/docs-next-steps';
+import { DocsNextStep, DocsNextSteps } from '@/components/docs/docs-next-steps';
 import { PricingTable } from '@/components/docs/pricing-table';
 import { TaskSurfaces } from '@/components/docs/task-surfaces';
 import { DocsHighlightedPre } from '@/components/docs/docs-highlighted-pre';

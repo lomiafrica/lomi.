@@ -1,6 +1,9 @@
 /* @proprietary license */
 
-import { DocsAppLayout, DocsMobileSectionSwitch } from '@/components/docs/docs-sidebar';
+import {
+  DocsAppLayout,
+  DocsMobileSectionSwitch,
+} from '@/components/docs/docs-sidebar';
 import { DocsHashScroll } from '@/components/docs/docs-hash-scroll';
 import { DocsMobileSearchBanner } from '@/components/docs/docs-mobile-search-banner';
 import { DocsSidebarLocaleAndTheme } from '@/components/docs/sidebar-locale-theme';
@@ -36,7 +39,7 @@ const SECTION_LABEL_KEYS = {
   'First steps': 'section.firstSteps',
   'API reference': 'section.apiReference',
   'REST API': 'section.restApi',
-  'API': 'section.restApi',
+  API: 'section.restApi',
   'Référence API': 'section.restApi',
   Basics: 'section.basics',
   Implementation: 'section.implementation',
@@ -183,38 +186,38 @@ export default async function Layout({
 
   return (
     <Provider initialLanguage={locale}>
-    <DocsAppLayout
-      {...base}
-      i18n={false}
-      tree={pageTree}
-      tabs={tabs}
-      sidebar={{
-        defaultOpenLevel: 0,
-        banner: (
-          <div key="docs-mobile-chrome" className="contents">
-            <DocsMobileSearchBanner />
-            <DocsMobileSectionSwitch />
-          </div>
-        ),
-        footer: (
-          <div
-            key="docs-mobile-locale-theme"
-            className="docs-mobile-locale-theme-footer md:hidden"
-          >
-            <DocsSidebarLocaleAndTheme mobile />
-          </div>
-        ),
-      }}
-      // just icon items
-      links={linkItems?.filter((item) => item.type === 'icon') ?? []}
-      nav={{
-        ...base.nav,
-        title: <>{logo}</>,
-      }}
-    >
-      <DocsHashScroll />
-      {children}
-    </DocsAppLayout>
+      <DocsAppLayout
+        {...base}
+        i18n={false}
+        tree={pageTree}
+        tabs={tabs}
+        sidebar={{
+          defaultOpenLevel: 0,
+          banner: (
+            <div key="docs-mobile-chrome" className="contents">
+              <DocsMobileSearchBanner />
+              <DocsMobileSectionSwitch />
+            </div>
+          ),
+          footer: (
+            <div
+              key="docs-mobile-locale-theme"
+              className="docs-mobile-locale-theme-footer md:hidden"
+            >
+              <DocsSidebarLocaleAndTheme mobile />
+            </div>
+          ),
+        }}
+        // just icon items
+        links={linkItems?.filter((item) => item.type === 'icon') ?? []}
+        nav={{
+          ...base.nav,
+          title: <>{logo}</>,
+        }}
+      >
+        <DocsHashScroll />
+        {children}
+      </DocsAppLayout>
     </Provider>
   );
 }

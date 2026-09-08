@@ -850,6 +850,168 @@ describe('createHttpApplication', () => {
     );
     fetchMock.mockRestore();
   });
+
+  it('guest tools list has no lomi_organization', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp/guest`;
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'guest-org', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    await initRes.text();
+    const listRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId!,
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'tools/list', id: 2 }),
+    });
+    const listed = parseSseJsonRpc(await listRes.text());
+    const names = ((listed.result as JsonObject).tools as JsonObject[]).map(
+      (t) => String(t.name),
+    );
+    expect(names).not.toContain('lomi_organization');
+    expect(names).toContain('lomi_provision');
+  });
+
+  it('lomi_organization create adopts lomi_sk_test_* on the session', async () => {
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    process.env.LOMI_SECRET_KEY = 'lomi_sk_test_org_start';
+    process.env.LOMI_API_URL = 'https://api.lomi.africa';
+    const seenKeys: string[] = [];
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input, init) => {
+        const url = String(input);
+        const rawHeaders = init?.headers;
+        let auth = '';
+        if (rawHeaders instanceof Headers) {
+          auth =
+            rawHeaders.get('X-API-KEY') ??
+            rawHeaders.get('x-api-key') ??
+            '';
+        } else if (rawHeaders && typeof rawHeaders === 'object') {
+          const rec = rawHeaders as Record<string, string>;
+          auth = rec['X-API-KEY'] ?? rec['x-api-key'] ?? rec['X-Api-Key'] ?? '';
+        }
+        if (url.includes('/organizations') && init?.method === 'POST') {
+          seenKeys.push(auth);
+          return new Response(
+            JSON.stringify({
+              organization_id: 'org-mcp',
+              store_handle: 'acme',
+              api_key: 'lomi_sk_test_adopted',
+            }),
+            { status: 201, headers: { 'Content-Type': 'application/json' } },
+          );
+        }
+        if (url.includes('/organizations') && (!init?.method || init.method === 'GET')) {
+          seenKeys.push(auth);
+          return new Response(JSON.stringify({ data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        return realFetch(input, init);
+      },
+    );
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const initRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'x-lomi-api-key': 'lomi_sk_test_org_start',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'initialize',
+        id: 1,
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'org-create', version: '0' },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get('mcp-session-id');
+    await initRes.text();
+
+    const createRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId!,
+        'x-lomi-api-key': 'lomi_sk_test_org_start',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'tools/call',
+        id: 2,
+        params: {
+          name: 'lomi_organization',
+          arguments: { action: 'create', body: { name: 'Acme' } },
+        },
+      }),
+    });
+    const created = parseSseJsonRpc(await createRes.text());
+    expect(created.result && (created.result as JsonObject).isError).not.toBe(
+      true,
+    );
+    expect(JSON.stringify(created.result)).toContain('lomi_sk_test_adopted');
+
+    const listRes = await fetch(base, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId!,
+        'x-lomi-api-key': 'lomi_sk_test_org_start',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'tools/call',
+        id: 3,
+        params: { name: 'lomi_organization', arguments: { action: 'list' } },
+      }),
+    });
+    expect(listRes.status).toBe(200);
+    const listed = parseSseJsonRpc(await listRes.text());
+    expect(listed.result && (listed.result as JsonObject).isError).not.toBe(
+      true,
+    );
+    expect(seenKeys.some((key) => key.includes('lomi_sk_test_adopted'))).toBe(
+      true,
+    );
+    fetchMock.mockRestore();
+  });
 });
 
 function parseSseJsonRpc(text: string): JsonObject {

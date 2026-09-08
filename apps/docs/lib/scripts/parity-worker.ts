@@ -11,7 +11,10 @@ const DOCS_ROOT = process.cwd();
 const MONOREPO_ROOT = path.resolve(DOCS_ROOT, '..', '..');
 
 async function checkDirectChargesDocsMute(errors: string[]): Promise<void> {
-  const mdxPath = path.join(DOCS_ROOT, 'content/docs/build/accept/direct-charges.mdx');
+  const mdxPath = path.join(
+    DOCS_ROOT,
+    'content/docs/build/accept/direct-charges.mdx',
+  );
   const content = await fs.readFile(mdxPath, 'utf-8');
   const lower = content.toLowerCase();
   if (!lower.includes('503') && !lower.includes('not available')) {

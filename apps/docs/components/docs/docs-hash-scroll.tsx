@@ -5,7 +5,7 @@
 import { useLayoutEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const HASH_WAIT_MS = 4000;
+const HASH_RETRY_FRAMES = 24;
 
 function hashId(): string {
   const raw = window.location.hash.replace(/^#/, '');
@@ -40,22 +40,26 @@ export function DocsHashScroll() {
       };
     }
 
-    const observer = new MutationObserver(() => {
-      if (scrollToHash()) observer.disconnect();
-    });
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-    });
-    const timeout = window.setTimeout(() => observer.disconnect(), HASH_WAIT_MS);
+    let frames = 0;
+    let raf = 0;
+    const tick = () => {
+      if (scrollToHash() || frames >= HASH_RETRY_FRAMES) return;
+      frames += 1;
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+
     const onHashChange = () => {
-      if (scrollToHash()) observer.disconnect();
+      frames = 0;
+      if (!scrollToHash()) {
+        window.cancelAnimationFrame(raf);
+        raf = window.requestAnimationFrame(tick);
+      }
     };
     window.addEventListener('hashchange', onHashChange);
 
     return () => {
-      observer.disconnect();
-      window.clearTimeout(timeout);
+      window.cancelAnimationFrame(raf);
       window.removeEventListener('hashchange', onHashChange);
     };
   }, [pathname]);

@@ -613,9 +613,8 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           (await resolveProvisioningKeyFromRequest(req, headerProvisioningKey)) ??
           headerProvisioningKey;
         const resolvedPartnerKey = headerPartnerKey;
-        if (sessionId && registry.has(sessionId) && resolvedMerchantKey) {
-          registry.updateMerchantApiKey(sessionId, resolvedMerchantKey);
-        }
+        // Presented merchant key binds the session (fingerprint). Do not write
+        // it over a key adopted by lomi_organization create/use or provisioning.
         if (
           sessionId &&
           registry.has(sessionId) &&

@@ -6,8 +6,7 @@ export function getVisibleDocsMarkdown(): string {
     document.querySelector('.docs-page-title')?.textContent?.trim() ||
     document.title;
   const description =
-    document.querySelector('.docs-page-description')?.textContent?.trim() ??
-    '';
+    document.querySelector('.docs-page-description')?.textContent?.trim() ?? '';
   const article =
     document.querySelector<HTMLElement>('#nd-page article') ??
     document.querySelector<HTMLElement>('article');

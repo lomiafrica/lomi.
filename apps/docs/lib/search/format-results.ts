@@ -65,7 +65,10 @@ export function matchesSearchSection(
   return docsSectionFromUrl(url) === tag;
 }
 
-function buildSnippet(doc: JsonObject, searchLower: string): string | undefined {
+function buildSnippet(
+  doc: JsonObject,
+  searchLower: string,
+): string | undefined {
   const description = readString(doc, 'description')?.trim();
   if (description) {
     return description.toLowerCase().includes(searchLower)
@@ -127,7 +130,8 @@ export function formatLocalResults(
 
   for (const result of results) {
     if (result.type !== 'page') continue;
-    if (!matchesSearchSection(result.url, tag) || seen.has(result.url)) continue;
+    if (!matchesSearchSection(result.url, tag) || seen.has(result.url))
+      continue;
     seen.add(result.url);
     rows.push({
       ...result,

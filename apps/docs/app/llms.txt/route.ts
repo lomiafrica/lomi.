@@ -145,9 +145,7 @@ export async function GET() {
   lines.push(
     "- **Côte d'Ivoire, Senegal, and UEMOA:** Wave (`XOF`), cards, and SPI on hosted checkout.",
   );
-  lines.push(
-    '- **MTN:** CI plus CM, GH, UG, ZM, BJ, CG, SZ, GN, ZA, LR, NG.',
-  );
+  lines.push('- **MTN:** CI plus CM, GH, UG, ZM, BJ, CG, SZ, GN, ZA, LR, NG.');
   lines.push(
     '- **Not lomi. rails:** Orange Money and Apple Pay. Djamo is coming for CI and SN.',
   );

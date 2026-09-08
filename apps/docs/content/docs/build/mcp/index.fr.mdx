@@ -191,7 +191,12 @@ Utilisez `https://sandbox.api.lomi.africa` pour des données sandbox.
 - Les outils marchands sont des **outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`, `lomi_invoices` avec `action=pdf`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés.
 - **`lomi_search_tools`**: recherche dans le catalogue d’outils quand le client charge les outils à la demande.
 - **`lomi_register_agent`**: émet une clé de provisioning sandbox (session invitée ou authentifiée).
-- **`lomi_support`**: déposer une plainte. Session invitée : `action=file` avec `email` et `message`. Avec une clé marchande : ticket Paramètres → Assistance (`list` / `get` / `close`). `action=status` renvoie la page de statut et `/ready`.
+- **`lomi_support`**: déposer une plainte. Session invitée : `action=file` avec `email` et `message`. Avec une clé marchande : ticket Paramètres → Assistance (`list` / `get` / `close`). `action=status` renvoie la page de statut et `/ready`. Clé marchande uniquement : `action=export` (bundle RGPD de l’org courante) et `action=delete_account` (aperçu + `confirmation_token`).
+- **`lomi_organization`**: `create` et `use` émettent un secret pour un espace nouveau ou existant et l’adoptent sur la session. L’invité reste sur `lomi_provision`.
+- **`lomi_team`** / **`lomi_settings`**: membres et invitations ; réglages checkout et vitrine (pas les sessions de paiement).
+- **`lomi_logs`**: `type` est obligatoire (`api_request`, `api_error`, `webhook_delivery`, `activity`). Debug webhooks : `lomi_webhooks` deliveries/retry ou `lomi_logs type=webhook_delivery`. Marchand uniquement : `export` (bundle GDPR de l’org courante) et `delete_account` (aperçu + `confirmation_token`).
+- **`lomi_organization`**: `create` / `use` émettent un secret et basculent la session MCP. L’invité reste sur `lomi_provision`.
+- **`lomi_team`** et **`lomi_settings`**: invitations/rôles et réglages checkout/vitrine. `lomi_logs` exige `type`. Les livraisons webhook sont aussi sur `lomi_webhooks`.
 - Provisioning : `lomi_provision` et `lomi_partners` (même schéma `action`).
 - **Ressources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
