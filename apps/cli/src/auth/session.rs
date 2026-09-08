@@ -137,7 +137,7 @@ pub fn try_authenticated(common: &CommonOptions) -> AuthResult {
             let config = GlobalConfig::load().ok();
             if config.as_ref().is_some_and(|c| {
                 c.profile(&profile)
-                    .is_some_and(|p| GlobalConfig::is_token_expired(p))
+                    .is_some_and(GlobalConfig::is_token_expired)
                     && c.cli_token(&profile).ok().flatten().is_some()
             }) {
                 AuthResult::Expired(format!(

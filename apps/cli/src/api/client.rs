@@ -54,28 +54,6 @@ impl ApiClient {
         response.text().await.context("Failed to read API response")
     }
 
-    pub async fn get_bytes(&self, path: &str) -> Result<Vec<u8>> {
-        let url = format!("{}{}", self.base_url, path);
-        let response = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .with_context(|| format!("Network error connecting to {url}"))?;
-
-        if !response.status().is_success() {
-            let status = response.status();
-            let text = response.text().await.unwrap_or_default();
-            return Err(ApiError::from_response(status, &text).into());
-        }
-
-        let bytes = response
-            .bytes()
-            .await
-            .context("Failed to read API response")?;
-        Ok(bytes.to_vec())
-    }
-
     pub async fn post<T: DeserializeOwned, B: serde::Serialize>(
         &self,
         path: &str,
