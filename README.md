@@ -61,6 +61,7 @@ We are progressively open-sourcing the monorepo toward **eventual self-hosting**
 - **Proprietary**:
   - API service: **[apps/api](./apps/api)** (`lomiafrica/api`)
   - Admin dashboard: **[apps/admin](./apps/admin)**
+  - Merchant phone app (lomi. Pos): **[apps/jumbo](./apps/jumbo)** (`lomiafrica/jumbo`)
 
 All open-source repositories will be merged into the monorepo in the coming months.
 
