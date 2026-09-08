@@ -101,7 +101,7 @@ test('legacy content redirects stay unprefixed', () => {
 });
 
 test('robots.txt does not block sitemap API reference pages', async () => {
-  const { isRobotsDisallowedPath, ROBOTS_DISALLOW } =
+  const { isRobotsDisallowedPath, isDocsSitemapPath, ROBOTS_DISALLOW } =
     await import('./robots-policy.ts');
 
   assert.equal(isRobotsDisallowedPath('/api/checkout-sessions'), false);
@@ -125,6 +125,18 @@ test('robots.txt does not block sitemap API reference pages', async () => {
 
   const sitemapSource = read('app/sitemap.ts');
   assert.match(sitemapSource, /path\.startsWith\('\/api\/'\)/);
+  assert.match(sitemapSource, /isDocsSitemapPath/);
+
+  assert.equal(isDocsSitemapPath('/api/authentication'), true);
+  assert.equal(isDocsSitemapPath('/api/charge'), true);
+  assert.equal(
+    isDocsSitemapPath(
+      '/api/checkout-sessions/CheckoutSessionsController_create',
+    ),
+    false,
+  );
+  assert.equal(isDocsSitemapPath('/build/billing/customer-portal.es'), false);
+  assert.equal(isDocsSitemapPath('/start/overview'), true);
 });
 
 test('page metadata emits locale-aware Open Graph and structured data', () => {

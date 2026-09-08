@@ -38,7 +38,7 @@ import { Customisation } from '@/components/preview/customisation';
 import { FaqPageJsonLd } from '@/components/seo/faq-page-json-ld';
 import { BRAND_FAQ } from '@/lib/seo/brand-facts';
 import { DocsPage } from 'fumadocs-ui/page';
-import { asJsonValue, isString, type JsonValue } from '@lomi./shared';
+import { asJsonValue, isFunction, isString, type JsonValue } from '@lomi./shared';
 import { DocsTwinLink } from '@/components/docs/docs-twin-link';
 import { DocsApiTryIt } from '@/components/docs/docs-api-tryit';
 import { DocsPageFooter } from '@/components/docs/docs-page-footer';
@@ -51,10 +51,24 @@ type CompiledDocsPageData = {
   index?: boolean;
 };
 
+function isCompiledDocsPageData(
+  data: DocsPageModel['data'],
+): data is DocsPageModel['data'] & CompiledDocsPageData {
+  return (
+    'body' in data &&
+    isFunction(data.body) &&
+    'toc' in data &&
+    Array.isArray(data.toc)
+  );
+}
+
 function compiledDocsPageData(
   data: DocsPageModel['data'],
 ): CompiledDocsPageData {
-  return data as DocsPageModel['data'] & CompiledDocsPageData;
+  if (!isCompiledDocsPageData(data)) {
+    throw new Error('Docs page is missing compiled MDX body and toc');
+  }
+  return data;
 }
 
 /** `/` 301s here in `next.config.mjs`; there is no root index page. */

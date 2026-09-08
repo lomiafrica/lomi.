@@ -65,8 +65,8 @@ const BACKLINKS = [
 
 function canHover() {
   return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    'matchMedia' in globalThis &&
+    globalThis.matchMedia('(hover: hover) and (pointer: fine)').matches
   );
 }
 
@@ -173,8 +173,13 @@ export function DocsSidebarLocaleAndTheme({
       setSubmenu(null);
     }
     function onPointerDown(event: PointerEvent) {
-      const target = event.target as Node | null;
-      if (!target || rootRef.current?.contains(target)) return;
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        rootRef.current?.contains(target)
+      ) {
+        return;
+      }
       dismiss();
     }
     function onKeyDown(event: KeyboardEvent) {

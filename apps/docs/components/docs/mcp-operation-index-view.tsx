@@ -38,8 +38,8 @@ export type McpOperationIndexLabels = {
 type CatalogFilter = 'all' | McpCatalogCategory;
 
 function hashTargetId(): string {
-  if (typeof window === 'undefined') return '';
-  return window.location.hash.replace(/^#/, '');
+  if (!('location' in globalThis)) return '';
+  return globalThis.location.hash.replace(/^#/, '');
 }
 
 function groupForHash(

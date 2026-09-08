@@ -9,7 +9,11 @@ import { parseDocsLang } from '@/lib/utils/docs-routing';
  * param (after middleware rewrite) so MDX server components never read the
  * request cookie jar, which would opt the page into dynamic rendering.
  */
-const localeBag = cache((): { current: Language | null } => ({
+type DocsLocaleBag = {
+  current: Language | null;
+};
+
+const localeBag = cache((): DocsLocaleBag => ({
   current: null,
 }));
 

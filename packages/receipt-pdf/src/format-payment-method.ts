@@ -1,11 +1,8 @@
+import { isJsonObject, isNumber, isString } from "@lomi./shared";
 import type { JsonObject, JsonValue, ReceiptTransactionInput } from "./types";
 
 const CARD_PROVIDERS = new Set(["STRIPE", "CYBERSOURCE", "GIM"]);
 const WALLET_PROVIDERS = new Set(["APPLE_PAY", "GOOGLE_PAY"]);
-
-function isJsonObject(value: JsonValue): value is JsonObject {
-  return value !== null && !Array.isArray(value) && typeof value === "object";
-}
 
 function asMetadataRecord(metadata: JsonValue | undefined): JsonObject | null {
   return metadata !== undefined && isJsonObject(metadata) ? metadata : null;
@@ -16,7 +13,7 @@ function readMetadataString(
   key: string,
 ): string | undefined {
   const value = metadata?.[key];
-  return typeof value === "string" ? value : undefined;
+  return isString(value) ? value : undefined;
 }
 
 function readMetadataLast4(
@@ -24,8 +21,8 @@ function readMetadataLast4(
   key: string,
 ): string | undefined {
   const value = metadata?.[key];
-  if (typeof value === "string") return sanitizeReceiptLast4(value);
-  if (typeof value === "number" && Number.isFinite(value)) {
+  if (isString(value)) return sanitizeReceiptLast4(value);
+  if (isNumber(value)) {
     return sanitizeReceiptLast4(String(Math.trunc(value)));
   }
   return undefined;

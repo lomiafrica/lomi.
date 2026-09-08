@@ -28,12 +28,12 @@ type PricingTableKind =
   | 'refunds'
   | 'payouts';
 
-const TIER_LABEL: Record<PricingTier, string> = {
+const TIER_LABEL = {
   starter: 'Starter',
   growth: 'Growth',
   professional: 'Professional',
   enterprise: 'Enterprise',
-};
+} as const satisfies { [K in PricingTier]: string };
 
 export async function PricingTable({ kind }: { kind: PricingTableKind }) {
   const locale = await getDocsLocale();

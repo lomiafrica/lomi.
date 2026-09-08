@@ -470,7 +470,14 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
   const protectedResourceMetadataPattern =
     /^\/\.well-known\/oauth-protected-resource(\/.*)?$/;
 
-  function sendDiscoveryJson(res: Response, body: unknown): void {
+  type DiscoveryJsonBody =
+    | ReturnType<typeof buildProtectedResourceMetadata>
+    | ReturnType<typeof buildAuthorizationServerPointer>
+    | ReturnType<typeof buildMcpWellKnown>
+    | ReturnType<typeof buildMcpCatalog>
+    | ReturnType<typeof buildMcpServerCard>;
+
+  function sendDiscoveryJson(res: Response, body: DiscoveryJsonBody): void {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
     applyOauthCors(res);

@@ -125,11 +125,15 @@ function enrichMerchantSpec(spec) {
     },
   };
 
-  const methods = ['get', 'post', 'put', 'patch', 'delete'];
+function isPlainObject(value) {
+  return value instanceof Object && !Array.isArray(value);
+}
+
+const methods = ['get', 'post', 'put', 'patch', 'delete'];
   for (const [pathKey, pathItem] of Object.entries(spec.paths ?? {})) {
     for (const method of methods) {
       const op = pathItem[method];
-      if (!op || typeof op !== 'object') continue;
+      if (!isPlainObject(op)) continue;
       op.parameters = Array.isArray(op.parameters) ? op.parameters : [];
       const hasLomiVersion = op.parameters.some(
         (param) =>

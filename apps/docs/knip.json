@@ -17,12 +17,16 @@
   "paths": {
     "@/*": ["./*"]
   },
+  "ignore": ["lib/supabase/server.ts", "lib/tryit/verify-org-access.ts"],
   "ignoreDependencies": [
     "@tailwindcss/container-queries",
     "tailwindcss",
     "tailwindcss-animate",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@supabase/ssr",
+    "@supabase/supabase-js",
+    "katex"
   ],
   "ignoreExportsUsedInFile": true,
   "rules": {

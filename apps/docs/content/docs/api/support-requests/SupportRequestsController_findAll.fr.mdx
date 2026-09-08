@@ -29,6 +29,33 @@ Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY`.
 | --- | --- |
 | `200` | Succès |
 
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/support-requests?limit=20" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
 ## OpenAPI
 
 - **operationId**: `SupportRequestsController_findAll`

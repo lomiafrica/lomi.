@@ -32,7 +32,7 @@ export async function maybeWriteLocalDownload(input: {
   }
   if (parsed.protocol !== 'https:') return null;
   if (!hostAllowed(parsed.hostname)) return null;
-  const safeName = path.basename(input.name).replace(/[^\w.\-]+/g, '_') || 'download.pdf';
+  const safeName = path.basename(input.name).replace(/[^\w.-]+/g, '_') || 'download.pdf';
   const dest = path.join(dir, safeName);
   const response = await fetch(input.uri);
   if (!response.ok) return null;

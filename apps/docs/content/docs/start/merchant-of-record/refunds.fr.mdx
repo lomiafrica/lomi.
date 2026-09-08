@@ -9,11 +9,12 @@ Les remboursements des paiements traités via lomi. sont initiés par le marchan
 
 - Les remboursements totaux et partiels sont disponibles sur les transactions completed, sous réserve des règles prestataires et du solde disponible.
 - Guide produit : [Remboursements](/build/money/refunds). API : [Créer un remboursement](/api/refunds/RefundsController_create).
-- Les frais de remboursement sont dans [Tarification](/start/merchant-of-record/pricing).
+- **Les frais de traitement ne sont pas restitués** lorsque vous remboursez un paiement, et les frais de remboursement indiqués dans [Tarification](/start/merchant-of-record/pricing) s’appliquent à chaque remboursement. Les remboursements sont débités de votre solde ; s’il est insuffisant, ils sont récupérés sur les paiements suivants ou facturés.
+- Les remboursements carte reviennent sur la carte d’origine. Les remboursements Mobile Money et paiement instantané reviennent sur le portefeuille ou le compte d’origine lorsque l’opérateur le permet.
 
 ## Remboursements initiés par la plateforme
 
-lomi. peut émettre un remboursement dans les 60 jours suivant un achat lorsque c’est le moyen pratique d’éviter un chargeback. L’objectif est de protéger le marchand des frais réseau, pas de remplacer votre politique client.
+lomi. peut émettre un remboursement dans les 60 jours suivant un achat lorsque c’est le moyen pratique d’éviter un chargeback, lorsque le client démontre que le paiement n’était pas autorisé ou que les biens n’ont pas été livrés, ou sur instruction d’un partenaire de paiement ou d’une autorité. L’objectif est de protéger le marchand des frais réseau et de la responsabilité en cas de litige, pas de remplacer votre politique client. Vous êtes informé de chaque remboursement initié par la plateforme.
 
 ## Votre politique client
 

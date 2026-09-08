@@ -77,7 +77,7 @@ function main(): void {
     'Paquet en 3 documents :',
     '',
     '1. `lomi-reference-api-fr` : référence API REST marchande',
-    '2. `lomi-services-overview-fr` : Network, produits, canaux, plateforme, MoR',
+    '2. `lomi-services-overview-fr` : Network, produits, canaux, plateforme, conformité',
     '3. `lomi-agent-platform-fr` : MCP, OAuth, provisioning, Partner API',
     '',
     'Ces empreintes SHA-256 relient le paquet transmis aux snapshots OpenAPI (`openapi.json`, `agent-openapi.json`) et aux livres exportés.',

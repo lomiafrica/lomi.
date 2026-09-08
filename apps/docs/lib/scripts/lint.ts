@@ -2,7 +2,7 @@
 
 import { glob } from 'tinyglobby';
 import { printErrors, scanURLs, validateFiles } from 'next-validate-link';
-import { createGetUrl, getSlugs } from 'fumadocs-core/source';
+import { getSlugs } from 'fumadocs-core/source';
 import { TOCItemType } from 'fumadocs-core/toc';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -555,10 +555,13 @@ function remarkIncludeId() {
   };
 }
 
+// SAFETY: remarkIncludeId is a remark plugin that only walks mdast nodes; remark.use requires Plugin, which remarkHeading's type satisfies.
+const includeIdPlugin = remarkIncludeId as typeof remarkHeading;
+
 const processor = remark()
   .use(remarkMdx)
   .use(remarkInclude)
-  .use(remarkIncludeId as typeof remarkHeading)
+  .use(includeIdPlugin)
   .use(remarkHeading);
 
 async function getHeadings(path: string, content: string) {
@@ -582,6 +585,16 @@ async function getHeadings(path: string, content: string) {
   return ids;
 }
 
+function docsSlugsFromMdx(relativePath: string): string[] {
+  return getSlugs(relativePath).map((segment, index, all) =>
+    index === all.length - 1 ? segment.replace(/\.fr$/u, '') : segment,
+  );
+}
+
+function docsLangFromMdx(relativePath: string): 'en' | 'fr' {
+  return relativePath.endsWith('.fr.mdx') ? 'fr' : 'en';
+}
+
 async function checkLinks() {
   const docsFiles = await Promise.all(
     await glob('content/docs/**/*.mdx').then((files) =>
@@ -589,18 +602,30 @@ async function checkLinks() {
     ),
   );
 
-  const docs = docsFiles.map(async (file) => {
-    const relativePath = path.relative('content/docs', file.path);
+  const populated = await Promise.all(
+    docsFiles.map(async (file) => {
+      const relativePath = path.relative('content/docs', file.path);
+      return {
+        value: {
+          lang: docsLangFromMdx(relativePath),
+          slug: docsSlugsFromMdx(relativePath),
+        },
+        hashes: await getHeadings(file.path, file.content),
+      };
+    }),
+  );
+  const localeFreePages = [
+    ...new Set(
+      populated.map((entry) => `${entry.value.slug.join('/')}/page.tsx`),
+    ),
+  ];
 
-    return {
-      value: getSlugs(relativePath),
-      hashes: await getHeadings(file.path, file.content),
-    };
-  });
-
+  // Authors write locale-free paths (`/build/money/payouts`). The app
+  // also serves `/l/{lang}/...`. Register both so the checker matches MDX.
   const scanned = await scanURLs({
+    pages: localeFreePages,
     populate: {
-      '(docs)/l/[lang]/[[...slug]]': await Promise.all(docs),
+      '(docs)/l/[lang]/[[...slug]]': populated,
     },
   });
 
@@ -608,14 +633,14 @@ async function checkLinks() {
     `collected ${scanned.urls.size} URLs, ${scanned.fallbackUrls.length} fallbacks`,
   );
 
-  const getUrl = createGetUrl('/');
   printErrors(
     await validateFiles(docsFiles, {
       scanned,
 
       pathToUrl(value) {
         const relativePath = path.relative('content/docs', value);
-        return getUrl(getSlugs(relativePath));
+        const slugs = docsSlugsFromMdx(relativePath);
+        return slugs.length === 0 ? '/' : `/${slugs.join('/')}`;
       },
       whitelist: (url) =>
         url.startsWith('/api') || url.startsWith('/.well-known'),

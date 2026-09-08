@@ -34,3 +34,23 @@ export function isRobotsDisallowedPath(pathname: string): boolean {
     return path === rule || path.startsWith(`${rule}/`);
   });
 }
+
+const LOCALE_SUFFIX = /\.(en|es|fr|zh)$/;
+
+/** Keep generated OpenAPI operation pages out of the public sitemap. */
+export function isDocsSitemapPath(pathname: string): boolean {
+  const path = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  if (isRobotsDisallowedPath(path)) {
+    return false;
+  }
+  if (path.startsWith('/en/') || path.startsWith('/fr/')) {
+    return false;
+  }
+  if (LOCALE_SUFFIX.test(path)) {
+    return false;
+  }
+  if (path.includes('Controller_')) {
+    return false;
+  }
+  return true;
+}

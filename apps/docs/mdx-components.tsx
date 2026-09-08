@@ -27,13 +27,15 @@ import { DocsNextStep, DocsNextSteps } from '@/components/docs/docs-next-steps';
 import { PricingTable } from '@/components/docs/pricing-table';
 import { TaskSurfaces } from '@/components/docs/task-surfaces';
 import { DocsHighlightedPre } from '@/components/docs/docs-highlighted-pre';
+import { isFunction } from '@lomi./shared';
 
 function lucideIconsAsMdx(): MDXComponents {
   const components: MDXComponents = {};
   for (const [name, icon] of Object.entries(icons)) {
-    if (typeof icon === 'function' && icon.length <= 1) {
-      components[name] = icon as MDXComponents[string];
-    }
+    if (!isFunction(icon) || icon.length > 1) continue;
+    // SAFETY: Lucide named exports with arity <= 1 are SVG React components; createLucideIcon (arity 2) is excluded.
+    const component = icon as NonNullable<MDXComponents[string]>;
+    components[name] = component;
   }
   return components;
 }

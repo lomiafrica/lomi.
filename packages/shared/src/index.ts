@@ -114,7 +114,7 @@ export {
   formatFee,
   calculateFee,
 } from "./pricing.js";
-export type { PricingTier, FeeParts } from "./pricing.js";
+export type { PricingTier, FeeParts, VolumeTierBounds } from "./pricing.js";
 export {
   optimizeImage,
   extractStorageObjectPath,

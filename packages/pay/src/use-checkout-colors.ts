@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { handleSupabaseRpcSoft } from "@lomi./shared";
+import {
+  handleSupabaseRpcSoft,
+  isJsonArray,
+  isJsonObject,
+  readString,
+  validateJsonValue,
+} from "@lomi./shared";
 import { rpc } from "@lomi./queries/checkout-public";
 
 interface CheckoutColors {
@@ -40,16 +46,15 @@ export function useCheckoutColors(
           "get_checkout_colors",
         );
 
-        if (data && Array.isArray(data) && data.length > 0) {
-          const first = data[0] as { pay_button_bg_color?: string } | undefined;
-          setColors({
-            payButtonBgColor: first?.pay_button_bg_color || "#121317",
-          });
-        } else {
-          setColors({
-            payButtonBgColor: "#121317",
-          });
-        }
+        const rows = data === null ? null : validateJsonValue(data);
+        const first =
+          rows !== null && isJsonArray(rows) && isJsonObject(rows[0])
+            ? rows[0]
+            : null;
+        const color = first ? readString(first, "pay_button_bg_color") : undefined;
+        setColors({
+          payButtonBgColor: color || "#121317",
+        });
       } catch (err) {
         console.warn("Error fetching checkout colors, using defaults:", err);
         setColors({

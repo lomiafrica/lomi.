@@ -1,11 +1,28 @@
-const NAMED_ENTITIES: Record<string, string> = {
+const NAMED_ENTITIES = {
   nbsp: " ",
   amp: "&",
   lt: "<",
   gt: ">",
   quot: '"',
   apos: "'",
-};
+} as const;
+
+type NamedEntityKey = keyof typeof NAMED_ENTITIES;
+
+function isNamedEntityKey(name: string): name is NamedEntityKey {
+  return name === "nbsp" ||
+    name === "amp" ||
+    name === "lt" ||
+    name === "gt" ||
+    name === "quot" ||
+    name === "apos";
+}
+
+function namedEntity(name: string): string | undefined {
+  const key = name.toLowerCase();
+  if (!isNamedEntityKey(key)) return undefined;
+  return NAMED_ENTITIES[key];
+}
 
 function stripTags(input: string): string {
   let out = "";
@@ -50,7 +67,7 @@ function decodeEntities(input: string): string {
         ? String.fromCodePoint(code)
         : input.slice(index, end + 1);
     } else {
-      const named = NAMED_ENTITIES[body.toLowerCase()];
+      const named = namedEntity(body);
       out += named ?? input.slice(index, end + 1);
     }
     index = end + 1;

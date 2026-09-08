@@ -206,14 +206,22 @@ function escapeMdxText(s: string | undefined): string {
     .replace(/\}/g, '&#125;');
 }
 
-function isRef(o: unknown): o is ReferenceObject {
-  return isJsonObject(o) && isString(o['$ref']);
+function isRef(
+  o: JsonValue | SchemaObject | ReferenceObject | undefined,
+): o is ReferenceObject {
+  if (o === undefined || !isJsonObject(o) || !Object.hasOwn(o, '$ref')) {
+    return false;
+  }
+  for (const [key, value] of Object.entries(o)) {
+    if (key === '$ref') return isString(value);
+  }
+  return false;
 }
 
 function isSchemaObject(
   schema: SchemaObject | ReferenceObject | undefined,
 ): schema is SchemaObject {
-  return Boolean(schema && typeof schema === 'object' && !isRef(schema));
+  return Boolean(schema && isJsonObject(schema) && !isRef(schema));
 }
 
 function getSchemaNameFromRef(ref: string): string {

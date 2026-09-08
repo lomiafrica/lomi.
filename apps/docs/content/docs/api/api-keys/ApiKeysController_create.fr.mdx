@@ -1,0 +1,73 @@
+---
+title: "Create API key"
+description: "Create API key"
+full: true
+method: post
+path: /api-keys
+operationId: ApiKeysController_create
+---
+
+## Aperçu
+
+Create API key
+
+Renvoie le secret une seule fois. Ne change pas la session MCP.
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /api-keys`.
+
+## Authentication
+
+Les routes marchandes exigent une clé API dans `X-API-KEY` (voir [Aperçu](/api)). Clé **test** sur `https://sandbox.api.lomi.africa`, clé **live** sur `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /api-keys`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/api-keys" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## OpenAPI
+
+- **operationId**: `ApiKeysController_create`
+- **Operation**: `POST /api-keys`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

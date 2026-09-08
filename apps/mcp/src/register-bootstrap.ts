@@ -1,15 +1,25 @@
 import {
   isJsonObject,
   isString,
+  parseJson,
   readNumber,
   readString,
   solveAgentRegisterPow,
+  type JsonValue,
 } from '@lomi./shared';
 import { getLomiApiBaseUrl } from './env-config.js';
 
 const REGISTER_ATTEMPTS = 3;
 
-function isRetryablePowFailure(status: number, body: unknown): boolean {
+type JsonObjectLike = { [key: string]: string };
+
+export type RegisterHttpResult = {
+  ok: boolean;
+  status: number;
+  body: JsonValue;
+};
+
+function isRetryablePowFailure(status: number, body: JsonValue): boolean {
   if (status === 429) return false;
   if (status !== 400) return false;
   if (!isJsonObject(body)) return true;
@@ -32,7 +42,7 @@ function isRetryablePowFailure(status: number, body: unknown): boolean {
 async function postJson(
   path: string,
   body?: JsonObjectLike,
-): Promise<{ ok: boolean; status: number; body: unknown }> {
+): Promise<RegisterHttpResult> {
   const url = `${getLomiApiBaseUrl()}${path}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -42,10 +52,10 @@ async function postJson(
     },
     body: body ? JSON.stringify(body) : '{}',
   });
-  let parsed: unknown = null;
   const text = await response.text();
+  let parsed: JsonValue;
   try {
-    parsed = JSON.parse(text);
+    parsed = parseJson(text);
   } catch {
     parsed = text;
   }
@@ -56,15 +66,11 @@ async function postJson(
   };
 }
 
-type JsonObjectLike = { [key: string]: string };
-
 /** Challenge + easy PoW + register, with a few fresh-challenge retries. */
-export async function registerBootstrapAgent(label: string): Promise<{
-  ok: boolean;
-  status: number;
-  body: unknown;
-}> {
-  let last: { ok: boolean; status: number; body: unknown } = {
+export async function registerBootstrapAgent(
+  label: string,
+): Promise<RegisterHttpResult> {
+  let last: RegisterHttpResult = {
     ok: false,
     status: 500,
     body: { error: 'Register failed' },
@@ -114,7 +120,7 @@ export async function registerBootstrapAgent(label: string): Promise<{
   return last;
 }
 
-export function extractBootstrapProvisioningKey(body: unknown): string | null {
+export function extractBootstrapProvisioningKey(body: JsonValue): string | null {
   if (!isJsonObject(body)) return null;
   const key = readString(body, 'key');
   if (key && key.startsWith('lomi_prov_')) return key;

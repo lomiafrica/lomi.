@@ -1,13 +1,61 @@
 /* @proprietary license */
 
-import { source } from '@/lib/utils/source';
+import { source, type Page } from '@/lib/utils/source';
 import { createFromSource } from 'fumadocs-core/search/server';
 import type { StructuredData } from 'fumadocs-core/mdx-plugins';
 import { searchTagFromSection } from '@/lib/search/tags';
+import { isFunction, isJsonObject, isString } from '@lomi./shared';
 
-function isStructuredData(value: unknown): value is StructuredData {
-  if (!value || typeof value !== 'object') return false;
-  return 'headings' in value && 'contents' in value;
+type DocsPageData = Page['data'];
+
+type StructuredDataLoader = {
+  structuredData: () => Promise<StructuredData> | StructuredData;
+};
+
+type StructuredDataHolder = {
+  structuredData: StructuredData;
+};
+
+type LoadablePageData = {
+  load: () => Promise<{ structuredData?: StructuredData }>;
+};
+
+function isStructuredDataLoader(
+  data: DocsPageData,
+): data is DocsPageData & StructuredDataLoader {
+  return 'structuredData' in data && isFunction(data.structuredData);
+}
+
+function isStructuredDataHolder(
+  data: DocsPageData,
+): data is DocsPageData & StructuredDataHolder {
+  if (!('structuredData' in data) || isFunction(data.structuredData)) {
+    return false;
+  }
+  const value = data.structuredData;
+  return isJsonObject(value) && 'headings' in value && 'contents' in value;
+}
+
+function isLoadablePageData(
+  data: DocsPageData,
+): data is DocsPageData & LoadablePageData {
+  return 'load' in data && isFunction(data.load);
+}
+
+async function structuredDataFromPage(
+  data: DocsPageData,
+): Promise<StructuredData | undefined> {
+  if (isStructuredDataLoader(data)) {
+    return await data.structuredData();
+  }
+  if (isStructuredDataHolder(data)) {
+    return data.structuredData;
+  }
+  if (isLoadablePageData(data)) {
+    const loaded = await data.load();
+    return loaded.structuredData;
+  }
+  return undefined;
 }
 
 export const { GET } = createFromSource(source, {
@@ -16,22 +64,10 @@ export const { GET } = createFromSource(source, {
     fr: 'french',
   },
   async buildIndex(page) {
-    const data = page.data as {
-      title?: string;
-      description?: string;
-      structuredData?: StructuredData | (() => Promise<StructuredData>);
-      load?: () => Promise<{ structuredData?: StructuredData }>;
-    };
-
-    let structuredData: StructuredData | undefined;
-    if (typeof data.structuredData === 'function') {
-      structuredData = await data.structuredData();
-    } else if (isStructuredData(data.structuredData)) {
-      structuredData = data.structuredData;
-    } else if (typeof data.load === 'function') {
-      const loaded = await data.load();
-      structuredData = loaded.structuredData;
-    }
+    const { data } = page;
+    const title = isString(data.title) ? data.title : undefined;
+    const description = isString(data.description) ? data.description : undefined;
+    const structuredData = await structuredDataFromPage(data);
 
     if (!structuredData) {
       throw new Error(
@@ -40,8 +76,8 @@ export const { GET } = createFromSource(source, {
     }
 
     return {
-      title: data.title ?? page.url,
-      description: data.description,
+      title: title ?? page.url,
+      description,
       url: page.url,
       id: page.url,
       structuredData,

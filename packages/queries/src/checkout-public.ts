@@ -101,12 +101,11 @@ export async function getTransactionDigitalDeliverables(
 ): Promise<
   DbFunctions["get_transaction_digital_deliverables"]["Returns"] | null | boolean
 > {
-  const rpcArgs = args as DbFunctions["get_transaction_digital_deliverables"]["Args"];
   if (options === null) {
     return callRpc(
       client,
       "get_transaction_digital_deliverables",
-      rpcArgs,
+      args,
       "get_transaction_digital_deliverables",
       { fallbackValue: null },
     );
@@ -114,7 +113,7 @@ export async function getTransactionDigitalDeliverables(
   return callRpc(
     client,
     "get_transaction_digital_deliverables",
-    rpcArgs,
+    args,
     "get_transaction_digital_deliverables",
     options,
   );

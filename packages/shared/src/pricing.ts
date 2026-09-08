@@ -6,15 +6,14 @@ export type FeeParts = {
   currency: 'XOF' | 'USD' | 'EUR';
 };
 
-export const VOLUME_TIER_XOF: Record<
-  PricingTier,
-  { min: number; max: number | null }
-> = {
+export type VolumeTierBounds = { min: number; max: number | null };
+
+export const VOLUME_TIER_XOF = {
   starter: { min: 0, max: 2_148_659 },
   growth: { min: 2_148_660, max: 4_297_319 },
   professional: { min: 4_297_320, max: 8_594_660 },
   enterprise: { min: 8_594_661, max: null },
-};
+} as const satisfies Record<PricingTier, VolumeTierBounds>;
 
 export const DYNAMIC_FEES_XOF = {
   mobileMoney: {

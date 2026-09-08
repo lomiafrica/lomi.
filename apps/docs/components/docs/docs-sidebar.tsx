@@ -32,6 +32,7 @@ import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
 import { cn } from '@lomi./ui/cn';
 import { DocsMobileHeader } from '@/components/docs/docs-mobile-header';
+import { isString } from '@lomi./shared';
 
 type PreviewContextValue = {
   previewUrl: string | null;
@@ -59,7 +60,7 @@ function lastMatchingTab(
 
 function folderTree(folder: LayoutTab['$folder'], previewUrl: string): Root {
   return {
-    name: typeof folder?.name === 'string' ? folder.name : 'docs',
+    name: isString(folder?.name) ? folder.name : 'docs',
     children: folder?.children ?? [],
     $id: `mobile-section:${previewUrl}`,
   };
@@ -154,7 +155,13 @@ export function DocsMobileSectionSwitch() {
     if (!open) return;
 
     function onPointerDown(event: PointerEvent) {
-      if (rootRef.current?.contains(event.target as Node)) return;
+      if (
+        rootRef.current &&
+        event.target instanceof Node &&
+        rootRef.current.contains(event.target)
+      ) {
+        return;
+      }
       setOpen(false);
     }
 

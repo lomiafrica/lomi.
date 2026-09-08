@@ -12,6 +12,7 @@ import {
   MCP_ORIGIN,
 } from '@/lib/seo/brand-facts';
 import { getDocsSiteOrigin } from '@/lib/utils/metadata';
+import type { JsonValue } from '@lomi./shared';
 
 export const AGENT_SKILL_NAME = 'lomi-payments';
 
@@ -52,7 +53,7 @@ export function docsDiscoveryUrls(origin = getDocsSiteOrigin()) {
   };
 }
 
-export function discoveryJsonResponse(body: unknown): Response {
+export function discoveryJsonResponse(body: JsonValue): Response {
   return new Response(JSON.stringify(body, null, 2), {
     headers: DISCOVERY_JSON_HEADERS,
   });

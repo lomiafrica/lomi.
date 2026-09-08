@@ -15,6 +15,14 @@ type DocsApiPlaygroundClientProps = {
   operation: TryItOperation;
 };
 
+type PlaygroundFetchInit = {
+  method: string;
+  credentials: 'include';
+  cache: 'no-store';
+  headers?: { 'Content-Type': string };
+  body?: string;
+};
+
 export function DocsApiPlaygroundClient({
   operation,
 }: DocsApiPlaygroundClientProps) {
@@ -45,13 +53,7 @@ export function DocsApiPlaygroundClient({
     try {
       const resolvedPath = resolvePathTemplate(operation.path, paramValues);
       const target = `${operation.sandboxOrigin}${resolvedPath}`;
-      const init: {
-        method: string;
-        credentials: 'include';
-        cache: 'no-store';
-        headers?: { 'Content-Type': string };
-        body?: string;
-      } = {
+      const init: PlaygroundFetchInit = {
         method: operation.method.toUpperCase(),
         credentials: 'include',
         cache: 'no-store',

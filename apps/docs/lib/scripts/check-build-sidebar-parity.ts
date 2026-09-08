@@ -5,6 +5,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { glob } from 'tinyglobby';
+import { isJsonArray, isString, parseJson } from '@lomi./shared';
 
 const DOCS_ROOT = process.cwd();
 const BUILD_ROOT = path.join(DOCS_ROOT, 'content/docs/build');
@@ -35,7 +36,10 @@ export async function checkBuildSidebarParity(errors: string[]): Promise<void> {
 
   const exempt = await fs
     .readFile(EXEMPT_PATH, 'utf-8')
-    .then((exemptRaw) => new Set(JSON.parse(exemptRaw) as string[]))
+    .then((exemptRaw) => {
+      const parsed = parseJson(exemptRaw);
+      return new Set(isJsonArray(parsed) ? parsed.filter(isString) : []);
+    })
     .catch(() => new Set<string>());
 
   const files = await glob('*.mdx', { cwd: BUILD_ROOT });

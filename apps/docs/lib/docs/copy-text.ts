@@ -41,8 +41,11 @@ function writeFallback(text: string): boolean {
 export function copyTextNow(text: string): boolean {
   if (!text) return false;
   writeFallback(text);
-  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-    void navigator.clipboard.writeText(text).catch(() => undefined);
+  if (
+    'navigator' in globalThis &&
+    globalThis.navigator.clipboard?.writeText
+  ) {
+    void globalThis.navigator.clipboard.writeText(text).catch(() => undefined);
   }
   return true;
 }

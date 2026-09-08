@@ -18,6 +18,19 @@ import {
   parseMcpToolPolicy,
   restDocsHrefFromMdxFile,
 } from '@/lib/mcp-twins';
+import { isJsonArray, isJsonObject, isString, parseJson } from '@lomi./shared';
+
+type SidebarMeta = {
+  pages: string[];
+};
+
+function readSidebarMeta(raw: string): SidebarMeta {
+  const parsed = parseJson(raw);
+  if (!isJsonObject(parsed)) return { pages: [] };
+  const pages = parsed.pages;
+  if (!isJsonArray(pages)) return { pages: [] };
+  return { pages: pages.filter(isString) };
+}
 
 const DOCS_ROOT = process.cwd();
 const CONTENT_ROOT = path.join(DOCS_ROOT, 'content/docs');
@@ -103,9 +116,8 @@ async function checkApiSidebarParity(errors: string[]): Promise<void> {
     path.join(CONTENT_ROOT, 'api/meta.fr.json'),
     'utf-8',
   );
-  // SAFETY: API sidebar manifests are authored JSON with a pages string list.
-  const enMeta = JSON.parse(enRaw) as { pages?: string[] };
-  const frMeta = JSON.parse(frRaw) as { pages?: string[] };
+  const enMeta = readSidebarMeta(enRaw);
+  const frMeta = readSidebarMeta(frRaw);
   const enPages = enMeta.pages ?? [];
   const frPages = frMeta.pages ?? [];
 

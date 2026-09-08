@@ -8,6 +8,7 @@ import {
   COOKIE_TRYIT_USE_TEST_KEY,
 } from '@/lib/tryit/constants';
 import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
+import { isJsonObject, readBoolean } from '@lomi./shared';
 
 const bodySchema = z.object({
   useTestKey: z.boolean(),
@@ -36,11 +37,11 @@ export async function POST(request: Request) {
   }
 
   if (organizationId) {
-    const access = await docsApiGet<{ allowed?: boolean }>(
+    const access = await docsApiGet(
       `/auth/docs-session/org-access?organizationId=${encodeURIComponent(organizationId)}`,
       token,
     );
-    if (!access?.allowed) {
+    if (!access || !isJsonObject(access) || !readBoolean(access, 'allowed')) {
       return NextResponse.json(
         { error: 'Organization not allowed or no test secret key' },
         { status: 403 },

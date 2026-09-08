@@ -279,7 +279,9 @@ function main() {
   if (!Array.isArray(rows)) rows = [];
   if (!Array.isArray(absentTables)) absentTables = [];
   const absentNames = absentTables.map((row) =>
-    typeof row === "string" ? row : row.table_name,
+    Object.prototype.toString.call(row) === "[object String]"
+      ? row
+      : row.table_name,
   );
 
   if (absentNames.length > 0) {

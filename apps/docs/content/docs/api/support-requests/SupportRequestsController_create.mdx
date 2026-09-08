@@ -48,6 +48,10 @@ Base URLs:
 | --- | --- |
 | `201` | Ticket created |
 
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
 ## Example
 
 ```bash

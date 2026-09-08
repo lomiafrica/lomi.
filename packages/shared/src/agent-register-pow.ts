@@ -1,3 +1,12 @@
+import {
+  isJsonObject,
+  isNumber,
+  isString,
+  parseJson,
+  readNumber,
+  readString,
+} from "./json-value.js";
+
 /** Default leading-zero-bit target. About a few milliseconds on a laptop. */
 export const AGENT_REGISTER_POW_DEFAULT_DIFFICULTY = 12;
 export const AGENT_REGISTER_POW_MAX_DIFFICULTY = 20;
@@ -296,17 +305,22 @@ function parseChallenge(
   const raw = fromBase64Url(body);
   if (!raw) return null;
   try {
-    const parsed = JSON.parse(new TextDecoder().decode(raw)) as ChallengePayload;
+    const parsed = parseJson(new TextDecoder().decode(raw));
+    if (!isJsonObject(parsed)) return null;
+    const id = readString(parsed, "id");
+    const exp = readNumber(parsed, "exp");
+    const difficulty = readNumber(parsed, "d");
+    const ip = readString(parsed, "ip");
     if (
-      parsed?.v !== 1 ||
-      typeof parsed.id !== "string" ||
-      typeof parsed.exp !== "number" ||
-      typeof parsed.d !== "number" ||
-      typeof parsed.ip !== "string"
+      parsed["v"] !== 1 ||
+      !isString(id) ||
+      !isNumber(exp) ||
+      !isNumber(difficulty) ||
+      !isString(ip)
     ) {
       return null;
     }
-    return parsed;
+    return { v: 1, id, exp, d: difficulty, ip };
   } catch {
     return null;
   }

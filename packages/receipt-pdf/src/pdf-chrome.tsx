@@ -56,7 +56,7 @@ export function PdfWordmark({ muted }: { muted?: boolean }) {
       style={{
         width: muted ? 40 : 56,
         height: muted ? 15 : 21,
-        ...(muted ? { opacity: 0.35 } : {}),
+        opacity: muted ? 0.35 : 1,
       }}
     />
   );

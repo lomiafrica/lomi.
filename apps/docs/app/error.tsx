@@ -13,7 +13,7 @@ import type { Language } from '@/lib/i18n/config';
 import { translate } from '@/lib/i18n/translations';
 
 function readDocsLocale(): Language {
-  if (typeof document === 'undefined') return 'fr';
+  if (!('document' in globalThis)) return 'fr';
   const match = document.cookie.match(
     new RegExp(`(?:^|; )${Cookies.Language}=([^;]*)`),
   );

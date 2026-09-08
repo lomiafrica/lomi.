@@ -22,15 +22,12 @@ type DocsCalloutProps = {
 } & Omit<ComponentProps<'div'>, 'title'>;
 
 /** Minimal callout for MDX: title and body only, no icon. */
-export function DocsCallout({
-  title,
-  type: inputType = 'info',
-  emoji: _emoji,
-  icon: _icon,
-  children,
-  className,
-  ...props
-}: DocsCalloutProps) {
+export function DocsCallout(props: DocsCalloutProps) {
+  const rest = { ...props };
+  delete rest.emoji;
+  delete rest.icon;
+  const { title, type: inputType = 'info', children, className, ...forward } =
+    rest;
   const type = resolveType(inputType);
 
   return (
@@ -39,7 +36,7 @@ export function DocsCallout({
       variant={type as DocsAsideVariant}
       title={title}
       className={className}
-      {...props}
+      {...forward}
     >
       {children}
     </DocsAside>

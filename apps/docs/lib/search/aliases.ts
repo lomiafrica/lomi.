@@ -1,7 +1,7 @@
 /* @proprietary license */
 
 /** Extra search terms keyed by unprefixed docs path (locale-agnostic). */
-export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
+export const DOCS_SEARCH_ALIASES = {
   '/start/overview': [
     'what is lomi',
     'getting started',
@@ -196,7 +196,13 @@ export const DOCS_SEARCH_ALIASES: Record<string, readonly string[]> = {
     'bug bounty',
     'report',
   ],
-};
+} as const;
+
+type DocsSearchAliasPath = keyof typeof DOCS_SEARCH_ALIASES;
+
+function isDocsSearchAliasPath(path: string): path is DocsSearchAliasPath {
+  return Object.hasOwn(DOCS_SEARCH_ALIASES, path);
+}
 
 /** Empty-state search rows: page titles, not route paths. */
 export const DOCS_SEARCH_SUGGESTED = [
@@ -237,5 +243,7 @@ export const DOCS_SEARCH_SUGGESTED_HREFS = DOCS_SEARCH_SUGGESTED.map(
 
 export function aliasesForPath(path: string): readonly string[] {
   const normalized = path.startsWith('/') ? path : `/${path}`;
-  return DOCS_SEARCH_ALIASES[normalized] ?? [];
+  return isDocsSearchAliasPath(normalized)
+    ? DOCS_SEARCH_ALIASES[normalized]
+    : [];
 }

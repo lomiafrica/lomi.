@@ -3,7 +3,7 @@ title: 'Account reviews'
 description: 'How lomi. verifies your account, monitors activity, and keeps payouts and payments secure.'
 ---
 
-As your **Merchant of Record**, lomi. resells your goods and services on your behalf. To protect you, your customers, and the payment network, every account goes through verification and ongoing review aligned with our [acceptable use](/start/merchant-of-record/acceptable-use) policy.
+lomi. is a **payment processor**: you remain the seller of your goods and services, and we process the payments through licensed partner banks, e-money issuers, card acquirers and mobile-money operators. Those partners, the card networks and the regulators (BCEAO, Ivorian law) require us to know who we process for. To protect you, your customers, and the payment network, every account goes through verification and ongoing review aligned with our [acceptable use](/start/merchant-of-record/acceptable-use) policy.
 
 ## Activation process
 
@@ -12,43 +12,56 @@ Before you accept live payments, you complete **KYC/KYB** (know your customer / 
 During activation, you provide:
 
 - A short survey about your business, products, and how you plan to use lomi.
-- Identity verification: passport or driver's license, business registration, and tax ID.
+- Identity verification for the owners and signatories: passport or national ID, business registration (for example RCCM), and tax ID (for example NINEA or DFE).
+- Beneficial owners holding 25% or more, and the bank account or mobile-money wallet in the business's name for payouts.
 
-This review runs right after sign-up so your account meets **KYC/AML** requirements for payment platforms in West Africa, including BCEAO regulations and Côte d'Ivoire law.
+This review runs right after sign-up so your account meets **KYC/AML** requirements for payment platforms in West Africa, including BCEAO regulations and Côte d'Ivoire law. Part of the check is automated (document authenticity, sanctions and PEP screening, registry lookups). Any decision that refuses or restricts your account is reviewed by a person, and you can contest it by replying to the review email.
 
 ### Submit documents early
 
-Provide KYC/KYB documents as soon as you sign up. Early submission speeds activation and helps you use payouts, checkout, and subscriptions without delays later.
+Provide KYC/KYB documents as soon as you sign up. Early submission speeds activation and helps you use payouts, checkout, and subscriptions without delays later. If we ask for something during a review, answer within 10 business days; incomplete files are the most common reason payouts stay paused.
 
 ## Continuous reviews (async)
 
 lomi. monitors account activity to prevent fraud. At certain sales thresholds, lomi. may run additional reviews asynchronously, often within hours and without asking for more documents.
 
-You receive email when a review is in progress. **Payouts may pause** during a review. When risk requires it, **live collection may pause as well** (checkout and Payment Links can be deactivated). lomi. may ask for greffe or registry confirmation (for example RCCM or NINEA) and a bank or acquiring-partner confirmation before releasing funds.
-
 Reviews consider:
 
 - Transaction history and risk signals
 - Refund and chargeback rates
-- Sales volume relative to your account profile
+- Sales volume and average ticket relative to your account profile
+- Consistency between your stated business, your payment links, and your customers' geography
+
+### Holds and reserves: what you can expect
+
+You receive an email when a review is in progress. **Payouts may pause** during a review. When risk requires it, **live collection may pause as well** (checkout and Payment Links can be deactivated). lomi. may ask for greffe or registry confirmation (for example RCCM or NINEA) and a bank or acquiring-partner confirmation before releasing funds.
+
+When we place a hold or a reserve, the email and the dashboard tell you:
+
+- the general reason for the review,
+- the amount or percentage concerned,
+- the documents or actions that would resolve it,
+- the expected review or release date.
+
+A hold lasts until the review is complete, and at most through the card-scheme dispute window (today up to 120 days). A rolling reserve on a high-risk profile does not exceed 10% of processed volume held for 180 days unless a payment partner requires more. You can contest a hold or reserve by writing to [hello@lomi.africa](mailto:hello@lomi.africa); we acknowledge within 2 business days and answer within 7 business days, the complaint-handling deadline set by BCEAO Instruction No. 001-01-2024. If you are not satisfied with our answer, you can refer the matter to the Observatoire de la Qualité des Services Financiers of Côte d'Ivoire or to the Commission Bancaire de l'UMOA. The full rules are in the [Terms and Conditions](https://lomi.africa/terms).
 
 ### High chargeback ratios
 
-Card networks treat chargebacks above ~0.7% of sales as excessive. Breaching that level can trigger costly monitoring programs, penalties, or account termination. Mobile money chargebacks are typically near zero.
+Card networks treat chargebacks above ~0.7% of sales as excessive. Breaching that level can trigger costly monitoring programs, penalties, or account termination. Mobile money reversals are typically near zero.
 
-If your chargeback rate rises, lomi. may contact you to lower it before thresholds are reached.
+If your chargeback rate rises, lomi. may contact you to lower it before thresholds are reached, ask for a remediation plan, or apply a reserve. Dispute fees and the evidence window are described on [Pricing](/start/merchant-of-record/pricing) and in the Terms.
 
 ## Supported countries
 
 ### Payments
 
-As your Merchant of Record, lomi. handles local and international sales tax and regulatory compliance on covered transactions, you do not file or remit those obligations separately for sales lomi. processes as MoR.
-
 You can accept local payments across West Africa and international card payments without hidden fees. Some mobile-money routes may be restricted by operator; when that happens, your customers see clear errors at checkout and you receive email notification.
+
+Because lomi. is a processor and not the seller, **you remain responsible for the taxes on your sales** (VAT, sales tax, withholding) and for the licences your business needs. We add applicable taxes on our own fees only.
 
 ### Payouts
 
-lomi. supports low-cost Mobile Money and free bank payouts to businesses established in the UEMOA (West African Economic and Monetary Union). **Local payout countries** today include:
+lomi. supports low-cost Mobile Money and free bank payouts to businesses established in the UEMOA (West African Economic and Monetary Union). Payouts go only to an account or wallet in the verified business's name. **Local payout countries** today include:
 
 - Sénégal
 - Côte d'Ivoire

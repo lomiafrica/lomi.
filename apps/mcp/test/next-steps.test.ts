@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isJsonArray, parseJsonObject } from '@lomi./shared';
 
 import { formatHttpResult, type LomiHttpResult } from '../src/lomi-http.js';
 import { nextStepsForHttpResult } from '../src/next-steps.js';
@@ -82,7 +83,10 @@ describe('next_steps', () => {
         bodyText: '{"error_code":"unauthorized"}',
       }),
     );
-    const parsed = JSON.parse(text) as { next_steps?: string[] };
-    expect(parsed.next_steps?.[0]).toMatch(/Connect with lomi/);
+    const parsed = parseJsonObject(text);
+    const steps = parsed.next_steps;
+    expect(isJsonArray(steps) ? steps[0] : undefined).toMatch(
+      /Connect with lomi/,
+    );
   });
 });

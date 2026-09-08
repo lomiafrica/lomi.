@@ -4,6 +4,10 @@ import type { ReceiptDocumentData } from "./types";
 
 export type { ReceiptDocumentData, ReceiptLineItem } from "./types";
 
+function toPdfChunkBuffer(chunk: string | Uint8Array): Buffer {
+  return Buffer.from(chunk);
+}
+
 /** Node-safe PDF bytes for Nest / MCP / CLI. Browser callers keep using toBlob. */
 export async function renderReceiptPdfBuffer(
   data: ReceiptDocumentData,
@@ -14,8 +18,8 @@ export async function renderReceiptPdfBuffer(
     return result;
   }
   const chunks: Buffer[] = [];
-  for await (const chunk of result as AsyncIterable<Uint8Array>) {
-    chunks.push(Buffer.from(chunk));
+  for await (const chunk of result) {
+    chunks.push(toPdfChunkBuffer(chunk));
   }
   return Buffer.concat(chunks);
 }

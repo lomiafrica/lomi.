@@ -99,14 +99,14 @@ function resolveProductName(
   return fallback;
 }
 
-function isFiniteNumber(value: JsonValue): value is number {
+function isFiniteNumber(value: JsonValue | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
 function readMetadataLineItems(
   metadata: JsonObject | null,
 ): ReceiptLineItem[] | null {
-  const raw = metadata?.line_items ?? metadata?.cart_items;
+  const raw = metadata?.["line_items"] ?? metadata?.["cart_items"];
   if (!Array.isArray(raw) || raw.length === 0) return null;
   const items: ReceiptLineItem[] = [];
   for (const entry of raw) {
@@ -114,13 +114,16 @@ function readMetadataLineItems(
     const named = readMetadataString(entry, "name");
     const name =
       named ?? readMetadataString(entry, "description") ?? "Item";
-    const quantity = isFiniteNumber(entry.quantity)
-      ? Math.max(1, entry.quantity)
+    const quantityValue = entry["quantity"];
+    const quantity = isFiniteNumber(quantityValue)
+      ? Math.max(1, quantityValue)
       : 1;
-    const unitPrice = isFiniteNumber(entry.unit_price)
-      ? entry.unit_price
-      : isFiniteNumber(entry.price)
-        ? entry.price
+    const unitPriceValue = entry["unit_price"];
+    const priceValue = entry["price"];
+    const unitPrice = isFiniteNumber(unitPriceValue)
+      ? unitPriceValue
+      : isFiniteNumber(priceValue)
+        ? priceValue
         : 0;
     const title = stripEmojis(name);
     items.push({

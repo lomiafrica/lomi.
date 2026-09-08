@@ -37,6 +37,13 @@ import type {
 
 registerReceiptFonts();
 
+type AddressLineStyle = {
+  fontSize: number;
+  marginBottom: number;
+  fontWeight?: 600;
+  color?: string;
+};
+
 function AddressLine({
   children,
   muted,
@@ -46,18 +53,19 @@ function AddressLine({
   muted?: boolean;
   weight?: 600;
 }) {
+  const style: AddressLineStyle = {
+    fontSize: weight === 600 ? 10 : PDF_FONT_SIZE.body,
+    marginBottom: 2,
+  };
+  if (weight === 600) {
+    style.fontWeight = 600;
+  }
+  if (muted) {
+    style.color = PDF_MUTED_TEXT;
+  }
   return (
     <View>
-      <Text
-        style={{
-          fontSize: weight === 600 ? 10 : PDF_FONT_SIZE.body,
-          ...(weight === 600 ? { fontWeight: 600 } : {}),
-          ...(muted ? { color: PDF_MUTED_TEXT } : {}),
-          marginBottom: 2,
-        }}
-      >
-        {children}
-      </Text>
+      <Text style={style}>{children}</Text>
     </View>
   );
 }

@@ -1,0 +1,11 @@
+{
+  "title": "Team",
+  "pages": [
+    "TeamController_invite",
+    "TeamController_list",
+    "TeamController_listRoles",
+    "TeamController_remove",
+    "TeamController_revokeInvite",
+    "TeamController_updateRole"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Settings",
+  "pages": [
+    "SettingsController_getCheckout",
+    "SettingsController_getStorefront",
+    "SettingsController_updateCheckout",
+    "SettingsController_updateStorefront"
+  ]
+}

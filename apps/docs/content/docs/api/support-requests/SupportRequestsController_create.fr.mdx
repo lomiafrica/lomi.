@@ -31,6 +31,35 @@ Les routes marchandes exigent une clé API dans l'en-tête `X-API-KEY` (voir [Ap
 | --- | --- |
 | `201` | Demande créée |
 
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/support-requests" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"category":"technical","message":"Les sessions checkout restent ouvertes après un paiement Wave.","subject":"Wave checkout bloqué"}'
+```
+
 ## OpenAPI
 
 - **operationId**: `SupportRequestsController_create`

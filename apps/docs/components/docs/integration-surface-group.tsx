@@ -20,6 +20,7 @@ import type { ServiceReference } from '@/lib/docs/service-references';
 import { translate } from '@/lib/i18n/translations';
 import type { Language } from '@/lib/i18n/config';
 import { useTranslation } from '@/lib/utils/translation-context';
+import { isBoolean, isString } from '@lomi./shared';
 
 export type IntegrationSurfaceKind = 'api' | 'sdk' | 'cli' | 'mcp';
 
@@ -79,39 +80,33 @@ function surfaceAnchorId(
   return id ?? `call-${transport}`;
 }
 
+type IntegrationChildProps = {
+  transport?: string;
+  defaultOpen?: boolean;
+  id?: string;
+};
+
 function transportFromChild(child: ReactNode): IntegrationSurfaceKind | null {
-  if (!isValidElement(child)) return null;
-  const props = child.props;
-  if (!props || typeof props !== 'object' || !('transport' in props)) {
-    return null;
-  }
-  const transport = props.transport;
-  if (typeof transport !== 'string' || !isSurfaceKind(transport)) {
+  if (!isValidElement<IntegrationChildProps>(child)) return null;
+  const transport = child.props.transport;
+  if (!isString(transport) || !isSurfaceKind(transport)) {
     return null;
   }
   return transport;
 }
 
 function childDefaultOpen(child: ReactNode): boolean {
-  if (!isValidElement(child)) return false;
-  const props = child.props;
-  return Boolean(
-    props &&
-    typeof props === 'object' &&
-    'defaultOpen' in props &&
-    props.defaultOpen === true,
-  );
+  if (!isValidElement<IntegrationChildProps>(child)) return false;
+  return isBoolean(child.props.defaultOpen) && child.props.defaultOpen;
 }
 
 function childAnchorId(child: ReactNode): string | undefined {
-  if (!isValidElement(child)) return undefined;
-  const props = child.props;
-  if (!props || typeof props !== 'object' || !('id' in props)) return undefined;
-  return typeof props.id === 'string' ? props.id : undefined;
+  if (!isValidElement<IntegrationChildProps>(child)) return undefined;
+  return isString(child.props.id) ? child.props.id : undefined;
 }
 
 function readStoredSurface(): IntegrationSurfaceKind | null {
-  if (typeof window === 'undefined') return null;
+  if (!('localStorage' in globalThis)) return null;
   try {
     const stored = window.localStorage.getItem(SURFACE_STORAGE_KEY);
     return isSurfaceKind(stored) ? stored : null;

@@ -9,11 +9,12 @@ Refunds for payments processed through lomi. are initiated by the merchant (dash
 
 - Full and partial refunds are available on completed transactions, subject to provider rules and available balance.
 - Use [Refunds](/build/money/refunds) for the product guide and [Create refund](/api/refunds/RefundsController_create) for the API.
-- Refund processing fees are listed on [Pricing](/start/merchant-of-record/pricing).
+- **Processing fees are not returned** when you refund a payment, and the refund fee listed on [Pricing](/start/merchant-of-record/pricing) applies to each refund. Refunds are debited from your balance; if the balance is insufficient, they are recovered from later payments or invoiced.
+- Card refunds go back to the original card. Mobile Money and instant-payment refunds go back to the original wallet or account where the operator allows it.
 
 ## Platform-initiated refunds
 
-lomi. may issue a refund within 60 days of a purchase when that is the practical way to avoid a chargeback. We do this to protect the merchant from network fees, not as a substitute for your own customer policy.
+lomi. may issue a refund within 60 days of a purchase when that is the practical way to avoid a chargeback, when the customer shows the payment was unauthorized or the goods were not delivered, or when a payment partner or authority instructs it. We do this to protect the merchant from network fees and dispute liability, not as a substitute for your own customer policy. You are notified of each platform-initiated refund.
 
 ## Your customer policy
 

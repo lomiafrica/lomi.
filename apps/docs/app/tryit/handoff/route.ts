@@ -6,6 +6,12 @@ import {
   docsSessionCookieOptions,
   getApiBaseUrl,
 } from '@/lib/docs-session';
+import {
+  isJsonObject,
+  readNumber,
+  readString,
+  validateJsonValue,
+} from '@lomi./shared';
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
@@ -31,9 +37,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(fallback);
   }
 
-  const payload = (await consume.json()) as {
-    session_token?: string;
-    expires_in?: number;
+  const parsed = validateJsonValue(await consume.json());
+  if (!isJsonObject(parsed)) {
+    return NextResponse.redirect(fallback);
+  }
+  const payload = {
+    session_token: readString(parsed, 'session_token'),
+    expires_in: readNumber(parsed, 'expires_in'),
   };
   if (!payload.session_token) {
     return NextResponse.redirect(fallback);

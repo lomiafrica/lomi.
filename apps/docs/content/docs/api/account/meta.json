@@ -1,0 +1,7 @@
+{
+  "title": "Account",
+  "pages": [
+    "AccountController_deleteAccount",
+    "AccountController_export"
+  ]
+}

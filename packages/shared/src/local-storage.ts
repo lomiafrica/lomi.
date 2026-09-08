@@ -11,6 +11,7 @@ type BrowserGlobal = {
 };
 
 function browserLocalStorage(): BrowserStorage | null {
+  // SAFETY: localStorage lives on window; optional chaining is the browser host boundary.
   const candidate = globalThis as BrowserGlobal;
   return candidate.window?.localStorage ?? null;
 }

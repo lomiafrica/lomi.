@@ -1,6 +1,7 @@
 /* @proprietary license */
 
 import { cookies } from 'next/headers';
+import { validateJsonValue, type JsonValue } from '@lomi./shared';
 
 const DEFAULT_API_URL = 'https://api.lomi.africa';
 
@@ -31,14 +32,14 @@ export async function getDocsSessionToken(): Promise<string | null> {
   return jar.get(docsSessionCookieName())?.value ?? null;
 }
 
-export async function docsApiGet<T>(
+export async function docsApiGet(
   path: string,
   token: string,
-): Promise<T | null> {
+): Promise<JsonValue | null> {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   });
   if (!response.ok) return null;
-  return (await response.json()) as T;
+  return validateJsonValue(await response.json());
 }

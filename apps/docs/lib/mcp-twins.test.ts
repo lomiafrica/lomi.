@@ -85,8 +85,8 @@ test('derives catalog categories from REST path and auth mode', () => {
 
   for (const group of byTool.values()) {
     assert.ok(
-      (MCP_CATALOG_CATEGORIES as readonly string[]).includes(
-        mcpCategoryForGroup(group),
+      MCP_CATALOG_CATEGORIES.some(
+        (category) => category === mcpCategoryForGroup(group),
       ),
     );
   }

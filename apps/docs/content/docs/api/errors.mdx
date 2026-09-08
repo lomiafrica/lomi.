@@ -132,3 +132,30 @@ The specific `message` and `details` vary. Typical patterns:
 3. Use `error.code`, `error.message`, and `error.details`.
 4. Retry `429` and `5xx` with backoff. Do not retry other `4xx` responses until you fix the request.
 5. Log `request_id` (body and `X-Request-Id` header) for support.
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+### Query parameters
+
+_No query parameters._
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+

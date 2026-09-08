@@ -7,11 +7,18 @@ import { tryitPreferenceCookieOptions } from '@/lib/tryit/cookie-options';
 import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
 import { resolveTestSecretApiKey } from '@/lib/resolve-test-api-key';
 import { selectTryitOrganizationId } from '@/lib/tryit/gating';
+import { isJsonArray, isJsonObject, readString } from '@lomi./shared';
 
-type TryitContextResponse = {
+type TryitOrg = { id: string; name: string };
+
+type TryitContextPayload = {
   signedIn: boolean;
-  userId?: string;
-  organizations: { id: string; name: string }[];
+  organizations: TryitOrg[];
+  selectedOrganizationId: string | null;
+  needsOrganizationChoice: boolean;
+  testApiKey: string | null;
+  pricingPlan: null;
+  volumeTier: null;
 };
 
 export async function GET() {
@@ -20,34 +27,47 @@ export async function GET() {
   const cookieOrg = c.get(COOKIE_TRYIT_ORG)?.value ?? null;
 
   if (!token) {
-    return NextResponse.json({
+    const signedOut: TryitContextPayload = {
       signedIn: false,
-      organizations: [] as { id: string; name: string }[],
-      selectedOrganizationId: null as string | null,
+      organizations: [],
+      selectedOrganizationId: null,
       needsOrganizationChoice: false,
-      testApiKey: null as string | null,
+      testApiKey: null,
       pricingPlan: null,
       volumeTier: null,
-    });
+    };
+    return NextResponse.json(signedOut);
   }
 
-  const context = await docsApiGet<TryitContextResponse>(
+  const context = await docsApiGet(
     '/auth/docs-session/tryit-context',
     token,
   );
 
-  const organizations = context?.organizations ?? [];
+  const organizations: TryitOrg[] = [];
+  if (context && isJsonObject(context) && isJsonArray(context.organizations)) {
+    for (const item of context.organizations) {
+      if (!isJsonObject(item)) continue;
+      const id = readString(item, 'id');
+      const name = readString(item, 'name');
+      if (id && name) organizations.push({ id, name });
+    }
+  }
+  const signedIn = Boolean(
+    context && isJsonObject(context) && context.signedIn === true,
+  );
 
-  if (!context?.signedIn || organizations.length === 0) {
-    return NextResponse.json({
-      signedIn: Boolean(context?.signedIn),
+  if (!signedIn || organizations.length === 0) {
+    const payload: TryitContextPayload = {
+      signedIn,
       organizations,
       selectedOrganizationId: null,
       needsOrganizationChoice: false,
       testApiKey: null,
       pricingPlan: null,
       volumeTier: null,
-    });
+    };
+    return NextResponse.json(payload);
   }
 
   const selectedOrganizationId = selectTryitOrganizationId(

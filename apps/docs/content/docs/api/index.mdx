@@ -65,3 +65,30 @@ Send your secret key in the `X-API-Key` header from your server.
 - **Errors:** `{ error: { code, message, details }, request_id }`. See [Error handling](/api/errors).
 - **Rate limits:** successful responses include `X-RateLimit-Remaining` and IETF `RateLimit` / `RateLimit-Policy`. `429` includes `Retry-After`.
 - Routes stay unversioned. The OpenAPI `info.version` is the schema release. Send optional `Lomi-Version` to pin a known schema.
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+### Query parameters
+
+_No query parameters._
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+

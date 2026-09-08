@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isJsPlainObject } from "./lib/js-guards.mjs";
 import { loadTaskRegistry } from "./lib/task-registry.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -44,7 +45,7 @@ function packageScripts(relDir) {
   if (!existsSync(file)) return null;
   try {
     const parsed = JSON.parse(readFileSync(file, "utf8"));
-    return parsed.scripts && typeof parsed.scripts === "object"
+    return parsed.scripts && isJsPlainObject(parsed.scripts)
       ? parsed.scripts
       : {};
   } catch {

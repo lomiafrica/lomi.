@@ -1,7 +1,7 @@
 /* @proprietary license */
 
 import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
-import { isJsonObject, isString } from '@lomi./shared';
+import { isJsonObject, isString, type JsonValue } from '@lomi./shared';
 import { source } from '@/lib/utils/source';
 import { aliasesForPath } from '@/lib/search/aliases';
 import { searchTagFromSection } from '@/lib/search/tags';
@@ -23,26 +23,40 @@ export type DocsSearchDocument = {
   breadcrumbs: string[];
 };
 
-function toHeadingStrings(headings: unknown): string[] {
-  if (!Array.isArray(headings)) return [];
-  return headings
-    .map((h) => (isJsonObject(h) && h.id ? String(h.id) : String(h)))
-    .filter((h) => h.length > 0);
+type HeadingLike = {
+  id?: string;
+};
+
+type ContentLike = {
+  content?: string;
+};
+
+function headingId(heading: HeadingLike | JsonValue): string {
+  if (isJsonObject(heading) && isString(heading.id)) return heading.id;
+  if (isString(heading)) return heading;
+  return '';
 }
 
-function toContentStrings(contents: unknown): string[] {
+function contentText(content: ContentLike | JsonValue): string {
+  if (isJsonObject(content)) {
+    return isString(content.content) ? content.content.trim() : '';
+  }
+  if (isString(content)) return content.trim();
+  return '';
+}
+
+function toHeadingStrings(
+  headings: readonly HeadingLike[] | JsonValue | undefined,
+): string[] {
+  if (!Array.isArray(headings)) return [];
+  return headings.map(headingId).filter((h) => h.length > 0);
+}
+
+function toContentStrings(
+  contents: readonly ContentLike[] | JsonValue | undefined,
+): string[] {
   if (!Array.isArray(contents)) return [];
-  return contents
-    .map((c) => {
-      if (isJsonObject(c)) {
-        const content = c.content;
-        return isString(content)
-          ? content.trim()
-          : String(content ?? '').trim();
-      }
-      return String(c).trim();
-    })
-    .filter((c) => c.length > 0);
+  return contents.map(contentText).filter((c) => c.length > 0);
 }
 
 const LOCALES: readonly Language[] = ['en', 'fr'];
@@ -67,12 +81,12 @@ export function buildDocsSearchDocuments(): DocsSearchDocument[] {
         'structuredData' in page.data && isJsonObject(page.data.structuredData)
           ? page.data.structuredData
           : undefined;
-      const structured = structuredData
+      const structured: DocsSearchDocument['structured'] = structuredData
         ? {
             headings: toHeadingStrings(structuredData.headings),
             contents: toContentStrings(structuredData.contents),
           }
-        : { headings: [] as string[], contents: [] as string[] };
+        : { headings: [], contents: [] };
 
       const url = page.url.startsWith('/') ? page.url : `/${page.url}`;
       const aliases = [...aliasesForPath(url)];

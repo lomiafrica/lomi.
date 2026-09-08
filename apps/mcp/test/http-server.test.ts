@@ -4,7 +4,16 @@ import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest';
 import manifestJson from '../src/generated/tools-manifest.json' with { type: 'json' };
 import { createHttpApplication } from '../src/http.js';
 import { parseManifest } from '../src/manifest-parse.js';
-import { isString, validateJsonValue, type JsonObject } from "@lomi./shared";
+import {
+  isJsonArray,
+  isJsonObject,
+  parseJsonObject,
+  readString,
+  validateJsonValue,
+  isString,
+  type JsonObject,
+  type JsonValue,
+} from "@lomi./shared";
 
 const ORIGINAL_ENV = { ...process.env };
 
@@ -23,6 +32,33 @@ function listen(
     });
     server.on('error', reject);
   });
+}
+
+function requireJsonObject(value: JsonValue): JsonObject {
+  if (!isJsonObject(value)) {
+    throw new Error('expected JSON object');
+  }
+  return value;
+}
+
+async function readResponseJson(res: Response): Promise<JsonObject> {
+  return requireJsonObject(validateJsonValue(await res.json()));
+}
+
+function jsonRpcResult(envelope: JsonObject): JsonObject {
+  const result = envelope.result;
+  if (!isJsonObject(result)) {
+    throw new Error('expected JSON-RPC result object');
+  }
+  return result;
+}
+
+function jsonRpcTools(envelope: JsonObject): JsonObject[] {
+  const tools = jsonRpcResult(envelope).tools;
+  if (!isJsonArray(tools)) {
+    throw new Error('expected tools array');
+  }
+  return tools.filter(isJsonObject);
 }
 
 describe('createHttpApplication', () => {
@@ -156,9 +192,7 @@ describe('createHttpApplication', () => {
       `http://127.0.0.1:${ctx.port}/.well-known/oauth-protected-resource`,
     );
     expect(res.status).toBe(200);
-    // SAFETY: OAuth metadata response is a JSON object for assertion fields.
-
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.resource).toBeTruthy();
   });
 
@@ -172,9 +206,7 @@ describe('createHttpApplication', () => {
       `http://127.0.0.1:${ctx.port}/.well-known/oauth-protected-resource/mcp`,
     );
     expect(res.status).toBe(200);
-    // SAFETY: OAuth metadata response is a JSON object for assertion fields.
-
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.resource).toBe('https://mcp.lomi.africa/mcp');
     expect(res.headers.get('access-control-allow-origin')).toBe('*');
     expect(res.headers.get('cache-control')).toMatch(/max-age=/);
@@ -244,7 +276,7 @@ describe('createHttpApplication', () => {
     const wwwAuth = res.headers.get('www-authenticate');
     expect(wwwAuth).toMatch(/invalid_token/);
     expect(wwwAuth).toMatch(/resource_metadata/);
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.error_code).toBe('invalid_oauth_token');
   });
 
@@ -409,7 +441,7 @@ describe('createHttpApplication', () => {
     server = ctx.server;
     const res = await fetch(`http://127.0.0.1:${ctx.port}/.well-known/mcp`);
     expect(res.status).toBe(200);
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.mcp).toBe('https://mcp.lomi.africa/mcp');
     expect(body.mcp_guest).toBe('https://mcp.lomi.africa/mcp/guest');
     expect(Array.isArray(body.tools_preview)).toBe(true);
@@ -423,7 +455,7 @@ describe('createHttpApplication', () => {
     server = ctx.server;
     const res = await fetch(`http://127.0.0.1:${ctx.port}/server-card`);
     expect(res.status).toBe(200);
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.name).toBe('io.lomi/mcp');
     expect(body.title).toBe('lomi.');
   });
@@ -486,7 +518,7 @@ describe('createHttpApplication', () => {
       `http://127.0.0.1:${ctx.port}/.well-known/oauth-authorization-server`,
     );
     expect(res.status).toBe(200);
-    const body = (await res.json()) as JsonObject;
+    const body = await readResponseJson(res);
     expect(body.issuer).toBe('https://api.lomi.africa');
     expect(body.authorization_endpoint).toBe(
       'https://api.lomi.africa/oauth/authorize',
@@ -559,8 +591,7 @@ describe('createHttpApplication', () => {
     };
     const toolNames = async (id: number): Promise<string[]> => {
       const result = await rpc({ jsonrpc: '2.0', method: 'tools/list', id });
-      const tools = (result.result as JsonObject).tools as JsonObject[];
-      return tools.map((t) => String(t.name));
+      return jsonRpcTools(result).map((t) => String(t.name));
     };
 
     const before = await toolNames(2);
@@ -597,7 +628,7 @@ describe('createHttpApplication', () => {
         },
       },
     });
-    const callResult = call.result as JsonObject;
+    const callResult = jsonRpcResult(call);
     expect(callResult.isError, JSON.stringify(callResult.content)).not.toBe(true);
 
     const after = await toolNames(4);
@@ -661,8 +692,9 @@ describe('createHttpApplication', () => {
       body: JSON.stringify({ jsonrpc: '2.0', method: 'tools/list', id: 2 }),
     });
     expect(mismatch.status).toBe(401);
-    const body = (await mismatch.json()) as JsonObject;
-    expect(String((body.error as JsonObject)?.message ?? '')).toMatch(
+    const body = await readResponseJson(mismatch);
+    const error = isJsonObject(body.error) ? body.error : null;
+    expect(String(error ? readString(error, 'message') ?? '' : '')).toMatch(
       /credential mismatch/,
     );
   });
@@ -740,7 +772,7 @@ describe('createHttpApplication', () => {
         },
       },
     });
-    const fileResult = fileCall.result as JsonObject;
+    const fileResult = jsonRpcResult(fileCall);
     expect(fileResult.isError).not.toBe(true);
     const fileText = JSON.stringify(fileResult.content);
     expect(fileText).toContain('docs-guest1');
@@ -758,7 +790,7 @@ describe('createHttpApplication', () => {
         arguments: { action: 'list' },
       },
     });
-    const listResult = listCall.result as JsonObject;
+    const listResult = jsonRpcResult(listCall);
     expect(listResult.isError).toBe(true);
     expect(JSON.stringify(listResult.content)).toMatch(/merchant key/i);
 
@@ -839,7 +871,7 @@ describe('createHttpApplication', () => {
     });
     expect(callRes.status).toBe(200);
     const call = parseSseJsonRpc(await callRes.text());
-    const callResult = call.result as JsonObject;
+    const callResult = jsonRpcResult(call);
     expect(callResult.isError, JSON.stringify(callResult.content)).not.toBe(
       true,
     );
@@ -888,9 +920,7 @@ describe('createHttpApplication', () => {
       body: JSON.stringify({ jsonrpc: '2.0', method: 'tools/list', id: 2 }),
     });
     const listed = parseSseJsonRpc(await listRes.text());
-    const names = ((listed.result as JsonObject).tools as JsonObject[]).map(
-      (t) => String(t.name),
-    );
+    const names = jsonRpcTools(listed).map((t) => String(t.name));
     expect(names).not.toContain('lomi_organization');
     expect(names).toContain('lomi_provision');
   });
@@ -911,9 +941,12 @@ describe('createHttpApplication', () => {
             rawHeaders.get('X-API-KEY') ??
             rawHeaders.get('x-api-key') ??
             '';
-        } else if (rawHeaders && typeof rawHeaders === 'object') {
-          const rec = rawHeaders as Record<string, string>;
-          auth = rec['X-API-KEY'] ?? rec['x-api-key'] ?? rec['X-Api-Key'] ?? '';
+        } else if (isJsonObject(rawHeaders)) {
+          auth =
+            readString(rawHeaders, 'X-API-KEY') ??
+            readString(rawHeaders, 'x-api-key') ??
+            readString(rawHeaders, 'X-Api-Key') ??
+            '';
         }
         if (url.includes('/organizations') && init?.method === 'POST') {
           seenKeys.push(auth);
@@ -982,9 +1015,7 @@ describe('createHttpApplication', () => {
       }),
     });
     const created = parseSseJsonRpc(await createRes.text());
-    expect(created.result && (created.result as JsonObject).isError).not.toBe(
-      true,
-    );
+    expect(created.result && jsonRpcResult(created).isError).not.toBe(true);
     expect(JSON.stringify(created.result)).toContain('lomi_sk_test_adopted');
 
     const listRes = await fetch(base, {
@@ -1004,9 +1035,7 @@ describe('createHttpApplication', () => {
     });
     expect(listRes.status).toBe(200);
     const listed = parseSseJsonRpc(await listRes.text());
-    expect(listed.result && (listed.result as JsonObject).isError).not.toBe(
-      true,
-    );
+    expect(listed.result && jsonRpcResult(listed).isError).not.toBe(true);
     expect(seenKeys.some((key) => key.includes('lomi_sk_test_adopted'))).toBe(
       true,
     );
@@ -1016,14 +1045,14 @@ describe('createHttpApplication', () => {
 
 function parseSseJsonRpc(text: string): JsonObject {
   const trimmed = text.trim();
-  if (trimmed.startsWith('{')) return JSON.parse(trimmed) as JsonObject;
+  if (trimmed.startsWith('{')) return parseJsonObject(trimmed);
   const dataLines = trimmed
     .split('\n')
     .filter((line) => line.startsWith('data:'))
     .map((line) => line.slice(5).trim());
   const last = dataLines[dataLines.length - 1];
   if (!last) throw new Error(`no SSE data in response: ${text}`);
-  return JSON.parse(last) as JsonObject;
+  return parseJsonObject(last);
 }
 
 async function collectSseUntil(

@@ -1,7 +1,6 @@
-import { handleSupabaseRpc } from "@lomi./shared";
+import { isString, type JsonObject } from "@lomi./shared";
 import type { TypedSupabaseClient } from "../types.js";
-
-type RpcArgs = Record<string, unknown>;
+import { handleUntypedRpc } from "../untyped-rpc.js";
 
 export {
   adminSetNitroSettings,
@@ -9,55 +8,44 @@ export {
   reconcileNitroAdvances,
 } from "../nitro.js";
 
-export async function adminUpsertInsuranceCarrier(
+async function requireRpcId(
   client: TypedSupabaseClient,
-  args: RpcArgs,
+  fn: string,
+  args: JsonObject,
 ): Promise<string> {
-  const data = await handleSupabaseRpc(
-    client.rpc("admin_upsert_insurance_carrier" as never, args as never),
-    "admin_upsert_insurance_carrier",
-  );
-  if (typeof data !== "string" || !data) {
-    throw new Error("admin_upsert_insurance_carrier returned no id");
+  const data = await handleUntypedRpc(client, fn, args);
+  if (!isString(data) || !data) {
+    throw new Error(`${fn} returned no id`);
   }
   return data;
+}
+
+export async function adminUpsertInsuranceCarrier(
+  client: TypedSupabaseClient,
+  args: JsonObject,
+): Promise<string> {
+  return requireRpcId(client, "admin_upsert_insurance_carrier", args);
 }
 
 export async function adminUpsertInsuranceProduct(
   client: TypedSupabaseClient,
-  args: RpcArgs,
+  args: JsonObject,
 ): Promise<string> {
-  const data = await handleSupabaseRpc(
-    client.rpc("admin_upsert_insurance_product" as never, args as never),
-    "admin_upsert_insurance_product",
-  );
-  if (typeof data !== "string" || !data) {
-    throw new Error("admin_upsert_insurance_product returned no id");
-  }
-  return data;
+  return requireRpcId(client, "admin_upsert_insurance_product", args);
 }
 
 export async function adminQuoteInsuranceRequest(
   client: TypedSupabaseClient,
-  args: RpcArgs,
+  args: JsonObject,
 ): Promise<void> {
-  await handleSupabaseRpc(
-    client.rpc("admin_quote_insurance_request" as never, args as never),
-    "admin_quote_insurance_request",
-    { expectReturnValue: false },
-  );
+  await handleUntypedRpc(client, "admin_quote_insurance_request", args, {
+    expectReturnValue: false,
+  });
 }
 
 export async function adminIssueInsurancePolicy(
   client: TypedSupabaseClient,
-  args: RpcArgs,
+  args: JsonObject,
 ): Promise<string> {
-  const data = await handleSupabaseRpc(
-    client.rpc("admin_issue_insurance_policy" as never, args as never),
-    "admin_issue_insurance_policy",
-  );
-  if (typeof data !== "string" || !data) {
-    throw new Error("admin_issue_insurance_policy returned no id");
-  }
-  return data;
+  return requireRpcId(client, "admin_issue_insurance_policy", args);
 }

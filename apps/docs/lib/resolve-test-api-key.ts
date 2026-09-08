@@ -1,6 +1,7 @@
 /* @proprietary license */
 
 import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
+import { isJsonObject, readString } from '@lomi./shared';
 
 export type ResolveTestKeyOptions = {
   activeOrganizationId: string | null;
@@ -15,9 +16,10 @@ export async function resolveTestSecretApiKey(
   const query = options.activeOrganizationId
     ? `?organizationId=${encodeURIComponent(options.activeOrganizationId)}`
     : '';
-  const result = await docsApiGet<{ api_key?: string | null }>(
+  const result = await docsApiGet(
     `/auth/docs-session/test-key${query}`,
     token,
   );
-  return result?.api_key ?? null;
+  if (!result || !isJsonObject(result)) return null;
+  return readString(result, 'api_key') ?? null;
 }

@@ -1,5 +1,13 @@
 /* @proprietary license */
 
+import {
+  isJsonArray,
+  isJsonObject,
+  parseJson,
+  readString,
+  type JsonValue,
+} from '@lomi./shared';
+
 export type RecentSearchHit = {
   href: string;
   title: string;
@@ -16,13 +24,11 @@ function hasLocalStorage(): boolean {
   }
 }
 
-function isRecentSearchHit(value: unknown): value is RecentSearchHit {
-  if (!value || typeof value !== 'object') return false;
-  const href = 'href' in value ? value.href : null;
-  const title = 'title' in value ? value.title : null;
-  return (
-    typeof href === 'string' && href.length > 0 && typeof title === 'string'
-  );
+function isRecentSearchHit(value: JsonValue): value is RecentSearchHit {
+  if (!isJsonObject(value)) return false;
+  const href = readString(value, 'href');
+  const title = readString(value, 'title');
+  return href !== undefined && href.length > 0 && title !== undefined;
 }
 
 export function readRecentSearches(): RecentSearchHit[] {
@@ -31,8 +37,8 @@ export function readRecentSearches(): RecentSearchHit[] {
   try {
     const raw = globalThis.localStorage.getItem(RECENT_SEARCH_STORAGE_KEY);
     if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
+    const parsed = parseJson(raw);
+    if (!isJsonArray(parsed)) return [];
     return parsed.filter(isRecentSearchHit).slice(0, RECENT_SEARCH_LIMIT);
   } catch {
     return [];

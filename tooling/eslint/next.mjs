@@ -23,5 +23,13 @@ export function nextEslintConfig({ extraIgnores = [] } = {}) {
         ...extraIgnores,
       ],
     },
+    {
+      rules: {
+        // Established patterns (latest-callback refs, mount fetches) until
+        // components are migrated for React Compiler purity constraints.
+        "react-hooks/refs": "off",
+        "react-hooks/set-state-in-effect": "off",
+      },
+    },
   ];
 }

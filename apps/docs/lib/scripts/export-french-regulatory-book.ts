@@ -3,7 +3,7 @@
 /**
  * Export French regulatory documentation packs (3 books):
  * 1. Merchant REST API reference
- * 2. Services / product overview (Network, products, channels, platform, MoR)
+ * 2. Services / product overview (Network, products, channels, platform, compliance)
  * 3. Agent platform (MCP, OAuth, provisioning, partner API)
  *
  * Run from apps/docs:
@@ -185,7 +185,7 @@ function buildServicesSections(): BookSection[] {
       ]),
     },
     {
-      title: 'Merchant of Record',
+      title: 'Conformité et risques',
       files: existingFiles([
         docsPath('start/merchant-of-record/pricing.fr.mdx'),
         docsPath('start/merchant-of-record/acceptable-use.fr.mdx'),

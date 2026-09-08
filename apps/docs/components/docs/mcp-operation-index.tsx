@@ -23,12 +23,15 @@ export function McpOperationIndex() {
     category: mcpCategoryForGroup(group),
     twins: group.twins.map((twin) => {
       const restHref = restUrls.get(twin.operationKey);
-      return {
+      const row: McpOperationIndexGroup['twins'][number] = {
         operationKey: twin.operationKey,
         action: twin.action,
         anchor: mcpTwinAnchor(twin.tool, twin.action),
-        ...(restHref ? { restHref } : {}),
       };
+      if (restHref) {
+        row.restHref = restHref;
+      }
+      return row;
     }),
   }));
 

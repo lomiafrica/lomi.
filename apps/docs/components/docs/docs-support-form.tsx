@@ -7,6 +7,11 @@ import { cn } from '@lomi./ui/cn';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
 import { useDocsTurnstile } from '@/components/docs/use-docs-turnstile';
+import {
+  isJsonObject,
+  readString,
+  validateJsonValue,
+} from '@lomi./shared';
 
 const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -17,6 +22,10 @@ export type DocsSupportFormKind = 'contact' | 'security';
 const CONTACT_TOPICS = ['general', 'billing', 'integration', 'abuse'] as const;
 
 type ContactTopic = (typeof CONTACT_TOPICS)[number];
+
+function isContactTopic(value: string): value is ContactTopic {
+  return CONTACT_TOPICS.some((topic) => topic === value);
+}
 
 const CARD_CLASS =
   'docs-support-form not-prose my-6 w-full rounded-[var(--docs-sidebar-radius)] border border-[color:var(--docs-hairline)] bg-[var(--docs-well)] p-5 shadow-none sm:p-6';
@@ -112,10 +121,18 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
         }),
       });
 
-      const body = (await res.json().catch(() => null)) as {
-        reference?: string;
-        error?: string;
-      } | null;
+      let body: { reference?: string; error?: string } | null = null;
+      try {
+        const parsed = validateJsonValue(await res.json());
+        if (isJsonObject(parsed)) {
+          body = {
+            reference: readString(parsed, 'reference'),
+            error: readString(parsed, 'error'),
+          };
+        }
+      } catch {
+        body = null;
+      }
 
       if (!res.ok) {
         setErrorKey(
@@ -227,9 +244,10 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
                 className={`${FIELD_CLASS} cursor-pointer appearance-none bg-transparent pe-12`}
                 value={topic}
                 disabled={pending}
-                onChange={(event) =>
-                  setTopic(event.target.value as ContactTopic)
-                }
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (isContactTopic(value)) setTopic(value);
+                }}
               >
                 {CONTACT_TOPICS.map((value) => (
                   <option key={value} value={value}>

@@ -1,6 +1,7 @@
 import {
   isJsonObject,
   isString,
+  parseJson,
   readString,
   type JsonObject,
   type JsonValue,
@@ -9,7 +10,7 @@ import type { LomiHttpResult } from './lomi-http.js';
 
 function parseBody(result: LomiHttpResult): JsonValue {
   try {
-    return JSON.parse(result.bodyText) as JsonValue;
+    return parseJson(result.bodyText);
   } catch {
     return result.bodyText;
   }

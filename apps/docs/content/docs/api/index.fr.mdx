@@ -66,3 +66,29 @@ Envoyez la clé secrète dans l’en-tête `X-API-Key` depuis votre serveur.
 - **Limites :** les réponses réussies incluent `X-RateLimit-Remaining` et les en-têtes IETF `RateLimit` / `RateLimit-Policy`. Un `429` inclut `Retry-After`.
 - Les routes restent sans version. La `info.version` OpenAPI est la version du schéma. Envoyez `Lomi-Version` pour figer un schéma connu.
 
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+

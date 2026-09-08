@@ -25,11 +25,11 @@ const buttonClass =
 
 const CLIENT_ORDER: McpOauthClientId[] = ['cursor', 'claude', 'vscode'];
 
-const LABEL_KEY: Record<McpOauthClientId, string> = {
+const LABEL_KEY = {
   cursor: 'mcpConnect.addCursor',
   claude: 'mcpConnect.addClaude',
   vscode: 'mcpConnect.addVscode',
-};
+} as const satisfies { [K in McpOauthClientId]: string };
 
 export function McpOauthConnect({ className }: { className?: string }) {
   const { currentLanguage } = useTranslation();
@@ -38,8 +38,7 @@ export function McpOauthConnect({ className }: { className?: string }) {
     [currentLanguage],
   );
 
-  const clientUi: Record<McpOauthClientId, { icon: ReactNode; href: string }> =
-    {
+  const clientUi = {
       cursor: {
         icon: <CursorBrandIcon className="size-4 shrink-0" />,
         href: buildCursorOauthDeeplink(),
@@ -52,7 +51,7 @@ export function McpOauthConnect({ className }: { className?: string }) {
         icon: <VscodeBrandIcon className="size-4 shrink-0" />,
         href: buildVscodeOauthInstallUrl(),
       },
-    };
+    } satisfies { [K in McpOauthClientId]: { icon: ReactNode; href: string } };
 
   return (
     <div className={cn('not-prose my-4 flex flex-wrap gap-2', className)}>

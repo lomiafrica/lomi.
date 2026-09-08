@@ -21,8 +21,8 @@ interface BillingAddressSectionProps {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
   ) => void;
-  countrySelectRef: React.RefObject<HTMLSelectElement | null>;
-  cityInputRef: React.RefObject<HTMLInputElement | null>;
+  countrySelectRef: React.Ref<HTMLSelectElement>;
+  cityInputRef: React.Ref<HTMLInputElement>;
   detectedCountry?: string;
   /** Called when IP/geo detection fills country and the form has none yet. */
   onDetectedCountry?: (country: string) => void;
@@ -188,7 +188,7 @@ export function BillingAddressSection({
             onChange={handleCustomerInputChange}
             className="flex h-10 w-full border border-gray-300 bg-white px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 rounded-b-none appearance-none text-gray-900"
             required
-            ref={countrySelectRef as React.Ref<HTMLSelectElement>}
+            ref={countrySelectRef}
             autoComplete="country-name"
           >
             {!effectiveDetectedCountry && (
@@ -217,7 +217,7 @@ export function BillingAddressSection({
               onChange={handleCustomerInputChange}
               placeholder={t("checkout.billing_address.city")}
               className="rounded-none w-full border-x bg-white text-gray-900 border-gray-300 placeholder:text-base md:placeholder:text-sm text-base md:text-sm h-10"
-              ref={cityInputRef as React.Ref<HTMLInputElement>}
+              ref={cityInputRef}
               autoComplete="address-level2"
             />
           </div>

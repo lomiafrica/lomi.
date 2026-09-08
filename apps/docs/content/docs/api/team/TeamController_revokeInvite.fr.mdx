@@ -1,0 +1,71 @@
+---
+title: "Revoke invitation"
+description: "Revoke invitation"
+full: true
+method: delete
+path: /team/invitations
+operationId: TeamController_revokeInvite
+---
+
+## Aperçu
+
+Revoke invitation
+
+Annule une invitation en attente.
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `DELETE /team/invitations`.
+
+## Authentication
+
+Les routes marchandes exigent une clé API dans `X-API-KEY` (voir [Aperçu](/api)). Clé **test** sur `https://sandbox.api.lomi.africa`, clé **live** sur `https://api.lomi.africa`.
+
+## Endpoint
+
+`DELETE /team/invitations`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Example
+
+```bash
+curl -sS -X DELETE "https://sandbox.api.lomi.africa/team/invitations" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## OpenAPI
+
+- **operationId**: `TeamController_revokeInvite`
+- **Operation**: `DELETE /team/invitations`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

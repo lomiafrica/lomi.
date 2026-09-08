@@ -1,6 +1,10 @@
 import * as React from "react";
 import { cn } from "./cn";
 
+function isString<Value>(value: Value): value is Value & string {
+  return typeof value === "string";
+}
+
 export const statusPageActionClassName =
   "inline-flex h-9 items-center justify-center rounded-sm px-3.5 text-[13px] font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:shadow-[0_0_0_2px_rgba(69,104,255,0.28)]";
 
@@ -49,7 +53,7 @@ export function StatusPage({
         </div>
         {description ? (
           <div className="mt-4 text-[13px] leading-relaxed text-muted-foreground sm:text-[13.5px]">
-            {typeof description === "string" ? <p>{description}</p> : description}
+            {isString(description) ? <p>{description}</p> : description}
           </div>
         ) : null}
         {children}

@@ -1,6 +1,7 @@
 import {
   isJsonObject,
   isString,
+  isUndefined,
   readString,
   validateJsonValue,
   type JsonInputObject,
@@ -12,11 +13,11 @@ function resolveApiBaseUrl(): string {
     process.env.NEXT_PUBLIC_API_URL || "https://api.lomi.africa"
   ).replace(/\/+$/, "");
   if (
-    typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1")
+    !isUndefined(globalThis.window) &&
+    (globalThis.window.location.hostname === "localhost" ||
+      globalThis.window.location.hostname === "127.0.0.1")
   ) {
-    return `${window.location.origin}/__lomi-api`;
+    return `${globalThis.window.location.origin}/__lomi-api`;
   }
   return configured;
 }

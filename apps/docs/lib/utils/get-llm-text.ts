@@ -10,6 +10,7 @@ import { getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { remarkNpm } from 'fumadocs-core/mdx-plugins';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { isJsonObject, isString, readString } from '@lomi./shared';
 
 const processor = remark()
   .use(remarkMdx)
@@ -18,13 +19,15 @@ const processor = remark()
   .use(remarkAutoTypeTable)
   .use(remarkNpm);
 
-function isEnoent(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    (error as { code: unknown }).code === 'ENOENT'
-  );
+type NodeErrno = {
+  code?: string;
+};
+
+function isEnoent(error: Error | NodeErrno): boolean {
+  if (error instanceof Error) {
+    return 'code' in error && isString(error.code) && error.code === 'ENOENT';
+  }
+  return error.code === 'ENOENT';
 }
 
 function resolvePageFile(page: Page): string {
@@ -41,7 +44,11 @@ async function readPageMdx(filePath: string): Promise<string> {
   try {
     return await fs.readFile(filePath, 'utf8');
   } catch (error) {
-    if (!isEnoent(error)) {
+    if (error instanceof Error) {
+      if (!isEnoent(error)) throw error;
+    } else if (isJsonObject(error)) {
+      if (readString(error, 'code') !== 'ENOENT') throw error;
+    } else {
       throw error;
     }
     const englishFallback = filePath.replace(/\.fr\.mdx$/i, '.mdx');

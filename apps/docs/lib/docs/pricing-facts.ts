@@ -37,12 +37,14 @@ export function volumeLabel(tier: PricingTier, locale: 'en' | 'fr'): string {
   return `${fmt(range.min)} – ${fmt(range.max)}`;
 }
 
-export function exampleFixedMmFee(amount = 30_000): {
+export type ExampleFee = {
   amount: number;
   fee: number;
   net: number;
   feeLabel: string;
-} {
+};
+
+export function exampleFixedMmFee(amount = 30_000): ExampleFee {
   const fee = calculateFee(amount, FIXED_FEES_XOF.mobileMoney);
   return {
     amount,
@@ -52,12 +54,7 @@ export function exampleFixedMmFee(amount = 30_000): {
   };
 }
 
-export function exampleGrowthMmFee(amount = 20_000): {
-  amount: number;
-  fee: number;
-  net: number;
-  feeLabel: string;
-} {
+export function exampleGrowthMmFee(amount = 20_000): ExampleFee {
   const fee = calculateFee(amount, DYNAMIC_FEES_XOF.mobileMoney.growth);
   return {
     amount,

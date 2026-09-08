@@ -1,0 +1,73 @@
+---
+title: "Mint organization secret"
+description: "Mint organization secret"
+full: true
+method: post
+path: /organizations/{id}/keys
+operationId: OrganizationsController_createKey
+---
+
+## Aperçu
+
+Mint organization secret
+
+Crée une clé secrète pour un espace auquel le marchand appartient déjà.
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /organizations/{id}/keys`.
+
+## Authentication
+
+Les routes marchandes exigent une clé API dans `X-API-KEY` (voir [Aperçu](/api)). Clé **test** sur `https://sandbox.api.lomi.africa`, clé **live** sur `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /organizations/{id}/keys`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/organizations/ID/keys" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | - |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## OpenAPI
+
+- **operationId**: `OrganizationsController_createKey`
+- **Operation**: `POST /organizations/{id}/keys`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

@@ -3,39 +3,10 @@ import {
   useRef,
   useEffect,
   memo,
-  type CSSProperties,
-  type ComponentType,
   type ReactElement,
   type ReactNode,
-  type Ref,
 } from "react";
 import LottieModule, { type LottieRefCurrentProps } from "lottie-react";
-
-type LottieProps = {
-  lottieRef?: Ref<LottieRefCurrentProps>;
-  animationData: object;
-  autoplay?: boolean;
-  loop?: boolean;
-  style?: CSSProperties;
-};
-
-function resolveLottieComponent(exported: unknown): ComponentType<LottieProps> {
-  let current = exported;
-  while (current && typeof current !== "function") {
-    if (typeof current !== "object" || !("default" in current)) {
-      break;
-    }
-    current = current.default;
-  }
-  if (typeof current !== "function") {
-    throw new Error("lottie-react did not export a React component");
-  }
-  // SAFETY: typeof current === "function" is the React component lottie-react exports
-  // (Vite CJS interop may wrap it as { default: Component }).
-  return current as ComponentType<LottieProps>;
-}
-
-const Lottie = resolveLottieComponent(LottieModule);
 
 /** Minimal JSON object shape used while recoloring Lottie vectors. */
 type JsonObject = { [key: string]: JsonValue };
@@ -43,8 +14,38 @@ type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 /** Lottie assets may omit optional fields (`undefined` entries). */
 type JsonInputObject = { [key: string]: JsonValue | undefined };
 
+type LottieExport = typeof LottieModule;
+
+type LottieInteropModule = {
+  default?: LottieExport | LottieInteropModule;
+};
+
+function isLottieComponent(
+  value: LottieExport | LottieInteropModule | undefined,
+): value is LottieExport {
+  return typeof value === "function";
+}
+
+function resolveLottieComponent(
+  exported: LottieExport | LottieInteropModule,
+): LottieExport {
+  let current: LottieExport | LottieInteropModule | undefined = exported;
+  while (current !== undefined && !isLottieComponent(current)) {
+    if (!isJsonObject(current) || !("default" in current)) {
+      break;
+    }
+    current = current.default;
+  }
+  if (!isLottieComponent(current)) {
+    throw new Error("lottie-react did not export a React component");
+  }
+  return current;
+}
+
+const Lottie = resolveLottieComponent(LottieModule);
+
 /** Lottie document JSON — imported assets may omit optional fields. */
-export type LottieAnimationData = object;
+export type LottieAnimationData = JsonInputObject;
 
 export interface LottieIconCoreProps {
   animationData: string | LottieAnimationData;
@@ -157,7 +158,7 @@ const LottieIconCoreComponent = ({
 
   useEffect(() => {
     if (!isAnimationPath(animationData)) {
-      let processedData = animationData as JsonInputObject;
+      let processedData = animationData;
       const layers = readArray(processedData, "layers");
 
       if (customColor && layers !== undefined) {

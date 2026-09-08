@@ -5,7 +5,7 @@ import {
   extractBootstrapProvisioningKey,
   registerBootstrapAgent,
 } from './register-bootstrap.js';
-import { isJsonObject } from '@lomi./shared';
+import { isJsonObject, isString } from '@lomi./shared';
 
 export type RegisterAgentContext = {
   onProvisioningKeyDiscovered?: (key: string) => void;
@@ -41,9 +41,7 @@ export function registerLomiRegisterAgent(
     },
     async (args) => {
       const label =
-        isJsonObject(args) && typeof args.label === 'string'
-          ? args.label
-          : 'agent';
+        isJsonObject(args) && isString(args.label) ? args.label : 'agent';
       const result = await registerBootstrapAgent(label);
       const key = extractBootstrapProvisioningKey(result.body);
       if (result.ok && key && ctx.onProvisioningKeyDiscovered) {

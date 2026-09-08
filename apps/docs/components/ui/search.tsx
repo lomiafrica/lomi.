@@ -23,8 +23,15 @@ import { t as translate } from '@/lib/i18n/translations';
 import { orama } from '@/lib/orama/client';
 import type { OramaCloudSearchParams } from '@orama/core';
 import type { SortedResult } from 'fumadocs-core/search';
+import {
+  isJsonArray,
+  isJsonObject,
+  isString,
+  readString,
+  validateJsonValue,
+  type JsonValue,
+} from '@lomi./shared';
 import { DOCS_SEARCH_SUGGESTED } from '@/lib/search/aliases';
-import type { Language } from '@/lib/i18n/config';
 import type { DocsSearchTag } from '@/lib/search/tags';
 import {
   formatLocalResults,
@@ -53,9 +60,31 @@ async function searchLocal(
   if (tag) params.set('tag', tag);
   const response = await fetch(`/api/search?${params.toString()}`);
   if (!response.ok) return [];
-  const body: unknown = await response.json();
-  if (!Array.isArray(body)) return [];
-  return body as SortedResult[];
+  const body = validateJsonValue(await response.json());
+  if (!isJsonArray(body)) return [];
+  const hits: SortedResult[] = [];
+  for (const item of body) {
+    const hit = toSortedResult(item);
+    if (hit) hits.push(hit);
+  }
+  return hits;
+}
+
+function isSortedResultType(
+  value: string,
+): value is SortedResult['type'] {
+  return value === 'page' || value === 'heading' || value === 'text';
+}
+
+function toSortedResult(value: JsonValue): SortedResult | null {
+  if (!isJsonObject(value)) return null;
+  const id = readString(value, 'id');
+  const url = readString(value, 'url');
+  const type = readString(value, 'type');
+  const content = readString(value, 'content');
+  if (!id || !url || !type || content === undefined) return null;
+  if (!isSortedResultType(type)) return null;
+  return { id, url, type, content };
 }
 
 function sectionLabel(
@@ -167,7 +196,7 @@ export default function CustomSearchDialog(props: SharedProps) {
       type: 'page' as const,
       id: `suggest:${item.href}`,
       url: item.href,
-      content: item.title[currentLanguage as Language] ?? item.title.en,
+      content: currentLanguage === 'fr' ? item.title.fr : item.title.en,
     }));
 
     return [...recentItems, ...suggested];
@@ -185,7 +214,7 @@ export default function CustomSearchDialog(props: SharedProps) {
 
   const handleSelect = useCallback((item: SearchItemType) => {
     if (item.type === 'action') return;
-    const title = typeof item.content === 'string' ? item.content : '';
+    const title = isString(item.content) ? item.content : '';
     if (!item.url || !title) return;
     setRecents(rememberRecentSearch({ href: item.url, title }));
   }, []);

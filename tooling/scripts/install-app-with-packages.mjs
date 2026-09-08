@@ -42,6 +42,7 @@ import {
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isJsString } from "./lib/js-guards.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -100,7 +101,7 @@ function rewritePnpmScriptsForNpm(appDir) {
   if (!pkg.scripts) return;
   let changed = false;
   for (const [name, script] of Object.entries(pkg.scripts)) {
-    if (typeof script !== "string" || !/\bpnpm\s/.test(script)) continue;
+    if (!isJsString(script) || !/\bpnpm\s/.test(script)) continue;
     pkg.scripts[name] = script.replace(/\bpnpm\s+/g, "npm run ");
     changed = true;
   }

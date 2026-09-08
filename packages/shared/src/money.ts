@@ -3,11 +3,11 @@ import { isCheckoutCurrencyCode, type CheckoutCurrencyCode } from "./currency-co
 export const MONEY_MAX_MINOR = 9_999_999_999;
 export const MONEY_MIN_CHARGEABLE_MINOR = 1;
 
-const CURRENCY_EXPONENTS: Record<CheckoutCurrencyCode, number> = {
+const CURRENCY_EXPONENTS = {
   XOF: 0,
   USD: 2,
   EUR: 2,
-};
+} as const satisfies Record<CheckoutCurrencyCode, number>;
 
 export function currencyExponent(currencyCode: string): number {
   if (isCheckoutCurrencyCode(currencyCode)) {

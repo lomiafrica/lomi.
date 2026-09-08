@@ -19,6 +19,13 @@ import {
   writeStoredOrgId,
 } from '@/lib/docs/workspace-storage';
 import { canSendSandbox } from '@/lib/tryit/gating';
+import {
+  isJsonArray,
+  isJsonObject,
+  readString,
+  validateJsonValue,
+  type JsonValue,
+} from '@lomi./shared';
 
 export type DocsWorkspaceOrg = { id: string; name: string };
 
@@ -51,12 +58,49 @@ type DocsWorkspaceValue = {
 
 const DocsWorkspaceContext = createContext<DocsWorkspaceValue | null>(null);
 
+function isPricingPlan(value: string | undefined): value is Exclude<DocsPricingPlan, null> {
+  return value === 'fixed' || value === 'dynamic' || value === 'custom';
+}
+
+function isVolumeTier(value: string | undefined): value is Exclude<DocsVolumeTier, null> {
+  return (
+    value === 'starter' ||
+    value === 'growth' ||
+    value === 'professional' ||
+    value === 'enterprise'
+  );
+}
+
+function parseTryitContext(value: JsonValue): TryitContextResponse | null {
+  if (!isJsonObject(value)) return null;
+  const organizations: DocsWorkspaceOrg[] = [];
+  const rawOrgs = value.organizations;
+  if (isJsonArray(rawOrgs)) {
+    for (const item of rawOrgs) {
+      if (!isJsonObject(item)) continue;
+      const id = readString(item, 'id');
+      const name = readString(item, 'name');
+      if (id && name) organizations.push({ id, name });
+    }
+  }
+  const pricingPlanRaw = readString(value, 'pricingPlan');
+  const volumeTierRaw = readString(value, 'volumeTier');
+  return {
+    signedIn: value.signedIn === true,
+    organizations,
+    selectedOrganizationId: readString(value, 'selectedOrganizationId') ?? null,
+    testApiKey: readString(value, 'testApiKey') ?? null,
+    pricingPlan: isPricingPlan(pricingPlanRaw) ? pricingPlanRaw : null,
+    volumeTier: isVolumeTier(volumeTierRaw) ? volumeTierRaw : null,
+  };
+}
+
 async function fetchTryitContext(): Promise<TryitContextResponse | null> {
   const response = await fetch('/api/tryit-context', {
     credentials: 'include',
   });
   if (!response.ok) return null;
-  return (await response.json()) as TryitContextResponse;
+  return parseTryitContext(validateJsonValue(await response.json()));
 }
 
 async function persistTryitOrg(organizationId: string): Promise<boolean> {

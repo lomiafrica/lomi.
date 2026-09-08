@@ -3,7 +3,7 @@
 const ORG_KEY = 'lomi.docs.selected-org';
 
 export function readStoredOrgId(): string | null {
-  if (typeof window === 'undefined') return null;
+  if (!('localStorage' in globalThis)) return null;
   try {
     return window.localStorage.getItem(ORG_KEY);
   } catch {
@@ -12,7 +12,7 @@ export function readStoredOrgId(): string | null {
 }
 
 export function writeStoredOrgId(id: string | null): void {
-  if (typeof window === 'undefined') return;
+  if (!('localStorage' in globalThis)) return;
   try {
     if (id) window.localStorage.setItem(ORG_KEY, id);
     else window.localStorage.removeItem(ORG_KEY);

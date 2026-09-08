@@ -21,18 +21,26 @@ export { MCP_CATALOG_CATEGORIES } from '@/lib/mcp-catalog';
 
 export type McpAuthMode = 'merchant' | 'provisioning' | 'partner';
 
-const SIDEBAR_SEPARATOR_TO_CATEGORY: Record<string, McpCatalogCategory> = {
+const SIDEBAR_SEPARATOR_TO_CATEGORY = {
   '---Accept payments---': 'accept',
   '---Manage commerce---': 'commerce',
   '---Move money---': 'money',
   '---Platform---': 'platform',
   '---Operations---': 'operations',
-};
+} as const;
+
+type SidebarSeparator = keyof typeof SIDEBAR_SEPARATOR_TO_CATEGORY;
+
+function isSidebarSeparator(value: string): value is SidebarSeparator {
+  return Object.hasOwn(SIDEBAR_SEPARATOR_TO_CATEGORY, value);
+}
 
 const FOLDER_TO_CATEGORY: ReadonlyMap<string, McpCatalogCategory> = (() => {
   const map = new Map<string, McpCatalogCategory>();
   for (const group of REST_API_SIDEBAR_GROUPS) {
-    const category = SIDEBAR_SEPARATOR_TO_CATEGORY[group.separator];
+    const category = isSidebarSeparator(group.separator)
+      ? SIDEBAR_SEPARATOR_TO_CATEGORY[group.separator]
+      : undefined;
     if (!category) continue;
     for (const folder of group.folders) {
       map.set(folder, category);
@@ -135,10 +143,12 @@ function parseGroup(value: JsonValue): McpToolGroupTwins | null {
   return { tool: name, title, authMode, twins };
 }
 
-export function parseMcpToolPolicy(value: JsonValue): {
+export type McpToolPolicyParsed = {
   excludedOperationKeys: string[];
   groups: McpToolGroupTwins[];
-} {
+};
+
+export function parseMcpToolPolicy(value: JsonValue): McpToolPolicyParsed {
   if (!isJsonObject(value)) {
     throw new Error('MCP tool policy must be a JSON object');
   }

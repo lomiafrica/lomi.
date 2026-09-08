@@ -3,6 +3,7 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import {
+  aliasesForPath,
   DOCS_SEARCH_ALIASES,
   DOCS_SEARCH_SUGGESTED,
   DOCS_SEARCH_SUGGESTED_HREFS,
@@ -38,7 +39,7 @@ const EXPECTED_QUERIES: { query: string; href: string }[] = [
 ];
 
 function aliasesMatch(href: string, query: string): boolean {
-  const aliases = DOCS_SEARCH_ALIASES[href] ?? [];
+  const aliases = aliasesForPath(href);
   const hay = aliases.join(' ').toLowerCase();
   return query
     .toLowerCase()

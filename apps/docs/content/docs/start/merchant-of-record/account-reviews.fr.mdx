@@ -3,7 +3,7 @@ title: 'Examens de compte'
 description: 'Comment lomi. vérifie votre compte, surveille l’activité et sécurise virements et paiements.'
 ---
 
-En tant que **marchand d’enregistrement**, lomi. revend vos biens et services en votre nom. Pour vous protéger, protéger vos clients et le réseau de paiement, chaque compte passe par une vérification initiale et des examens continus, conformes à notre politique [usages acceptables](/start/merchant-of-record/acceptable-use).
+lomi. est un **prestataire de traitement des paiements** : vous restez le vendeur de vos biens et services, et nous traitons les paiements via des banques partenaires agréées, des établissements de monnaie électronique, des acquéreurs carte et des opérateurs mobile money. Ces partenaires, les réseaux de cartes et les régulateurs (BCEAO, droit ivoirien) nous imposent de connaître les marchands pour lesquels nous traitons. Pour vous protéger, protéger vos clients et le réseau de paiement, chaque compte passe par une vérification initiale et des examens continus, conformes à notre politique d’[usage acceptable](/start/merchant-of-record/acceptable-use).
 
 ## Processus d’activation
 
@@ -12,43 +12,56 @@ Avant d’accepter des paiements en production, vous complétez une procédure *
 Lors de l’activation, vous fournissez :
 
 - un court questionnaire sur votre activité, vos produits et l’usage prévu de lomi. ;
-- une vérification d’identité : passeport ou permis de conduire, immatriculation de l’entreprise et identifiant fiscal.
+- une vérification d’identité des propriétaires et signataires : passeport ou carte d’identité, immatriculation de l’entreprise (par exemple RCCM) et identifiant fiscal (par exemple NINEA ou DFE) ;
+- les bénéficiaires effectifs détenant 25 % ou plus, et le compte bancaire ou portefeuille mobile money au nom de l’entreprise pour les versements.
 
-Cet examen juste après l’inscription garantit le respect des obligations **KYC/AML** pour les plateformes de paiement en Afrique de l’Ouest, y compris la réglementation BCEAO et le droit ivoirien.
+Cet examen juste après l’inscription garantit le respect des obligations **KYC/LBC** pour les plateformes de paiement en Afrique de l’Ouest, y compris la réglementation BCEAO et le droit ivoirien. Une partie du contrôle est automatisée (authenticité des documents, filtrage sanctions et PPE, consultation de registres). Toute décision de refus ou de restriction de votre compte est réexaminée par une personne, et vous pouvez la contester en répondant à l’e-mail d’examen.
 
 ### Fournir les éléments dès le départ
 
-Transmettez les documents KYC/KYB dès l’inscription. Cela accélère l’activation et vous permet d’utiliser virements, tunnel de paiement et abonnements sans blocage ultérieur.
+Transmettez les documents KYC/KYB dès l’inscription. Cela accélère l’activation et vous permet d’utiliser virements, checkout et abonnements sans blocage ultérieur. Si nous demandons un élément pendant un examen, répondez sous 10 jours ouvrés ; les dossiers incomplets sont la première cause de virements laissés en pause.
 
 ## Examens continus (asynchrones)
 
 lomi. surveille l’activité des comptes pour prévenir la fraude. À certains seuils de vente, lomi. peut lancer des examens asynchrones, souvent en quelques heures, sans demande de documents supplémentaires.
 
-Vous êtes informé par e-mail lorsqu’un examen est en cours. **Les virements peuvent être suspendus** pendant l’examen. Lorsque le risque l’exige, **l’encaissement en production peut aussi être suspendu** (checkout et liens de paiement peuvent être désactivés). lomi. peut demander une confirmation au greffe ou au registre (par exemple RCCM ou NINEA) et une confirmation bancaire ou auprès d’un partenaire d’acquisition avant de libérer les fonds.
-
 Les examens portent notamment sur :
 
 - l’historique des transactions et les signaux de risque ;
 - les taux de remboursement et de rétrofacturation ;
-- le volume de ventes par rapport au profil de votre compte.
+- le volume de ventes et le panier moyen par rapport au profil de votre compte ;
+- la cohérence entre votre activité déclarée, vos liens de paiement et la géographie de vos clients.
+
+### Blocages et réserves : ce à quoi vous attendre
+
+Vous êtes informé par e-mail lorsqu’un examen est en cours. **Les virements peuvent être suspendus** pendant l’examen. Lorsque le risque l’exige, **l’encaissement en production peut aussi être suspendu** (checkout et liens de paiement peuvent être désactivés). lomi. peut demander une confirmation au greffe ou au registre (par exemple RCCM ou NINEA) et une confirmation bancaire ou auprès d’un partenaire d’acquisition avant de libérer les fonds.
+
+Lorsque nous appliquons un blocage ou une réserve, l’e-mail et le tableau de bord vous indiquent :
+
+- le motif général de l’examen ;
+- le montant ou le pourcentage concerné ;
+- les documents ou actions permettant de le lever ;
+- la date prévue de réexamen ou de libération.
+
+Un blocage dure jusqu’à la fin de l’examen, et au plus jusqu’à la fin de la période de contestation des réseaux de cartes (aujourd’hui jusqu’à 120 jours). Une réserve glissante sur un profil à haut risque n’excède pas 10 % du volume traité retenus pendant 180 jours, sauf exigence supérieure d’un partenaire de paiement. Vous pouvez contester un blocage ou une réserve en écrivant à [hello@lomi.africa](mailto:hello@lomi.africa) ; nous accusons réception sous 2 jours ouvrés et répondons sous 7 jours ouvrés, le délai de traitement des réclamations fixé par l’Instruction n° 001-01-2024 de la BCEAO. Si notre réponse ne vous satisfait pas, vous pouvez saisir l’Observatoire de la Qualité des Services Financiers de Côte d’Ivoire ou la Commission Bancaire de l’UMOA. Les règles complètes figurent dans les [conditions générales](https://lomi.africa/terms).
 
 ### Taux de rétrofacturation élevés
 
-Les réseaux carte considèrent comme excessif un ratio de chargebacks au-delà d’environ 0,7 % du chiffre d’affaires. Le dépassement peut entraîner des programmes de surveillance coûteux, des pénalités ou la fermeture du compte. Le Mobile Money présente en général un taux de chargebacks quasi nul.
+Les réseaux carte considèrent comme excessif un ratio de chargebacks au-delà d’environ 0,7 % du chiffre d’affaires. Le dépassement peut entraîner des programmes de surveillance coûteux, des pénalités ou la fermeture du compte. Les annulations Mobile Money présentent en général un taux quasi nul.
 
-Si votre taux augmente, lomi. peut vous contacter pour le réduire avant d’atteindre les seuils du réseau.
+Si votre taux augmente, lomi. peut vous contacter pour le réduire avant d’atteindre les seuils du réseau, demander un plan de remédiation ou appliquer une réserve. Les frais de litige et le délai de preuve sont décrits dans [Tarification](/start/merchant-of-record/pricing) et dans les conditions générales.
 
 ## Pays pris en charge
 
 ### Paiements
 
-En tant que marchand d’enregistrement, lomi. gère taxes et conformité réglementaire sur les ventes couvertes, vous n’avez pas à les déclarer séparément pour les ventes traitées par lomi. en tant que MoR.
+Vous pouvez accepter des paiements locaux en Afrique de l’Ouest et des cartes internationales sans frais cachés. Certaines routes Mobile Money peuvent être limitées par opérateur ; vos clients voient alors une erreur explicite au checkout et vous recevez un e-mail.
 
-Vous pouvez accepter des paiements locaux en Afrique de l’Ouest et des cartes internationales sans frais cachés. Certaines routes Mobile Money peuvent être limitées par opérateur ; vos clients voient alors une erreur explicite au tunnel et vous recevez un e-mail.
+lomi. étant prestataire de traitement et non vendeur, **vous restez responsable des taxes sur vos ventes** (TVA, taxes sur les ventes, retenues) et des licences nécessaires à votre activité. Nous ajoutons les taxes applicables uniquement sur nos propres frais.
 
 ### Virements
 
-lomi. propose des virements Mobile Money à faible coût et des virements bancaires gratuits pour les entreprises implantées dans l’UEMOA (Union économique et monétaire ouest-africaine). **Pays locaux** pris en charge aujourd’hui :
+lomi. propose des virements Mobile Money à faible coût et des virements bancaires gratuits pour les entreprises implantées dans l’UEMOA (Union économique et monétaire ouest-africaine). Les virements sont effectués uniquement vers un compte ou un portefeuille au nom de l’entreprise vérifiée. **Pays locaux** pris en charge aujourd’hui :
 
 - Sénégal
 - Côte d’Ivoire
