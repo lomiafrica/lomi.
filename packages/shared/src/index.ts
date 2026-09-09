@@ -97,6 +97,21 @@ export {
 } from "./json-value.js";
 export { resolveCustomerDisplayName } from "./customer-display-name.js";
 export {
+  parseCheckoutBooking,
+  findCheckoutBooking,
+  getBookingBalanceDue,
+  isCheckoutBookingClosed,
+  bookingDateLocale,
+  formatBookingDate,
+  formatBookingTime,
+  formatBookingTimeRange,
+  formatBookingSlot,
+} from "./booking-deposit.js";
+export type {
+  CheckoutBooking,
+  CheckoutBookingStatus,
+} from "./booking-deposit.js";
+export {
   mapCheckoutMethodToFeeKey,
   findProcessingFeeRate,
   calculateProcessingFeeSurcharge,
