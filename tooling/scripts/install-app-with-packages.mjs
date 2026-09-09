@@ -23,6 +23,9 @@
  * 22, and a restored `.pnpm` tree from cache makes it worse). Website/admin
  * npm deploys still use `npm install --omit=dev --omit=peer`. @lomi./pay
  * installs with the same omit flags so it does not pull a second Next.
+ * Keep `@types/react` / `@types/react-dom` in pay `dependencies` so checkout
+ * typecheck can resolve `react` next to the nested runtime copy lucide pulls.
+ * Keep `date-fns` in UI `dependencies` so Vite can resolve react-day-picker.
  *
  * Usage: node tooling/scripts/install-app-with-packages.mjs <app-dir>
  *   e.g. node tooling/scripts/install-app-with-packages.mjs apps/docs
