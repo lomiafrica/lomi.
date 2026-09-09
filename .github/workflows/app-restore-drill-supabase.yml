@@ -1,0 +1,292 @@
+name: lomi · drill · restore supabase db
+
+# Disaster-recovery evidence for the business continuity plan (PCA): take the
+# latest off-platform encrypted database backup written by
+# `app-backup-supabase.yml`, restore it into a throwaway Supabase Postgres of the
+# same major version, verify the result, and publish a signed-off report
+# (procès-verbal) as a run artifact. Nothing touches production.
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_file:
+        description: "Specific backup archive (supabase-db-YYYYMMDDTHHMMSSZ.tar.gz.age). Empty = latest manifest."
+        required: false
+        default: ""
+  schedule:
+    # Monthly, first Monday-ish (day 1) at 03:40 UTC, after the 6-hourly backup.
+    - cron: "40 3 1 * *"
+
+concurrency:
+  group: lomi-restore-drill-supabase-db
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    name: Restore latest backup into scratch Postgres
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+      BACKUP_S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+      BACKUP_S3_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+      BACKUP_S3_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+      BACKUP_S3_PREFIX: ${{ vars.BACKUP_S3_PREFIX }}
+      BACKUP_S3_REGION: ${{ vars.BACKUP_S3_REGION }}
+      AGE_PRIVATE_KEY: ${{ secrets.BACKUP_AGE_PRIVATE_KEY }}
+      SCRATCH_DB_URL: postgresql://postgres:drill-only-password@localhost:5432/postgres
+    services:
+      postgres:
+        # Same image family and major version as the production project so the
+        # Supabase-owned schemas (auth, storage, extensions, vault) and roles exist.
+        image: supabase/postgres:17.4.1.075
+        env:
+          POSTGRES_PASSWORD: drill-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+    steps:
+      - name: Validate configuration
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in BACKUP_S3_BUCKET BACKUP_S3_ENDPOINT BACKUP_S3_ACCESS_KEY_ID BACKUP_S3_SECRET_ACCESS_KEY AGE_PRIVATE_KEY; do
+            value="$(printf '%s' "${!name-}" | tr -d '\r' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+            if [ -z "$value" ]; then
+              echo "::error::Missing required secret: ${name}"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::BACKUP_AGE_PRIVATE_KEY is the age identity that pairs with BACKUP_AGE_PUBLIC_KEY (contents of lomi-supabase-backup-key.txt)."
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install restore tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y age jq curl gnupg lsb-release
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          echo "deb [signed-by=/etc/apt/trusted.gpg.d/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+          /usr/lib/postgresql/17/bin/psql --version
+
+      - name: Download and verify backup
+        id: download
+        run: |
+          set -euo pipefail
+          export AWS_ACCESS_KEY_ID="$BACKUP_S3_ACCESS_KEY_ID"
+          export AWS_SECRET_ACCESS_KEY="$BACKUP_S3_SECRET_ACCESS_KEY"
+          export AWS_DEFAULT_REGION="${BACKUP_S3_REGION:-auto}"
+          export AWS_EC2_METADATA_DISABLED="true"
+
+          prefix="${BACKUP_S3_PREFIX:-supabase}"
+          source="s3://${BACKUP_S3_BUCKET}/${prefix}/db"
+          endpoint_args=()
+          if [ -n "${BACKUP_S3_ENDPOINT:-}" ]; then
+            endpoint_args=(--endpoint-url "$BACKUP_S3_ENDPOINT")
+          fi
+
+          started_at="$(date -u +%s)"
+          echo "DRILL_STARTED_AT=$started_at" >> "$GITHUB_ENV"
+
+          backup_file="${{ inputs.backup_file }}"
+          if [ -z "$backup_file" ]; then
+            aws s3 cp "$source/latest-manifest.json" latest-manifest.json "${endpoint_args[@]}" --only-show-errors
+            backup_file="$(jq -r '.backup_file' latest-manifest.json)"
+            backup_created_at="$(jq -r '.created_at' latest-manifest.json)"
+          else
+            backup_created_at="${backup_file#supabase-db-}"
+            backup_created_at="${backup_created_at%%.*}"
+          fi
+          checksum_file="${backup_file}.sha256"
+
+          aws s3 cp "$source/$backup_file" "$backup_file" "${endpoint_args[@]}" --only-show-errors
+          aws s3 cp "$source/$checksum_file" "$checksum_file" "${endpoint_args[@]}" --only-show-errors
+          sha256sum -c "$checksum_file"
+
+          echo "BACKUP_FILE=$backup_file" >> "$GITHUB_ENV"
+          echo "BACKUP_CREATED_AT=$backup_created_at" >> "$GITHUB_ENV"
+          echo "BACKUP_SIZE_BYTES=$(stat -c %s "$backup_file")" >> "$GITHUB_ENV"
+          echo "DOWNLOADED_AT=$(date -u +%s)" >> "$GITHUB_ENV"
+
+      - name: Decrypt and unpack
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "$AGE_PRIVATE_KEY" > age-identity.txt
+          archive="${BACKUP_FILE%.age}"
+          age --decrypt -i age-identity.txt --output "$archive" "$BACKUP_FILE"
+          rm -f age-identity.txt
+          tar -xzf "$archive"
+          backup_dir="${archive%.tar.gz}"
+          test -f "$backup_dir/roles.sql"
+          test -f "$backup_dir/schema.sql"
+          test -f "$backup_dir/data.sql"
+          echo "BACKUP_DIR=$backup_dir" >> "$GITHUB_ENV"
+          echo "DECRYPTED_AT=$(date -u +%s)" >> "$GITHUB_ENV"
+          ls -la "$backup_dir"
+
+      - name: Restore into scratch Postgres
+        run: |
+          set -euo pipefail
+          cd "$BACKUP_DIR"
+
+          # Wait for the service container to accept connections.
+          for _ in $(seq 1 30); do
+            if psql "$SCRATCH_DB_URL" -tAc 'select 1' >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          psql "$SCRATCH_DB_URL" -tAc 'select version()'
+
+          # Supabase's dump filters already strip reserved roles and internal schemas;
+          # ON_ERROR_STOP stays off so a single pre-existing object does not abort the
+          # drill, and every error is counted and surfaced in the report instead.
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=0 -q -f roles.sql  2> ../restore-roles.err  || true
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=0 -q -f schema.sql 2> ../restore-schema.err || true
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=0 -q -f data.sql   2> ../restore-data.err   || true
+
+          cd ..
+          for stage in roles schema data; do
+            count="$(grep -c '^psql:.*ERROR' "restore-${stage}.err" || true)"
+            echo "RESTORE_${stage^^}_ERRORS=${count:-0}" >> "$GITHUB_ENV"
+          done
+          echo "RESTORED_AT=$(date -u +%s)" >> "$GITHUB_ENV"
+
+      - name: Verify restored database
+        run: |
+          set -euo pipefail
+
+          expected_tables="$(grep -c '^CREATE TABLE IF NOT EXISTS "public"' "$BACKUP_DIR/schema.sql" || true)"
+          restored_tables="$(psql "$SCRATCH_DB_URL" -tAc "select count(*) from pg_tables where schemaname = 'public'")"
+          restored_functions="$(psql "$SCRATCH_DB_URL" -tAc "select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public'")"
+          restored_policies="$(psql "$SCRATCH_DB_URL" -tAc "select count(*) from pg_policies where schemaname = 'public'")"
+
+          psql "$SCRATCH_DB_URL" -q -c 'analyze' >/dev/null
+
+          # Row counts on the ledger tables the PCA cares about. Missing tables are
+          # reported as "absent" rather than failing the query.
+          core_tables="organizations merchants transactions refunds payouts customers payment_links checkout_sessions subscriptions webhooks webhook_delivery_logs api_keys account_balance_history platform_channel_balances"
+          : > row-counts.tsv
+          for table in $core_tables; do
+            exists="$(psql "$SCRATCH_DB_URL" -tAc "select to_regclass('public.${table}') is not null")"
+            if [ "$exists" = "t" ]; then
+              n="$(psql "$SCRATCH_DB_URL" -tAc "select count(*) from public.\"${table}\"")"
+            else
+              n="absent"
+            fi
+            printf '%s\t%s\n' "$table" "$n" >> row-counts.tsv
+          done
+
+          # Referential integrity smoke test: every FK constraint validated.
+          invalid_fks="$(psql "$SCRATCH_DB_URL" -tAc "select count(*) from pg_constraint where contype = 'f' and not convalidated")"
+
+          echo "EXPECTED_TABLES=${expected_tables:-0}" >> "$GITHUB_ENV"
+          echo "RESTORED_TABLES=$restored_tables" >> "$GITHUB_ENV"
+          echo "RESTORED_FUNCTIONS=$restored_functions" >> "$GITHUB_ENV"
+          echo "RESTORED_POLICIES=$restored_policies" >> "$GITHUB_ENV"
+          echo "INVALID_FKS=$invalid_fks" >> "$GITHUB_ENV"
+          echo "VERIFIED_AT=$(date -u +%s)" >> "$GITHUB_ENV"
+
+          echo "Tables: $restored_tables restored / $expected_tables in schema.sql"
+          cat row-counts.tsv
+
+          verdict=PASS
+          if [ "${expected_tables:-0}" -gt 0 ] && [ "$restored_tables" -lt "$expected_tables" ]; then verdict=FAIL; fi
+          if [ "$invalid_fks" != "0" ]; then verdict=FAIL; fi
+          if [ "$RESTORE_DATA_ERRORS" != "0" ]; then verdict=FAIL; fi
+          if [ "$(awk -F'\t' '$1=="transactions" && ($2=="absent" || $2=="0")' row-counts.tsv | wc -l)" != "0" ]; then verdict=FAIL; fi
+          echo "DRILL_VERDICT=$verdict" >> "$GITHUB_ENV"
+
+      - name: Write restore drill report
+        if: always()
+        run: |
+          set -euo pipefail
+          now="$(date -u +%s)"
+          fmt() { date -u -d "@$1" +'%Y-%m-%dT%H:%M:%SZ'; }
+          dur() { echo $(( ${2:-$now} - ${1:-$now} ))s; }
+          verdict="${DRILL_VERDICT:-FAIL}"
+          {
+            echo "# Procès-verbal de test de restauration de la base de données"
+            echo
+            echo "| Champ | Valeur |"
+            echo "| --- | --- |"
+            echo "| Résultat | **${verdict}** |"
+            echo "| Exécution | ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |"
+            echo "| Déclencheur | ${GITHUB_EVENT_NAME} |"
+            echo "| Sauvegarde restaurée | ${BACKUP_FILE:-n/a} (créée ${BACKUP_CREATED_AT:-n/a}, ${BACKUP_SIZE_BYTES:-0} octets chiffrés) |"
+            echo "| Cible | Conteneur jetable supabase/postgres:17.4.1.075 (même version majeure que la production) |"
+            echo "| Début du test | $(fmt "${DRILL_STARTED_AT:-$now}") |"
+            echo "| Téléchargement + contrôle SHA-256 | $(dur "${DRILL_STARTED_AT:-$now}" "${DOWNLOADED_AT:-$now}") |"
+            echo "| Déchiffrement age + extraction | $(dur "${DOWNLOADED_AT:-$now}" "${DECRYPTED_AT:-$now}") |"
+            echo "| Restauration roles + schema + data | $(dur "${DECRYPTED_AT:-$now}" "${RESTORED_AT:-$now}") |"
+            echo "| Vérification | $(dur "${RESTORED_AT:-$now}" "${VERIFIED_AT:-$now}") |"
+            echo "| Durée totale (RTO mesuré, hors reconfiguration des services) | $(dur "${DRILL_STARTED_AT:-$now}" "${VERIFIED_AT:-$now}") |"
+            echo "| Tables public restaurées | ${RESTORED_TABLES:-0} / ${EXPECTED_TABLES:-0} attendues |"
+            echo "| Fonctions public | ${RESTORED_FUNCTIONS:-0} |"
+            echo "| Politiques RLS public | ${RESTORED_POLICIES:-0} |"
+            echo "| Contraintes FK non validées | ${INVALID_FKS:-n/a} |"
+            echo "| Erreurs psql (roles / schema / data) | ${RESTORE_ROLES_ERRORS:-n/a} / ${RESTORE_SCHEMA_ERRORS:-n/a} / ${RESTORE_DATA_ERRORS:-n/a} |"
+            echo
+            echo "## Volumes restaurés (tables clés)"
+            echo
+            echo "| Table | Lignes |"
+            echo "| --- | --- |"
+            if [ -f row-counts.tsv ]; then
+              awk -F'\t' '{ printf "| %s | %s |\n", $1, $2 }' row-counts.tsv
+            else
+              echo "| (vérification non atteinte) | |"
+            fi
+            echo
+            echo "## Erreurs de restauration (extrait)"
+            echo
+            echo '```'
+            for stage in roles schema data; do
+              if [ -f "restore-${stage}.err" ]; then
+                echo "--- ${stage}.sql"
+                grep '^psql:.*ERROR' "restore-${stage}.err" | sed -E 's/(password|secret|token|key)[^ ]*/[redacted]/Ig' | head -20 || true
+              fi
+            done
+            echo '```'
+            echo
+            echo "Procédure : \`apps/dashboard/supabase/docs/supabase-database-backups.md\` § Database restore drill. Aucune donnée de production n'a été modifiée ; le conteneur cible est détruit à la fin de l'exécution."
+          } > restore-drill-report.md
+          cat restore-drill-report.md >> "$GITHUB_STEP_SUMMARY"
+          cat restore-drill-report.md
+
+      - name: Upload restore drill report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-drill-report-${{ github.run_id }}
+          path: |
+            restore-drill-report.md
+            row-counts.tsv
+            restore-roles.err
+            restore-schema.err
+            restore-data.err
+          if-no-files-found: warn
+          retention-days: 400
+
+      - name: Fail the run when the drill did not pass
+        if: always()
+        run: |
+          if [ "${DRILL_VERDICT:-FAIL}" != "PASS" ]; then
+            echo "::error::Restore drill verdict: ${DRILL_VERDICT:-FAIL}"
+            exit 1
+          fi
