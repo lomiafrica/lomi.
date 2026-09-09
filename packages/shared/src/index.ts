@@ -198,11 +198,15 @@ export {
   PUBLIC_ID_BODY_LENGTH,
   PUBLIC_ID_PREFIXES,
   RESERVED_PAYMENT_LINK_PATH_SEGMENTS,
+  buildHostedCheckoutSessionUrl,
   buildPaymentLinkCheckoutUrl,
+  checkoutSessionPathSegment,
   formatPublicId,
   hostedPaymentLinkUrl,
   isCanonicalPaymentLinkPath,
   isCheckoutLinkIdentifier,
+  isCheckoutSessionIdentifier,
+  isLegacyCheckoutSessionPath,
   isLegacyPaymentLinkPath,
   isPaymentLinkPathSegment,
   isPublicId,
@@ -237,4 +241,3 @@ export type {
   AgentRegisterPowVerifyInput,
   AgentRegisterPowVerifyResult,
 } from "./agent-register-pow.js";
-

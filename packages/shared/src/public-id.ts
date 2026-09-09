@@ -199,3 +199,45 @@ export function hostedPaymentLinkUrl(
   }
   return buildPaymentLinkCheckoutUrl(id);
 }
+
+const CHECKOUT_SESSION_RESERVED_SEGMENTS = new Set([
+  "error",
+  "mtn",
+  "success",
+]);
+
+export function isCheckoutSessionIdentifier(value: string): boolean {
+  return isPublicId(value, PUBLIC_ID_PREFIXES.checkoutSession);
+}
+
+/** Hosted path for a session: `cs_` + Crockford body. UUIDs pass through. */
+export function checkoutSessionPathSegment(id: string): string {
+  const trimmed = id.trim();
+  if (!trimmed) return "";
+  if (isUuid(trimmed)) return trimmed;
+  return formatPublicId(trimmed) ?? trimmed;
+}
+
+export function buildHostedCheckoutSessionUrl(
+  id: string,
+  origin: string = DEFAULT_PAY_ORIGIN,
+): string {
+  const trimmed = id.trim();
+  const base = origin.replace(/\/$/, "");
+  if (isCheckoutSessionIdentifier(trimmed)) {
+    return `${base}/${encodeURIComponent(checkoutSessionPathSegment(trimmed))}`;
+  }
+  return `${base}/checkout/${encodeURIComponent(trimmed)}`;
+}
+
+export function isLegacyCheckoutSessionPath(pathname: string): boolean {
+  const parts = pathname.replace(/^\/+/, "").split("/").filter(Boolean);
+  if (parts.length < 2 || parts[0]?.toLowerCase() !== "checkout") {
+    return false;
+  }
+  const id = parts[1] ?? "";
+  if (CHECKOUT_SESSION_RESERVED_SEGMENTS.has(id.toLowerCase())) {
+    return false;
+  }
+  return isCheckoutSessionIdentifier(id) || isUuid(id);
+}

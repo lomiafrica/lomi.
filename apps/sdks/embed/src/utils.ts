@@ -75,8 +75,15 @@ export const buildCheckoutUrl = (options: LomiEmbedOptions): string => {
     return withEmbeddedParam(options.checkoutUrl);
   }
 
-  const base = options.checkoutBaseUrl || DEFAULT_CHECKOUT_BASE_URL;
-  return withEmbeddedParam(`${base}/checkout/${options.sessionId}`);
+  const base = (options.checkoutBaseUrl || DEFAULT_CHECKOUT_BASE_URL).replace(
+    /\/$/,
+    "",
+  );
+  const sessionId = options.sessionId ?? "";
+  const path = /^cs_[0-9A-Za-z]{14}$/i.test(sessionId)
+    ? `/${sessionId}`
+    : `/checkout/${sessionId}`;
+  return withEmbeddedParam(`${base}${path}`);
 };
 
 export const formatBytes = (bytes?: number | null): string => {
