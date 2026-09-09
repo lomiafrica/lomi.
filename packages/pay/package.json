@@ -1,6 +1,6 @@
 {
   "name": "@lomi./pay",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",
@@ -34,13 +34,13 @@
     "@lomi./queries": "file:../queries",
     "@lomi./shared": "file:../shared",
     "@lomi./ui": "file:../ui",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
     "lucide-react": "^0.562.0",
     "react-phone-number-input": "^3.4.18"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
     "next": "^16.3.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
