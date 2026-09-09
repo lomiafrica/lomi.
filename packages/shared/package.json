@@ -70,6 +70,7 @@
     "watch": "tsc -p tsconfig.build.json --watch",
     "prepare": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --experimental-strip-types --test src/public-id.test.ts",
     "types:generate": "node scripts/generate-database-types.mjs",
     "types": "pnpm run types:generate",
     "types:compare": "node scripts/compare-database-types.mjs",

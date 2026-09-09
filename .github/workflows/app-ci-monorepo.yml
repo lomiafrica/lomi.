@@ -15,6 +15,7 @@ jobs:
       cli: ${{ steps.changes.outputs.cli }}
       admin: ${{ steps.changes.outputs.admin }}
       checkout: ${{ steps.changes.outputs.checkout }}
+      shared: ${{ steps.changes.outputs.shared }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -39,6 +40,8 @@ jobs:
               - 'apps/checkout'
               - 'packages/shared/**'
               - 'packages/queries/**'
+            shared:
+              - 'packages/shared/**'
 
   build-api:
     needs: detect-changes
@@ -116,6 +119,20 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test -- --test-threads=1
       - run: cargo build --release
+
+  test-shared:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.shared == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/shared
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --experimental-strip-types --test src/public-id.test.ts
 
   test-admin:
     needs: detect-changes
