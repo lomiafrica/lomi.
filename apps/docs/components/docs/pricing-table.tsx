@@ -151,7 +151,9 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                   FIXED_FEES_XOF.beneficiaryMmPayout,
                 ],
                 [
-                  locale === 'fr' ? 'Remboursement' : 'Full / partial refund',
+                  locale === 'fr'
+                    ? 'Remboursement partiel (total gratuit)'
+                    : 'Partial refund (full refunds are free)',
                   FIXED_FEES_XOF.refund,
                 ],
                 ['Chargeback', FIXED_FEES_XOF.chargeback],
@@ -213,7 +215,9 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
             </tr>
             <tr>
               <td>
-                {locale === 'fr' ? 'Remboursement' : 'Full / partial refund'}
+                {locale === 'fr'
+                  ? 'Remboursement partiel (total gratuit)'
+                  : 'Partial refund (full refunds are free)'}
               </td>
               <td>2% + 0</td>
             </tr>
@@ -313,8 +317,8 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
             <tr>
               <td>
                 {locale === 'fr'
-                  ? 'Frais de remboursement'
-                  : 'Refund processing fee'}
+                  ? 'Remboursement partiel (le remboursement total est gratuit)'
+                  : 'Partial refund (full refunds are free)'}
               </td>
               <td>{FIXED_FEES_XOF.refund.percent}%</td>
             </tr>

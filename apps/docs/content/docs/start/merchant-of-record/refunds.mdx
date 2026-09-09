@@ -9,7 +9,7 @@ Refunds for payments processed through lomi. are initiated by the merchant (dash
 
 - Full and partial refunds are available on completed transactions, subject to provider rules and available balance.
 - Use [Refunds](/build/money/refunds) for the product guide and [Create refund](/api/refunds/RefundsController_create) for the API.
-- **Processing fees are not returned** when you refund a payment, and the refund fee listed on [Pricing](/start/merchant-of-record/pricing) applies to each refund. Refunds are debited from your balance; if the balance is insufficient, they are recovered from later payments or invoiced.
+- **Processing fees are not returned** when you refund a payment. Full refunds are free; partial refunds carry the refund fee listed on [Pricing](/start/merchant-of-record/pricing). Refunds are debited from your balance; if the balance is insufficient, they are recovered from later payments or invoiced.
 - Card refunds go back to the original card. Mobile Money and instant-payment refunds go back to the original wallet or account where the operator allows it.
 
 ## Platform-initiated refunds
