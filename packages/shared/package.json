@@ -70,6 +70,7 @@
     "watch": "tsc -p tsconfig.build.json --watch",
     "prepare": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test src/*.test.ts",
     "types:generate": "node scripts/generate-database-types.mjs",
     "types": "pnpm run types:generate",
     "types:compare": "node scripts/compare-database-types.mjs",
@@ -79,6 +80,7 @@
     "libphonenumber-js": "^1.12.6"
   },
   "devDependencies": {
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   }
 }
