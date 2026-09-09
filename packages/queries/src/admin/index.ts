@@ -1,7 +1,6 @@
 /** Platform-admin query surface — do not re-export from @lomi./queries root. */
 export * from "./fees.js";
 export * from "./finance.js";
-export * from "./growth.js";
 export * from "./jobs.js";
 export * from "./kyc.js";
 export * from "./logs.js";

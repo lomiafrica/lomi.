@@ -161,26 +161,6 @@ function hoistNextForVercelBuilder(appRel) {
   console.log(`==> linked node_modules/next -> ${path.relative(ROOT, from)}`);
 }
 
-function excludeAdminGrowthAgentFromTsc(appDir) {
-  const tsconfigPath = path.join(appDir, "tsconfig.json");
-  let tsconfig;
-  try {
-    tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf8"));
-  } catch (error) {
-    if (error && error.code === "ENOENT") return;
-    throw error;
-  }
-  const exclude = new Set(tsconfig.exclude ?? []);
-  exclude.add("src/growth/agent");
-  tsconfig.exclude = [...exclude];
-  const tmp = `${tsconfigPath}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(tsconfig, null, 2)}\n`);
-  renameSync(tmp, tsconfigPath);
-  console.log(
-    `==> excluded src/growth/agent from ${path.relative(ROOT, tsconfigPath)}`,
-  );
-}
-
 function wipeCachedNodeModules(dir) {
   if (!process.env.VERCEL && !process.env.CI) return;
   const nm = path.join(dir, "node_modules");
@@ -370,9 +350,6 @@ function main() {
   }
 
   const { pkg, rewritten } = rewriteWorkspaceSpecsToFile(appDir);
-  if (useNpm(appRel) && appRel === "apps/admin") {
-    excludeAdminGrowthAgentFromTsc(appDir);
-  }
   if (useNpm(appRel) && appRel === "apps/website") {
     rewritePnpmScriptsForNpm(appDir);
   }

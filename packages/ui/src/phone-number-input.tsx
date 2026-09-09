@@ -447,7 +447,7 @@ function resolveCountryFlag(country: string): CountryFlagRender | undefined {
   if (isFunction(named)) {
     return named;
   }
-  const nested = bag.default;
+  const nested = bag["default"];
   if (!nested || isFunction(nested)) {
     return undefined;
   }

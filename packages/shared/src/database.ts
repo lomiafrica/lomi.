@@ -4094,649 +4094,6 @@ export type Database = {
           },
         ]
       }
-      growth_agent_runs: {
-        Row: {
-          agent_name: string
-          error: string | null
-          finished_at: string | null
-          id: string
-          run_type: string
-          started_at: string
-          stats: Json | null
-        }
-        Insert: {
-          agent_name: string
-          error?: string | null
-          finished_at?: string | null
-          id?: string
-          run_type: string
-          started_at?: string
-          stats?: Json | null
-        }
-        Update: {
-          agent_name?: string
-          error?: string | null
-          finished_at?: string | null
-          id?: string
-          run_type?: string
-          started_at?: string
-          stats?: Json | null
-        }
-        Relationships: []
-      }
-      growth_contacts: {
-        Row: {
-          created_at: string
-          email: string | null
-          employer_changed_at: string | null
-          employer_company: string | null
-          full_name: string
-          id: string
-          lead_id: string | null
-          linkedin_url: string | null
-          organization_id: string | null
-          phone: string | null
-          raw_payload: Json | null
-          role: Database["public"]["Enums"]["growth_contact_role"]
-          title: string | null
-          updated_at: string
-          watch_enabled: boolean
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          employer_changed_at?: string | null
-          employer_company?: string | null
-          full_name: string
-          id?: string
-          lead_id?: string | null
-          linkedin_url?: string | null
-          organization_id?: string | null
-          phone?: string | null
-          raw_payload?: Json | null
-          role?: Database["public"]["Enums"]["growth_contact_role"]
-          title?: string | null
-          updated_at?: string
-          watch_enabled?: boolean
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          employer_changed_at?: string | null
-          employer_company?: string | null
-          full_name?: string
-          id?: string
-          lead_id?: string | null
-          linkedin_url?: string | null
-          organization_id?: string | null
-          phone?: string | null
-          raw_payload?: Json | null
-          role?: Database["public"]["Enums"]["growth_contact_role"]
-          title?: string | null
-          updated_at?: string
-          watch_enabled?: boolean
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_contacts_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "growth_leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "growth_contacts_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["organization_id"]
-          },
-        ]
-      }
-      growth_deals: {
-        Row: {
-          amount_xof: number | null
-          buying_trigger: string | null
-          churned: boolean
-          closed_at: string | null
-          created_at: string
-          currency: string
-          cycle_days: number | null
-          expansion_amount_xof: number | null
-          id: string
-          lead_id: string
-          name: string
-          notes: string | null
-          owner_email: string | null
-          pain_proxy: string | null
-          source_channel:
-            | Database["public"]["Enums"]["growth_outbound_channel"]
-            | null
-          stage: Database["public"]["Enums"]["growth_deal_stage"]
-          updated_at: string
-          won_rank_score: number | null
-        }
-        Insert: {
-          amount_xof?: number | null
-          buying_trigger?: string | null
-          churned?: boolean
-          closed_at?: string | null
-          created_at?: string
-          currency?: string
-          cycle_days?: number | null
-          expansion_amount_xof?: number | null
-          id?: string
-          lead_id: string
-          name: string
-          notes?: string | null
-          owner_email?: string | null
-          pain_proxy?: string | null
-          source_channel?:
-            | Database["public"]["Enums"]["growth_outbound_channel"]
-            | null
-          stage?: Database["public"]["Enums"]["growth_deal_stage"]
-          updated_at?: string
-          won_rank_score?: number | null
-        }
-        Update: {
-          amount_xof?: number | null
-          buying_trigger?: string | null
-          churned?: boolean
-          closed_at?: string | null
-          created_at?: string
-          currency?: string
-          cycle_days?: number | null
-          expansion_amount_xof?: number | null
-          id?: string
-          lead_id?: string
-          name?: string
-          notes?: string | null
-          owner_email?: string | null
-          pain_proxy?: string | null
-          source_channel?:
-            | Database["public"]["Enums"]["growth_outbound_channel"]
-            | null
-          stage?: Database["public"]["Enums"]["growth_deal_stage"]
-          updated_at?: string
-          won_rank_score?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_deals_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "growth_leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      growth_icp_profiles: {
-        Row: {
-          anti_icp: Json
-          created_at: string
-          hard_filters: Json
-          id: string
-          is_active: boolean
-          markdown: string
-          soft_signals: Json
-          updated_at: string
-          verified_winner_pass_rate: number | null
-          version: number
-        }
-        Insert: {
-          anti_icp?: Json
-          created_at?: string
-          hard_filters?: Json
-          id?: string
-          is_active?: boolean
-          markdown?: string
-          soft_signals?: Json
-          updated_at?: string
-          verified_winner_pass_rate?: number | null
-          version: number
-        }
-        Update: {
-          anti_icp?: Json
-          created_at?: string
-          hard_filters?: Json
-          id?: string
-          is_active?: boolean
-          markdown?: string
-          soft_signals?: Json
-          updated_at?: string
-          verified_winner_pass_rate?: number | null
-          version?: number
-        }
-        Relationships: []
-      }
-      growth_leads: {
-        Row: {
-          city: string | null
-          country: string
-          created_at: string
-          email: string | null
-          external_place_id: string | null
-          heyreach_campaign_id: string | null
-          icp_tags: string[] | null
-          id: string
-          instantly_campaign_id: string | null
-          last_outbound_at: string | null
-          last_outbound_event: string | null
-          last_outbound_provider: string | null
-          name: string
-          notes: string | null
-          organization_id: string | null
-          phone: string | null
-          raw_payload: Json | null
-          score: number | null
-          score_reasons: Json | null
-          scored_at: string | null
-          sector: string | null
-          source: Database["public"]["Enums"]["growth_lead_source"]
-          status: Database["public"]["Enums"]["growth_lead_status"]
-          synced_to_heyreach_at: string | null
-          synced_to_instantly_at: string | null
-          updated_at: string
-          website: string | null
-        }
-        Insert: {
-          city?: string | null
-          country?: string
-          created_at?: string
-          email?: string | null
-          external_place_id?: string | null
-          heyreach_campaign_id?: string | null
-          icp_tags?: string[] | null
-          id?: string
-          instantly_campaign_id?: string | null
-          last_outbound_at?: string | null
-          last_outbound_event?: string | null
-          last_outbound_provider?: string | null
-          name: string
-          notes?: string | null
-          organization_id?: string | null
-          phone?: string | null
-          raw_payload?: Json | null
-          score?: number | null
-          score_reasons?: Json | null
-          scored_at?: string | null
-          sector?: string | null
-          source: Database["public"]["Enums"]["growth_lead_source"]
-          status?: Database["public"]["Enums"]["growth_lead_status"]
-          synced_to_heyreach_at?: string | null
-          synced_to_instantly_at?: string | null
-          updated_at?: string
-          website?: string | null
-        }
-        Update: {
-          city?: string | null
-          country?: string
-          created_at?: string
-          email?: string | null
-          external_place_id?: string | null
-          heyreach_campaign_id?: string | null
-          icp_tags?: string[] | null
-          id?: string
-          instantly_campaign_id?: string | null
-          last_outbound_at?: string | null
-          last_outbound_event?: string | null
-          last_outbound_provider?: string | null
-          name?: string
-          notes?: string | null
-          organization_id?: string | null
-          phone?: string | null
-          raw_payload?: Json | null
-          score?: number | null
-          score_reasons?: Json | null
-          scored_at?: string | null
-          sector?: string | null
-          source?: Database["public"]["Enums"]["growth_lead_source"]
-          status?: Database["public"]["Enums"]["growth_lead_status"]
-          synced_to_heyreach_at?: string | null
-          synced_to_instantly_at?: string | null
-          updated_at?: string
-          website?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_leads_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["organization_id"]
-          },
-        ]
-      }
-      growth_lookalike_runs: {
-        Row: {
-          candidates: Json
-          created_at: string
-          criteria: Json
-          id: string
-          seed_deal_id: string | null
-          verified_pass_rate: number | null
-        }
-        Insert: {
-          candidates?: Json
-          created_at?: string
-          criteria?: Json
-          id?: string
-          seed_deal_id?: string | null
-          verified_pass_rate?: number | null
-        }
-        Update: {
-          candidates?: Json
-          created_at?: string
-          criteria?: Json
-          id?: string
-          seed_deal_id?: string | null
-          verified_pass_rate?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_lookalike_runs_seed_deal_id_fkey"
-            columns: ["seed_deal_id"]
-            isOneToOne: false
-            referencedRelation: "growth_deals"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      growth_outbound_events: {
-        Row: {
-          created_at: string
-          event_type: string
-          external_key: string | null
-          id: string
-          lead_id: string | null
-          payload: Json
-          provider: string
-        }
-        Insert: {
-          created_at?: string
-          event_type: string
-          external_key?: string | null
-          id?: string
-          lead_id?: string | null
-          payload?: Json
-          provider: string
-        }
-        Update: {
-          created_at?: string
-          event_type?: string
-          external_key?: string | null
-          id?: string
-          lead_id?: string | null
-          payload?: Json
-          provider?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_outbound_events_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "growth_leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      growth_outbound_touches: {
-        Row: {
-          body: string | null
-          channel: Database["public"]["Enums"]["growth_outbound_channel"]
-          contact_id: string | null
-          contacted_at: string
-          created_at: string
-          deal_id: string | null
-          direction: Database["public"]["Enums"]["growth_outbound_direction"]
-          external_id: string | null
-          id: string
-          lead_id: string | null
-          meeting_booked: boolean
-          metadata: Json
-          replied: boolean
-          sequence_id: string | null
-          subject: string | null
-          won: boolean
-        }
-        Insert: {
-          body?: string | null
-          channel: Database["public"]["Enums"]["growth_outbound_channel"]
-          contact_id?: string | null
-          contacted_at?: string
-          created_at?: string
-          deal_id?: string | null
-          direction?: Database["public"]["Enums"]["growth_outbound_direction"]
-          external_id?: string | null
-          id?: string
-          lead_id?: string | null
-          meeting_booked?: boolean
-          metadata?: Json
-          replied?: boolean
-          sequence_id?: string | null
-          subject?: string | null
-          won?: boolean
-        }
-        Update: {
-          body?: string | null
-          channel?: Database["public"]["Enums"]["growth_outbound_channel"]
-          contact_id?: string | null
-          contacted_at?: string
-          created_at?: string
-          deal_id?: string | null
-          direction?: Database["public"]["Enums"]["growth_outbound_direction"]
-          external_id?: string | null
-          id?: string
-          lead_id?: string | null
-          meeting_booked?: boolean
-          metadata?: Json
-          replied?: boolean
-          sequence_id?: string | null
-          subject?: string | null
-          won?: boolean
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_outbound_touches_contact_id_fkey"
-            columns: ["contact_id"]
-            isOneToOne: false
-            referencedRelation: "growth_contacts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "growth_outbound_touches_deal_id_fkey"
-            columns: ["deal_id"]
-            isOneToOne: false
-            referencedRelation: "growth_deals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "growth_outbound_touches_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "growth_leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "growth_outbound_touches_sequence_id_fkey"
-            columns: ["sequence_id"]
-            isOneToOne: false
-            referencedRelation: "growth_sequences"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      growth_reply_drafts: {
-        Row: {
-          agent_name: string | null
-          approved_at: string | null
-          created_at: string
-          draft_text: string
-          error_message: string | null
-          id: string
-          metadata: Json | null
-          original_text: string | null
-          platform: Database["public"]["Enums"]["growth_reply_platform"]
-          posted_at: string | null
-          posted_external_id: string | null
-          status: Database["public"]["Enums"]["growth_reply_status"]
-          target_author: string | null
-          target_url: string | null
-          updated_at: string
-        }
-        Insert: {
-          agent_name?: string | null
-          approved_at?: string | null
-          created_at?: string
-          draft_text: string
-          error_message?: string | null
-          id?: string
-          metadata?: Json | null
-          original_text?: string | null
-          platform: Database["public"]["Enums"]["growth_reply_platform"]
-          posted_at?: string | null
-          posted_external_id?: string | null
-          status?: Database["public"]["Enums"]["growth_reply_status"]
-          target_author?: string | null
-          target_url?: string | null
-          updated_at?: string
-        }
-        Update: {
-          agent_name?: string | null
-          approved_at?: string | null
-          created_at?: string
-          draft_text?: string
-          error_message?: string | null
-          id?: string
-          metadata?: Json | null
-          original_text?: string | null
-          platform?: Database["public"]["Enums"]["growth_reply_platform"]
-          posted_at?: string | null
-          posted_external_id?: string | null
-          status?: Database["public"]["Enums"]["growth_reply_status"]
-          target_author?: string | null
-          target_url?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      growth_sequences: {
-        Row: {
-          channels: Database["public"]["Enums"]["growth_outbound_channel"][]
-          created_at: string
-          id: string
-          name: string
-          status: Database["public"]["Enums"]["growth_sequence_status"]
-          steps: Json
-          updated_at: string
-        }
-        Insert: {
-          channels?: Database["public"]["Enums"]["growth_outbound_channel"][]
-          created_at?: string
-          id?: string
-          name: string
-          status?: Database["public"]["Enums"]["growth_sequence_status"]
-          steps?: Json
-          updated_at?: string
-        }
-        Update: {
-          channels?: Database["public"]["Enums"]["growth_outbound_channel"][]
-          created_at?: string
-          id?: string
-          name?: string
-          status?: Database["public"]["Enums"]["growth_sequence_status"]
-          steps?: Json
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      growth_signal_events: {
-        Row: {
-          company_name: string
-          created_at: string
-          fired_at: string
-          id: string
-          lead_id: string | null
-          payload: Json
-          signal_id: string | null
-          status: Database["public"]["Enums"]["growth_signal_event_status"]
-        }
-        Insert: {
-          company_name: string
-          created_at?: string
-          fired_at?: string
-          id?: string
-          lead_id?: string | null
-          payload?: Json
-          signal_id?: string | null
-          status?: Database["public"]["Enums"]["growth_signal_event_status"]
-        }
-        Update: {
-          company_name?: string
-          created_at?: string
-          fired_at?: string
-          id?: string
-          lead_id?: string | null
-          payload?: Json
-          signal_id?: string | null
-          status?: Database["public"]["Enums"]["growth_signal_event_status"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "growth_signal_events_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "growth_leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "growth_signal_events_signal_id_fkey"
-            columns: ["signal_id"]
-            isOneToOne: false
-            referencedRelation: "growth_signals"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      growth_signals: {
-        Row: {
-          created_at: string
-          id: string
-          is_active: boolean
-          lift: number | null
-          metadata: Json
-          name: string
-          proven_angle: string | null
-          slug: string
-          updated_at: string
-          window_days: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          lift?: number | null
-          metadata?: Json
-          name: string
-          proven_angle?: string | null
-          slug: string
-          updated_at?: string
-          window_days?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          lift?: number | null
-          metadata?: Json
-          name?: string
-          proven_angle?: string | null
-          slug?: string
-          updated_at?: string
-          window_days?: number | null
-        }
-        Relationships: []
-      }
       inbound_provider_webhook_events: {
         Row: {
           metadata: Json | null
@@ -4933,6 +4290,393 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "subscriptions"
             referencedColumns: ["subscription_id"]
+          },
+        ]
+      }
+      insurance_carriers: {
+        Row: {
+          adapter_key: string | null
+          carrier_id: string
+          country_code: string | null
+          created_at: string
+          is_active: boolean
+          metadata: Json
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          adapter_key?: string | null
+          carrier_id?: string
+          country_code?: string | null
+          created_at?: string
+          is_active?: boolean
+          metadata?: Json
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          adapter_key?: string | null
+          carrier_id?: string
+          country_code?: string | null
+          created_at?: string
+          is_active?: boolean
+          metadata?: Json
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      insurance_claims: {
+        Row: {
+          claim_id: string
+          claimed_amount: number
+          created_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description: string | null
+          organization_id: string
+          policy_id: string
+          status: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at: string
+        }
+        Insert: {
+          claim_id?: string
+          claimed_amount: number
+          created_at?: string
+          created_by?: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          organization_id: string
+          policy_id: string
+          status?: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at?: string
+        }
+        Update: {
+          claim_id?: string
+          claimed_amount?: number
+          created_at?: string
+          created_by?: string | null
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          organization_id?: string
+          policy_id?: string
+          status?: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claims_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "insurance_claims_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_policies"
+            referencedColumns: ["policy_id"]
+          },
+        ]
+      }
+      insurance_policies: {
+        Row: {
+          carrier_id: string | null
+          coverage_amount: number
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          ends_at: string | null
+          external_policy_number: string | null
+          organization_id: string
+          policy_id: string
+          premium_amount: number | null
+          product_id: string
+          quote_request_id: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["insurance_policy_status"]
+          updated_at: string
+        }
+        Insert: {
+          carrier_id?: string | null
+          coverage_amount: number
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          ends_at?: string | null
+          external_policy_number?: string | null
+          organization_id: string
+          policy_id?: string
+          premium_amount?: number | null
+          product_id: string
+          quote_request_id?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["insurance_policy_status"]
+          updated_at?: string
+        }
+        Update: {
+          carrier_id?: string | null
+          coverage_amount?: number
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          ends_at?: string | null
+          external_policy_number?: string | null
+          organization_id?: string
+          policy_id?: string
+          premium_amount?: number | null
+          product_id?: string
+          quote_request_id?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["insurance_policy_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_policies_carrier_id_fkey"
+            columns: ["carrier_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_carriers"
+            referencedColumns: ["carrier_id"]
+          },
+          {
+            foreignKeyName: "insurance_policies_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "insurance_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "insurance_policies_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_products"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "insurance_policies_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_quote_requests"
+            referencedColumns: ["quote_request_id"]
+          },
+        ]
+      }
+      insurance_premium_charges: {
+        Row: {
+          account_history_id: string | null
+          amount: number
+          charged_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          metadata: Json
+          organization_id: string
+          policy_id: string
+          premium_charge_id: string
+        }
+        Insert: {
+          account_history_id?: string | null
+          amount: number
+          charged_at?: string
+          created_by?: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          metadata?: Json
+          organization_id: string
+          policy_id: string
+          premium_charge_id?: string
+        }
+        Update: {
+          account_history_id?: string | null
+          amount?: number
+          charged_at?: string
+          created_by?: string | null
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          metadata?: Json
+          organization_id?: string
+          policy_id?: string
+          premium_charge_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_premium_charges_account_history_id_fkey"
+            columns: ["account_history_id"]
+            isOneToOne: false
+            referencedRelation: "account_balance_history"
+            referencedColumns: ["history_id"]
+          },
+          {
+            foreignKeyName: "insurance_premium_charges_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "insurance_premium_charges_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "insurance_premium_charges_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "insurance_premium_charges_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_policies"
+            referencedColumns: ["policy_id"]
+          },
+        ]
+      }
+      insurance_products: {
+        Row: {
+          carrier_id: string | null
+          country_codes: string[]
+          coverage_max: number
+          coverage_min: number
+          created_at: string
+          description: string | null
+          is_active: boolean
+          kind: Database["public"]["Enums"]["insurance_product_kind"]
+          name: string
+          premium_table: Json
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          carrier_id?: string | null
+          country_codes?: string[]
+          coverage_max: number
+          coverage_min?: number
+          created_at?: string
+          description?: string | null
+          is_active?: boolean
+          kind: Database["public"]["Enums"]["insurance_product_kind"]
+          name: string
+          premium_table?: Json
+          product_id?: string
+          updated_at?: string
+        }
+        Update: {
+          carrier_id?: string | null
+          country_codes?: string[]
+          coverage_max?: number
+          coverage_min?: number
+          created_at?: string
+          description?: string | null
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["insurance_product_kind"]
+          name?: string
+          premium_table?: Json
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_products_carrier_id_fkey"
+            columns: ["carrier_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_carriers"
+            referencedColumns: ["carrier_id"]
+          },
+        ]
+      }
+      insurance_quote_requests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          notes: string | null
+          organization_id: string
+          product_id: string
+          quote_request_id: string
+          quoted_at: string | null
+          quoted_premium: number | null
+          requested_coverage: number
+          status: Database["public"]["Enums"]["insurance_quote_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          notes?: string | null
+          organization_id: string
+          product_id: string
+          quote_request_id?: string
+          quoted_at?: string | null
+          quoted_premium?: number | null
+          requested_coverage: number
+          status?: Database["public"]["Enums"]["insurance_quote_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          notes?: string | null
+          organization_id?: string
+          product_id?: string
+          quote_request_id?: string
+          quoted_at?: string | null
+          quoted_premium?: number | null
+          requested_coverage?: number
+          status?: Database["public"]["Enums"]["insurance_quote_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_quote_requests_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "insurance_quote_requests_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "insurance_quote_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "insurance_quote_requests_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_products"
+            referencedColumns: ["product_id"]
           },
         ]
       }
@@ -5572,6 +5316,48 @@ export type Database = {
           },
         ]
       }
+      marketing_email_sends: {
+        Row: {
+          email_key: string
+          id: string
+          locale: string
+          merchant_id: string
+          organization_id: string | null
+          sent_at: string
+        }
+        Insert: {
+          email_key: string
+          id?: string
+          locale?: string
+          merchant_id: string
+          organization_id?: string | null
+          sent_at?: string
+        }
+        Update: {
+          email_key?: string
+          id?: string
+          locale?: string
+          merchant_id?: string
+          organization_id?: string | null
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_email_sends_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "marketing_email_sends_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+        ]
+      }
       mcp_device_requests: {
         Row: {
           created_at: string
@@ -5996,6 +5782,77 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "merchants"
             referencedColumns: ["merchant_id"]
+          },
+        ]
+      }
+      network_account_sessions: {
+        Row: {
+          client_secret_hash: string
+          components: Json
+          consumed_at: string | null
+          created_at: string
+          environment: string
+          expires_at: string
+          member_organization_id: string
+          network_account_id: string
+          network_account_session_id: string
+          network_membership_id: string
+          operator_organization_id: string
+        }
+        Insert: {
+          client_secret_hash: string
+          components?: Json
+          consumed_at?: string | null
+          created_at?: string
+          environment: string
+          expires_at: string
+          member_organization_id: string
+          network_account_id: string
+          network_account_session_id?: string
+          network_membership_id: string
+          operator_organization_id: string
+        }
+        Update: {
+          client_secret_hash?: string
+          components?: Json
+          consumed_at?: string | null
+          created_at?: string
+          environment?: string
+          expires_at?: string
+          member_organization_id?: string
+          network_account_id?: string
+          network_account_session_id?: string
+          network_membership_id?: string
+          operator_organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_account_sessions_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_account_sessions_network_account_id_fkey"
+            columns: ["network_account_id"]
+            isOneToOne: false
+            referencedRelation: "network_accounts"
+            referencedColumns: ["network_account_id"]
+          },
+          {
+            foreignKeyName: "network_account_sessions_network_membership_id_fkey"
+            columns: ["network_membership_id"]
+            isOneToOne: false
+            referencedRelation: "network_memberships"
+            referencedColumns: ["network_membership_id"]
+          },
+          {
+            foreignKeyName: "network_account_sessions_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
           },
         ]
       }
@@ -6830,22 +6687,22 @@ export type Database = {
           approved_by: string | null
           branding: Json
           charge_model: string
+          created_at: string
+          default_capabilities: string[]
+          default_fee_rule_id: string | null
           fees_collector: string
           live_rejected_reason: string | null
           live_requested_at: string | null
           live_status: Database["public"]["Enums"]["network_operator_status"]
           losses_collector: string
           member_dashboard: string
+          metadata: Json
           onboarding_mode: string
+          operator_profile_id: string
+          organization_id: string
           platform_type: string
           profile: Json
           responsibilities_acknowledged_at: string | null
-          created_at: string
-          default_capabilities: string[]
-          default_fee_rule_id: string | null
-          metadata: Json
-          operator_profile_id: string
-          organization_id: string
           risk_tier: string
           status: Database["public"]["Enums"]["network_operator_status"]
           updated_at: string
@@ -6855,22 +6712,22 @@ export type Database = {
           approved_by?: string | null
           branding?: Json
           charge_model?: string
+          created_at?: string
+          default_capabilities?: string[]
+          default_fee_rule_id?: string | null
           fees_collector?: string
           live_rejected_reason?: string | null
           live_requested_at?: string | null
           live_status?: Database["public"]["Enums"]["network_operator_status"]
           losses_collector?: string
           member_dashboard?: string
+          metadata?: Json
           onboarding_mode?: string
+          operator_profile_id?: string
+          organization_id: string
           platform_type?: string
           profile?: Json
           responsibilities_acknowledged_at?: string | null
-          created_at?: string
-          default_capabilities?: string[]
-          default_fee_rule_id?: string | null
-          metadata?: Json
-          operator_profile_id?: string
-          organization_id: string
           risk_tier?: string
           status?: Database["public"]["Enums"]["network_operator_status"]
           updated_at?: string
@@ -6880,22 +6737,22 @@ export type Database = {
           approved_by?: string | null
           branding?: Json
           charge_model?: string
+          created_at?: string
+          default_capabilities?: string[]
+          default_fee_rule_id?: string | null
           fees_collector?: string
           live_rejected_reason?: string | null
           live_requested_at?: string | null
           live_status?: Database["public"]["Enums"]["network_operator_status"]
           losses_collector?: string
           member_dashboard?: string
+          metadata?: Json
           onboarding_mode?: string
+          operator_profile_id?: string
+          organization_id?: string
           platform_type?: string
           profile?: Json
           responsibilities_acknowledged_at?: string | null
-          created_at?: string
-          default_capabilities?: string[]
-          default_fee_rule_id?: string | null
-          metadata?: Json
-          operator_profile_id?: string
-          organization_id?: string
           risk_tier?: string
           status?: Database["public"]["Enums"]["network_operator_status"]
           updated_at?: string
@@ -6921,195 +6778,6 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
-          },
-        ]
-      }
-      network_transfers: {
-        Row: {
-          actor_merchant_id: string | null
-          amount: number
-          api_key: string | null
-          created_at: string
-          currency_code: Database["public"]["Enums"]["currency_code"]
-          description: string | null
-          environment: string
-          from_organization_id: string
-          idempotency_key: string | null
-          member_organization_id: string
-          metadata: Json
-          network_account_id: string
-          network_membership_id: string
-          network_transaction_context_id: string | null
-          network_transfer_id: string
-          operator_fee_entry_id: string | null
-          operator_organization_id: string
-          public_transfer_id: string
-          refund_id: string | null
-          reversed_amount: number
-          reversed_transfer_id: string | null
-          settled_amount: number
-          settled_currency: Database["public"]["Enums"]["currency_code"]
-          source_transaction_id: string | null
-          status: Database["public"]["Enums"]["network_transfer_status"]
-          to_organization_id: string
-          transfer_group: string | null
-          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
-          updated_at: string
-        }
-        Insert: {
-          actor_merchant_id?: string | null
-          amount: number
-          api_key?: string | null
-          created_at?: string
-          currency_code: Database["public"]["Enums"]["currency_code"]
-          description?: string | null
-          environment: string
-          from_organization_id: string
-          idempotency_key?: string | null
-          member_organization_id: string
-          metadata?: Json
-          network_account_id: string
-          network_membership_id: string
-          network_transaction_context_id?: string | null
-          network_transfer_id?: string
-          operator_fee_entry_id?: string | null
-          operator_organization_id: string
-          public_transfer_id?: string
-          refund_id?: string | null
-          reversed_amount?: number
-          reversed_transfer_id?: string | null
-          settled_amount: number
-          settled_currency?: Database["public"]["Enums"]["currency_code"]
-          source_transaction_id?: string | null
-          status?: Database["public"]["Enums"]["network_transfer_status"]
-          to_organization_id: string
-          transfer_group?: string | null
-          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
-          updated_at?: string
-        }
-        Update: {
-          actor_merchant_id?: string | null
-          amount?: number
-          api_key?: string | null
-          created_at?: string
-          currency_code?: Database["public"]["Enums"]["currency_code"]
-          description?: string | null
-          environment?: string
-          from_organization_id?: string
-          idempotency_key?: string | null
-          member_organization_id?: string
-          metadata?: Json
-          network_account_id?: string
-          network_membership_id?: string
-          network_transaction_context_id?: string | null
-          network_transfer_id?: string
-          operator_fee_entry_id?: string | null
-          operator_organization_id?: string
-          public_transfer_id?: string
-          refund_id?: string | null
-          reversed_amount?: number
-          reversed_transfer_id?: string | null
-          settled_amount?: number
-          settled_currency?: Database["public"]["Enums"]["currency_code"]
-          source_transaction_id?: string | null
-          status?: Database["public"]["Enums"]["network_transfer_status"]
-          to_organization_id?: string
-          transfer_group?: string | null
-          transfer_type?: Database["public"]["Enums"]["network_transfer_type"]
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "network_transfers_network_membership_id_fkey"
-            columns: ["network_membership_id"]
-            isOneToOne: false
-            referencedRelation: "network_memberships"
-            referencedColumns: ["network_membership_id"]
-          },
-          {
-            foreignKeyName: "network_transfers_network_account_id_fkey"
-            columns: ["network_account_id"]
-            isOneToOne: false
-            referencedRelation: "network_accounts"
-            referencedColumns: ["network_account_id"]
-          },
-          {
-            foreignKeyName: "network_transfers_source_transaction_id_fkey"
-            columns: ["source_transaction_id"]
-            isOneToOne: false
-            referencedRelation: "transactions"
-            referencedColumns: ["transaction_id"]
-          },
-          {
-            foreignKeyName: "network_transfers_refund_id_fkey"
-            columns: ["refund_id"]
-            isOneToOne: false
-            referencedRelation: "refunds"
-            referencedColumns: ["refund_id"]
-          },
-          {
-            foreignKeyName: "network_transfers_reversed_transfer_id_fkey"
-            columns: ["reversed_transfer_id"]
-            isOneToOne: false
-            referencedRelation: "network_transfers"
-            referencedColumns: ["network_transfer_id"]
-          },
-        ]
-      }
-      network_account_sessions: {
-        Row: {
-          client_secret_hash: string
-          components: Json
-          consumed_at: string | null
-          created_at: string
-          environment: string
-          expires_at: string
-          member_organization_id: string
-          network_account_id: string
-          network_account_session_id: string
-          network_membership_id: string
-          operator_organization_id: string
-        }
-        Insert: {
-          client_secret_hash: string
-          components?: Json
-          consumed_at?: string | null
-          created_at?: string
-          environment: string
-          expires_at: string
-          member_organization_id: string
-          network_account_id: string
-          network_account_session_id?: string
-          network_membership_id: string
-          operator_organization_id: string
-        }
-        Update: {
-          client_secret_hash?: string
-          components?: Json
-          consumed_at?: string | null
-          created_at?: string
-          environment?: string
-          expires_at?: string
-          member_organization_id?: string
-          network_account_id?: string
-          network_account_session_id?: string
-          network_membership_id?: string
-          operator_organization_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "network_account_sessions_network_membership_id_fkey"
-            columns: ["network_membership_id"]
-            isOneToOne: false
-            referencedRelation: "network_memberships"
-            referencedColumns: ["network_membership_id"]
-          },
-          {
-            foreignKeyName: "network_account_sessions_network_account_id_fkey"
-            columns: ["network_account_id"]
-            isOneToOne: false
-            referencedRelation: "network_accounts"
-            referencedColumns: ["network_account_id"]
           },
         ]
       }
@@ -7259,6 +6927,329 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "transactions"
             referencedColumns: ["transaction_id"]
+          },
+        ]
+      }
+      network_transfers: {
+        Row: {
+          actor_merchant_id: string | null
+          amount: number
+          api_key: string | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description: string | null
+          environment: string
+          from_organization_id: string
+          idempotency_key: string | null
+          member_organization_id: string
+          metadata: Json
+          network_account_id: string
+          network_membership_id: string
+          network_transaction_context_id: string | null
+          network_transfer_id: string
+          operator_fee_entry_id: string | null
+          operator_organization_id: string
+          public_transfer_id: string
+          refund_id: string | null
+          reversed_amount: number
+          reversed_transfer_id: string | null
+          settled_amount: number
+          settled_currency: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id: string | null
+          status: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id: string
+          transfer_group: string | null
+          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at: string
+        }
+        Insert: {
+          actor_merchant_id?: string | null
+          amount: number
+          api_key?: string | null
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          environment: string
+          from_organization_id: string
+          idempotency_key?: string | null
+          member_organization_id: string
+          metadata?: Json
+          network_account_id: string
+          network_membership_id: string
+          network_transaction_context_id?: string | null
+          network_transfer_id?: string
+          operator_fee_entry_id?: string | null
+          operator_organization_id: string
+          public_transfer_id?: string
+          refund_id?: string | null
+          reversed_amount?: number
+          reversed_transfer_id?: string | null
+          settled_amount: number
+          settled_currency?: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id: string
+          transfer_group?: string | null
+          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at?: string
+        }
+        Update: {
+          actor_merchant_id?: string | null
+          amount?: number
+          api_key?: string | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          environment?: string
+          from_organization_id?: string
+          idempotency_key?: string | null
+          member_organization_id?: string
+          metadata?: Json
+          network_account_id?: string
+          network_membership_id?: string
+          network_transaction_context_id?: string | null
+          network_transfer_id?: string
+          operator_fee_entry_id?: string | null
+          operator_organization_id?: string
+          public_transfer_id?: string
+          refund_id?: string | null
+          reversed_amount?: number
+          reversed_transfer_id?: string | null
+          settled_amount?: number
+          settled_currency?: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id?: string
+          transfer_group?: string | null
+          transfer_type?: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_transfers_actor_merchant_id_fkey"
+            columns: ["actor_merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "network_transfers_from_organization_id_fkey"
+            columns: ["from_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_network_account_id_fkey"
+            columns: ["network_account_id"]
+            isOneToOne: false
+            referencedRelation: "network_accounts"
+            referencedColumns: ["network_account_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_network_membership_id_fkey"
+            columns: ["network_membership_id"]
+            isOneToOne: false
+            referencedRelation: "network_memberships"
+            referencedColumns: ["network_membership_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_network_transaction_context_id_fkey"
+            columns: ["network_transaction_context_id"]
+            isOneToOne: false
+            referencedRelation: "network_transaction_contexts"
+            referencedColumns: ["network_transaction_context_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_operator_fee_entry_id_fkey"
+            columns: ["operator_fee_entry_id"]
+            isOneToOne: false
+            referencedRelation: "network_operator_fee_entries"
+            referencedColumns: ["operator_fee_entry_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_refund_id_fkey"
+            columns: ["refund_id"]
+            isOneToOne: false
+            referencedRelation: "refunds"
+            referencedColumns: ["refund_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_reversed_transfer_id_fkey"
+            columns: ["reversed_transfer_id"]
+            isOneToOne: false
+            referencedRelation: "network_transfers"
+            referencedColumns: ["network_transfer_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_settled_currency_fkey"
+            columns: ["settled_currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "network_transfers_source_transaction_id_fkey"
+            columns: ["source_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["transaction_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_to_organization_id_fkey"
+            columns: ["to_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+        ]
+      }
+      nitro_advance_items: {
+        Row: {
+          accelerated_amount: number
+          created_at: string
+          nitro_item_id: string
+          nitro_request_id: string
+          original_available_at: string
+          transaction_id: string
+        }
+        Insert: {
+          accelerated_amount: number
+          created_at?: string
+          nitro_item_id?: string
+          nitro_request_id: string
+          original_available_at: string
+          transaction_id: string
+        }
+        Update: {
+          accelerated_amount?: number
+          created_at?: string
+          nitro_item_id?: string
+          nitro_request_id?: string
+          original_available_at?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nitro_advance_items_nitro_request_id_fkey"
+            columns: ["nitro_request_id"]
+            isOneToOne: false
+            referencedRelation: "nitro_requests"
+            referencedColumns: ["nitro_request_id"]
+          },
+          {
+            foreignKeyName: "nitro_advance_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["transaction_id"]
+          },
+        ]
+      }
+      nitro_requests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment: string
+          failure_reason: string | null
+          fee_amount: number
+          idempotency_key: string | null
+          metadata: Json
+          mode: Database["public"]["Enums"]["nitro_mode"]
+          net_amount: number
+          nitro_request_id: string
+          organization_id: string
+          payout_id: string | null
+          requested_amount: number
+          status: Database["public"]["Enums"]["nitro_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment?: string
+          failure_reason?: string | null
+          fee_amount?: number
+          idempotency_key?: string | null
+          metadata?: Json
+          mode: Database["public"]["Enums"]["nitro_mode"]
+          net_amount: number
+          nitro_request_id?: string
+          organization_id: string
+          payout_id?: string | null
+          requested_amount: number
+          status?: Database["public"]["Enums"]["nitro_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          environment?: string
+          failure_reason?: string | null
+          fee_amount?: number
+          idempotency_key?: string | null
+          metadata?: Json
+          mode?: Database["public"]["Enums"]["nitro_mode"]
+          net_amount?: number
+          nitro_request_id?: string
+          organization_id?: string
+          payout_id?: string | null
+          requested_amount?: number
+          status?: Database["public"]["Enums"]["nitro_request_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nitro_requests_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "nitro_requests_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "nitro_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "nitro_requests_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["payout_id"]
           },
         ]
       }
@@ -8201,6 +8192,61 @@ export type Database = {
           },
         ]
       }
+      organization_member_limits: {
+        Row: {
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          daily_charge_total: number | null
+          daily_payout_total: number | null
+          max_charge_amount: number | null
+          max_refund_amount: number | null
+          merchant_org_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          daily_charge_total?: number | null
+          daily_payout_total?: number | null
+          max_charge_amount?: number | null
+          max_refund_amount?: number | null
+          merchant_org_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          daily_charge_total?: number | null
+          daily_payout_total?: number | null
+          max_charge_amount?: number | null
+          max_refund_amount?: number | null
+          merchant_org_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_member_limits_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "organization_member_limits_merchant_org_id_fkey"
+            columns: ["merchant_org_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_organization_links"
+            referencedColumns: ["merchant_org_id"]
+          },
+          {
+            foreignKeyName: "organization_member_limits_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+        ]
+      }
       organization_member_roles: {
         Row: {
           assigned_by: string | null
@@ -8241,6 +8287,76 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "organization_roles"
             referencedColumns: ["role_id"]
+          },
+        ]
+      }
+      organization_nitro_settings: {
+        Row: {
+          advance_enabled: boolean
+          advance_limit_amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_bps: number | null
+          is_enabled: boolean
+          max_advance_hours: number
+          min_fee_amount: number
+          organization_id: string
+          risk_tier: string
+          updated_at: string
+        }
+        Insert: {
+          advance_enabled?: boolean
+          advance_limit_amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_bps?: number | null
+          is_enabled?: boolean
+          max_advance_hours?: number
+          min_fee_amount?: number
+          organization_id: string
+          risk_tier?: string
+          updated_at?: string
+        }
+        Update: {
+          advance_enabled?: boolean
+          advance_limit_amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          fee_bps?: number | null
+          is_enabled?: boolean
+          max_advance_hours?: number
+          min_fee_amount?: number
+          organization_id?: string
+          risk_tier?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_nitro_settings_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "organization_nitro_settings_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "organization_nitro_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
           },
         ]
       }
@@ -13417,7 +13533,6 @@ export type Database = {
         }
         Returns: string
       }
-      admin_approve_growth_reply: { Args: { p_id: string }; Returns: string }
       admin_check_payout_method_exists: {
         Args: {
           p_account_number: string
@@ -13520,6 +13635,17 @@ export type Database = {
         Args: { p_reason?: string; p_transaction_id: string }
         Returns: Json
       }
+      admin_issue_insurance_policy: {
+        Args: {
+          p_coverage_amount: number
+          p_ends_at: string
+          p_external_policy_number?: string
+          p_premium_amount?: number
+          p_quote_request_id: string
+          p_starts_at: string
+        }
+        Returns: string
+      }
       admin_issue_partner_management_key: {
         Args: { p_name?: string; p_partner_id: string }
         Returns: {
@@ -13581,27 +13707,17 @@ export type Database = {
           title: string
         }[]
       }
-      admin_log_growth_outbound_touch: {
+      admin_quote_insurance_request: {
         Args: {
-          p_body?: string
-          p_channel: Database["public"]["Enums"]["growth_outbound_channel"]
-          p_contact_id?: string
-          p_direction?: Database["public"]["Enums"]["growth_outbound_direction"]
-          p_lead_id: string
-          p_meeting_booked?: boolean
-          p_replied?: boolean
-          p_sequence_id?: string
-          p_subject?: string
-          p_won?: boolean
+          p_notes?: string
+          p_quote_request_id: string
+          p_quoted_premium: number
+          p_status?: Database["public"]["Enums"]["insurance_quote_status"]
         }
-        Returns: string
+        Returns: undefined
       }
       admin_reject_account_top_up: {
         Args: { p_notes?: string; p_top_up_id: string }
-        Returns: undefined
-      }
-      admin_reject_growth_reply: {
-        Args: { p_id: string; p_reason?: string }
         Returns: undefined
       }
       admin_release_held_transaction: {
@@ -13616,17 +13732,6 @@ export type Database = {
         }
         Returns: Json
       }
-      admin_save_growth_icp: {
-        Args: {
-          p_activate?: boolean
-          p_anti_icp?: Json
-          p_hard_filters?: Json
-          p_markdown: string
-          p_soft_signals?: Json
-          p_verified_winner_pass_rate?: number
-        }
-        Returns: string
-      }
       admin_send_customer_payment_disruption: {
         Args: {
           p_checkout_session_ids: string[]
@@ -13638,6 +13743,21 @@ export type Database = {
       }
       admin_set_assistant_org_message_limit: {
         Args: { p_monthly_message_limit?: number; p_organization_id: string }
+        Returns: undefined
+      }
+      admin_set_nitro_settings: {
+        Args: {
+          p_advance_enabled?: boolean
+          p_advance_limit_amount?: number
+          p_approved_by?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_fee_bps?: number
+          p_is_enabled?: boolean
+          p_max_advance_hours?: number
+          p_min_fee_amount?: number
+          p_organization_id: string
+          p_risk_tier?: string
+        }
         Returns: undefined
       }
       admin_set_partner_status: {
@@ -13673,18 +13793,6 @@ export type Database = {
         }
         Returns: Json
       }
-      admin_update_growth_lead_status: {
-        Args: {
-          p_id: string
-          p_notes?: string
-          p_status: Database["public"]["Enums"]["growth_lead_status"]
-        }
-        Returns: undefined
-      }
-      admin_update_growth_reply_draft: {
-        Args: { p_draft_text: string; p_id: string }
-        Returns: undefined
-      }
       admin_update_payout_method_validity: {
         Args: { p_is_valid: boolean; p_payout_method_id: string }
         Returns: undefined
@@ -13716,31 +13824,28 @@ export type Database = {
         }
         Returns: boolean
       }
-      admin_upsert_growth_contact: {
+      admin_upsert_insurance_carrier: {
         Args: {
-          p_email?: string
-          p_employer_company?: string
-          p_full_name: string
-          p_id?: string
-          p_lead_id?: string
-          p_linkedin_url?: string
-          p_phone?: string
-          p_role?: Database["public"]["Enums"]["growth_contact_role"]
-          p_title?: string
-          p_watch_enabled?: boolean
+          p_adapter_key?: string
+          p_carrier_id?: string
+          p_country_code?: string
+          p_is_active?: boolean
+          p_name: string
         }
         Returns: string
       }
-      admin_upsert_growth_deal: {
+      admin_upsert_insurance_product: {
         Args: {
-          p_amount_xof?: number
-          p_id?: string
-          p_lead_id: string
+          p_carrier_id?: string
+          p_country_codes?: string[]
+          p_coverage_max: number
+          p_coverage_min?: number
+          p_description?: string
+          p_is_active?: boolean
+          p_kind: Database["public"]["Enums"]["insurance_product_kind"]
           p_name: string
-          p_notes?: string
-          p_owner_email?: string
-          p_source_channel?: Database["public"]["Enums"]["growth_outbound_channel"]
-          p_stage?: Database["public"]["Enums"]["growth_deal_stage"]
+          p_premium_table?: Json
+          p_product_id?: string
         }
         Returns: string
       }
@@ -13753,6 +13858,7 @@ export type Database = {
         Returns: string
       }
       api_internal_base_url: { Args: never; Returns: string }
+      api_internal_http_headers_jsonb: { Args: never; Returns: Json }
       api_rate_limit_endpoint_matches: {
         Args: { p_endpoint: string; p_pattern: string }
         Returns: boolean
@@ -13922,6 +14028,16 @@ export type Database = {
         Args: { p_line_items: Json }
         Returns: undefined
       }
+      assert_member_limit: {
+        Args: {
+          p_action: string
+          p_amount: number
+          p_currency: Database["public"]["Enums"]["currency_code"]
+          p_merchant_id: string
+          p_organization_id: string
+        }
+        Returns: undefined
+      }
       assert_org_member_with_permission: {
         Args: { p_organization_id: string; p_permission: string }
         Returns: undefined
@@ -14013,6 +14129,11 @@ export type Database = {
         }
         Returns: number
       }
+      booking_checkout_snapshot: {
+        Args: { p_booking_id: string }
+        Returns: Json
+      }
+      booking_hold_interval: { Args: never; Returns: string }
       booking_status_blocks_slot: {
         Args: {
           p_created_at: string
@@ -14105,6 +14226,14 @@ export type Database = {
       build_merchant_subscription_webhook_payload: {
         Args: { p_subscription_id: string; p_transaction_id?: string }
         Returns: Json
+      }
+      build_network_transfer_payload: {
+        Args: { p_network_transfer_id: string }
+        Returns: Json
+      }
+      build_organization_logo_url: {
+        Args: { p_logo_path: string }
+        Returns: string
       }
       calculate_beneficiary_payout_fee: {
         Args: {
@@ -14765,6 +14894,14 @@ export type Database = {
         }
         Returns: Json
       }
+      compute_nitro_fee: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: number
+      }
       compute_service_deposit: {
         Args: {
           p_deposit_type: Database["public"]["Enums"]["service_deposit_type"]
@@ -15314,6 +15451,17 @@ export type Database = {
         }
         Returns: string
       }
+      create_insurance_quote_request: {
+        Args: {
+          p_currency_code?: Database["public"]["Enums"]["currency_code"]
+          p_merchant_id?: string
+          p_notes?: string
+          p_organization_id: string
+          p_product_id: string
+          p_requested_coverage: number
+        }
+        Returns: string
+      }
       create_invoice_checkout_session: {
         Args: {
           p_created_by?: string
@@ -15531,6 +15679,17 @@ export type Database = {
           status: Database["public"]["Enums"]["network_account_status"]
         }[]
       }
+      create_network_account_session: {
+        Args: {
+          p_client_secret_hash: string
+          p_components: Json
+          p_environment: string
+          p_operator_organization_id: string
+          p_public_account_id: string
+          p_ttl_minutes?: number
+        }
+        Returns: Json
+      }
       create_network_enrollment_session: {
         Args: {
           p_created_by: string
@@ -15545,6 +15704,33 @@ export type Database = {
           enrollment_session_id: string
           enrollment_token: string
         }[]
+      }
+      create_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_amount: number
+          p_api_key?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_description?: string
+          p_destination_account: string
+          p_environment?: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_operator_organization_id: string
+          p_source_transaction_id?: string
+          p_transfer_group?: string
+        }
+        Returns: Json
+      }
+      create_nitro_advance: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_idempotency_key?: string
+          p_merchant_id?: string
+          p_organization_id: string
+        }
+        Returns: string
       }
       create_or_get_subscription_debt_invoice: {
         Args: { p_reason?: string; p_subscription_id: string }
@@ -16670,6 +16856,26 @@ export type Database = {
         }
         Returns: string
       }
+      enqueue_network_webhook_event_internal: {
+        Args: {
+          p_event: Database["public"]["Enums"]["webhook_event"]
+          p_idempotency_key: string
+          p_operator_organization_id: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      enqueue_payout_webhook_event: {
+        Args: {
+          p_amount?: number
+          p_currency?: string
+          p_environment?: string
+          p_organization_id: string
+          p_payout_id: string
+          p_status: Database["public"]["Enums"]["payout_status"]
+        }
+        Returns: string
+      }
       enqueue_purchase_fulfilled_webhook: {
         Args: { p_transaction_id: string }
         Returns: undefined
@@ -16682,6 +16888,13 @@ export type Database = {
           p_organization_id: string
         }
         Returns: undefined
+      }
+      enqueue_refund_webhook_event: {
+        Args: {
+          p_event: Database["public"]["Enums"]["webhook_event"]
+          p_refund_id: string
+        }
+        Returns: string
       }
       enqueue_usage_event: {
         Args: {
@@ -17660,6 +17873,47 @@ export type Database = {
         }
         Returns: number
       }
+      fetch_insurance_policies: {
+        Args: { p_organization_id: string }
+        Returns: {
+          coverage_amount: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          ends_at: string
+          kind: Database["public"]["Enums"]["insurance_product_kind"]
+          policy_id: string
+          product_name: string
+          starts_at: string
+          status: Database["public"]["Enums"]["insurance_policy_status"]
+        }[]
+      }
+      fetch_insurance_products: {
+        Args: { p_organization_id?: string }
+        Returns: {
+          carrier_name: string
+          country_codes: string[]
+          coverage_max: number
+          coverage_min: number
+          description: string
+          kind: Database["public"]["Enums"]["insurance_product_kind"]
+          name: string
+          product_id: string
+        }[]
+      }
+      fetch_insurance_quote_requests: {
+        Args: { p_organization_id: string }
+        Returns: {
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          kind: Database["public"]["Enums"]["insurance_product_kind"]
+          notes: string
+          product_id: string
+          product_name: string
+          quote_request_id: string
+          quoted_premium: number
+          requested_coverage: number
+          status: Database["public"]["Enums"]["insurance_quote_status"]
+        }[]
+      }
       fetch_invoice_activity_events: {
         Args: { p_invoice_id: string }
         Returns: {
@@ -17825,6 +18079,20 @@ export type Database = {
           reporting_currency: Database["public"]["Enums"]["currency_code"]
         }[]
       }
+      fetch_network_balance_for_api: {
+        Args: {
+          p_currency_code?: string
+          p_environment?: string
+          p_network_membership_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          environment: string
+          last_updated: string
+          public_account_id: string
+        }[]
+      }
       fetch_network_customer_transactions_for_api: {
         Args: {
           p_customer_id: string
@@ -17943,6 +18211,18 @@ export type Database = {
           terms_version: string
         }[]
       }
+      fetch_network_member_balance: {
+        Args: {
+          p_environment?: string
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          last_updated: string
+        }[]
+      }
       fetch_network_members: {
         Args: {
           p_limit?: number
@@ -17953,36 +18233,36 @@ export type Database = {
         }
         Returns: {
           accepted_at: string
+          actions_required: string[]
           activated_at: string
+          balance_live: number
+          balance_test: number
           business_identifier: string
           contact_email: string
           contact_phone: string
           country: string
           granted_capabilities: string[]
+          has_payout_method: boolean
+          health_status: string
           last_activity_at: string
           legal_name: string
+          live_grants: string[]
           member_logo_url: string
           member_organization_id: string
           member_organization_name: string
           metadata: Json
           network_account_id: string
           network_membership_id: string
+          onboarding_completed: boolean
           operator_fee_rule_id: string
           public_account_id: string
           registry_identifier: string
           status: Database["public"]["Enums"]["network_membership_status"]
           tax_identifier: string
-          terms_version: string
-          verification_status: string
-          onboarding_completed: boolean
-          has_payout_method: boolean
-          live_grants: string[]
-          test_grants: string[]
           terms_currency: string
-          balance_live: number
-          balance_test: number
-          health_status: string
-          actions_required: string[]
+          terms_version: string
+          test_grants: string[]
+          verification_status: string
         }[]
       }
       fetch_network_operator_fee_entries: {
@@ -18069,23 +18349,23 @@ export type Database = {
         Args: { p_environment?: string; p_operator_organization_id: string }
         Returns: {
           active_members: number
+          fees_posted: number
           gross_amount: number
+          live_status: string
+          members_enabled: number
+          members_in_review: number
+          members_restricted: number
           net_amount: number
           operator_fee_amount: number
           pending_enrollments: number
           pending_fee_amount: number
           total_members: number
           total_transactions: number
-          volume_direct: number
-          volume_destination: number
-          volume_separate: number
-          fees_posted: number
-          transfers_count: number
           transfers_amount: number
-          members_enabled: number
-          members_restricted: number
-          members_in_review: number
-          live_status: string
+          transfers_count: number
+          volume_destination: number
+          volume_direct: number
+          volume_separate: number
         }[]
       }
       fetch_network_provider_settings_for_api: {
@@ -18246,6 +18526,29 @@ export type Database = {
           transaction_type: Database["public"]["Enums"]["transaction_type"]
         }[]
       }
+      fetch_network_transfers: {
+        Args: {
+          p_environment?: string
+          p_limit?: number
+          p_member_organization_id?: string
+          p_offset?: number
+          p_organization_id: string
+        }
+        Returns: Json[]
+      }
+      fetch_network_transfers_for_api: {
+        Args: {
+          p_destination_account?: string
+          p_environment?: string
+          p_limit?: number
+          p_offset?: number
+          p_operator_organization_id: string
+          p_source_transaction_id?: string
+          p_transfer_group?: string
+          p_transfer_types?: string[]
+        }
+        Returns: Json[]
+      }
       fetch_new_customer_trend: {
         Args: {
           p_end_date: string
@@ -18271,6 +18574,39 @@ export type Database = {
           growth_rate: number
           new_customers_count: number
           total_customers: number
+        }[]
+      }
+      fetch_nitro_requests: {
+        Args: {
+          p_organization_id: string
+          p_page?: number
+          p_page_size?: number
+        }
+        Returns: {
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_amount: number
+          mode: Database["public"]["Enums"]["nitro_mode"]
+          net_amount: number
+          nitro_request_id: string
+          payout_id: string
+          requested_amount: number
+          status: Database["public"]["Enums"]["nitro_request_status"]
+        }[]
+      }
+      fetch_nitro_settings: {
+        Args: { p_organization_id: string }
+        Returns: {
+          advance_enabled: boolean
+          advance_limit_amount: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_bps: number
+          held_balance: number
+          is_enabled: boolean
+          max_advance_hours: number
+          min_fee_amount: number
+          outstanding_exposure: number
+          risk_tier: string
         }[]
       }
       fetch_notifications: {
@@ -18409,6 +18745,18 @@ export type Database = {
           is_enabled: boolean
           name: string
           percentage: number
+        }[]
+      }
+      fetch_organization_member_limits: {
+        Args: { p_organization_id: string }
+        Returns: {
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          daily_charge_total: number
+          daily_payout_total: number
+          max_charge_amount: number
+          max_refund_amount: number
+          merchant_id: string
+          merchant_org_id: string
         }[]
       }
       fetch_organization_member_role_assignments: {
@@ -18930,13 +19278,17 @@ export type Database = {
           net_amount: number
           organization_city: string
           organization_country: string
+          organization_district: string
+          organization_email: string
           organization_logo_url: string
           organization_name: string
           organization_postal_code: string
           organization_region: string
           organization_street: string
           plan_billing_frequency: string
+          plan_description: string
           plan_name: string
+          product_description: string
           product_name: string
           product_price: number
           provider_code: Database["public"]["Enums"]["provider_code"]
@@ -20073,21 +20425,6 @@ export type Database = {
         Args: { p_environment?: string }
         Returns: Json
       }
-      get_admin_ci_prospect_orgs: {
-        Args: { p_limit?: number; p_offset?: number }
-        Returns: {
-          country_hint: string
-          email: string
-          kyc_status: Database["public"]["Enums"]["kyc_status"]
-          name: string
-          organization_id: string
-          payment_channels: string[]
-          phone_number: string
-          total_revenue: number
-          total_transactions: number
-          verification_status: Database["public"]["Enums"]["organization_verification_status"]
-        }[]
-      }
       get_admin_customers: {
         Args: {
           p_end_date?: string
@@ -20176,239 +20513,6 @@ export type Database = {
           rating: number
           status: string
           updated_at: string
-        }[]
-      }
-      get_admin_growth_agent_runs: {
-        Args: { p_limit?: number; p_offset?: number }
-        Returns: {
-          agent_name: string
-          error: string
-          finished_at: string
-          id: string
-          run_type: string
-          started_at: string
-          stats: Json
-        }[]
-      }
-      get_admin_growth_contacts: {
-        Args: {
-          p_lead_id?: string
-          p_limit?: number
-          p_offset?: number
-          p_watch_only?: boolean
-        }
-        Returns: {
-          created_at: string
-          email: string
-          employer_changed_at: string
-          employer_company: string
-          full_name: string
-          id: string
-          lead_id: string
-          lead_name: string
-          linkedin_url: string
-          phone: string
-          role: Database["public"]["Enums"]["growth_contact_role"]
-          title: string
-          updated_at: string
-          watch_enabled: boolean
-        }[]
-      }
-      get_admin_growth_deals: {
-        Args: {
-          p_limit?: number
-          p_offset?: number
-          p_stage?: Database["public"]["Enums"]["growth_deal_stage"]
-        }
-        Returns: {
-          amount_xof: number
-          buying_trigger: string
-          churned: boolean
-          closed_at: string
-          created_at: string
-          currency: string
-          cycle_days: number
-          id: string
-          lead_id: string
-          lead_name: string
-          lead_score: number
-          name: string
-          notes: string
-          owner_email: string
-          pain_proxy: string
-          source_channel: Database["public"]["Enums"]["growth_outbound_channel"]
-          stage: Database["public"]["Enums"]["growth_deal_stage"]
-          updated_at: string
-          won_rank_score: number
-        }[]
-      }
-      get_admin_growth_icp_active: {
-        Args: never
-        Returns: {
-          anti_icp: Json
-          created_at: string
-          hard_filters: Json
-          id: string
-          is_active: boolean
-          markdown: string
-          soft_signals: Json
-          updated_at: string
-          verified_winner_pass_rate: number
-          version: number
-        }[]
-      }
-      get_admin_growth_leads: {
-        Args: {
-          p_country?: string
-          p_limit?: number
-          p_offset?: number
-          p_source?: Database["public"]["Enums"]["growth_lead_source"]
-          p_status?: Database["public"]["Enums"]["growth_lead_status"]
-        }
-        Returns: {
-          city: string
-          country: string
-          created_at: string
-          email: string
-          external_place_id: string
-          icp_tags: string[]
-          id: string
-          name: string
-          notes: string
-          organization_id: string
-          phone: string
-          score: number
-          score_reasons: Json
-          scored_at: string
-          sector: string
-          source: Database["public"]["Enums"]["growth_lead_source"]
-          status: Database["public"]["Enums"]["growth_lead_status"]
-          updated_at: string
-          website: string
-        }[]
-      }
-      get_admin_growth_lookalike_runs: {
-        Args: { p_limit?: number }
-        Returns: {
-          candidates: Json
-          created_at: string
-          criteria: Json
-          id: string
-          seed_deal_id: string
-          verified_pass_rate: number
-        }[]
-      }
-      get_admin_growth_outbound_touches: {
-        Args: {
-          p_channel?: Database["public"]["Enums"]["growth_outbound_channel"]
-          p_limit?: number
-          p_offset?: number
-        }
-        Returns: {
-          channel: Database["public"]["Enums"]["growth_outbound_channel"]
-          contact_id: string
-          contacted_at: string
-          created_at: string
-          direction: Database["public"]["Enums"]["growth_outbound_direction"]
-          id: string
-          lead_id: string
-          lead_name: string
-          meeting_booked: boolean
-          replied: boolean
-          subject: string
-          won: boolean
-        }[]
-      }
-      get_admin_growth_reply_drafts: {
-        Args: {
-          p_limit?: number
-          p_offset?: number
-          p_platform?: Database["public"]["Enums"]["growth_reply_platform"]
-          p_status?: Database["public"]["Enums"]["growth_reply_status"]
-        }
-        Returns: {
-          agent_name: string
-          approved_at: string
-          created_at: string
-          draft_text: string
-          error_message: string
-          id: string
-          metadata: Json
-          original_text: string
-          platform: Database["public"]["Enums"]["growth_reply_platform"]
-          posted_at: string
-          posted_external_id: string
-          status: Database["public"]["Enums"]["growth_reply_status"]
-          target_author: string
-          target_url: string
-          updated_at: string
-        }[]
-      }
-      get_admin_growth_sequences: {
-        Args: never
-        Returns: {
-          channels: Database["public"]["Enums"]["growth_outbound_channel"][]
-          created_at: string
-          id: string
-          name: string
-          status: Database["public"]["Enums"]["growth_sequence_status"]
-          steps: Json
-          updated_at: string
-        }[]
-      }
-      get_admin_growth_signal_events: {
-        Args: {
-          p_limit?: number
-          p_offset?: number
-          p_status?: Database["public"]["Enums"]["growth_signal_event_status"]
-        }
-        Returns: {
-          company_name: string
-          created_at: string
-          fired_at: string
-          id: string
-          lead_id: string
-          payload: Json
-          signal_id: string
-          signal_slug: string
-          status: Database["public"]["Enums"]["growth_signal_event_status"]
-        }[]
-      }
-      get_admin_growth_signals: {
-        Args: { p_active_only?: boolean }
-        Returns: {
-          created_at: string
-          id: string
-          is_active: boolean
-          lift: number
-          metadata: Json
-          name: string
-          proven_angle: string
-          slug: string
-          updated_at: string
-          window_days: number
-        }[]
-      }
-      get_admin_growth_winners: {
-        Args: { p_limit?: number }
-        Returns: {
-          amount_xof: number
-          buying_trigger: string
-          churned: boolean
-          city: string
-          closed_at: string
-          company_name: string
-          country: string
-          cycle_days: number
-          deal_id: string
-          icp_tags: string[]
-          lead_id: string
-          pain_proxy: string
-          raw_payload: Json
-          score: number
-          sector: string
-          website: string
-          won_rank_score: number
         }[]
       }
       get_admin_job_applications_overview: {
@@ -21879,6 +21983,17 @@ export type Database = {
           organization_id: string
         }[]
       }
+      get_effective_nitro_fee_config: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: {
+          fee_bps: number
+          fixed_amount: number
+          percentage: number
+        }[]
+      }
       get_effective_other_fee_config: {
         Args: {
           p_currency_code: Database["public"]["Enums"]["currency_code"]
@@ -22492,6 +22607,10 @@ export type Database = {
           transaction_type: Database["public"]["Enums"]["transaction_type"]
         }[]
       }
+      get_network_transfer_for_api: {
+        Args: { p_operator_organization_id: string; p_transfer_id: string }
+        Returns: Json
+      }
       get_network_webhook_enrichment: {
         Args: { p_member_organization_id: string; p_transaction_id: string }
         Returns: {
@@ -22502,6 +22621,33 @@ export type Database = {
       get_next_message_index: {
         Args: { p_conversation_id: string; p_merchant_id: string }
         Returns: number
+      }
+      get_nitro_request: {
+        Args: { p_nitro_request_id: string; p_organization_id: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment: string
+          failure_reason: string | null
+          fee_amount: number
+          idempotency_key: string | null
+          metadata: Json
+          mode: Database["public"]["Enums"]["nitro_mode"]
+          net_amount: number
+          nitro_request_id: string
+          organization_id: string
+          payout_id: string | null
+          requested_amount: number
+          status: Database["public"]["Enums"]["nitro_request_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "nitro_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_npv_by_date: {
         Args: {
@@ -22745,6 +22891,10 @@ export type Database = {
           legal_representative_id_url: string
           status: Database["public"]["Enums"]["kyc_status"]
         }[]
+      }
+      get_organization_marketing_locale: {
+        Args: { p_organization_id: string }
+        Returns: string
       }
       get_organization_payment_availability_settings: {
         Args: { p_organization_id: string }
@@ -23844,6 +23994,10 @@ export type Database = {
           name: string
         }[]
       }
+      get_storefront_service_url: {
+        Args: { p_organization_id: string; p_service_id: string }
+        Returns: string
+      }
       get_storefront_transaction_confirmation: {
         Args: { p_customer_email: string; p_transaction_id: string }
         Returns: Json
@@ -24405,6 +24559,10 @@ export type Database = {
         Returns: boolean
       }
       hash_payout_pin: { Args: { p_pin: string }; Returns: string }
+      hosted_checkout_session_url: {
+        Args: { p_session_id: string }
+        Returns: string
+      }
       hydrate_organization_tier_from_volume: {
         Args: { p_organization_id?: string }
         Returns: number
@@ -25308,6 +25466,10 @@ export type Database = {
           response_payload: Json
         }[]
       }
+      lookup_spi_refund_for_webhook: {
+        Args: { p_spi_tx_id: string }
+        Returns: Json
+      }
       manage_organization_fee_type: {
         Args: {
           p_acting_merchant_id?: string
@@ -25559,8 +25721,47 @@ export type Database = {
         Args: { p_organization_id: string; p_settings_patch: Json }
         Returns: Json
       }
+      move_network_funds: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_allow_negative?: boolean
+          p_amount: number
+          p_api_key?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_description?: string
+          p_environment: string
+          p_from_organization_id: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_network_membership_id: string
+          p_network_transaction_context_id?: string
+          p_operator_fee_entry_id?: string
+          p_refund_id?: string
+          p_reversed_transfer_id?: string
+          p_source_transaction_id?: string
+          p_to_organization_id: string
+          p_transfer_group?: string
+          p_transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+        }
+        Returns: string
+      }
       move_product_to_live: { Args: { p_product_id: string }; Returns: string }
       move_webhook_to_live: { Args: { p_webhook_id: string }; Returns: string }
+      network_member_health: {
+        Args: { p_network_membership_id: string }
+        Returns: {
+          actions_required: string[]
+          health_status: string
+        }[]
+      }
+      nitro_outstanding_exposure: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: number
+      }
+      normalize_marketing_locale: { Args: { p_raw: string }; Returns: string }
       notify_notification_outbox_via_api: {
         Args: { p_outbox_id: string }
         Returns: undefined
@@ -25712,6 +25913,10 @@ export type Database = {
         Args: { p_organization_id: string }
         Returns: boolean
       }
+      organization_has_completed_transaction: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
       organization_has_custom_fee_schedule: {
         Args: { p_organization_id: string }
         Returns: boolean
@@ -25768,6 +25973,10 @@ export type Database = {
       partner_revoke_provisioning_key: {
         Args: { p_partner_id: string; p_provisioning_key_id: string }
         Returns: boolean
+      }
+      payment_link_path_segment: {
+        Args: { p_public_id: string }
+        Returns: string
       }
       pending_beneficiary_payout_reserved: {
         Args: {
@@ -25842,6 +26051,7 @@ export type Database = {
         }
         Returns: string
       }
+      process_marketing_email_cadence: { Args: never; Returns: number }
       process_overdue_subscription_failures: {
         Args: { days_overdue?: number }
         Returns: number
@@ -25939,6 +26149,21 @@ export type Database = {
         Args: { p_invoice_id: string; p_is_reminder?: boolean }
         Returns: undefined
       }
+      quote_nitro_settlement: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_mode: Database["public"]["Enums"]["nitro_mode"]
+          p_organization_id: string
+        }
+        Returns: {
+          available_after: number
+          eligible_amount: number
+          fee_amount: number
+          net_amount: number
+          reason_ineligible: string
+        }[]
+      }
       read_subscription_webhook_context: { Args: never; Returns: Json }
       recalculate_all_organizations_mrr: {
         Args: never
@@ -25956,7 +26181,12 @@ export type Database = {
         }
         Returns: Json
       }
+      reconcile_nitro_advances: { Args: never; Returns: number }
       reconcile_organization_fee_rows: { Args: never; Returns: number }
+      reconcile_stale_notification_outbox_jobs: {
+        Args: { p_limit?: number; p_stale_after_seconds?: number }
+        Returns: number
+      }
       reconcile_stale_webhook_outbox_jobs: {
         Args: { p_limit?: number; p_stale_after_seconds?: number }
         Returns: number
@@ -25999,6 +26229,17 @@ export type Database = {
         }
         Returns: string
       }
+      record_network_login_link: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_api_key?: string
+          p_environment?: string
+          p_metadata?: Json
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: Json
+      }
       record_network_operator_fee_entry: {
         Args: {
           p_amount: number
@@ -26014,162 +26255,6 @@ export type Database = {
         }
         Returns: string
       }
-      move_network_funds: {
-        Args: {
-          p_actor_merchant_id?: string
-          p_allow_negative?: boolean
-          p_amount: number
-          p_api_key?: string
-          p_currency_code: Database["public"]["Enums"]["currency_code"]
-          p_description?: string
-          p_environment: string
-          p_from_organization_id: string
-          p_idempotency_key?: string
-          p_metadata?: Json
-          p_network_membership_id: string
-          p_network_transaction_context_id?: string
-          p_operator_fee_entry_id?: string
-          p_refund_id?: string
-          p_reversed_transfer_id?: string
-          p_source_transaction_id?: string
-          p_to_organization_id: string
-          p_transfer_group?: string
-          p_transfer_type: Database["public"]["Enums"]["network_transfer_type"]
-        }
-        Returns: string
-      }
-      build_network_transfer_payload: {
-        Args: { p_network_transfer_id: string }
-        Returns: Json
-      }
-      settle_network_transaction: {
-        Args: { p_transaction_id: string }
-        Returns: boolean
-      }
-      settle_network_refund: {
-        Args: {
-          p_refund_application_fee?: boolean
-          p_refund_id: string
-          p_reverse_transfer?: boolean
-        }
-        Returns: Json
-      }
-      create_network_transfer_for_api: {
-        Args: {
-          p_actor_merchant_id?: string
-          p_amount: number
-          p_api_key?: string
-          p_currency_code: Database["public"]["Enums"]["currency_code"]
-          p_description?: string
-          p_destination_account: string
-          p_environment?: string
-          p_idempotency_key?: string
-          p_metadata?: Json
-          p_operator_organization_id: string
-          p_source_transaction_id?: string
-          p_transfer_group?: string
-        }
-        Returns: Json
-      }
-      reverse_network_transfer_for_api: {
-        Args: {
-          p_actor_merchant_id?: string
-          p_amount?: number
-          p_api_key?: string
-          p_description?: string
-          p_idempotency_key?: string
-          p_metadata?: Json
-          p_operator_organization_id: string
-          p_transfer_id: string
-        }
-        Returns: Json
-      }
-      fetch_network_transfers_for_api: {
-        Args: {
-          p_destination_account?: string
-          p_environment?: string
-          p_limit?: number
-          p_offset?: number
-          p_operator_organization_id: string
-          p_source_transaction_id?: string
-          p_transfer_group?: string
-          p_transfer_types?: string[]
-        }
-        Returns: Json[]
-      }
-      get_network_transfer_for_api: {
-        Args: { p_operator_organization_id: string; p_transfer_id: string }
-        Returns: Json
-      }
-      fetch_network_balance_for_api: {
-        Args: {
-          p_currency_code?: string
-          p_environment?: string
-          p_network_membership_id: string
-        }
-        Returns: {
-          balance: number
-          currency_code: string
-          environment: string
-          last_updated: string
-          public_account_id: string
-        }[]
-      }
-      fetch_network_transfers: {
-        Args: {
-          p_environment?: string
-          p_limit?: number
-          p_member_organization_id?: string
-          p_offset?: number
-          p_organization_id: string
-        }
-        Returns: Json[]
-      }
-      fetch_network_member_balance: {
-        Args: {
-          p_environment?: string
-          p_network_membership_id: string
-          p_operator_organization_id: string
-        }
-        Returns: {
-          balance: number
-          currency_code: string
-          last_updated: string
-        }[]
-      }
-      network_member_health: {
-        Args: { p_network_membership_id: string }
-        Returns: {
-          actions_required: string[]
-          health_status: string
-        }[]
-      }
-      record_network_login_link: {
-        Args: {
-          p_actor_merchant_id?: string
-          p_api_key?: string
-          p_environment?: string
-          p_metadata?: Json
-          p_network_membership_id: string
-          p_operator_organization_id: string
-        }
-        Returns: Json
-      }
-      create_network_account_session: {
-        Args: {
-          p_client_secret_hash: string
-          p_components: Json
-          p_environment: string
-          p_operator_organization_id: string
-          p_public_account_id: string
-          p_ttl_minutes?: number
-        }
-        Returns: Json
-      }
-      resolve_network_account_session: {
-        Args: { p_client_secret_hash: string }
-        Returns: Json
-      }
       record_network_operator_fee_reversal: {
         Args: {
           p_metadata?: Json
@@ -26184,7 +26269,9 @@ export type Database = {
         Args: {
           p_actor_merchant_id?: string
           p_api_key?: string
+          p_application_fee_amount?: number
           p_capability_key?: string
+          p_charge_type?: string
           p_checkout_session_id?: string
           p_environment?: string
           p_metadata?: Json
@@ -26193,10 +26280,19 @@ export type Database = {
           p_operator_fee_currency?: Database["public"]["Enums"]["currency_code"]
           p_refund_id?: string
           p_transaction_id?: string
-          p_charge_type?: string
-          p_application_fee_amount?: number
           p_transfer_amount?: number
           p_transfer_group?: string
+        }
+        Returns: string
+      }
+      record_nitro_rail: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_idempotency_key?: string
+          p_merchant_id?: string
+          p_organization_id: string
+          p_payout_id?: string
         }
         Returns: string
       }
@@ -26347,6 +26443,14 @@ export type Database = {
         }
         Returns: Json
       }
+      reject_network_operator_live: {
+        Args: {
+          p_operator_organization_id: string
+          p_reason?: string
+          p_rejected_by?: string
+        }
+        Returns: string
+      }
       release_api_idempotency_record: {
         Args: {
           p_endpoint_route: string
@@ -26372,14 +26476,6 @@ export type Database = {
         Args: { p_email: string }
         Returns: boolean
       }
-      reject_network_operator_live: {
-        Args: {
-          p_operator_organization_id: string
-          p_reason?: string
-          p_rejected_by?: string
-        }
-        Returns: string
-      }
       reorder_product_files: {
         Args: {
           p_file_ids: string[]
@@ -26392,10 +26488,6 @@ export type Database = {
         Args: { p_organization_id: string; p_rules: Json }
         Returns: undefined
       }
-      request_network_operator_live: {
-        Args: { p_note?: string; p_organization_id: string }
-        Returns: string
-      }
       request_live_activation: {
         Args: {
           p_merchant_id: string
@@ -26403,6 +26495,10 @@ export type Database = {
           p_provisioning_key_id: string
         }
         Returns: Json
+      }
+      request_network_operator_live: {
+        Args: { p_note?: string; p_organization_id: string }
+        Returns: string
       }
       resolve_checkout_catalog_amount: {
         Args: {
@@ -26465,6 +26561,10 @@ export type Database = {
       resolve_jumbo_message_limit: {
         Args: { p_organization_id: string }
         Returns: number
+      }
+      resolve_network_account_session: {
+        Args: { p_client_secret_hash: string }
+        Returns: Json
       }
       resolve_network_member_merchant_id: {
         Args: { p_network_membership_id: string }
@@ -26556,9 +26656,27 @@ export type Database = {
         Args: { p_organization_id: string; p_raw_order: Json }
         Returns: Json
       }
+      restore_merchant: { Args: { p_merchant_id: string }; Returns: Json }
       retry_webhook_delivery: {
         Args: { p_log_id: string; p_merchant_id: string; p_webhook_id: string }
         Returns: boolean
+      }
+      reverse_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_amount?: number
+          p_api_key?: string
+          p_description?: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_operator_organization_id: string
+          p_transfer_id: string
+        }
+        Returns: Json
+      }
+      reverse_nitro_advance: {
+        Args: { p_nitro_request_id: string; p_reason?: string }
+        Returns: undefined
       }
       revoke_all_trusted_devices: { Args: never; Returns: undefined }
       revoke_api_key: {
@@ -26898,22 +27016,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      setup_network_operator_profile: {
-        Args: {
-          p_acknowledge_responsibilities?: boolean
-          p_branding?: Json
-          p_charge_model: string
-          p_default_capabilities?: string[]
-          p_fees_collector?: string
-          p_losses_collector?: string
-          p_member_dashboard?: string
-          p_onboarding_mode?: string
-          p_organization_id: string
-          p_platform_type: string
-          p_profile?: Json
-        }
-        Returns: string
-      }
       set_organization_api_access_suspended: {
         Args: { p_organization_id: string; p_suspended: boolean }
         Returns: undefined
@@ -26938,6 +27040,34 @@ export type Database = {
       set_subscription_webhook_context: {
         Args: { p_actor: string; p_source: string }
         Returns: undefined
+      }
+      settle_network_refund: {
+        Args: {
+          p_refund_application_fee?: boolean
+          p_refund_id: string
+          p_reverse_transfer?: boolean
+        }
+        Returns: Json
+      }
+      settle_network_transaction: {
+        Args: { p_transaction_id: string }
+        Returns: boolean
+      }
+      setup_network_operator_profile: {
+        Args: {
+          p_acknowledge_responsibilities?: boolean
+          p_branding?: Json
+          p_charge_model: string
+          p_default_capabilities?: string[]
+          p_fees_collector?: string
+          p_losses_collector?: string
+          p_member_dashboard?: string
+          p_onboarding_mode?: string
+          p_organization_id: string
+          p_platform_type: string
+          p_profile?: Json
+        }
+        Returns: string
       }
       should_emit_subscription_updated: {
         Args: {
@@ -27413,20 +27543,6 @@ export type Database = {
         }
         Returns: string
       }
-      update_network_operator_profile: {
-        Args: {
-          p_branding?: Json
-          p_charge_model?: string
-          p_fees_collector?: string
-          p_losses_collector?: string
-          p_member_dashboard?: string
-          p_onboarding_mode?: string
-          p_organization_id: string
-          p_platform_type?: string
-          p_profile?: Json
-        }
-        Returns: string
-      }
       update_meter_dashboard: {
         Args: {
           p_aggregation?: Json
@@ -27452,6 +27568,20 @@ export type Database = {
           p_provider_reference_id: string
         }
         Returns: undefined
+      }
+      update_network_operator_profile: {
+        Args: {
+          p_branding?: Json
+          p_charge_model?: string
+          p_fees_collector?: string
+          p_losses_collector?: string
+          p_member_dashboard?: string
+          p_onboarding_mode?: string
+          p_organization_id: string
+          p_platform_type?: string
+          p_profile?: Json
+        }
+        Returns: string
       }
       update_organization_address: {
         Args: {
@@ -28104,6 +28234,18 @@ export type Database = {
         }
         Returns: Json
       }
+      upsert_organization_member_limits: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_daily_charge_total?: number
+          p_daily_payout_total?: number
+          p_max_charge_amount?: number
+          p_max_refund_amount?: number
+          p_merchant_id: string
+          p_organization_id: string
+        }
+        Returns: undefined
+      }
       upsert_organization_role: {
         Args: {
           p_key: string
@@ -28537,6 +28679,8 @@ export type Database = {
         | "currency_conversion"
         | "international_cards"
         | "subscription_payments"
+        | "instant_settlement"
+        | "instant_payment"
       fee_type: "platform" | "processing" | "conversion" | "payout" | "refund"
       feedback_status: "open" | "reviewed" | "implemented" | "closed"
       filter_operator:
@@ -28552,45 +28696,25 @@ export type Database = {
       fraud_action: "flag" | "block"
       fraud_alert_status: "flagged" | "blocked" | "resolved" | "dismissed"
       fraud_rule_type: "velocity" | "threshold" | "watchlist"
-      growth_contact_role:
-        | "champion"
-        | "decision_maker"
-        | "influencer"
-        | "other"
-      growth_deal_stage:
-        | "lead"
-        | "qualified"
-        | "meeting"
-        | "proposal"
-        | "won"
-        | "lost"
-      growth_lead_source:
-        | "internal"
-        | "google_places"
-        | "exa"
-        | "manual"
-        | "lookalike"
-        | "signal"
-        | "champion"
-        | "inbound"
-      growth_lead_status:
-        | "new"
-        | "qualified"
-        | "contacted"
-        | "won"
-        | "lost"
-        | "skipped"
-      growth_outbound_channel: "email" | "linkedin" | "whatsapp"
-      growth_outbound_direction: "outbound" | "reply"
-      growth_reply_platform: "twitter" | "telegram" | "linkedin" | "manual"
-      growth_reply_status:
-        | "pending"
+      insurance_claim_status:
+        | "submitted"
+        | "under_review"
         | "approved"
         | "rejected"
-        | "posted"
-        | "failed"
-      growth_sequence_status: "draft" | "active" | "paused"
-      growth_signal_event_status: "new" | "routed" | "dismissed" | "sequenced"
+        | "paid"
+      insurance_policy_status: "pending" | "active" | "cancelled" | "expired"
+      insurance_product_kind:
+        | "stock"
+        | "equipment"
+        | "liability"
+        | "health"
+        | "property"
+      insurance_quote_status:
+        | "requested"
+        | "quoted"
+        | "declined"
+        | "expired"
+        | "converted"
       integration_source:
         | "system"
         | "shopify"
@@ -28648,15 +28772,6 @@ export type Database = {
         | "cancelled"
       network_fee_entry_status: "pending" | "posted" | "reversed" | "voided"
       network_fee_entry_type: "charge" | "refund_reversal" | "adjustment"
-      network_transfer_status: "pending" | "posted" | "reversed" | "failed"
-      network_transfer_type:
-        | "destination"
-        | "separate"
-        | "operator_fee"
-        | "processing_fee_cover"
-        | "fee_reversal"
-        | "transfer_reversal"
-        | "loss_cover"
       network_fee_rule_status: "active" | "inactive" | "archived"
       network_membership_status:
         | "invited"
@@ -28673,6 +28788,22 @@ export type Database = {
         | "restricted"
         | "suspended"
         | "closed"
+      network_transfer_status: "pending" | "posted" | "reversed" | "failed"
+      network_transfer_type:
+        | "destination"
+        | "separate"
+        | "operator_fee"
+        | "processing_fee_cover"
+        | "fee_reversal"
+        | "transfer_reversal"
+        | "loss_cover"
+      nitro_mode: "rail" | "advance"
+      nitro_request_status:
+        | "pending"
+        | "settled"
+        | "rejected"
+        | "failed"
+        | "reversed"
       notification_type:
         | "onboarding"
         | "tip"
@@ -28884,9 +29015,6 @@ export type Database = {
         | "NETWORK_PAYMENT_CREATED"
         | "NETWORK_OPERATOR_FEE_CREATED"
         | "NETWORK_OPERATOR_FEE_REVERSED"
-        | "NETWORK_TRANSFER_CREATED"
-        | "NETWORK_TRANSFER_REVERSED"
-        | "NETWORK_MEMBER_PAYOUT_PAID"
         | "USAGE_RECORDED"
         | "USAGE_INVOICE_CREATED"
         | "USAGE_INVOICE_PAID"
@@ -28900,6 +29028,9 @@ export type Database = {
         | "PAYOUT_CREATED"
         | "PAYOUT_COMPLETED"
         | "PAYOUT_FAILED"
+        | "NETWORK_TRANSFER_CREATED"
+        | "NETWORK_TRANSFER_REVERSED"
+        | "NETWORK_MEMBER_PAYOUT_PAID"
       whatsapp_catalog_item_sync_status:
         | "synced"
         | "pending_push"
@@ -28936,12 +29067,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -28965,11 +29096,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -28990,11 +29121,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -29015,11 +29146,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -29032,11 +29163,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -29196,6 +29327,8 @@ export const Constants = {
         "currency_conversion",
         "international_cards",
         "subscription_payments",
+        "instant_settlement",
+        "instant_payment",
       ],
       fee_type: ["platform", "processing", "conversion", "payout", "refund"],
       feedback_status: ["open", "reviewed", "implemented", "closed"],
@@ -29213,50 +29346,28 @@ export const Constants = {
       fraud_action: ["flag", "block"],
       fraud_alert_status: ["flagged", "blocked", "resolved", "dismissed"],
       fraud_rule_type: ["velocity", "threshold", "watchlist"],
-      growth_contact_role: [
-        "champion",
-        "decision_maker",
-        "influencer",
-        "other",
-      ],
-      growth_deal_stage: [
-        "lead",
-        "qualified",
-        "meeting",
-        "proposal",
-        "won",
-        "lost",
-      ],
-      growth_lead_source: [
-        "internal",
-        "google_places",
-        "exa",
-        "manual",
-        "lookalike",
-        "signal",
-        "champion",
-        "inbound",
-      ],
-      growth_lead_status: [
-        "new",
-        "qualified",
-        "contacted",
-        "won",
-        "lost",
-        "skipped",
-      ],
-      growth_outbound_channel: ["email", "linkedin", "whatsapp"],
-      growth_outbound_direction: ["outbound", "reply"],
-      growth_reply_platform: ["twitter", "telegram", "linkedin", "manual"],
-      growth_reply_status: [
-        "pending",
+      insurance_claim_status: [
+        "submitted",
+        "under_review",
         "approved",
         "rejected",
-        "posted",
-        "failed",
+        "paid",
       ],
-      growth_sequence_status: ["draft", "active", "paused"],
-      growth_signal_event_status: ["new", "routed", "dismissed", "sequenced"],
+      insurance_policy_status: ["pending", "active", "cancelled", "expired"],
+      insurance_product_kind: [
+        "stock",
+        "equipment",
+        "liability",
+        "health",
+        "property",
+      ],
+      insurance_quote_status: [
+        "requested",
+        "quoted",
+        "declined",
+        "expired",
+        "converted",
+      ],
       integration_source: [
         "system",
         "shopify",
@@ -29321,16 +29432,6 @@ export const Constants = {
       ],
       network_fee_entry_status: ["pending", "posted", "reversed", "voided"],
       network_fee_entry_type: ["charge", "refund_reversal", "adjustment"],
-      network_transfer_status: ["pending", "posted", "reversed", "failed"],
-      network_transfer_type: [
-        "destination",
-        "separate",
-        "operator_fee",
-        "processing_fee_cover",
-        "fee_reversal",
-        "transfer_reversal",
-        "loss_cover",
-      ],
       network_fee_rule_status: ["active", "inactive", "archived"],
       network_membership_status: [
         "invited",
@@ -29348,6 +29449,24 @@ export const Constants = {
         "restricted",
         "suspended",
         "closed",
+      ],
+      network_transfer_status: ["pending", "posted", "reversed", "failed"],
+      network_transfer_type: [
+        "destination",
+        "separate",
+        "operator_fee",
+        "processing_fee_cover",
+        "fee_reversal",
+        "transfer_reversal",
+        "loss_cover",
+      ],
+      nitro_mode: ["rail", "advance"],
+      nitro_request_status: [
+        "pending",
+        "settled",
+        "rejected",
+        "failed",
+        "reversed",
       ],
       notification_type: [
         "onboarding",
@@ -29572,9 +29691,6 @@ export const Constants = {
         "NETWORK_PAYMENT_CREATED",
         "NETWORK_OPERATOR_FEE_CREATED",
         "NETWORK_OPERATOR_FEE_REVERSED",
-        "NETWORK_TRANSFER_CREATED",
-        "NETWORK_TRANSFER_REVERSED",
-        "NETWORK_MEMBER_PAYOUT_PAID",
         "USAGE_RECORDED",
         "USAGE_INVOICE_CREATED",
         "USAGE_INVOICE_PAID",
@@ -29588,6 +29704,9 @@ export const Constants = {
         "PAYOUT_CREATED",
         "PAYOUT_COMPLETED",
         "PAYOUT_FAILED",
+        "NETWORK_TRANSFER_CREATED",
+        "NETWORK_TRANSFER_REVERSED",
+        "NETWORK_MEMBER_PAYOUT_PAID",
       ],
       whatsapp_catalog_item_sync_status: [
         "synced",

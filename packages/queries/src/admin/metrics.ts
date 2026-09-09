@@ -433,3 +433,36 @@ export async function getUncapturedRevenue(
   }
   return callRpc(client, "get_uncaptured_revenue", args, "get_uncaptured_revenue", options);
 }
+
+export async function getAverageMonthlyGrowthRate(
+  client: TypedSupabaseClient,
+  args: DbFunctions["get_average_monthly_growth_rate"]["Args"],
+  options?: SupabaseRpcOptions<DbFunctions["get_average_monthly_growth_rate"]["Returns"]> | null,
+): Promise<DbFunctions["get_average_monthly_growth_rate"]["Returns"] | null | boolean> {
+  if (options === null) {
+    return callRpc(client, "get_average_monthly_growth_rate", args, "get_average_monthly_growth_rate", { fallbackValue: null });
+  }
+  return callRpc(client, "get_average_monthly_growth_rate", args, "get_average_monthly_growth_rate", options);
+}
+
+export async function getPlatformGrowthStats(
+  client: TypedSupabaseClient,
+  args: DbFunctions["get_platform_growth_stats"]["Args"],
+  options?: SupabaseRpcOptions<DbFunctions["get_platform_growth_stats"]["Returns"]> | null,
+): Promise<DbFunctions["get_platform_growth_stats"]["Returns"] | null | boolean> {
+  if (options === null) {
+    return callRpc(client, "get_platform_growth_stats", args, "get_platform_growth_stats", { fallbackValue: null });
+  }
+  return callRpc(client, "get_platform_growth_stats", args, "get_platform_growth_stats", options);
+}
+
+export async function getRawAverageMonthlyGrowthRate(
+  client: TypedSupabaseClient,
+  args: DbFunctions["get_raw_average_monthly_growth_rate"]["Args"],
+  options?: SupabaseRpcOptions<DbFunctions["get_raw_average_monthly_growth_rate"]["Returns"]> | null,
+): Promise<DbFunctions["get_raw_average_monthly_growth_rate"]["Returns"] | null | boolean> {
+  if (options === null) {
+    return callRpc(client, "get_raw_average_monthly_growth_rate", args, "get_raw_average_monthly_growth_rate", { fallbackValue: null });
+  }
+  return callRpc(client, "get_raw_average_monthly_growth_rate", args, "get_raw_average_monthly_growth_rate", options);
+}

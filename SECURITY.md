@@ -39,19 +39,6 @@ We support good-faith research that follows this policy. Do not access, modify, 
 | Medium | XSS with limited impact, misconfiguration | Fix within 90 days |
 | Low | Informational | Best-effort backlog |
 
-## Incident response (internal)
-
-1. **Detect** — Monitoring, synthetics, advisor alerts, or researcher report.
-2. **Triage** — Program owner assigns severity and comms lead.
-3. **Contain** — Revoke keys, disable feature flags, block routes if needed.
-4. **Eradicate** — Patch, migration, config fix with regression tests.
-5. **Recover** — Restore service; verify with retest.
-6. **Learn** — Post-incident note; update runbooks and CI checks.
-
-## Security program (internal)
-
-Operational docs for testing and compliance readiness live under [`.github/security/`](.github/security/README.md). Automated controls: CodeQL, gitleaks, dependency audit, API/edge synthetics, and Supabase grant/RPC drift checks (see `.github/workflows/app-security-*.yml`).
-
 ## Recognition
 
 We thank researchers who help keep lomi. and our merchants safe. Coordinated disclosure may be acknowledged in release notes with permission.
