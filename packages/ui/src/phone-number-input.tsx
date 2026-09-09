@@ -209,7 +209,12 @@ export function PhoneNumberInput({
           <div className="relative">
           <div
             className={cn(
-              "flex w-full overflow-hidden bg-transparent transition-colors",
+              "flex w-full overflow-hidden transition-colors",
+              forceLight
+                ? "bg-white"
+                : stackRole === "solo"
+                  ? "bg-transparent"
+                  : "bg-white dark:bg-secondary",
               compact
                 ? forceLight
                   ? "phone-input-compact h-7 rounded-sm border border-gray-300 dark:border-gray-300"

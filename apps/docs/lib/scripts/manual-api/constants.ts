@@ -33,6 +33,7 @@ export const REST_API_SIDEBAR_GROUPS = [
       'balances',
       'transactions',
       'refunds',
+      'transfers',
       'payouts',
       'payout-methods',
       'settlements',
@@ -40,7 +41,14 @@ export const REST_API_SIDEBAR_GROUPS = [
   },
   {
     separator: '---Platform---',
-    folders: ['organizations', 'team', 'settings', 'merchants', 'providers'],
+    folders: [
+      'organizations',
+      'network',
+      'team',
+      'settings',
+      'merchants',
+      'providers',
+    ],
   },
   {
     separator: '---Operations---',
@@ -98,6 +106,9 @@ const PUBLIC_REST_API_OPERATIONS = [
   'settlements',
   'products',
   'refunds',
+  'transfers',
+  'POST /network/accounts/{account}/login_links',
+  'POST /network/account-sessions',
   'disputes',
   'support-requests',
   'risk-assessments',

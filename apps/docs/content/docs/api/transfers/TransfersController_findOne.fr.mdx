@@ -1,0 +1,80 @@
+---
+title: "Récupérer un transfert"
+description: "Récupérer un transfert"
+full: true
+method: get
+path: /transfers/{id}
+operationId: TransfersController_findOne
+---
+
+## Aperçu
+
+Récupérer un transfert
+
+### Quand l’utiliser
+
+Utilisez après création ou depuis un webhook `NETWORK_TRANSFER_CREATED` pour confirmer que le transfert a bien crédité le solde du membre.
+
+### Voir aussi
+
+[Lister les transferts](/api/transfers/TransfersController_findAll) · [Annuler un transfert](/api/transfers/TransfersController_reverse)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /transfers/{id}`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | Transfer id (tr_...) |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Objet transfert |
+| `404` | Transfert introuvable |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/transfers/value" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_findOne`
+- **Operation**: `GET /transfers/{id}`
+
+Schémas complets et **Try it** : [référence API](/api).

@@ -3,7 +3,7 @@
   "paths": {
     "/accounts/balance": {
       "get": {
-        "description": "Récupère le solde courant pour toutes les devises ou pour une devise précise",
+        "description": "Récupère le solde courant pour toutes les devises ou pour une devise précise. With a Lomi-Account header, returns the Member Account balance for the request environment (lomi. Network, balance.read).",
         "operationId": "AccountsController_getBalance",
         "parameters": [
           {
@@ -18,6 +18,16 @@
                 "EUR"
               ],
               "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
             }
           },
           {
@@ -208,16 +218,6 @@
         "operationId": "OrganizationsController_create",
         "parameters": [
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -298,16 +298,6 @@
         "operationId": "OrganizationsController_getRadarSettings",
         "parameters": [
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -336,16 +326,6 @@
       "patch": {
         "operationId": "OrganizationsController_updateRadarSettings",
         "parameters": [
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
           {
             "name": "Lomi-Version",
             "in": "header",
@@ -430,16 +410,6 @@
         "description": "Mint une clé secrète pour un espace auquel le marchand appartient déjà. L’agent MCP peut l’adopter (action=use).",
         "operationId": "OrganizationsController_createKey",
         "parameters": [
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
           {
             "name": "Lomi-Version",
             "in": "header",
@@ -540,16 +510,6 @@
             }
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -586,16 +546,6 @@
             "in": "path",
             "description": "Risk assessment ID",
             "schema": {}
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
           },
           {
             "name": "Lomi-Version",
@@ -1039,16 +989,6 @@
             "description": "UUID de la transaction",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
             }
           },
           {
@@ -2372,6 +2312,331 @@
         ]
       }
     },
+    "/transfers": {
+      "post": {
+        "description": "lomi. Network: move funds from your Operator balance to a Member Account (separate charges and transfers, or an ad-hoc payout). Uses your Operator API key without a Lomi-Account header. The destination must be an active membership with the transfer.receive capability for this environment. Live transfers require an approved live Network.",
+        "operationId": "TransfersController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required unique key for this write. Replays return the original response.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transfer created (object: transfer). First call without confirmation_token returns a preview; second call with that token executes."
+          },
+          "400": {
+            "description": "Invalid destination, capability, or insufficient balance"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create a transfer to a Member Account",
+        "tags": [
+          "Network transfers"
+        ]
+      },
+      "get": {
+        "description": "Transfers created by your Network in the request environment, newest first. Includes destination transfers settled at payment completion, POST /transfers payouts, operator fees, and reversals.",
+        "operationId": "TransfersController_findAll",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer_type",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated: destination, separate, operator_fee, processing_fee_cover, fee_reversal, transfer_reversal, loss_cover",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source_transaction_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer_group",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of transfers"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List transfers",
+        "tags": [
+          "Network transfers"
+        ]
+      }
+    },
+    "/transfers/{id}": {
+      "get": {
+        "operationId": "TransfersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Transfer id (tr_...)",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer object"
+          },
+          "404": {
+            "description": "Transfer not found"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Retrieve a transfer",
+        "tags": [
+          "Network transfers"
+        ]
+      }
+    },
+    "/transfers/{id}/reversals": {
+      "post": {
+        "description": "Pull funds back from the Member Account to your Operator balance, fully or partially. Refunds on destination charges reverse transfers automatically; use this for manual corrections.",
+        "operationId": "TransfersController_reverse",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Transfer id (tr_...)",
+            "schema": {}
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required unique key for this write. Replays return the original response.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransferReversalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reversal transfer created"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Reverse a transfer",
+        "tags": [
+          "Network transfers"
+        ]
+      }
+    },
+    "/network/accounts/{account}/login_links": {
+      "post": {
+        "description": "lomi. Network: mint a single-use link that signs the Member Account owner into their lomi. dashboard. Uses your Operator API key without a Lomi-Account header and requires the account.login_link capability for this environment. The link expires after 5 minutes and must be handed directly to the member (never embedded in public pages or logged).",
+        "operationId": "NetworkAccountsController_createLoginLink",
+        "parameters": [
+          {
+            "name": "account",
+            "required": true,
+            "in": "path",
+            "description": "Member Account id (acct_...)",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Login link created (object: login_link): { account, url, created_at, expires_at }"
+          },
+          "400": {
+            "description": "Capability missing, membership inactive, or Lomi-Account header sent"
+          },
+          "404": {
+            "description": "Member Account not found"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create a login link for a Member Account",
+        "tags": [
+          "Network accounts"
+        ]
+      }
+    },
+    "/network/account-sessions": {
+      "post": {
+        "description": "lomi. Network: mint a short-lived client secret (nas_...) your front end passes to the embedded member components (balance, payments, payouts, onboarding). Uses your Operator API key without a Lomi-Account header. Sessions expire after 60 minutes. Requires member_dashboard to be full or member_mode on your operator profile.",
+        "operationId": "NetworkAccountsController_createAccountSession",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account session created (object: account_session): { account, client_secret, expires_at, components, embed_base_url }"
+          },
+          "400": {
+            "description": "Membership inactive, member dashboard disabled, or Lomi-Account header sent"
+          },
+          "404": {
+            "description": "Member Account not found"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create an account session for embedded components",
+        "tags": [
+          "Network accounts"
+        ]
+      }
+    },
     "/products": {
       "get": {
         "description": "Renvoie tous les produits de l'organisation du marchand authentifié, avec prix et frais intégrés. Utile pour afficher le catalogue ou intégrer des systèmes externes.",
@@ -3586,6 +3851,34 @@
                     "type": "object",
                     "additionalProperties": true
                   },
+                  "application_fee_amount": {
+                    "type": "number",
+                    "example": 500,
+                    "description": "lomi. Network: operator fee kept from this payment (payment currency). Overrides the fee rule."
+                  },
+                  "transfer_data": {
+                    "type": "object",
+                    "required": [
+                      "destination"
+                    ],
+                    "description": "lomi. Network destination charge: funds (minus the operator fee) are transferred to the Member Account at completion. Operator key without Lomi-Account only.",
+                    "properties": {
+                      "destination": {
+                        "type": "string",
+                        "example": "acct_1a2b3c4d5e6f7g8h"
+                      },
+                      "amount": {
+                        "type": "number",
+                        "example": 9000
+                      }
+                    }
+                  },
+                  "transfer_group": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "example": "ORDER_95",
+                    "description": "lomi. Network separate charges and transfers: group key shared with later POST /transfers calls."
+                  },
                   "line_items": {
                     "type": "array",
                     "items": {
@@ -4408,16 +4701,6 @@
             }
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -4457,16 +4740,6 @@
             "schema": {}
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -4503,16 +4776,6 @@
             "in": "path",
             "description": "Dispute ID",
             "schema": {}
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
           },
           {
             "name": "Lomi-Version",
@@ -4562,16 +4825,6 @@
             }
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -4601,16 +4854,6 @@
         "description": "Ouvre un ticket dans Paramètres → Assistance. L’équipe lomi. le voit dans la console admin.",
         "operationId": "SupportRequestsController_create",
         "parameters": [
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
           {
             "name": "Lomi-Version",
             "in": "header",
@@ -4660,16 +4903,6 @@
             "schema": {}
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -4706,16 +4939,6 @@
             "in": "path",
             "description": "Identifiant de la demande",
             "schema": {}
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
           },
           {
             "name": "Lomi-Version",
@@ -4831,16 +5054,6 @@
             }
           },
           {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -4890,16 +5103,6 @@
             "in": "path",
             "description": "Nitro request UUID",
             "schema": {}
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
           },
           {
             "name": "Lomi-Version",
@@ -5796,16 +5999,6 @@
         "description": "Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a redirect URL for 3DS authentication or signal `retry_other_rail` to fall back to another rail. Requires a PCI-DSS-compliant integration.",
         "operationId": "ChargesController_createSwitchCharge",
         "parameters": [
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
           {
             "name": "Idempotency-Key",
             "in": "header",
@@ -9336,6 +9529,16 @@
           "confirmation_token": {
             "type": "string",
             "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
+          },
+          "reverse_transfer": {
+            "type": "boolean",
+            "description": "lomi. Network: on destination or separate charges, pull the proportional amount back from the Member Account transfer. Defaults to true.",
+            "default": true
+          },
+          "refund_application_fee": {
+            "type": "boolean",
+            "description": "lomi. Network: reverse the operator fee proportionally to the refund. Defaults to true. Set false to keep the operator fee on a refund.",
+            "default": true
           }
         },
         "required": [
@@ -9461,6 +9664,129 @@
           "status",
           "created_at",
           "updated_at"
+        ]
+      },
+      "CreateTransferDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 9000,
+            "description": "Amount to transfer, in `currency_code` (integer units)."
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "description": "Currency of the transfer (XOF, USD, EUR). Balances settle in XOF."
+          },
+          "destination": {
+            "type": "string",
+            "example": "acct_1a2b3c4d5e6f7g8h",
+            "description": "Member Account that receives the funds. Must be an active membership with the transfer.receive capability for this environment."
+          },
+          "transfer_group": {
+            "type": "string",
+            "example": "ORDER_95",
+            "description": "Transfer group linking this transfer to the payment(s) it settles (separate charges and transfers)."
+          },
+          "source_transaction_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Transaction this transfer settles (optional, for reporting and refunds)."
+          },
+          "description": {
+            "type": "string",
+            "example": "Payout for order 95"
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "order_id": "95"
+            }
+          },
+          "confirmation_token": {
+            "type": "string",
+            "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
+          }
+        },
+        "required": [
+          "amount",
+          "currency_code",
+          "destination"
+        ]
+      },
+      "CreateTransferReversalDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 4500,
+            "description": "Amount to reverse, in the transfer currency. Defaults to the remaining unreversed amount."
+          },
+          "description": {
+            "type": "string",
+            "example": "Order 95 refunded"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "confirmation_token": {
+            "type": "string",
+            "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
+          }
+        }
+      },
+      "AccountSessionComponentDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
+      "AccountSessionComponentsDto": {
+        "type": "object",
+        "properties": {
+          "onboarding": {
+            "$ref": "#/components/schemas/AccountSessionComponentDto"
+          },
+          "payments": {
+            "$ref": "#/components/schemas/AccountSessionComponentDto"
+          },
+          "payouts": {
+            "$ref": "#/components/schemas/AccountSessionComponentDto"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/AccountSessionComponentDto"
+          },
+          "notification_banner": {
+            "$ref": "#/components/schemas/AccountSessionComponentDto"
+          }
+        }
+      },
+      "CreateAccountSessionDto": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string",
+            "example": "acct_1a2b3c4d5e6f7g8h",
+            "description": "Member Account the embedded components are rendered for. Must be an active membership of your Network."
+          },
+          "components": {
+            "description": "Components the session may render. Omitted components default to enabled.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountSessionComponentsDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "account"
         ]
       },
       "PriceResponseDto": {
@@ -9939,7 +10265,7 @@
           },
           "checkout_url": {
             "type": "string",
-            "example": "https://checkout.lomi.africa/checkout/123e4567-e89b-12d3-a456-426614174000"
+            "example": "https://pay.lomi.africa/cs_TSASLZNKD7TE5F"
           },
           "created_at": {
             "type": "string",
@@ -10789,6 +11115,21 @@
           "webhook_id"
         ]
       },
+      "NetworkTransferDataDto": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "example": "acct_1a2b3c4d5e6f7g8h",
+            "description": "Member Account that receives the funds (public account id). Must be an active membership of your Network with the transfer.receive capability granted for this environment."
+          },
+          "amount": {
+            "type": "number",
+            "example": 9000,
+            "description": "Amount to transfer to the destination, in the payment currency. Defaults to the payment amount minus application_fee_amount (and minus the lomi. processing fee when the member is the fees collector)."
+          }
+        }
+      },
       "CustomerDto": {
         "type": "object",
         "properties": {
@@ -10814,6 +11155,24 @@
       "CreateWaveChargeDto": {
         "type": "object",
         "properties": {
+          "application_fee_amount": {
+            "type": "number",
+            "example": 500,
+            "description": "lomi. Network operator fee for this payment, in the payment currency. Overrides the membership fee rule. Requires a `Lomi-Account` header (direct charge) or `transfer_data` (destination charge)."
+          },
+          "transfer_data": {
+            "description": "lomi. Network destination charge. Only valid on an Operator API key without a `Lomi-Account` header.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkTransferDataDto"
+              }
+            ]
+          },
+          "transfer_group": {
+            "type": "string",
+            "example": "ORDER_95",
+            "description": "lomi. Network transfer group. Links this payment to later transfers (`POST /transfers` with the same transfer_group) for separate charges and transfers."
+          },
           "amount": {
             "type": "number",
             "example": 1000,
@@ -10927,6 +11286,24 @@
       "CreateMtnChargeDto": {
         "type": "object",
         "properties": {
+          "application_fee_amount": {
+            "type": "number",
+            "example": 500,
+            "description": "lomi. Network operator fee for this payment, in the payment currency. Overrides the membership fee rule. Requires a `Lomi-Account` header (direct charge) or `transfer_data` (destination charge)."
+          },
+          "transfer_data": {
+            "description": "lomi. Network destination charge. Only valid on an Operator API key without a `Lomi-Account` header.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkTransferDataDto"
+              }
+            ]
+          },
+          "transfer_group": {
+            "type": "string",
+            "example": "ORDER_95",
+            "description": "lomi. Network transfer group. Links this payment to later transfers (`POST /transfers` with the same transfer_group) for separate charges and transfers."
+          },
           "amount": {
             "type": "number",
             "example": 1000
@@ -11152,6 +11529,24 @@
       "CreateCardChargeDto": {
         "type": "object",
         "properties": {
+          "application_fee_amount": {
+            "type": "number",
+            "example": 500,
+            "description": "lomi. Network operator fee for this payment, in the payment currency. Overrides the membership fee rule. Requires a `Lomi-Account` header (direct charge) or `transfer_data` (destination charge)."
+          },
+          "transfer_data": {
+            "description": "lomi. Network destination charge. Only valid on an Operator API key without a `Lomi-Account` header.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkTransferDataDto"
+              }
+            ]
+          },
+          "transfer_group": {
+            "type": "string",
+            "example": "ORDER_95",
+            "description": "lomi. Network transfer group. Links this payment to later transfers (`POST /transfers` with the same transfer_group) for separate charges and transfers."
+          },
           "amount": {
             "type": "number",
             "example": 10000,

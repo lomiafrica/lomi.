@@ -71,4 +71,17 @@ export class DisputesService {
             page += 1;
         }
     }
+
+    /**
+     * Submit dispute evidence
+     * @see OpenAPI `DisputesController_submitEvidence`
+     */
+    public async submitEvidence(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/disputes/{id}/evidence',
+            path: { id: id },
+            ...options,
+        });
+    }
 }

@@ -23,6 +23,19 @@ export class CouponsService {
     }
 
     /**
+     * Delete coupon
+     * @see OpenAPI `DiscountCouponsController_remove`
+     */
+    public async delete(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'DELETE',
+            url: '/coupons/{id}',
+            path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
      * Retrieve discount coupon
      * @see OpenAPI `DiscountCouponsController_findOne`
      */

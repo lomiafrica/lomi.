@@ -14,10 +14,12 @@ export {
   HtmlDocumentHeader,
   HtmlLegalFooter,
   HtmlMetaRow,
+  HtmlOrgIdentity,
   HtmlPayOnlineRow,
   HtmlRecordCard,
   HtmlRecordLine,
   HtmlRecordRow,
+  HtmlValueBadge,
   HtmlSectionLabel,
   HtmlWordmark,
 } from "./html-chrome";

@@ -7,7 +7,12 @@ import {
   isPlaceholderReceiptValue,
   receiptNamesMatch,
 } from "./format-utils";
-import { HtmlRecordCard, HtmlRecordRow } from "./html-chrome";
+import {
+  HtmlOrgIdentity,
+  HtmlRecordCard,
+  HtmlRecordRow,
+  HtmlValueBadge,
+} from "./html-chrome";
 import type { ReceiptDocumentData, ReceiptLayoutLabels } from "./types";
 
 const CARD_DETAIL_MAX_CHARS = 24;
@@ -36,6 +41,7 @@ export function ReceiptLayout({
   banner,
   contact,
   heading,
+  identity,
   dateLine,
 }: {
   data: ReceiptDocumentData;
@@ -44,6 +50,7 @@ export function ReceiptLayout({
   banner?: ReactNode;
   contact?: ReactNode;
   heading?: ReactNode;
+  identity?: ReactNode;
   dateLine?: string;
 }) {
   const productItems = data.lineItems.filter(
@@ -76,6 +83,11 @@ export function ReceiptLayout({
 
   return (
     <HtmlRecordCard
+      identity={
+        identity ?? (
+          <HtmlOrgIdentity name={data.from.name} logoUrl={data.logoUrl} />
+        )
+      }
       heading={heading ?? data.title}
       amount={
         data.subscription?.isTrial
@@ -90,14 +102,22 @@ export function ReceiptLayout({
       banner={banner}
       contact={contact}
     >
-      {data.providerTransactionId ? (
+      {data.transactionId ? (
         <HtmlRecordRow
-          label={labels.transactionId}
+          label={labels.reference ?? labels.receiptId}
+          value={truncateId(data.transactionId)}
+        />
+      ) : data.providerTransactionId ? (
+        <HtmlRecordRow
+          label={labels.reference ?? labels.receiptId}
           value={truncateId(data.providerTransactionId)}
         />
       ) : null}
       {data.paymentMethod ? (
-        <HtmlRecordRow label={labels.paymentMethod} value={data.paymentMethod} />
+        <HtmlRecordRow
+          label={labels.paymentMethod}
+          value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
+        />
       ) : null}
       {data.isMerchantReceipt && data.to.name ? (
         <HtmlRecordRow

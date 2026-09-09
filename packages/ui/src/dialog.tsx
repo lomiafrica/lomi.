@@ -33,7 +33,7 @@ function dialogMotionClassName(variant: DialogContentVariant): string {
     case "slide-up":
       return "data-[state=closed]:slide-out-to-bottom-[48%] data-[state=open]:slide-in-from-bottom-[48%] data-[state=open]:duration-500 data-[state=closed]:duration-300";
     case "fade":
-      return "data-[state=open]:slide-in-from-top-2 data-[state=closed]:slide-out-to-top-2";
+      return "";
     case "default":
       return "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[52%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]";
     default: {

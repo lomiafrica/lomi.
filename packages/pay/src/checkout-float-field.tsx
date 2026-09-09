@@ -53,7 +53,7 @@ export function CheckoutFloatField({
     <div className="relative">
       <label
         htmlFor={fieldId}
-        className={`pointer-events-none absolute left-3 z-10 origin-left select-none text-gray-500 transition-[top,transform,font-size] duration-150 ${
+        className={`checkout-field-placeholder pointer-events-none absolute left-3 z-10 origin-left select-none transition-[top,transform,font-size] duration-150 ${
           raised
             ? "top-1.5 text-[11px] leading-none"
             : "top-1/2 -translate-y-1/2 text-[13px]"
@@ -76,7 +76,7 @@ export function CheckoutFloatField({
         pattern={pattern}
         inputMode={inputMode}
         enterKeyHint={enterKeyHint}
-        className={`${roundingClass} h-11 w-full bg-white pt-3.5 text-base text-gray-900 placeholder:text-gray-400 md:text-sm ${
+        className={`${roundingClass} h-11 w-full bg-white pt-3.5 text-base text-gray-900 md:text-sm focus:border-gray-300 focus-visible:border-gray-300 focus-visible:shadow-none ${
           raised ? "" : "caret-transparent"
         }`}
       />

@@ -11,6 +11,33 @@ export class OrganizationsService {
     constructor(private readonly client: LomiClient) {}
 
     /**
+     * Create organization
+     * @see OpenAPI `OrganizationsController_create`
+     */
+    public async create(body: components['schemas']['CreateOrganizationDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/organizations',
+            body,
+            ...options,
+        });
+    }
+
+    /**
+     * Mint organization secret
+     * @see OpenAPI `OrganizationsController_createKey`
+     */
+    public async createKey(id: string, body: components['schemas']['CreateOrganizationKeyDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/organizations/{id}/keys',
+            path: { id: id },
+            body,
+            ...options,
+        });
+    }
+
+    /**
      * Retrieve organization
      * @see OpenAPI `OrganizationsController_findOne`
      */

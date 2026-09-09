@@ -1,0 +1,83 @@
+---
+title: "Retrieve transfer"
+description: "Retrieve transfer"
+full: true
+method: get
+path: /transfers/{id}
+operationId: TransfersController_findOne
+---
+
+## Overview
+
+Retrieve transfer
+
+Returns a single transfer (`tr_...`) with its status, settled amount, source transaction, and reversed amount.
+
+
+### When to use this
+
+Use after create or from a `NETWORK_TRANSFER_CREATED` webhook to confirm the transfer landed on the member balance.
+
+### See also
+
+[List transfers](/api/transfers/TransfersController_findAll) · [Reverse transfer](/api/transfers/TransfersController_reverse)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /transfers/{id}`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | - | Transfer id (tr_...) |
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Transfer object |
+| `404` | Transfer not found |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/transfers/value" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_findOne`
+- **Operation**: `GET /transfers/{id}`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

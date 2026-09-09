@@ -11,9 +11,9 @@
  * This file contains only the types exposed through the API.
  * 
  * Generated from packages/shared/src/database.ts - only includes:
- * - Exposed enums (61 enums)
+ * - Exposed enums (63 enums)
  * - Exposed tables (20 tables)
- * - Exposed functions (287 functions)
+ * - Exposed functions (306 functions)
  * 
  * DO NOT EDIT MANUALLY - This file is auto-generated
  * Run: npm run generate:api-types
@@ -131,6 +131,7 @@ export type Database = {
           pricing_plan_type:
             | APIEnums["pricing_plan_type"]
             | null
+          public_id: string
           radar_enabled: boolean
           slug: string | null
           status: APIEnums["organization_status"]
@@ -169,6 +170,7 @@ export type Database = {
           pricing_plan_type?:
             | APIEnums["pricing_plan_type"]
             | null
+          public_id?: string
           radar_enabled?: boolean
           slug?: string | null
           status?: APIEnums["organization_status"]
@@ -207,6 +209,7 @@ export type Database = {
           pricing_plan_type?:
             | APIEnums["pricing_plan_type"]
             | null
+          public_id?: string
           radar_enabled?: boolean
           slug?: string | null
           status?: APIEnums["organization_status"]
@@ -237,6 +240,7 @@ export type Database = {
           onboarding_status: APIEnums["onboarding_status"]
           phone_number: string | null
           preferred_language: string
+          public_id: string
           referral_code: string | null
           retry_payment_every: number | null
           subscription_notifications: Json | null
@@ -258,6 +262,7 @@ export type Database = {
           onboarding_status?: APIEnums["onboarding_status"]
           phone_number?: string | null
           preferred_language?: string
+          public_id?: string
           referral_code?: string | null
           retry_payment_every?: number | null
           subscription_notifications?: Json | null
@@ -279,6 +284,7 @@ export type Database = {
           onboarding_status?: APIEnums["onboarding_status"]
           phone_number?: string | null
           preferred_language?: string
+          public_id?: string
           referral_code?: string | null
           retry_payment_every?: number | null
           subscription_notifications?: Json | null
@@ -307,6 +313,7 @@ export type Database = {
           phone_number: string | null
           postal_code: string | null
           provider_customer_id: string | null
+          public_id: string
           spi_alias_mbno: string | null
           spi_alias_shid: string | null
           spi_primary_alias: string | null
@@ -331,6 +338,7 @@ export type Database = {
           phone_number?: string | null
           postal_code?: string | null
           provider_customer_id?: string | null
+          public_id?: string
           spi_alias_mbno?: string | null
           spi_alias_shid?: string | null
           spi_primary_alias?: string | null
@@ -355,6 +363,7 @@ export type Database = {
           phone_number?: string | null
           postal_code?: string | null
           provider_customer_id?: string | null
+          public_id?: string
           spi_alias_mbno?: string | null
           spi_alias_shid?: string | null
           spi_primary_alias?: string | null
@@ -399,6 +408,7 @@ export type Database = {
           organization_id: string
           payment_link: string | null
           payment_reference: string | null
+          public_id: string
           request_id: string
           spi_account_number: string | null
           spi_bulk_instruction_id: string | null
@@ -445,6 +455,7 @@ export type Database = {
           organization_id: string
           payment_link?: string | null
           payment_reference?: string | null
+          public_id?: string
           request_id?: string
           spi_account_number?: string | null
           spi_bulk_instruction_id?: string | null
@@ -491,6 +502,7 @@ export type Database = {
           organization_id?: string
           payment_link?: string | null
           payment_reference?: string | null
+          public_id?: string
           request_id?: string
           spi_account_number?: string | null
           spi_bulk_instruction_id?: string | null
@@ -568,6 +580,9 @@ export type Database = {
           fee_amount: number
           fee_structure_id: string | null
           gross_amount: number
+          held_at: string | null
+          held_by: string | null
+          hold_reason: string | null
           integration_source: APIEnums["integration_source"]
           is_bnpl: boolean
           is_pos: boolean
@@ -578,6 +593,7 @@ export type Database = {
           price_id: string | null
           product_id: string | null
           provider_code: APIEnums["provider_code"]
+          public_id: string
           quantity: number
           spi_account_number: string | null
           spi_bulk_instruction_id: string | null
@@ -619,6 +635,9 @@ export type Database = {
           fee_amount: number
           fee_structure_id?: string | null
           gross_amount: number
+          held_at?: string | null
+          held_by?: string | null
+          hold_reason?: string | null
           integration_source?: APIEnums["integration_source"]
           is_bnpl?: boolean
           is_pos?: boolean
@@ -629,6 +648,7 @@ export type Database = {
           price_id?: string | null
           product_id?: string | null
           provider_code: APIEnums["provider_code"]
+          public_id?: string
           quantity?: number
           spi_account_number?: string | null
           spi_bulk_instruction_id?: string | null
@@ -670,6 +690,9 @@ export type Database = {
           fee_amount?: number
           fee_structure_id?: string | null
           gross_amount?: number
+          held_at?: string | null
+          held_by?: string | null
+          hold_reason?: string | null
           integration_source?: APIEnums["integration_source"]
           is_bnpl?: boolean
           is_pos?: boolean
@@ -680,6 +703,7 @@ export type Database = {
           price_id?: string | null
           product_id?: string | null
           provider_code?: APIEnums["provider_code"]
+          public_id?: string
           quantity?: number
           spi_account_number?: string | null
           spi_bulk_instruction_id?: string | null
@@ -796,6 +820,7 @@ export type Database = {
           environment: string
           fee_amount: number
           metadata: Json | null
+          public_id: string
           reason: string | null
           refund_id: string
           refunded_amount: number
@@ -823,6 +848,7 @@ export type Database = {
           environment?: string
           fee_amount?: number
           metadata?: Json | null
+          public_id?: string
           reason?: string | null
           refund_id?: string
           refunded_amount: number
@@ -850,6 +876,7 @@ export type Database = {
           environment?: string
           fee_amount?: number
           metadata?: Json | null
+          public_id?: string
           reason?: string | null
           refund_id?: string
           refunded_amount?: number
@@ -907,6 +934,7 @@ export type Database = {
           organization_id: string
           product_id: string
           product_type: APIEnums["product_type"]
+          public_id: string
           sku: string | null
           track_inventory: boolean | null
           trial_enabled: boolean
@@ -942,6 +970,7 @@ export type Database = {
           organization_id: string
           product_id?: string
           product_type?: APIEnums["product_type"]
+          public_id?: string
           sku?: string | null
           track_inventory?: boolean | null
           trial_enabled?: boolean
@@ -977,6 +1006,7 @@ export type Database = {
           organization_id?: string
           product_id?: string
           product_type?: APIEnums["product_type"]
+          public_id?: string
           sku?: string | null
           track_inventory?: boolean | null
           trial_enabled?: boolean
@@ -1017,6 +1047,7 @@ export type Database = {
           price_id: string | null
           product_id: string
           provider_payment_method_id: string | null
+          public_id: string
           start_date: string
           status: APIEnums["subscription_status"]
           subscription_id: string
@@ -1034,6 +1065,7 @@ export type Database = {
           price_id?: string | null
           product_id: string
           provider_payment_method_id?: string | null
+          public_id?: string
           start_date: string
           status?: APIEnums["subscription_status"]
           subscription_id?: string
@@ -1051,6 +1083,7 @@ export type Database = {
           price_id?: string | null
           product_id?: string
           provider_payment_method_id?: string | null
+          public_id?: string
           start_date?: string
           status?: APIEnums["subscription_status"]
           subscription_id?: string
@@ -1114,6 +1147,7 @@ export type Database = {
           max_quantity_per_use: number | null
           max_uses: number | null
           organization_id: string
+          public_id: string
           scope_type: string
           updated_at: string
           usage_frequency_limit: APIEnums["usage_frequency"]
@@ -1139,6 +1173,7 @@ export type Database = {
           max_quantity_per_use?: number | null
           max_uses?: number | null
           organization_id: string
+          public_id?: string
           scope_type?: string
           updated_at?: string
           usage_frequency_limit?: APIEnums["usage_frequency"]
@@ -1164,6 +1199,7 @@ export type Database = {
           max_quantity_per_use?: number | null
           max_uses?: number | null
           organization_id?: string
+          public_id?: string
           scope_type?: string
           updated_at?: string
           usage_frequency_limit?: APIEnums["usage_frequency"]
@@ -1212,6 +1248,7 @@ export type Database = {
           payment_request_id: string | null
           price_id: string | null
           product_id: string | null
+          public_id: string
           qr_code_data: Json | null
           qr_code_type: APIEnums["qr_code_type"] | null
           quantity: number
@@ -1263,6 +1300,7 @@ export type Database = {
           payment_request_id?: string | null
           price_id?: string | null
           product_id?: string | null
+          public_id?: string
           qr_code_data?: Json | null
           qr_code_type?: APIEnums["qr_code_type"] | null
           quantity?: number
@@ -1314,6 +1352,7 @@ export type Database = {
           payment_request_id?: string | null
           price_id?: string | null
           product_id?: string | null
+          public_id?: string
           qr_code_data?: Json | null
           qr_code_type?: APIEnums["qr_code_type"] | null
           quantity?: number
@@ -1440,6 +1479,7 @@ export type Database = {
           organization_id: string
           price_id: string | null
           product_id: string | null
+          public_id: string
           quantity: number
           require_billing_address: boolean
           require_email: boolean
@@ -1468,6 +1508,7 @@ export type Database = {
           organization_id: string
           price_id?: string | null
           product_id?: string | null
+          public_id?: string
           quantity?: number
           require_billing_address?: boolean
           require_email?: boolean
@@ -1496,6 +1537,7 @@ export type Database = {
           organization_id?: string
           price_id?: string | null
           product_id?: string | null
+          public_id?: string
           quantity?: number
           require_billing_address?: boolean
           require_email?: boolean
@@ -1560,6 +1602,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string | null
           provider_code: APIEnums["provider_code"] | null
+          public_id: string
           status: APIEnums["payout_status"]
           updated_at: string
         }
@@ -1578,6 +1621,7 @@ export type Database = {
           payout_id?: string
           payout_method_id?: string | null
           provider_code?: APIEnums["provider_code"] | null
+          public_id?: string
           status?: APIEnums["payout_status"]
           updated_at?: string
         }
@@ -1596,6 +1640,7 @@ export type Database = {
           payout_id?: string
           payout_method_id?: string | null
           provider_code?: APIEnums["provider_code"] | null
+          public_id?: string
           status?: APIEnums["payout_status"]
           updated_at?: string
         }
@@ -1776,6 +1821,7 @@ export type Database = {
           last_triggered_at: string | null
           metadata: Json | null
           organization_id: string
+          public_id: string
           retry_count: number | null
           spi_event_types: string[] | null
           supports_spi: boolean
@@ -1797,6 +1843,7 @@ export type Database = {
           last_triggered_at?: string | null
           metadata?: Json | null
           organization_id: string
+          public_id?: string
           retry_count?: number | null
           spi_event_types?: string[] | null
           supports_spi?: boolean
@@ -1818,6 +1865,7 @@ export type Database = {
           last_triggered_at?: string | null
           metadata?: Json | null
           organization_id?: string
+          public_id?: string
           retry_count?: number | null
           spi_event_types?: string[] | null
           supports_spi?: boolean
@@ -2838,6 +2886,7 @@ export type Database = {
           postal_code: string
           primary_payment_method: string
           primary_provider: string
+          public_id: string
           refund_amount: number
           spend_currency: APIEnums["currency_code"]
           total_count: number
@@ -3250,6 +3299,7 @@ export type Database = {
           payment_url: string
           price_id: string
           product_id: string
+          public_id: string
           sent_at: string
           status: APIEnums["invoice_status"]
           subscription_id: string
@@ -3524,6 +3574,7 @@ export type Database = {
           prices: Json
           product_id: string
           product_type: APIEnums["product_type"]
+          public_id: string
           sku: string
           total_count: number
           track_inventory: boolean
@@ -4004,6 +4055,7 @@ export type Database = {
           provider_checkout_id: string
           provider_code: APIEnums["provider_code"]
           provider_transaction_id: string
+          public_id: string
           qr_code_id: string
           qr_code_name: string
           qr_code_product_id: string
@@ -4545,6 +4597,7 @@ export type Database = {
           last_triggered_at: string | null
           metadata: Json | null
           organization_id: string
+          public_id: string
           retry_count: number | null
           spi_event_types: string[] | null
           supports_spi: boolean
@@ -4591,6 +4644,7 @@ export type Database = {
           last_triggered_at: string | null
           metadata: Json | null
           organization_id: string
+          public_id: string
           retry_count: number | null
           spi_event_types: string[] | null
           supports_spi: boolean
@@ -4621,6 +4675,7 @@ export type Database = {
           last_triggered_at: string | null
           metadata: Json | null
           organization_id: string
+          public_id: string
           retry_count: number | null
           spi_event_types: string[] | null
           supports_spi: boolean
@@ -5019,6 +5074,17 @@ export type Database = {
         }
         Returns: number
       }
+      create_network_account_session: {
+        Args: {
+          p_client_secret_hash: string
+          p_components: Json
+          p_environment: string
+          p_operator_organization_id: string
+          p_public_account_id: string
+          p_ttl_minutes?: number | null
+        }
+        Returns: Json
+      }
       create_network_enrollment_session: {
         Args: {
           p_created_by: string
@@ -5034,6 +5100,23 @@ export type Database = {
           enrollment_token: string
         }[]
       }
+      create_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_amount: number
+          p_api_key?: string | null
+          p_currency_code: APIEnums["currency_code"]
+          p_description?: string | null
+          p_destination_account: string
+          p_environment?: string | null
+          p_idempotency_key?: string | null
+          p_metadata?: Json | null
+          p_operator_organization_id: string
+          p_source_transaction_id?: string | null
+          p_transfer_group?: string | null
+        }
+        Returns: Json
+      }
       enqueue_network_webhook_event: {
         Args: {
           p_event: APIEnums["webhook_event"]
@@ -5042,6 +5125,20 @@ export type Database = {
           p_payload: Json
         }
         Returns: string
+      }
+      fetch_network_balance_for_api: {
+        Args: {
+          p_currency_code?: string | null
+          p_environment?: string | null
+          p_network_membership_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          environment: string
+          last_updated: string
+          public_account_id: string
+        }[]
       }
       fetch_network_customer_transactions_for_api: {
         Args: {
@@ -5144,6 +5241,18 @@ export type Database = {
           terms_version: string
         }[]
       }
+      fetch_network_member_balance: {
+        Args: {
+          p_environment?: string | null
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          last_updated: string
+        }[]
+      }
       fetch_network_members: {
         Args: {
           p_limit?: number | null
@@ -5168,11 +5277,22 @@ export type Database = {
           metadata: Json
           network_account_id: string
           network_membership_id: string
+          operator_fee_rule_id: string
           public_account_id: string
           registry_identifier: string
           status: APIEnums["network_membership_status"]
           tax_identifier: string
           terms_version: string
+          verification_status: string
+          onboarding_completed: boolean
+          has_payout_method: boolean
+          live_grants: string[]
+          test_grants: string[]
+          terms_currency: string
+          balance_live: number
+          balance_test: number
+          health_status: string
+          actions_required: string[]
         }[]
       }
       fetch_network_operator_fee_entries: {
@@ -5231,15 +5351,27 @@ export type Database = {
         Returns: {
           active_member_count: number
           approved_at: string
+          branding: Json
+          charge_model: string
           connected_operator_count: number
           default_capabilities: string[]
           default_fee_rule_id: string
           default_terms_version: string
+          fees_collector: string
           is_member: boolean
+          live_rejected_reason: string
+          live_requested_at: string
+          losses_collector: string
+          member_dashboard: string
           network_account_id: string
+          onboarding_mode: string
+          operator_live_status: string
           operator_profile_id: string
           operator_status: string
+          platform_type: string
+          profile: Json
           public_account_id: string
+          responsibilities_acknowledged_at: string
           risk_tier: string
         }[]
       }
@@ -5372,6 +5504,29 @@ export type Database = {
           transaction_type: APIEnums["transaction_type"]
         }[]
       }
+      fetch_network_transfers: {
+        Args: {
+          p_environment?: string | null
+          p_limit?: number | null
+          p_member_organization_id?: string | null
+          p_offset?: number | null
+          p_organization_id: string
+        }
+        Returns: Json[]
+      }
+      fetch_network_transfers_for_api: {
+        Args: {
+          p_destination_account?: string | null
+          p_environment?: string | null
+          p_limit?: number | null
+          p_offset?: number | null
+          p_operator_organization_id: string
+          p_source_transaction_id?: string | null
+          p_transfer_group?: string | null
+          p_transfer_types?: string[] | null
+        }
+        Returns: Json[]
+      }
       get_network_customer_for_api: {
         Args: {
           p_customer_id: string
@@ -5464,12 +5619,58 @@ export type Database = {
           transaction_type: APIEnums["transaction_type"]
         }[]
       }
+      get_network_transfer_for_api: {
+        Args: { p_operator_organization_id: string; p_transfer_id: string }
+        Returns: Json
+      }
       get_network_webhook_enrichment: {
         Args: { p_member_organization_id: string; p_transaction_id: string }
         Returns: {
           customer_id: string
           member_organization_name: string
         }[]
+      }
+      move_network_funds: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_allow_negative?: boolean | null
+          p_amount: number
+          p_api_key?: string | null
+          p_currency_code: APIEnums["currency_code"]
+          p_description?: string | null
+          p_environment: string
+          p_from_organization_id: string
+          p_idempotency_key?: string | null
+          p_metadata?: Json | null
+          p_network_membership_id: string
+          p_network_transaction_context_id?: string | null
+          p_operator_fee_entry_id?: string | null
+          p_refund_id?: string | null
+          p_reversed_transfer_id?: string | null
+          p_source_transaction_id?: string | null
+          p_to_organization_id: string
+          p_transfer_group?: string | null
+          p_transfer_type: APIEnums["network_transfer_type"]
+        }
+        Returns: string
+      }
+      network_member_health: {
+        Args: { p_network_membership_id: string }
+        Returns: {
+          actions_required: string[]
+          health_status: string
+        }[]
+      }
+      record_network_login_link: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_api_key?: string | null
+          p_environment?: string | null
+          p_metadata?: Json | null
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: Json
       }
       record_network_operator_fee_entry: {
         Args: {
@@ -5509,12 +5710,37 @@ export type Database = {
           p_operator_fee_currency?: APIEnums["currency_code"] | null
           p_refund_id?: string | null
           p_transaction_id?: string | null
+          p_charge_type?: string | null
+          p_application_fee_amount?: number | null
+          p_transfer_amount?: number | null
+          p_transfer_group?: string | null
         }
         Returns: string
+      }
+      request_network_operator_live: {
+        Args: { p_note?: string; p_organization_id: string }
+        Returns: string
+      }
+      resolve_network_account_session: {
+        Args: { p_client_secret_hash: string }
+        Returns: Json
       }
       resolve_network_member_merchant_id: {
         Args: { p_network_membership_id: string }
         Returns: string
+      }
+      reverse_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_amount?: number | null
+          p_api_key?: string | null
+          p_description?: string | null
+          p_idempotency_key?: string | null
+          p_metadata?: Json | null
+          p_operator_organization_id: string
+          p_transfer_id: string
+        }
+        Returns: Json
       }
       set_network_capability_grant: {
         Args: {
@@ -5527,6 +5753,14 @@ export type Database = {
         }
         Returns: string
       }
+      set_network_membership_fee_rule: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_fee_rule_id?: string | null
+          p_network_membership_id: string
+        }
+        Returns: boolean
+      }
       set_network_membership_status: {
         Args: {
           p_actor_merchant_id?: string | null
@@ -5535,6 +5769,56 @@ export type Database = {
           p_status: APIEnums["network_membership_status"]
         }
         Returns: boolean
+      }
+      set_network_operator_default_fee_rule: {
+        Args: {
+          p_actor_merchant_id?: string | null
+          p_fee_rule_id?: string | null
+          p_operator_organization_id: string
+        }
+        Returns: boolean
+      }
+      settle_network_refund: {
+        Args: {
+          p_refund_application_fee?: boolean | null
+          p_refund_id: string
+          p_reverse_transfer?: boolean | null
+        }
+        Returns: Json
+      }
+      settle_network_transaction: {
+        Args: { p_transaction_id: string }
+        Returns: boolean
+      }
+      setup_network_operator_profile: {
+        Args: {
+          p_acknowledge_responsibilities?: boolean | null
+          p_branding?: Json | null
+          p_charge_model: string
+          p_default_capabilities?: string[] | null
+          p_fees_collector?: string | null
+          p_losses_collector?: string | null
+          p_member_dashboard?: string | null
+          p_onboarding_mode?: string | null
+          p_organization_id: string
+          p_platform_type: string
+          p_profile?: Json | null
+        }
+        Returns: string
+      }
+      update_network_operator_profile: {
+        Args: {
+          p_branding?: Json | null
+          p_charge_model?: string | null
+          p_fees_collector?: string | null
+          p_losses_collector?: string | null
+          p_member_dashboard?: string | null
+          p_onboarding_mode?: string | null
+          p_organization_id: string
+          p_platform_type?: string | null
+          p_profile?: Json | null
+        }
+        Returns: string
       }
       upsert_network_customer_metadata_for_api: {
         Args: {
@@ -5656,6 +5940,7 @@ export type Database = {
           name: string
           organization_id: string
           product_id: string | null
+          public_id: string
           updated_at: string
         }
         SetofOptions: {
@@ -5762,6 +6047,7 @@ export type Database = {
           name: string
           organization_id: string
           product_id: string | null
+          public_id: string
           updated_at: string
         }[]
         SetofOptions: {
@@ -6603,6 +6889,16 @@ export type Database = {
 ;
       network_fee_entry_status: "pending" | "posted" | "reversed" | "voided";
       network_fee_entry_type: "charge" | "refund_reversal" | "adjustment";
+      network_transfer_status: "pending" | "posted" | "reversed" | "failed";
+      network_transfer_type:
+        | "destination"
+        | "separate"
+        | "operator_fee"
+        | "processing_fee_cover"
+        | "fee_reversal"
+        | "transfer_reversal"
+        | "loss_cover"
+;
       network_fee_rule_status: "active" | "inactive" | "archived";
       network_membership_status:
         | "invited"
@@ -6653,7 +6949,12 @@ export type Database = {
         | "expired"
         | "refunded"
 ;
-      provisioning_key_kind: "platform" | "partner_subkey" | "self_service";
+      provisioning_key_kind:
+        | "platform"
+        | "partner_subkey"
+        | "self_service"
+        | "bootstrap"
+;
       qr_code_type: "static" | "dynamic";
       radar_decision: "allow" | "flag" | "block";
       radar_mode: "monitor" | "block";
@@ -6788,6 +7089,9 @@ export type Database = {
         | "NETWORK_PAYMENT_CREATED"
         | "NETWORK_OPERATOR_FEE_CREATED"
         | "NETWORK_OPERATOR_FEE_REVERSED"
+        | "NETWORK_TRANSFER_CREATED"
+        | "NETWORK_TRANSFER_REVERSED"
+        | "NETWORK_MEMBER_PAYOUT_PAID"
         | "USAGE_RECORDED"
         | "USAGE_INVOICE_CREATED"
         | "USAGE_INVOICE_PAID"
@@ -6834,6 +7138,8 @@ export type NetworkCapabilityStatus = APIEnums["network_capability_status"];
 export type NetworkEnrollmentStatus = APIEnums["network_enrollment_status"];
 export type NetworkFeeEntryStatus = APIEnums["network_fee_entry_status"];
 export type NetworkFeeEntryType = APIEnums["network_fee_entry_type"];
+export type NetworkTransferStatus = APIEnums["network_transfer_status"];
+export type NetworkTransferType = APIEnums["network_transfer_type"];
 export type NetworkFeeRuleStatus = APIEnums["network_fee_rule_status"];
 export type NetworkMembershipStatus = APIEnums["network_membership_status"];
 export type NetworkOperatorFeeType = APIEnums["network_operator_fee_type"];

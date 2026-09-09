@@ -327,6 +327,24 @@
         "list": "GET /risk-assessments",
         "get": "GET /risk-assessments/{id}"
       }
+    },
+    {
+      "name": "lomi_transfers",
+      "title": "Network transfers",
+      "actions": {
+        "list": "GET /transfers",
+        "get": "GET /transfers/{id}",
+        "create": "POST /transfers",
+        "reverse": "POST /transfers/{id}/reversals"
+      }
+    },
+    {
+      "name": "lomi_network",
+      "title": "Network member accounts",
+      "actions": {
+        "login_link": "POST /network/accounts/{account}/login_links",
+        "account_session": "POST /network/account-sessions"
+      }
     }
   ],
   "provisioningGroups": [

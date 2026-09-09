@@ -20,7 +20,11 @@ import {
   sdkPropToGoField,
   tsMethodToGo,
   expandSdkManifestMethods,
+  withoutHandwrittenServices,
 } from './public-sdk-operations.js';
+
+/** Hand-written lomi. Network files (transfers, balance, network) kept across regenerations. */
+const HANDWRITTEN_GO_FILES = new Set(['network.go', 'network_test.go']);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const sdksRoot = join(__dirname, '..');
@@ -48,13 +52,15 @@ execSync('node scripts/pre-generate.js', {
 mkdirSync(outputDir, { recursive: true });
 
 for (const f of readdirSync(outputDir)) {
-  if (f.endsWith('.go')) {
+  if (f.endsWith('.go') && !HANDWRITTEN_GO_FILES.has(f)) {
     unlinkSync(join(outputDir, f));
   }
 }
 
 const { spec, allowed } = readSpecAndAllowlist();
-const { byService } = getNormalizedOperations(spec, allowed);
+const byService = withoutHandwrittenServices(
+  getNormalizedOperations(spec, allowed).byService,
+);
 
 const cfg = `// AUTO-GENERATED — public merchant allowlist SDK
 package lomi
@@ -83,6 +89,15 @@ func WithSandbox() ClientOption {
 func WithHTTPClient(client *http.Client) ClientOption {
 	return func(c *Client) {
 		c.HTTPClient = client
+	}
+}
+
+// WithAccount (lomi. Network) sends Lomi-Account: acct_… on every request so
+// calls run on behalf of that Member Account (direct charges). Transfers,
+// login links and account sessions ignore it (Operator-level routes).
+func WithAccount(account string) ClientOption {
+	return func(c *Client) {
+		c.LomiAccount = account
 	}
 }
 `;
@@ -230,7 +245,13 @@ type Client struct {
 	APIKey     string
 	BaseURL    string
 	HTTPClient *http.Client
+	// LomiAccount (lomi. Network): default Lomi-Account header, see WithAccount / ForAccount.
+	LomiAccount string
 ${clientFields.join('\n')}
+	// lomi. Network (hand-written, see network.go)
+	Transfers *TransfersService
+	Balance   *BalanceService
+	Network   *NetworkService
 }
 
 func NewClient(apiKey string, opts ...ClientOption) *Client {
@@ -243,10 +264,17 @@ func NewClient(apiKey string, opts ...ClientOption) *Client {
 		opt(c)
 	}
 ${clientInits.join('\n')}
+	c.Transfers = &TransfersService{client: c}
+	c.Balance = &BalanceService{client: c}
+	c.Network = newNetworkService(c)
 	return c
 }
 
 func (c *Client) doRequest(method, path string, query url.Values, body interface{}) ([]byte, error) {
+	return c.doRequestWithOptions(method, path, query, body, requestOptions{})
+}
+
+func (c *Client) doRequestWithOptions(method, path string, query url.Values, body interface{}, ro requestOptions) ([]byte, error) {
 	baseURL, err := url.Parse(c.BaseURL)
 	if err != nil {
 		return nil, err
@@ -273,6 +301,16 @@ func (c *Client) doRequest(method, path string, query url.Values, body interface
 	}
 	req.Header.Set("X-API-KEY", c.APIKey)
 	req.Header.Set("Content-Type", "application/json")
+	account := c.LomiAccount
+	if ro.accountSet {
+		account = ro.account
+	}
+	if account != "" {
+		req.Header.Set("Lomi-Account", account)
+	}
+	if ro.idempotencyKey != "" {
+		req.Header.Set("Idempotency-Key", ro.idempotencyKey)
+	}
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -321,7 +359,7 @@ if (!existsSync(goModPath)) {
     goModPath,
     `module github.com/lomiafrica/lomi-go
 
-go 1.21
+go 1.24
 `,
   );
 }

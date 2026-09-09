@@ -25,6 +25,32 @@ export type { LomiApiErrorBody } from './errors.js';
 export { handleApiError } from './error-handler.js';
 
 export {
+  TransfersResource,
+  isMoneyConfirmationRequired,
+} from './resources/transfers.js';
+export type {
+  Transfer,
+  TransferList,
+  TransferType,
+  MoneyConfirmationRequired,
+  CreateTransferParams,
+  ReverseTransferParams,
+  ListTransfersParams,
+} from './resources/transfers.js';
+export {
+  NetworkResource,
+  NetworkAccountsResource,
+  NetworkAccountSessionsResource,
+} from './resources/network.js';
+export type {
+  LoginLink,
+  AccountSession,
+  AccountSessionComponent,
+  AccountSessionComponents,
+  CreateAccountSessionParams,
+} from './resources/network.js';
+
+export {
   loadLomi,
   lomi,
   createLomiElements,

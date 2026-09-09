@@ -6,6 +6,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { HANDWRITTEN_SDK_PROPERTIES } from './public-sdk-operations.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const sdksRoot = join(__dirname, '..');
@@ -25,11 +26,16 @@ function loadSdk(path) {
   return j.sdk;
 }
 
-/** @param {Record<string, string[]>} a */
+/**
+ * Hand-written Network modules (`transfers`, `balance`, `network`) are not part
+ * of the generated manifests, so they are ignored here regardless of language.
+ * @param {Record<string, string[]>} a
+ */
 function sortManifest(a) {
   /** @type {Record<string, string[]>} */
   const out = {};
   for (const k of Object.keys(a).sort()) {
+    if (HANDWRITTEN_SDK_PROPERTIES.has(k)) continue;
     out[k] = [...a[k]].sort();
   }
   return out;

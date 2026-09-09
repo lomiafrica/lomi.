@@ -1,0 +1,93 @@
+---
+title: "Create login link"
+description: "Create login link"
+full: true
+method: post
+path: /network/accounts/{account}/login_links
+operationId: NetworkAccountsController_createLoginLink
+---
+
+## Overview
+
+Create login link
+
+Mints a single-use URL that signs the owner of a Member Account (`acct_...`) into their lomi. dashboard in member mode. The link expires after 5 minutes.
+
+
+### When to use this
+
+Use when a member clicks "Open lomi. dashboard" inside your product and you want to drop them on their balance, payouts, or open requirements without a separate login.
+
+### Good to know
+
+Operator secret key **without** `Lomi-Account`. Requires the `account.login_link` capability for the key environment and an active membership. Create the link server-side at click time and redirect; never email, log, or embed it in public pages.
+
+### See also
+
+[Create account session](/api/network/NetworkAccountsController_createAccountSession) · [lomi. Network guide](/build/platform/network#member-dashboard-and-login-links)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /network/accounts/{account}/login_links`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `account` | Yes | - | Member Account id (acct_...) |
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Request body
+
+_No application/json body for this operation._
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Login link created (object: login_link): &#123; account, url, created_at, expires_at &#125; |
+| `400` | Capability missing, membership inactive, or Lomi-Account header sent |
+| `404` | Member Account not found |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/accounts/value/login_links" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `NetworkAccountsController_createLoginLink`
+- **Operation**: `POST /network/accounts/{account}/login_links`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

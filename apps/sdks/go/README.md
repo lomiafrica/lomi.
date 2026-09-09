@@ -23,13 +23,53 @@ go get golang.org/x/net/context
 Put the package under your project folder and add the following in import:
 
 ```go
-import lomisdk "github.com/lomiafrica/lomi./apps/sdks/go"
+import lomisdk "github.com/lomiafrica/lomi-go"
 ```
 
 To use a proxy, set the environment variable `HTTP_PROXY`:
 
 ```go
 os.Setenv("HTTP_PROXY", "http://proxy_name:proxy_port")
+```
+
+## lomi. Network (operators)
+
+Charge on behalf of Member Accounts (`acct_…`) and move funds with transfers. Hand-written services live in `network.go`.
+
+```go
+client := lomi.NewClient("lomi_sk_test_…")
+
+// Direct charges: Lomi-Account on every request
+asMember := lomi.NewClient("lomi_sk_test_…", lomi.WithAccount("acct_123"))
+asMember.CheckoutSessions.Create(body) // body includes "application_fee_amount": 500
+client.ForAccount("acct_123").CheckoutSessions.Create(body) // scoped copy
+
+// Destination charge: operator charge, funds minus fee go to the member
+client.CheckoutSessions.Create(map[string]interface{}{
+	/* ... */ "application_fee_amount": 500,
+	"transfer_data": map[string]interface{}{"destination": "acct_123"},
+})
+
+// Transfers are two-step: preview, then confirm with the token (same Idempotency-Key)
+res, err := client.Transfers.Create(lomi.CreateTransferParams{
+	Amount: 5000, CurrencyCode: "XOF", Destination: "acct_123", TransferGroup: "order_42",
+}, lomi.WithIdempotencyKey("order_42_payout"))
+if res.RequiresConfirmation() {
+	// re-send with ConfirmationToken: res.Confirmation.ConfirmationToken, or use CreateConfirmed
+}
+tr, err := client.Transfers.CreateConfirmed(lomi.CreateTransferParams{
+	Amount: 5000, CurrencyCode: "XOF", Destination: "acct_123",
+})
+page, err := client.Transfers.List(&lomi.ListTransfersParams{TransferGroup: "order_42"})
+tr, err = client.Transfers.Get(tr.ID)
+tr, err = client.Transfers.ReverseConfirmed(tr.ID, lomi.ReverseTransferParams{Amount: 1000})
+
+// Member helpers (operator key, no Lomi-Account) and member balance
+link, err := client.Network.Accounts.CreateLoginLink("acct_123")
+sess, err := client.Network.AccountSessions.Create("acct_123", &lomi.AccountSessionComponents{
+	Onboarding: &lomi.AccountSessionComponent{Enabled: true},
+})
+rows, err := client.Balance.Get("acct_123")
 ```
 
 ## Configuration of Server URL

@@ -1,0 +1,87 @@
+---
+title: "Lister les transferts"
+description: "Lister les transferts"
+full: true
+method: get
+path: /transfers
+operationId: TransfersController_findAll
+---
+
+## Aperçu
+
+Lister les transferts
+
+Transfers created by your Network in the request environment, newest first. Includes destination transfers settled at payment completion, POST /transfers payouts, operator fees, and reversals.
+
+
+### Quand l’utiliser
+
+Utilisez pour la réconciliation par `transfer_group` ou `destination`, ou pour construire un relevé par membre. Filtrez par `transfer_type` pour isoler les frais ou les annulations.
+
+### Voir aussi
+
+[Récupérer un transfert](/api/transfers/TransfersController_findOne) · [Créer un transfert](/api/transfers/TransfersController_create)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /transfers`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `limit` | query | Non | - |  |
+| `cursor` | query | Non | - |  |
+| `transfer_type` | query | Non | - | Comma-separated: destination, separate, operator_fee, processing_fee_cover, fee_reversal, transfer_reversal, loss_cover |
+| `source_transaction_id` | query | Non | - |  |
+| `transfer_group` | query | Non | - |  |
+| `destination` | query | Non | - |  |
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Liste paginée des transferts |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/transfers?limit=1&cursor=value" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_findAll`
+- **Operation**: `GET /transfers`
+
+Schémas complets et **Try it** : [référence API](/api).

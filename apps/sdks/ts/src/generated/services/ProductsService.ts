@@ -24,6 +24,19 @@ export class ProductsService {
     }
 
     /**
+     * Archive product
+     * @see OpenAPI `ProductsController_archive`
+     */
+    public async archive(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'DELETE',
+            url: '/products/{id}',
+            path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
      * Create product
      * @see OpenAPI `ProductsController_create`
      */
@@ -106,6 +119,19 @@ export class ProductsService {
             method: 'POST',
             url: '/products/{id}/prices/{priceId}/default',
             path: { id: id, priceId: priceId },
+            ...options,
+        });
+    }
+
+    /**
+     * Update product
+     * @see OpenAPI `ProductsController_update`
+     */
+    public async update(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ProductResponseDto']> {
+        return requestWithClient<components['schemas']['ProductResponseDto']>(this.client, {
+            method: 'PATCH',
+            url: '/products/{id}',
+            path: { id: id },
             ...options,
         });
     }

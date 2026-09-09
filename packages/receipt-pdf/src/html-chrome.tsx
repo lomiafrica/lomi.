@@ -89,7 +89,7 @@ export function HtmlSectionLabel({ children }: { children: ReactNode }) {
 
 export function HtmlPayOnlineRow({ url }: { url: string }) {
   return (
-    <div className="flex justify-between items-center mt-3 pt-2 border-t border-[#E2E8F0]">
+    <div className="mt-3 flex items-center justify-between border-t border-[color:var(--checkout-hairline,#e7e5e4)] pt-2">
       <span className="text-[11px] text-[#878787]">{PDF_PAY_ONLINE_LABEL}</span>
       <a
         href={url}
@@ -121,9 +121,41 @@ export function HtmlContactLine({
   );
 }
 
+/** Org mark + name inside the card, matching email withdrawal / receipt chrome. */
+export function HtmlOrgIdentity({
+  name,
+  logoUrl,
+}: {
+  name?: string | null;
+  logoUrl?: string | null;
+}) {
+  const resolved = logoUrl?.trim();
+  const label = name?.trim();
+  if (!resolved && !label) return null;
+  return (
+    <div className="mb-5 flex items-center gap-3">
+      {resolved ? (
+        <img
+          src={resolved}
+          alt=""
+          width={40}
+          height={40}
+          className="h-10 w-10 shrink-0 rounded-lg object-contain"
+        />
+      ) : null}
+      {label ? (
+        <p className="m-0 text-[18px] font-semibold leading-6 text-stone-800 dark:text-stone-100">
+          {label}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 /** Email transaction-card chrome for web receipt / invoice. */
 export function HtmlRecordCard({
   heading,
+  identity,
   amount,
   amountHint,
   dateLine,
@@ -133,6 +165,7 @@ export function HtmlRecordCard({
   children,
 }: {
   heading: ReactNode;
+  identity?: ReactNode;
   amount: string;
   amountHint?: string;
   dateLine?: string;
@@ -144,9 +177,10 @@ export function HtmlRecordCard({
   return (
     <div
       data-record-card=""
-      className="overflow-hidden rounded-sm border border-stone-200 bg-white px-8 py-8 text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-20px_rgba(28,25,23,0.2)] dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200"
+      className="overflow-hidden rounded-sm border border-[color:var(--checkout-hairline,#e7e5e4)] bg-white px-8 py-8 text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-20px_rgba(28,25,23,0.2)] dark:bg-[#252522] dark:text-stone-200"
     >
       <div>
+        {identity}
         <h2 className="m-0 mb-2 text-[13px] font-medium text-stone-500 dark:text-stone-400">
           {heading}
         </h2>
@@ -171,16 +205,25 @@ export function HtmlRecordCard({
         ) : null}
       </div>
       {actions ? (
-        <div className="mb-2 mt-5 flex flex-wrap gap-3 border-b border-stone-200 pb-6 dark:border-white/[0.12]">
+        <div className="mb-2 mt-5 flex flex-wrap gap-2 border-b border-[color:var(--checkout-hairline,#e7e5e4)] pb-6">
           {actions}
         </div>
       ) : (
-        <div className="mb-2 mt-6 border-b border-stone-200 dark:border-white/[0.12]" />
+        <div className="mb-2 mt-6 border-b border-[color:var(--checkout-hairline,#e7e5e4)]" />
       )}
       {banner ? <div className="mb-4 mt-3">{banner}</div> : null}
       {children}
       {contact}
     </div>
+  );
+}
+
+/** Same chip as email `.value-badge` (phone / card / account). */
+export function HtmlValueBadge({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block max-w-full break-all rounded-[4px] bg-stone-100 px-1.5 py-0.5 font-mono text-[13px] font-medium text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+      {children}
+    </span>
   );
 }
 
@@ -195,7 +238,7 @@ export function HtmlRecordRow({
 }) {
   if (value == null || value === "") return null;
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-stone-200 py-3.5 last:border-b-0 dark:border-white/[0.12]">
+    <div className="flex items-start justify-between gap-4 border-b border-[color:var(--checkout-hairline,#e7e5e4)] py-3.5 last:border-b-0">
       <span className="w-36 shrink-0 text-[13px] font-medium text-stone-500 dark:text-stone-400">
         {label}
         {detail ? (
@@ -248,7 +291,7 @@ export function HtmlRecordLine({
 
 export function HtmlLegalFooter() {
   return (
-    <div className="mt-8 pt-2 border-t border-[#E2E8F0]">
+    <div className="mt-8 border-t border-[color:var(--checkout-hairline,#e7e5e4)] pt-2">
       <p className="max-w-[46rem] text-[10px] leading-[1.45] text-[#878787]">
         {PDF_LEGAL_LINE_1} {PDF_REGISTERED_OFFICE}.{"  "}
         <a

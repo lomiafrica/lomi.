@@ -27,3 +27,12 @@ func WithHTTPClient(client *http.Client) ClientOption {
 		c.HTTPClient = client
 	}
 }
+
+// WithAccount (lomi. Network) sends Lomi-Account: acct_… on every request so
+// calls run on behalf of that Member Account (direct charges). Transfers,
+// login links and account sessions ignore it (Operator-level routes).
+func WithAccount(account string) ClientOption {
+	return func(c *Client) {
+		c.LomiAccount = account
+	}
+}

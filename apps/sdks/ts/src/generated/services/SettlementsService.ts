@@ -14,7 +14,7 @@ export class SettlementsService {
      * Request an instant settlement (Nitro)
      * @see OpenAPI `SettlementsController_createInstant`
      */
-    public async createInstant(body: NonNullable<paths['/settlements/instant']['post']['requestBody']>['content']['application/json'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+    public async createInstant(body: components['schemas']['CreateInstantSettlementDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/settlements/instant',

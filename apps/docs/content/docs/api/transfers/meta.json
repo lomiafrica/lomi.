@@ -1,0 +1,9 @@
+{
+  "title": "Transfers",
+  "pages": [
+    "TransfersController_create",
+    "TransfersController_findAll",
+    "TransfersController_findOne",
+    "TransfersController_reverse"
+  ]
+}

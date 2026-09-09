@@ -167,7 +167,43 @@ export const METHOD_NAME_BY_OP = {
   'POST /payout-methods': 'create',
   'POST /disputes/{id}/evidence': 'submitEvidence',
   'GET /transactions/{id}/receipt.pdf': 'receiptPdf',
+  'POST /transfers': 'create',
+  'GET /transfers': 'list',
+  'GET /transfers/{id}': 'get',
+  'POST /transfers/{id}/reversals': 'reverse',
+  'POST /network/accounts/{account}/login_links': 'createLoginLink',
+  'POST /network/account-sessions': 'createAccountSession',
 };
+
+/**
+ * SDK properties implemented by hand in every language (lomi. Network surface:
+ * `transfers`, `balance`, `network`). Hand-written modules live outside the
+ * generated folders (`ts/src/resources/`, `python/lomi/network.py`,
+ * `go/network.go`). Generators skip services that would collide with these
+ * names so the allowlist can grow without producing a second copy.
+ */
+export const HANDWRITTEN_SDK_PROPERTIES = new Set([
+  'transfers',
+  'balance',
+  'network',
+]);
+
+/** Drop allowlisted services that are shadowed by hand-written SDK modules. */
+export function withoutHandwrittenServices(byService) {
+  /** @type {Map<string, any[]>} */
+  const filtered = new Map();
+  for (const [serviceClassName, ops] of byService) {
+    const prop = sdkPropertyName(serviceClassName);
+    if (HANDWRITTEN_SDK_PROPERTIES.has(prop)) {
+      console.log(
+        `   (skipping generated ${serviceClassName}: hand-written "${prop}" module owns this surface)`,
+      );
+      continue;
+    }
+    filtered.set(serviceClassName, ops);
+  }
+  return filtered;
+}
 
 export const HTTP_WITH_BODY = new Set(['post', 'patch', 'put']);
 

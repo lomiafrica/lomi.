@@ -11,6 +11,19 @@ export class PaymentLinksService {
     constructor(private readonly client: LomiClient) {}
 
     /**
+     * Archive payment link
+     * @see OpenAPI `PaymentLinksController_archive`
+     */
+    public async archive(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'DELETE',
+            url: '/payment-links/{id}',
+            path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
      * Create payment link
      * @see OpenAPI `PaymentLinksController_create`
      */
@@ -83,5 +96,19 @@ export class PaymentLinksService {
 
             page += 1;
         }
+    }
+
+    /**
+     * Update payment link
+     * @see OpenAPI `PaymentLinksController_update`
+     */
+    public async update(id: string, body: components['schemas']['UpdatePaymentLinkDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['PaymentLinkResponseDto']> {
+        return requestWithClient<components['schemas']['PaymentLinkResponseDto']>(this.client, {
+            method: 'PATCH',
+            url: '/payment-links/{id}',
+            path: { id: id },
+            body,
+            ...options,
+        });
     }
 }

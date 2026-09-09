@@ -219,4 +219,48 @@ export const FR_OPERATION_COPY = {
     related:
       '[Créer un webhook](/api/webhooks/WebhooksController_create) · [Webhooks](/build/reliability)',
   },
+  TransfersController_create: {
+    whenToUse:
+      'Utilisez pour les paiements séparés de lomi. Network : encaissez d’abord sur votre propre compte, puis payez le membre plus tard (après livraison, en fin de journée ou par lot).',
+    caveats:
+      'Clé secrète Opérateur **sans** `Lomi-Account`. `Idempotency-Key` obligatoire. Le premier appel renvoie `requires_confirmation: true` et un `confirmation_token` ; renvoyez la même requête avec ce jeton pour exécuter. La destination doit être une adhésion active avec `transfer.receive` pour l’environnement de la clé. Les soldes bougent en XOF.',
+    related:
+      '[Lister les transferts](/api/transfers/TransfersController_findAll) · [Annuler un transfert](/api/transfers/TransfersController_reverse) · [Guide lomi. Network](/build/platform/network#transferts)',
+  },
+  TransfersController_findAll: {
+    whenToUse:
+      'Utilisez pour la réconciliation par `transfer_group` ou `destination`, ou pour construire un relevé par membre. Filtrez par `transfer_type` pour isoler les frais ou les annulations.',
+    related:
+      '[Récupérer un transfert](/api/transfers/TransfersController_findOne) · [Créer un transfert](/api/transfers/TransfersController_create)',
+  },
+  TransfersController_findOne: {
+    whenToUse:
+      'Utilisez après création ou depuis un webhook `NETWORK_TRANSFER_CREATED` pour confirmer que le transfert a bien crédité le solde du membre.',
+    related:
+      '[Lister les transferts](/api/transfers/TransfersController_findAll) · [Annuler un transfert](/api/transfers/TransfersController_reverse)',
+  },
+  TransfersController_reverse: {
+    whenToUse:
+      'Utilisez quand un transfert séparé était trop élevé ou qu’une commande a été annulée après avoir payé le membre. Les remboursements sur paiements destination ou séparés annulent les transferts automatiquement (`reverse_transfer`).',
+    caveats:
+      'Le membre doit avoir assez de solde disponible pour couvrir l’annulation. `Idempotency-Key` obligatoire. Même confirmation en deux étapes (`confirmation_token`) que la création. Émet `NETWORK_TRANSFER_REVERSED`.',
+    related:
+      '[Créer un transfert](/api/transfers/TransfersController_create) · [Créer un remboursement](/api/refunds/RefundsController_create) · [Guide lomi. Network](/build/platform/network#remboursements-et-responsabilité)',
+  },
+  NetworkAccountsController_createLoginLink: {
+    whenToUse:
+      'Utilisez quand un membre clique sur « Ouvrir le tableau de bord lomi. » dans votre produit et que vous voulez l’amener directement sur son solde, ses versements ou ses exigences en attente, sans connexion séparée.',
+    caveats:
+      'Clé secrète Opérateur **sans** `Lomi-Account`. Nécessite la capacité `account.login_link` pour l’environnement de la clé et une adhésion active. Le lien est à usage unique et expire après 5 minutes : créez-le côté serveur au moment du clic puis redirigez ; ne l’envoyez jamais par e-mail, ne le journalisez pas et ne l’intégrez pas dans une page publique.',
+    related:
+      '[Créer une session de compte](/api/network/NetworkAccountsController_createAccountSession) · [Guide lomi. Network](/build/platform/network#tableau-de-bord-membre-et-liens-de-connexion)',
+  },
+  NetworkAccountsController_createAccountSession: {
+    whenToUse:
+      'Utilisez pour afficher les surfaces membre dans vos propres pages plutôt que d’envoyer les membres sur le tableau de bord lomi. Créez une nouvelle session à chaque chargement de page.',
+    caveats:
+      'Clé secrète Opérateur **sans** `Lomi-Account`. Nécessite `account.read` pour l’environnement de la clé et `member_dashboard` réglé sur `full` ou `member_mode` sur votre profil opérateur. `components` est un objet indexé par composant (`payments`, `payouts`, `balance`, `onboarding`, `notification_banner`) avec un indicateur `enabled` ; les composants omis sont activés. Le `client_secret` (`nas_...`) expire après 60 minutes ; n’exposez jamais votre clé Opérateur au navigateur.',
+    related:
+      '[Créer un lien de connexion](/api/network/NetworkAccountsController_createLoginLink) · [Guide lomi. Network](/build/platform/network#composants-intégrés)',
+  },
 };

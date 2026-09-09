@@ -17,13 +17,18 @@ import {
 } from "@lomi./shared";
 import { extractMerchantSecretKey } from "./extract-secret-key.js";
 
-const MONEY_TOOLS = new Set(["lomi_payouts", "lomi_refunds", "lomi_settlements"]);
+const MONEY_TOOLS = new Set([
+  "lomi_payouts",
+  "lomi_refunds",
+  "lomi_settlements",
+  "lomi_transfers",
+]);
 
 export type ToolRegistrationContext = {
   baseUrl: string;
   getApiKey: () => string | null;
   readOnlyOnly?: boolean;
-  /** Omit payouts, refunds, and instant settlement (merchant.write without merchant.money). */
+  /** Omit payouts, refunds, instant settlement, and Network transfers (merchant.write without merchant.money). */
   excludeMoney?: boolean;
   /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
   skipSearchTool?: boolean;

@@ -1,0 +1,107 @@
+---
+title: "Créer une session de compte pour les composants intégrés"
+description: "Créer une session de compte pour les composants intégrés"
+full: true
+method: post
+path: /network/account-sessions
+operationId: NetworkAccountsController_createAccountSession
+---
+
+## Aperçu
+
+Créer une session de compte pour les composants intégrés
+
+lomi. Network : génère un secret client de courte durée (nas_...) que votre front-end transmet aux composants membre intégrés (solde, paiements, versements, onboarding). Utilise votre clé API Opérateur sans en-tête Lomi-Account. Les sessions expirent après 60 minutes. Nécessite member_dashboard réglé sur full ou member_mode sur votre profil opérateur.
+
+
+### Quand l’utiliser
+
+Utilisez pour afficher les surfaces membre dans vos propres pages plutôt que d’envoyer les membres sur le tableau de bord lomi. Créez une nouvelle session à chaque chargement de page.
+
+### À savoir
+
+Clé secrète Opérateur **sans** `Lomi-Account`. Nécessite `account.read` pour l’environnement de la clé et `member_dashboard` réglé sur `full` ou `member_mode` sur votre profil opérateur. `components` est un objet indexé par composant (`payments`, `payouts`, `balance`, `onboarding`, `notification_banner`) avec un indicateur `enabled` ; les composants omis sont activés. Le `client_secret` (`nas_...`) expire après 60 minutes ; n’exposez jamais votre clé Opérateur au navigateur.
+
+### Voir aussi
+
+[Créer un lien de connexion](/api/network/NetworkAccountsController_createLoginLink) · [Guide lomi. Network](/build/platform/network#composants-intégrés)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /network/account-sessions`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+Corps JSON.
+
+Schéma: `CreateAccountSessionDto`
+
+| Champ | Obligatoire | Type | Description |
+| --- | --- | --- | --- |
+| `account` | Oui | `string` | Member Account the embedded components are rendered for. Must be an active membership of your Network. |
+| `components` | Non | `object` | Components the session may render. Omitted components default to enabled. |
+
+Exemple de corps :
+
+```json
+{
+  "account": "acct_1a2b3c4d5e6f7g8h"
+}
+```
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Account session created (object: account_session): &#123; account, client_secret, expires_at, components, embed_base_url &#125; |
+| `400` | Membership inactive, member dashboard disabled, or Lomi-Account header sent |
+| `404` | Member Account not found |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/account-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"account":"acct_1a2b3c4d5e6f7g8h"}'
+```
+
+## OpenAPI
+
+- **operationId**: `NetworkAccountsController_createAccountSession`
+- **Operation**: `POST /network/account-sessions`
+
+Schémas complets et **Try it** : [référence API](/api).

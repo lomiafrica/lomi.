@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-08-25T23:42:27.453Z",
+  "generatedAt": "2026-09-09T13:35:53.564Z",
   "language": "go",
   "sdk": {
+    "account": [
+      "deleteAccount",
+      "export"
+    ],
     "accounts": [
       "checkBalance",
       "getBalance",
       "getBalanceBreakdown"
+    ],
+    "apiKeys": [
+      "create",
+      "list",
+      "listAll",
+      "revoke"
     ],
     "charges": [
       "cancelCardCharge",
@@ -23,6 +33,7 @@
     ],
     "coupons": [
       "create",
+      "delete",
       "get",
       "getPerformance",
       "list",
@@ -43,7 +54,33 @@
     "disputes": [
       "get",
       "list",
+      "listAll",
+      "submitEvidence"
+    ],
+    "exports": [
+      "create",
+      "get",
+      "list",
       "listAll"
+    ],
+    "finance": [
+      "getAging",
+      "getCashflow",
+      "getReconcile",
+      "getSummary"
+    ],
+    "invoices": [
+      "create",
+      "createCheckoutSession",
+      "finalize",
+      "get",
+      "list",
+      "listAll",
+      "pdf",
+      "remind",
+      "send",
+      "update",
+      "voidInvoice"
     ],
     "logs": [
       "get",
@@ -65,6 +102,8 @@
       "update"
     ],
     "organizations": [
+      "create",
+      "createKey",
       "get",
       "getMetrics",
       "getRadarSettings",
@@ -73,14 +112,21 @@
       "updateRadarSettings"
     ],
     "paymentLinks": [
+      "archive",
+      "create",
+      "get",
+      "list",
+      "listAll",
+      "update"
+    ],
+    "paymentRequests": [
       "create",
       "get",
       "list",
       "listAll"
     ],
-    "paymentRequests": [
+    "payoutMethods": [
       "create",
-      "get",
       "list",
       "listAll"
     ],
@@ -92,11 +138,13 @@
     ],
     "products": [
       "addPrice",
+      "archive",
       "create",
       "get",
       "list",
       "listAll",
-      "setDefaultPrice"
+      "setDefaultPrice",
+      "update"
     ],
     "providers": [
       "list",
@@ -111,6 +159,12 @@
     "riskAssessments": [
       "findOne",
       "listAssessments"
+    ],
+    "settings": [
+      "getCheckout",
+      "getStorefront",
+      "updateCheckout",
+      "updateStorefront"
     ],
     "settlements": [
       "createInstant",
@@ -129,10 +183,27 @@
       "resume",
       "update"
     ],
-    "transactions": [
+    "supportRequests": [
+      "close",
+      "create",
       "get",
       "list",
       "listAll"
+    ],
+    "team": [
+      "invite",
+      "list",
+      "listAll",
+      "listRoles",
+      "remove",
+      "revokeInvite",
+      "updateRole"
+    ],
+    "transactions": [
+      "get",
+      "list",
+      "listAll",
+      "receiptPdf"
     ],
     "usage": [
       "checkEntitlement",

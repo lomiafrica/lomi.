@@ -1005,4 +1005,64 @@ export const EN_OPERATION_COPY = {
     whenToUse:
       'Use after a successful payment when the customer needs a receipt.',
   },
+  TransfersController_create: {
+    summary: 'Create transfer',
+    body: 'Moves funds from your Operator balance to a connected Member Account (`acct_...`). Two-step confirmation: the first call returns `requires_confirmation: true` and a `confirmation_token`; repeat the same request with `confirmation_token` to execute. Balances move in XOF.',
+    requestBodyIntro:
+      'Transfer payload: `amount`, `currency_code`, and `destination` are required. Add `transfer_group` to link the transfer to the payments it settles, or `source_transaction_id` for one payment.',
+    whenToUse:
+      'Use for lomi. Network separate charges and transfers: charge on your own account first, then pay the member later (after delivery, at the end of the day, or in a batch).',
+    caveats:
+      'Operator secret key **without** `Lomi-Account`. `Idempotency-Key` is required. The destination must be an active membership with `transfer.receive` for the key environment. A transfer cannot exceed your available balance.',
+    related:
+      '[List transfers](/api/transfers/TransfersController_findAll) · [Reverse transfer](/api/transfers/TransfersController_reverse) · [lomi. Network guide](/build/platform/network#transfers)',
+  },
+  TransfersController_findAll: {
+    summary: 'List transfers',
+    body: 'Returns transfers created by your Operator organization, including destination transfers, separate transfers, settled operator fees, and reversals.',
+    whenToUse:
+      'Use for reconciliation by `transfer_group` or `destination`, or to build a per-member statement. Filter by `transfer_type` to isolate fees or reversals.',
+    related:
+      '[Retrieve transfer](/api/transfers/TransfersController_findOne) · [Create transfer](/api/transfers/TransfersController_create)',
+  },
+  TransfersController_findOne: {
+    summary: 'Retrieve transfer',
+    body: 'Returns a single transfer (`tr_...`) with its status, settled amount, source transaction, and reversed amount.',
+    whenToUse:
+      'Use after create or from a `NETWORK_TRANSFER_CREATED` webhook to confirm the transfer landed on the member balance.',
+    related:
+      '[List transfers](/api/transfers/TransfersController_findAll) · [Reverse transfer](/api/transfers/TransfersController_reverse)',
+  },
+  TransfersController_reverse: {
+    summary: 'Reverse transfer',
+    body: 'Pulls funds back from the Member Account to your Operator balance. Defaults to the remaining unreversed amount; pass `amount` for a partial reversal. Same two-step `confirmation_token` flow as create.',
+    whenToUse:
+      'Use when a separate transfer was too large or an order was cancelled after you paid the member. Refunds on destination and separate charges reverse transfers automatically (`reverse_transfer`).',
+    caveats:
+      'The member must have enough available balance to cover the reversal. `Idempotency-Key` is required. Emits `NETWORK_TRANSFER_REVERSED`.',
+    related:
+      '[Create transfer](/api/transfers/TransfersController_create) · [Create refund](/api/refunds/RefundsController_create) · [lomi. Network guide](/build/platform/network#refunds-and-liability)',
+  },
+  NetworkAccountsController_createLoginLink: {
+    summary: 'Create login link',
+    body: 'Mints a single-use URL that signs the owner of a Member Account (`acct_...`) into their lomi. dashboard in member mode. The link expires after 5 minutes.',
+    whenToUse:
+      'Use when a member clicks "Open lomi. dashboard" inside your product and you want to drop them on their balance, payouts, or open requirements without a separate login.',
+    caveats:
+      'Operator secret key **without** `Lomi-Account`. Requires the `account.login_link` capability for the key environment and an active membership. Create the link server-side at click time and redirect; never email, log, or embed it in public pages.',
+    related:
+      '[Create account session](/api/network/NetworkAccountsController_createAccountSession) · [lomi. Network guide](/build/platform/network#member-dashboard-and-login-links)',
+  },
+  NetworkAccountsController_createAccountSession: {
+    summary: 'Create account session',
+    body: 'Mints a short-lived `client_secret` (`nas_...`) that your front end passes to the embedded member components: `payments`, `payouts`, `balance`, `onboarding`, and `notification_banner`. Sessions expire after 60 minutes and are scoped to one Member Account.',
+    requestBodyIntro:
+      'Session payload: `account` is required. `components` is an object keyed by component with an `enabled` flag; omitted components default to enabled.',
+    whenToUse:
+      'Use to render member surfaces inside your own pages instead of sending members to the lomi. dashboard. Create a new session on each page load.',
+    caveats:
+      'Operator secret key **without** `Lomi-Account`. Requires `account.read` for the key environment and `member_dashboard` set to `full` or `member_mode` on your operator profile. Never expose your Operator key to the browser; only the `client_secret` goes client-side.',
+    related:
+      '[Create login link](/api/network/NetworkAccountsController_createLoginLink) · [lomi. Network guide](/build/platform/network#embedded-components)',
+  },
 };

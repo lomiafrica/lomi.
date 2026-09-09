@@ -1,0 +1,110 @@
+---
+title: "Annuler un transfert"
+description: "Annuler un transfert"
+full: true
+method: post
+path: /transfers/{id}/reversals
+operationId: TransfersController_reverse
+---
+
+## Aperçu
+
+Annuler un transfert
+
+Rapatrie des fonds du compte membre vers votre solde Opérateur, en totalité ou en partie. Les remboursements sur paiements destination annulent les transferts automatiquement ; utilisez cette route pour les corrections manuelles.
+
+
+### Quand l’utiliser
+
+Utilisez quand un transfert séparé était trop élevé ou qu’une commande a été annulée après avoir payé le membre. Les remboursements sur paiements destination ou séparés annulent les transferts automatiquement (`reverse_transfer`).
+
+### À savoir
+
+Le membre doit avoir assez de solde disponible pour couvrir l’annulation. `Idempotency-Key` obligatoire. Même confirmation en deux étapes (`confirmation_token`) que la création. Émet `NETWORK_TRANSFER_REVERSED`.
+
+### Voir aussi
+
+[Créer un transfert](/api/transfers/TransfersController_create) · [Créer un remboursement](/api/refunds/RefundsController_create) · [Guide lomi. Network](/build/platform/network#remboursements-et-responsabilité)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /transfers/{id}/reversals`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | Transfer id (tr_...) |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Oui | - | Required unique key for this write. Replays return the original response. |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+Corps JSON.
+
+Schéma: `CreateTransferReversalDto`
+
+| Champ | Obligatoire | Type | Description |
+| --- | --- | --- | --- |
+| `amount` | Non | `number` | Amount to reverse, in the transfer currency. Defaults to the remaining unreversed amount. |
+| `description` | Non | `string` | - |
+| `metadata` | Non | `object` | - |
+
+Exemple de corps :
+
+```json
+{
+  "amount": 4500,
+  "description": "Order 95 refunded",
+  "metadata": {}
+}
+```
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Transfert d’annulation créé |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers/value/reversals" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":4500,"description":"Order 95 refunded","metadata":{}}'
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_reverse`
+- **Operation**: `POST /transfers/{id}/reversals`
+
+Schémas complets et **Try it** : [référence API](/api).

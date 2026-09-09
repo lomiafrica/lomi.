@@ -335,12 +335,8 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
           metaGroups={[
             [
               {
-                label: data.idLabel || "Receipt ID",
+                label: data.idLabel || "Reference",
                 value: data.transactionId || "—",
-              },
-              {
-                label: "Transaction ID",
-                value: data.providerTransactionId || "—",
               },
             ],
             [

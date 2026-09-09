@@ -15,6 +15,7 @@ import {
   camelSdkPropToSnake,
   tsMethodToPythonName,
   expandSdkManifestMethods,
+  withoutHandwrittenServices,
 } from './public-sdk-operations.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,15 +33,21 @@ execSync('node scripts/pre-generate.js', {
   stdio: 'inherit',
 });
 
+// Only the generated smoke test is owned by this script; hand-written tests
+// (tests/test_network.py) survive regeneration.
+const generatedTestPath = join(testsDir, 'test_generated_surface.py');
 if (existsSync(servicesDir)) rmSync(servicesDir, { recursive: true });
-if (existsSync(testsDir)) rmSync(testsDir, { recursive: true });
+if (existsSync(generatedTestPath)) rmSync(generatedTestPath);
 
 mkdirSync(outputDir, { recursive: true });
 mkdirSync(servicesDir, { recursive: true });
 mkdirSync(testsDir, { recursive: true });
 
 const { spec, allowed } = readSpecAndAllowlist();
-const { byService } = getNormalizedOperations(spec, allowed);
+// `lomi/network.py` (transfers, balance, network) is hand-written.
+const byService = withoutHandwrittenServices(
+  getNormalizedOperations(spec, allowed).byService,
+);
 
 function escapeDocSummary(nop) {
   const t = nop.summary || nop.sdkMethodName;
@@ -164,9 +171,22 @@ class ClientBase:
         path: str,
         params: Optional[Dict[str, Any]] = None,
         data: Optional[Dict[str, Any]] = None,
+        account: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
     ) -> Any:
-        """Make an HTTP request to the merchant API."""
-        return self._client._request(method, path, params=params, data=data)
+        """Make an HTTP request to the merchant API.
+
+        account= overrides the client-level Lomi-Account for this call
+        ("" sends no Lomi-Account header at all).
+        """
+        return self._client._request(
+            method,
+            path,
+            params=params,
+            data=data,
+            account=account,
+            idempotency_key=idempotency_key,
+        )
 `;
 
 writeFileSync(join(outputDir, 'client_base.py'), clientBaseContent);
@@ -212,6 +232,7 @@ import requests
 from typing import Optional, Dict, Any
 
 from .exceptions import LomiError, LomiAuthError, LomiNotFoundError
+from .network import BalanceResource, NetworkResource, TransfersResource
 from .services import *
 
 def _flatten_data(data):
@@ -225,13 +246,20 @@ def _flatten_data(data):
 
 
 class LomiClient:
-    """Merchant API client (public routes only)."""
+    """Merchant API client (public routes only).
+
+    account="acct_..." (lomi. Network) sends Lomi-Account on every request so
+    calls run on behalf of that Member Account (direct charges). Use
+    with_account() for a scoped copy, or the account= kwarg on client.balance
+    for a single call.
+    """
 
     def __init__(
         self,
         api_key: str,
         base_url: str = "https://api.lomi.africa",
         environment: str = "live",
+        account: Optional[str] = None,
     ):
         self.api_key = api_key
         test_host = environment in ("test", "sandbox") or (
@@ -240,26 +268,56 @@ class LomiClient:
         self.base_url = (
             base_url if not test_host else "https://sandbox.api.lomi.africa"
         )
+        # stored as lomi_account: "account" is the generated /account/* service
+        self.lomi_account = account or None
         self.session = requests.Session()
         self.session.headers.update(
             {"X-API-KEY": api_key, "Content-Type": "application/json"}
         )
+        if self.lomi_account:
+            self.session.headers["Lomi-Account"] = self.lomi_account
 ${clientInits}
+        # lomi. Network (hand-written, see lomi/network.py)
+        self.transfers = TransfersResource(self)
+        self.balance = BalanceResource(self)
+        self.network = NetworkResource(self)
+
+    def with_account(self, account: Optional[str]) -> "LomiClient":
+        """Return a client scoped to a Member Account (Lomi-Account: acct_...).
+
+        with_account(None) returns an Operator-scoped client (no header).
+        """
+        return LomiClient(
+            api_key=self.api_key,
+            base_url=self.base_url,
+            environment="live",
+            account=account,
+        )
+
     def _request(
         self,
         method: str,
         path: str,
         params: Optional[Dict[str, Any]] = None,
         data: Optional[Dict[str, Any]] = None,
+        account: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
     ) -> Any:
         url = f"{self.base_url}{path}"
         json_data = _flatten_data(data)
+        headers: Dict[str, Optional[str]] = {}
+        if account is not None:
+            # "" removes the session-level Lomi-Account for this call.
+            headers["Lomi-Account"] = account or None
+        if idempotency_key:
+            headers["Idempotency-Key"] = idempotency_key
         try:
             response = self.session.request(
                 method=method,
                 url=url,
                 params=params,
                 json=json_data,
+                headers=headers or None,
             )
 
             if response.status_code == 401:
@@ -348,12 +406,16 @@ class TestSurface(unittest.TestCase):
         # spot-check newly added surfaces
         self.assertTrue(hasattr(c, "charges"))
         self.assertTrue(hasattr(c, "payment_links"))
+        # hand-written lomi. Network surface (lomi/network.py)
+        self.assertTrue(hasattr(c, "transfers"))
+        self.assertTrue(hasattr(c, "balance"))
+        self.assertTrue(hasattr(c.network, "account_sessions"))
 
         expected = sorted(
             name
             for name in attrs
             if name
-            not in ("api_key", "base_url", "session")
+            not in ("api_key", "base_url", "session", "lomi_account")
         )
 
         services = sorted(

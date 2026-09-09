@@ -1,0 +1,93 @@
+---
+title: "Créer un lien de connexion pour un compte membre"
+description: "Créer un lien de connexion pour un compte membre"
+full: true
+method: post
+path: /network/accounts/{account}/login_links
+operationId: NetworkAccountsController_createLoginLink
+---
+
+## Aperçu
+
+Créer un lien de connexion pour un compte membre
+
+lomi. Network : génère un lien à usage unique qui connecte le propriétaire du compte membre à son tableau de bord lomi. Utilise votre clé API Opérateur sans en-tête Lomi-Account et nécessite la capacité account.login_link pour cet environnement. Le lien expire après 5 minutes et doit être remis directement au membre (jamais intégré dans une page publique ni journalisé).
+
+
+### Quand l’utiliser
+
+Utilisez quand un membre clique sur « Ouvrir le tableau de bord lomi. » dans votre produit et que vous voulez l’amener directement sur son solde, ses versements ou ses exigences en attente, sans connexion séparée.
+
+### À savoir
+
+Clé secrète Opérateur **sans** `Lomi-Account`. Nécessite la capacité `account.login_link` pour l’environnement de la clé et une adhésion active. Le lien est à usage unique et expire après 5 minutes : créez-le côté serveur au moment du clic puis redirigez ; ne l’envoyez jamais par e-mail, ne le journalisez pas et ne l’intégrez pas dans une page publique.
+
+### Voir aussi
+
+[Créer une session de compte](/api/network/NetworkAccountsController_createAccountSession) · [Guide lomi. Network](/build/platform/network#tableau-de-bord-membre-et-liens-de-connexion)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /network/accounts/{account}/login_links`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `account` | Oui | - | Member Account id (acct_...) |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+_Pas de corps JSON pour cette opération._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Login link created (object: login_link): &#123; account, url, created_at, expires_at &#125; |
+| `400` | Capability missing, membership inactive, or Lomi-Account header sent |
+| `404` | Member Account not found |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/accounts/value/login_links" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `NetworkAccountsController_createLoginLink`
+- **Operation**: `POST /network/accounts/{account}/login_links`
+
+Schémas complets et **Try it** : [référence API](/api).

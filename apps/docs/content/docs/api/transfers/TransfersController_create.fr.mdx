@@ -1,0 +1,114 @@
+---
+title: "Créer un transfert vers un compte membre"
+description: "Créer un transfert vers un compte membre"
+full: true
+method: post
+path: /transfers
+operationId: TransfersController_create
+---
+
+## Aperçu
+
+Créer un transfert vers un compte membre
+
+lomi. Network : déplace des fonds de votre solde Opérateur vers un compte membre (paiements séparés, ou versement ponctuel). Utilise votre clé API Opérateur sans en-tête Lomi-Account. La destination doit être une adhésion active avec la capacité transfer.receive pour cet environnement. Les transferts live exigent un Network approuvé en live.
+
+
+### Quand l’utiliser
+
+Utilisez pour les paiements séparés de lomi. Network : encaissez d’abord sur votre propre compte, puis payez le membre plus tard (après livraison, en fin de journée ou par lot).
+
+### À savoir
+
+Clé secrète Opérateur **sans** `Lomi-Account`. `Idempotency-Key` obligatoire. Le premier appel renvoie `requires_confirmation: true` et un `confirmation_token` ; renvoyez la même requête avec ce jeton pour exécuter. La destination doit être une adhésion active avec `transfer.receive` pour l’environnement de la clé. Les soldes bougent en XOF.
+
+### Voir aussi
+
+[Lister les transferts](/api/transfers/TransfersController_findAll) · [Annuler un transfert](/api/transfers/TransfersController_reverse) · [Guide lomi. Network](/build/platform/network#transferts)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /transfers`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Oui | - | Required unique key for this write. Replays return the original response. |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+Corps JSON.
+
+Schéma: `CreateTransferDto`
+
+| Champ | Obligatoire | Type | Description |
+| --- | --- | --- | --- |
+| `amount` | Oui | `number` | Amount to transfer, in `currency_code` (integer units). |
+| `currency_code` | Oui | `string` | Currency of the transfer (XOF, USD, EUR). Balances settle in XOF. |
+| `destination` | Oui | `string` | Member Account that receives the funds. Must be an active membership with the transfer.receive capability for this environment. |
+| `transfer_group` | Non | `string` | Transfer group linking this transfer to the payment(s) it settles (separate charges and transfers). |
+| `source_transaction_id` | Non | `string` | Transaction this transfer settles (optional, for reporting and refunds). |
+| `description` | Non | `string` | - |
+| `metadata` | Non | `object` | - |
+
+Exemple de corps :
+
+```json
+{
+  "amount": 9000,
+  "currency_code": "XOF",
+  "destination": "acct_1a2b3c4d5e6f7g8h"
+}
+```
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Transfert créé (object : transfer) |
+| `400` | Destination ou capacité invalide, ou solde insuffisant |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":9000,"currency_code":"XOF","destination":"acct_1a2b3c4d5e6f7g8h"}'
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_create`
+- **Operation**: `POST /transfers`
+
+Schémas complets et **Try it** : [référence API](/api).

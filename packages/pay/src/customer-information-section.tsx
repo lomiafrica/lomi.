@@ -55,6 +55,9 @@ interface PersonalInformationSectionProps {
   requireEmail?: boolean;
   requirePhone?: boolean;
   requireName?: boolean;
+  hideTitle?: boolean;
+  forceLight?: boolean;
+  stackContinues?: boolean;
 }
 
 export function PersonalInformationSection({
@@ -77,6 +80,9 @@ export function PersonalInformationSection({
   requireEmail = true,
   requirePhone = false,
   requireName = true,
+  hideTitle = false,
+  forceLight = true,
+  stackContinues = false,
 }: PersonalInformationSectionProps) {
   useEffect(() => {
     if (detectedCountry && !customerDetails.country) {
@@ -127,10 +133,18 @@ export function PersonalInformationSection({
   }
 
   return (
-    <div className="customer-information-section checkout-form-section space-y-2.5">
-      <label className="checkout-form-title block text-sm font-normal text-gray-700 select-none">
-        {t("checkout.personal_info.title")}
-      </label>
+    <div
+      className={
+        hideTitle
+          ? "customer-information-section"
+          : "customer-information-section checkout-form-section space-y-2.5"
+      }
+    >
+      {hideTitle ? null : (
+        <label className="checkout-form-title block text-sm font-normal text-gray-700 select-none">
+          {t("checkout.personal_info.title")}
+        </label>
+      )}
       <div className="checkout-field-stack overflow-hidden rounded-sm shadow-sm shadow-black/4">
         {showName && (
           <CheckoutFloatField
@@ -211,7 +225,7 @@ export function PersonalInformationSection({
                 isMiddleInStack={hasFieldAbovePhone}
                 directEdit
                 requiredMark
-                forceLight
+                forceLight={forceLight}
               />
               {requirePhone && (
                 <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none z-10">
@@ -227,7 +241,11 @@ export function PersonalInformationSection({
             <div
               role="button"
               tabIndex={0}
-              className="phone-input-last-in-stack box-border flex h-10 min-h-10 w-full cursor-pointer items-center justify-between rounded-t-none rounded-b-sm border border-gray-300 bg-white px-3 dark:border-white/[0.16]"
+              className={`checkout-whatsapp-row box-border flex h-10 min-h-10 w-full cursor-pointer items-center justify-between rounded-t-none border border-gray-300 bg-white px-3 ${
+                stackContinues
+                  ? "phone-input-middle-in-stack rounded-b-none"
+                  : "phone-input-last-in-stack rounded-b-sm"
+              }`}
               onClick={() => setIsDifferentWhatsApp(true)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -236,10 +254,10 @@ export function PersonalInformationSection({
                 }
               }}
             >
-              <span className="text-xs text-gray-500">
+              <span className="checkout-field-placeholder text-xs">
                 {t("checkout.personal_info.whatsapp_different")}
               </span>
-              <span className="flex items-center text-sm text-gray-600">
+              <span className="checkout-field-placeholder flex items-center text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="ml-1 h-3.5 w-3.5"
@@ -271,13 +289,14 @@ export function PersonalInformationSection({
                 placeholder="WhatsApp number"
                 className="pr-10"
                 directEdit
-                isLastInStack
-                forceLight
+                isLastInStack={!stackContinues}
+                isMiddleInStack={stackContinues}
+                forceLight={forceLight}
               />
               <div
                 role="button"
                 tabIndex={0}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer rounded-[1px] bg-blue-100 hover:bg-blue-200 transition-colors p-1.5"
+                className="checkout-whatsapp-switch absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                 onClick={() => setIsDifferentWhatsApp(false)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -288,7 +307,7 @@ export function PersonalInformationSection({
                 title={t("checkout.personal_info.switch_to_phone")}
                 aria-label={t("checkout.personal_info.switch_to_phone")}
               >
-                <ArrowRightLeft className="h-3.5 w-3.5 text-blue-600" />
+                <ArrowRightLeft className="h-3.5 w-3.5" />
               </div>
             </div>
           </div>

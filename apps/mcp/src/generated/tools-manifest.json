@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 29,
+  "toolCount": 31,
   "tools": [
     {
       "name": "lomi_api_keys",
@@ -141,6 +141,11 @@
             ],
             "type": "string",
             "description": "Filtrer par code devise (XOF, USD, EUR)"
+          },
+          "header_Lomi-Account": {
+            "type": "string",
+            "example": "acct_1234567890",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -821,11 +826,6 @@
           "endDate": {
             "type": "string",
             "description": "EndDate"
-          },
-          "header_Lomi-Account": {
-            "type": "string",
-            "example": "acct_1234567890",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -1843,6 +1843,93 @@
       }
     },
     {
+      "name": "lomi_network",
+      "title": "Network member accounts",
+      "description": "Network member accounts. Pass required `action` to choose the REST call.\n\nActions:\n- `login_link` — Create Network login link (POST /network/accounts/{account}/login_links). Required: account.\n- `account_session` — Create Network account session (POST /network/account-sessions). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Network accounts"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "account": {
+            "description": "Member Account id (acct_...)"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "login_link",
+              "account_session"
+            ],
+            "description": "Which REST operation to run. One of: login_link, account_session."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "account account_session accounts login_link login_links network post sessions",
+      "actions": {
+        "login_link": {
+          "operationKey": "POST /network/accounts/{account}/login_links",
+          "method": "post",
+          "pathTemplate": "/network/accounts/{account}/login_links",
+          "pathParamNames": [
+            "account"
+          ],
+          "queryParamNames": [],
+          "operationId": "NetworkAccountsController_createLoginLink",
+          "write": true,
+          "wantsBody": false,
+          "title": "Create Network login link",
+          "description": "lomi. Network: create a single-use URL that signs a Member Account (acct_…) into its lomi. dashboard. Hand it to the member; it expires quickly. Operator key only, no Lomi-Account.",
+          "tags": [
+            "Network accounts"
+          ],
+          "requiredInput": [
+            "account"
+          ]
+        },
+        "account_session": {
+          "operationKey": "POST /network/account-sessions",
+          "method": "post",
+          "pathTemplate": "/network/account-sessions",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "NetworkAccountsController_createAccountSession",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create Network account session",
+          "description": "lomi. Network: mint a short-lived client_secret so a Member Account (acct_…) can render embedded components (onboarding, payments, payouts, balance, notification_banner) inside your own UI. Operator key only, no Lomi-Account.",
+          "tags": [
+            "Network accounts"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        }
+      }
+    },
+    {
       "name": "lomi_organization",
       "title": "Organization",
       "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body.\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
@@ -1872,11 +1959,6 @@
             "type": "object",
             "additionalProperties": true,
             "description": "JSON request body. Required for write actions that send a body; shape depends on action."
-          },
-          "header_Lomi-Account": {
-            "type": "string",
-            "example": "acct_1234567890",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -2802,11 +2884,6 @@
             "additionalProperties": true,
             "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
-          "header_Lomi-Account": {
-            "type": "string",
-            "example": "acct_1234567890",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
-          },
           "header_Lomi-Version": {
             "type": "string",
             "example": "1.2.0",
@@ -3038,11 +3115,6 @@
           "endDate": {
             "type": "string",
             "description": "EndDate"
-          },
-          "header_Lomi-Account": {
-            "type": "string",
-            "example": "acct_1234567890",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -3282,11 +3354,6 @@
           "header_Idempotency-Key": {
             "type": "string",
             "description": "Required unique key for this write. Replays return the original response."
-          },
-          "header_Lomi-Account": {
-            "type": "string",
-            "example": "acct_1234567890",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -3936,6 +4003,169 @@
             "Transactions"
           ],
           "requiredInput": [
+            "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_transfers",
+      "title": "Network transfers",
+      "description": "Network transfers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List Network transfers (GET /transfers). No extra required fields.\n- `get` — Get Network transfer (GET /transfers/{id}). Required: id.\n- `create` — Create Network transfer (POST /transfers). Required: body, header_Idempotency-Key.\n- `reverse` — Reverse Network transfer (POST /transfers/{id}/reversals). Required: body, header_Idempotency-Key, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Network transfers"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "reverse"
+            ],
+            "description": "Which REST operation to run. One of: list, get, create, reverse."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Destination"
+          },
+          "header_Idempotency-Key": {
+            "type": "string",
+            "description": "Required unique key for this write. Replays return the original response."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "description": "Transfer id (tr_...)"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit"
+          },
+          "source_transaction_id": {
+            "type": "string",
+            "description": "Source Transaction Id"
+          },
+          "transfer_group": {
+            "type": "string",
+            "description": "Transfer Group"
+          },
+          "transfer_type": {
+            "type": "string",
+            "description": "Comma-separated: destination, separate, operator_fee, processing_fee_cover, fee_reversal, transfer_reversal, loss_cover"
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "create get list network post reversals reverse transfers",
+      "actions": {
+        "list": {
+          "operationKey": "GET /transfers",
+          "method": "get",
+          "pathTemplate": "/transfers",
+          "pathParamNames": [],
+          "queryParamNames": [
+            "limit",
+            "cursor",
+            "transfer_type",
+            "source_transaction_id",
+            "transfer_group",
+            "destination"
+          ],
+          "operationId": "TransfersController_findAll",
+          "write": false,
+          "wantsBody": false,
+          "title": "List Network transfers",
+          "description": "lomi. Network: list transfers your Operator account made to Member Accounts (destination transfers, separate transfers, operator fees, reversals). Filter by destination, transfer_group, source_transaction_id, or transfer_type. Operator key only, no Lomi-Account.",
+          "tags": [
+            "Network transfers"
+          ],
+          "requiredInput": []
+        },
+        "get": {
+          "operationKey": "GET /transfers/{id}",
+          "method": "get",
+          "pathTemplate": "/transfers/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "TransfersController_findOne",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get Network transfer",
+          "description": "lomi. Network: retrieve one transfer (tr_…) with amount, destination, status, transfer_type, reversed_amount, and transfer_group.",
+          "tags": [
+            "Network transfers"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "create": {
+          "operationKey": "POST /transfers",
+          "method": "post",
+          "pathTemplate": "/transfers",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TransfersController_create",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create Network transfer",
+          "description": "lomi. Network: move funds from your Operator balance to a Member Account (acct_…) for separate charges and transfers or an ad-hoc payout. Two-step: the first call (no confirmation_token) returns a preview with confirmation_token; call again with that token to execute. Requires Idempotency-Key (reuse the same key on both calls). Operator key only, no Lomi-Account.",
+          "tags": [
+            "Network transfers"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key"
+          ]
+        },
+        "reverse": {
+          "operationKey": "POST /transfers/{id}/reversals",
+          "method": "post",
+          "pathTemplate": "/transfers/{id}/reversals",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "TransfersController_reverse",
+          "write": true,
+          "wantsBody": true,
+          "title": "Reverse Network transfer",
+          "description": "lomi. Network: reverse a transfer fully or partially (optional amount) back to your Operator balance. Same two-step confirmation_token flow and Idempotency-Key as transfer creation.",
+          "tags": [
+            "Network transfers"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key",
             "id"
           ]
         }

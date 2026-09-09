@@ -1,158 +1,455 @@
 ---
 title: 'lomi. Network'
-description: 'Créez des paiements, des sessions de checkout, des remboursements et des lectures de transactions pour des comptes membres connectés.'
+description: 'Lancez une marketplace ou une plateforme SaaS sur lomi. : intégrez des comptes membres, encaissez pour eux, gardez votre commission et déplacez l’argent avec des transferts.'
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-lomi. Network permet à une organisation **Opérateur** approuvée d'agir au nom de **comptes membres** connectés. Un compte membre est une organisation lomi. réelle avec un identifiant public tel que `acct_123...`.
+lomi. Network permet à une organisation **Opérateur** (une plateforme ou une marketplace) d'accepter des paiements au nom de **comptes membres** connectés. Un compte membre est une organisation lomi. réelle avec un identifiant public tel que `acct_1a2b3c4d5e6f7g8h`. Vous décidez qui est le marchand de référence, quand le membre est payé et ce que vous gardez sur chaque paiement.
 
 <Callout type="info">
-  Les requêtes Network utilisent une clé API secrète Opérateur active plus `Lomi-Account: acct_...`. Sans `Lomi-Account`, chaque endpoint se comporte comme l'API marchande normale. Network est sur invitation : votre organisation doit être approuvée comme **Opérateur** avant que ces étapes s'appliquent.
+  Network utilise l'API marchande normale. Les requêtes déléguées ajoutent `Lomi-Account: acct_...` à côté de votre clé **secrète** Opérateur. Les transferts utilisent la clé Opérateur seule. Tout fonctionne en mode test dès que vous terminez l'assistant de configuration du tableau de bord ; le live demande une approbation lomi. (voir [Passer en production](#passer-en-production)).
 </Callout>
-
-## Parcours d'onboarding
-
-Chaque étape utilise des endpoints déjà pris en charge avec l'en-tête `Lomi-Account`. Il n'y a pas de routes Network supplémentaires.
-
-### Étape 1 : compte opérateur et clé API
-
-1. Terminez l'onboarding marchand sur le [tableau de bord](https://dashboard.lomi.africa).
-2. Créez une clé API **secrète** pour l'organisation Opérateur (test d'abord).
-3. Stockez la clé uniquement côté serveur.
-
-Voir [Clés API](/start/api-keys).
-
-### Étape 2 : connecter un compte membre
-
-1. Ouvrez **Network** dans le [tableau de bord](https://dashboard.lomi.africa) (`/{organizationId}/network`).
-2. Créez une invitation sous **Enrollments** et copiez le lien (`/network/enroll/{token}`).
-3. Après l'inscription du membre, activez l'adhésion (**pending_review** → **active**).
-4. Notez l'id public du membre (`acct_...`) pour l'en-tête `Lomi-Account`.
-
-Si l'adhésion est absente ou inactive, l'API renvoie `network_membership_not_found` ou `network_membership_not_active`. Voir [Erreurs d'autorisation courantes](#erreurs-dautorisation-courantes).
-
-### Étape 3 : accorder des capacités
-
-Les capacités sont par adhésion et environnement. À l'activation, lomi. accorde automatiquement les capacités de l'invitation (`requested_capabilities`) ou les défauts opérateur.
-
-Minimum pour les paiements :
-
-| Capacité | Utilisée pour |
-| --- | --- |
-| `payment.create` | `POST /checkout-sessions`, `POST /charge/*` |
-| `transaction.read_own` ou `transaction.read` | `GET /transactions` |
-| `refund.create` | `POST /refunds` |
-| `customer.read` / `customer.write` | API clients au nom du membre |
-
-Ajustez les capacités dans l'onglet **Members** du tableau de bord si nécessaire après activation. Capacité manquante → `network_capability_missing`.
-
-### Étape 4 : premier paiement délégué (test)
-
-Créez une session de checkout pour le membre :
-
-```bash
-curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
-  -H "X-API-KEY: $LOMI_OPERATOR_TEST_KEY" \
-  -H "Lomi-Account: acct_MEMBER_ID" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 1000,
-    "currency_code": "XOF",
-    "title": "Test Network",
-    "success_url": "https://example.com/success",
-    "cancel_url": "https://example.com/cancel"
-  }'
-```
-
-Ouvrez l'URL de checkout retournée, payez avec un moyen sandbox, et confirmez via webhook ou `GET /transactions/{id}`.
-
-### Étape 5 : rapprocher et passer en production
-
-1. Enregistrez les webhooks sur l'organisation **Opérateur** (les événements reflètent l'activité déléguée selon votre configuration tableau de bord).
-2. Utilisez `GET /transactions` avec `Lomi-Account` pour le support et la réconciliation.
-3. Passez aux clés live et capacités live quand le membre est prêt pour la production.
-
-Voir [Passer en production](/start/go-live) et [Vérifier les paiements](/build/reliability/verify-payments).
-
-## Concepts
 
 | Terme | Signification |
 | --- | --- |
-| Opérateur | L'organisation propriétaire de la clé API qui initie les requêtes déléguées. |
-| Compte membre | L'organisation connectée qui reçoit le paiement, la session de checkout, la transaction ou le remboursement. |
-| `acct_...` | Identifiant public Network du compte membre. L'Opérateur l'envoie dans l'en-tête `Lomi-Account`. |
-| Adhésion | Relation active entre un Opérateur et un compte membre. |
-| Capacité | Permission accordée par adhésion et environnement, ex. `payment.create` ou `refund.create`. |
-| Frais opérateur | Règle de frais optionnelle enregistrée pour les rapports et le règlement ultérieur. |
+| Opérateur | L'organisation propriétaire de la clé API, qui configure les frais et initie les requêtes déléguées et les transferts. |
+| Compte membre | L'organisation connectée qui reçoit le paiement, la session de checkout, la transaction, le remboursement ou le transfert. |
+| `acct_...` | Identifiant public Network d'un compte membre. L'Opérateur l'utilise dans `Lomi-Account`, `transfer_data.destination` et `POST /transfers`. |
+| Adhésion | Relation entre un Opérateur et un compte membre, par environnement (test ou live). |
+| Capacité | Permission accordée par adhésion et environnement, ex. `payment.create` ou `transfer.receive`. |
+| Commission | Ce que vous gardez sur un paiement. Fixée par les règles de frais ou par requête avec `application_fee_amount`. |
+| Transfert | Mouvement de solde entre l'Opérateur et un compte membre (`tr_...`). |
 
-## En-têtes
+## Concevoir votre intégration
 
-```http
-POST /charge/card HTTP/1.1
-Host: api.lomi.africa
-X-API-KEY: lomi_sk_live_operator_...
-Lomi-Account: acct_1234567890
-Content-Type: application/json
-```
+### Marketplace ou plateforme SaaS
 
-L'environnement de la clé API contrôle l'environnement de la requête. Une clé test exige des capacités en mode test ; une clé live exige des capacités en mode live.
+Deux modèles couvrent la plupart des plateformes :
 
-## Endpoints pris en charge
+- **Marketplace.** Les acheteurs vous paient pour des biens ou services que vos vendeurs livrent. Vous êtes la vitrine du checkout, vous gardez une commission et le vendeur reçoit le reste. Les vendeurs sont des comptes membres et ne parlent en général jamais à lomi. directement.
+- **Plateforme SaaS.** Vos clients gèrent leur propre activité dans votre produit et encaissent auprès de leurs propres clients. Chaque client est un compte membre, marchand de référence, et sa marque apparaît au checkout. Vous gardez une commission par paiement.
 
-| Endpoint | Capacité |
+Vous pouvez combiner les deux sur le même Network : le type de paiement se choisit par requête, pas par Opérateur.
+
+### Choisir un type de paiement
+
+| | Direct | Destination | Paiements et transferts séparés |
+| --- | --- | --- | --- |
+| Comment | `Lomi-Account: acct_...` sur `POST /checkout-sessions` ou `POST /charge/*` | `transfer_data: { destination }` sur votre propre compte | `transfer_group` sur votre propre compte, puis `POST /transfers` plus tard |
+| Marchand de référence | Membre | Opérateur | Opérateur |
+| Marque et moyens de paiement au checkout | Membre | Opérateur | Opérateur |
+| Qui est crédité à la fin du paiement | Le membre (net), votre commission passe du membre à l'Opérateur | L'Opérateur, puis le paiement moins votre commission est transféré au membre | L'Opérateur. Rien ne bouge tant que vous ne transférez pas |
+| Quand le membre est payé | Immédiatement | Immédiatement | Quand vous appelez `POST /transfers` |
+| Un paiement, plusieurs membres | Non | Non (une seule destination) | Oui (plusieurs transferts, même `transfer_group`) |
+| Source du remboursement | Solde du membre (la commission revient) | Solde Opérateur, transfert membre rapatrié | Solde Opérateur, transferts membres rapatriés |
+| Idéal pour | Plateformes SaaS, vos clients encaissent dans votre produit | Marketplaces avec un vendeur par commande | Marketplaces avec paniers multi-vendeurs, versement différé, flux type séquestre |
+
+Règle simple : si l'acheteur doit voir le nom et les moyens de paiement du membre, utilisez **direct**. Si l'acheteur doit voir votre marque, utilisez **destination**, et passez aux **paiements et transferts séparés** quand un paiement finance plusieurs membres ou que vous payez les membres plus tard.
+
+### Qui paie les frais de traitement lomi.
+
+Votre profil de plateforme (Network → Paramètres) a deux réglages qui s'appliquent à tous les types de paiement :
+
+- `fees_collector` : `member` ou `operator`. Qui absorbe les frais de traitement lomi. sur chaque paiement.
+- `losses_collector` : `member` ou `operator`. Qui couvre un remboursement quand le solde qui devrait le payer est insuffisant.
+
+Voir [Frais et règlement](#frais-et-règlement) pour ce qui bouge dans chaque cas.
+
+## Intégrer des membres
+
+### Invitation hébergée
+
+1. Ouvrez **Network → Members** dans le [tableau de bord](https://dashboard.lomi.africa) et créez une invitation. Choisissez les capacités à demander et, si besoin, la règle de frais pour ce membre.
+2. Copiez le lien d'onboarding hébergé, `https://dashboard.lomi.africa/network/enroll/{token}`, et envoyez-le au membre.
+3. Le membre suit le parcours hébergé (ci-dessous). L'adhésion apparaît dans **Members** en **En revue** jusqu'à la fin de la vérification, puis **Activé**.
+4. Notez l'identifiant public du membre (`acct_...`).
+
+Le lien d'inscription ouvre un parcours à vos couleurs (nom et logo de l'Opérateur). Il demande, dans l'ordre :
+
+1. **Connexion ou création d'un compte lomi.** Le lien survit au détour d'authentification et revient sur la même inscription.
+2. **Organisation.** Choisir une organisation lomi. existante ou en créer une pour cette adhésion.
+3. **Vérification** (nouveaux marchands uniquement). Type d'activité, documents et informations essentielles, mêmes étapes que l'onboarding lomi. standard. Les marchands existants sautent cette étape.
+4. **Informations de l'entreprise.** Raison sociale (obligatoire), pays, identifiants fiscal / registre, contact, et un identifiant externe optionnel pour rapprocher avec vos propres fiches.
+5. **Moyen de versement.** Compte bancaire ou mobile money pour le solde du membre. Peut être ignoré et ajouté plus tard depuis **Solde**.
+6. **Vérification finale.** Capacités demandées et version des conditions de partage des données.
+
+Une fois terminé, le membre arrive sur son propre tableau de bord lomi. en **mode membre** (voir [Tableau de bord membre et liens de connexion](#tableau-de-bord-membre-et-liens-de-connexion)).
+
+### Onboarding intégré
+
+Si vous préférez garder le membre dans votre produit, montez le [composant intégré](#composants-intégrés) `onboarding` avec une session de compte. Le membre passe par les mêmes étapes (organisation, vérification, informations de l'entreprise, moyen de versement, vérification finale) sans quitter votre page. Utilisez l'invitation hébergée quand vous voulez le moins d'intégration possible ; utilisez l'onboarding intégré quand votre produit a déjà un espace de réglages pour les vendeurs.
+
+### Statuts des membres
+
+Les statuts sont par adhésion et par environnement. Ils s'affichent dans **Members** et sur l'accueil du membre.
+
+| Statut | Signification | Action requise |
+| --- | --- | --- |
+| En revue | L'inscription est terminée et la vérification est en cours. Les paiements délégués sont refusés. | Rien de votre côté. lomi. vérifie les nouveaux marchands ; les marchands déjà vérifiés passent rapidement. |
+| Activé | La vérification est passée et les capacités accordées sont actives. Paiements, remboursements et transferts circulent. | Aucune. |
+| Bientôt restreint | Une exigence est due avant une date : document manquant, identifiant expiré ou moyen de versement. | Le membre la complète depuis son tableau de bord avant la date. Envoyez un [lien de connexion](#tableau-de-bord-membre-et-liens-de-connexion) ou affichez le composant `notification-banner`. |
+| Restreint | La date est passée. Les paiements délégués et les transferts vers ce membre sont refusés tant que l'exigence n'est pas remplie. Les versements peuvent être retenus. | Le membre complète l'exigence ; le statut repasse à Activé après re-vérification par lomi. |
+| Refusé | La vérification a échoué. Aucun paiement. | Contactez le support avec le membre ; une nouvelle inscription corrigée peut être nécessaire. |
+| Suspendu | Vous ou lomi. avez suspendu l'adhésion (risque, litiges ou conditions). Paiements et transferts s'arrêtent, les versements sont retenus. | Résolvez avec le support lomi. Vous pouvez lever une suspension que vous avez créée depuis **Members**. |
+
+L'API reflète ces états avec `network_membership_not_active`, `network_account_not_active` et `network_capability_missing` (voir [Erreurs](#erreurs)).
+
+### Capacités
+
+Les capacités sont accordées par adhésion et environnement. À l'activation, lomi. accorde ce que l'invitation demandait (`requested_capabilities`) ou vos défauts Opérateur. Ajustez-les ensuite depuis **Members**.
+
+| Capacité | Permet à l'Opérateur de |
 | --- | --- |
-| `POST /charge/card` | `payment.create` |
-| `POST /charge/wave` | `payment.create` |
-| `POST /charge/mtn` | `payment.create` |
-| `POST /checkout-sessions` | `payment.create` |
-| `GET /transactions`, `GET /transactions/{id}` | `transaction.read_own` ou `transaction.read` |
-| `GET /charge/card/{id}` | `transaction.read_own` ou `transaction.read` |
-| `GET /customers`, `GET /customers/{id}` | `customer.read` |
-| `POST /customers`, `PATCH /customers/{id}` | `customer.write` |
-| `GET /customers/{id}/transactions` | `customer.read` |
-| `POST /refunds` | `refund.create` |
-| `GET /refunds`, `GET /refunds/{id}` | `transaction.read_own` ou `transaction.read` |
+| `payment.create` | Créer des paiements directs et des sessions de checkout pour le membre (`Lomi-Account` sur `POST /checkout-sessions`, `POST /charge/*`). |
+| `refund.create` | Rembourser les transactions du membre (`POST /refunds` avec `Lomi-Account`). |
+| `customer.read` | Lire les clients du membre. |
+| `customer.write` | Créer et mettre à jour les clients du membre. |
+| `transaction.read` | Lire les transactions et remboursements du membre. |
+| `account.read` | Lire le compte et les informations d'entreprise du membre. |
+| `balance.read` | Lire le solde du membre (`GET /accounts/balance` avec `Lomi-Account`). |
+| `transfer.receive` | Être la `destination` de paiements destination et de `POST /transfers`. |
+| `account.login_link` | Créer des liens de connexion vers le tableau de bord membre. |
+| `webhook.receive` | Recevoir les webhooks Network de ce membre sur vos endpoints Opérateur. |
 
-Si `Lomi-Account` est envoyé vers un autre endpoint, l'API rejette la requête au lieu de changer silencieusement le périmètre organisation.
+## Types de paiement
 
-## Exemple
+Tous les exemples utilisent l'URL sandbox et une clé Opérateur test. Les montants sont des entiers en unités mineures (le XOF n'en a pas, donc `10000` = 10 000 F CFA).
+
+### Paiements directs
+
+Le membre est le marchand de référence. Envoyez `Lomi-Account` et, si besoin, `application_fee_amount` :
 
 ```bash
-curl -X POST "https://api.lomi.africa/checkout-sessions" \
-  -H "X-API-KEY: $LOMI_OPERATOR_API_KEY" \
-  -H "Lomi-Account: acct_1234567890" \
+curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Lomi-Account: acct_1a2b3c4d5e6f7g8h" \
   -H "Content-Type: application/json" \
   -d '{
     "amount": 10000,
     "currency_code": "XOF",
     "title": "Commande #12345",
-    "success_url": "https://example.com/success"
+    "application_fee_amount": 500,
+    "success_url": "https://example.com/success",
+    "cancel_url": "https://example.com/cancel"
   }'
 ```
 
-La session de checkout appartient au compte membre. La page de checkout hébergée affiche la marque et les moyens de paiement du membre. Le contexte Network est enregistré séparément pour que l'Opérateur consulte les performances déléguées dans le tableau de bord Network.
+La session de checkout appartient au compte membre : la page hébergée affiche la marque et les moyens de paiement du membre, et la transaction apparaît dans ses Transactions. À la fin du paiement, le membre est crédité du montant net et votre commission (`500` ici) passe du membre à votre solde Opérateur via un transfert `operator_fee`. Le même en-tête fonctionne sur `POST /charge/wave` et `POST /charge/mtn`.
 
-## Clients
+### Paiements destination
 
-Les appels API clients Network créent et mettent à jour des clients sous l'organisation du compte membre. lomi. enregistre les métadonnées Network sur les clients créés par un Opérateur ; les listes incluent les clients créés par cet Opérateur ou rattachés à des transactions Network déléguées.
+Vous êtes le marchand de référence. Encaissez sur votre propre compte et désignez le membre dans `transfer_data` :
 
-## Idempotence
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 10000,
+    "currency_code": "XOF",
+    "title": "Commande #12345",
+    "application_fee_amount": 500,
+    "transfer_data": { "destination": "acct_1a2b3c4d5e6f7g8h" },
+    "success_url": "https://example.com/success",
+    "cancel_url": "https://example.com/cancel"
+  }'
+```
 
-Pour les endpoints qui prennent en charge `Idempotency-Key`, les Opérateurs envoient une clé d'idempotence normale. lomi. lie la clé interne par adhésion Network et inclut `Lomi-Account` dans la signature de la requête, afin que deux opérateurs ciblant le même membre n'entrent pas en collision.
+N'envoyez pas `Lomi-Account` sur un paiement destination. La page hébergée affiche votre marque et vos moyens de paiement. À la fin du paiement, l'argent arrive sur votre solde et lomi. crée immédiatement un transfert `destination` du paiement moins `application_fee_amount` (et moins les frais de traitement lomi. quand le membre est le `fees_collector`). Passez `transfer_data.amount` pour transférer un montant fixe à la place.
 
-## Erreurs d'autorisation courantes
+### Paiements et transferts séparés
+
+Encaissez sur votre propre compte avec un `transfer_group`, puis payez un ou plusieurs membres plus tard :
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 15000,
+    "currency_code": "XOF",
+    "title": "Panier #95",
+    "transfer_group": "ORDER_95",
+    "success_url": "https://example.com/success",
+    "cancel_url": "https://example.com/cancel"
+  }'
+```
+
+Rien ne part vers les membres à la fin du paiement. Quand vous êtes prêt (après livraison, en fin de journée ou par lot), créez des transferts avec le même `transfer_group` ; voir [Transferts](#transferts). Votre commission est simplement ce que vous ne transférez pas.
+
+### Endpoints qui acceptent `Lomi-Account`
+
+| Endpoint | Capacité |
+| --- | --- |
+| `POST /checkout-sessions` | `payment.create` |
+| `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card` | `payment.create` |
+| `GET /transactions`, `GET /transactions/{id}`, `GET /charge/card/{id}` | `transaction.read` |
+| `GET /refunds`, `GET /refunds/{id}` | `transaction.read` |
+| `POST /refunds` | `refund.create` |
+| `GET /customers`, `GET /customers/{id}`, `GET /customers/{id}/transactions` | `customer.read` |
+| `POST /customers`, `PATCH /customers/{id}` | `customer.write` |
+| `GET /accounts/balance` | `balance.read` |
+
+Si `Lomi-Account` est envoyé vers un autre endpoint, l'API rejette la requête au lieu de changer silencieusement le périmètre organisation. L'environnement de la clé API contrôle celui de la requête : une clé test exige des capacités en mode test, une clé live exige des capacités en mode live.
+
+Les appels clients créent et mettent à jour des clients sous l'organisation du membre. lomi. enregistre les métadonnées Network sur les clients créés par un Opérateur, et les listes incluent les clients créés par cet Opérateur ou rattachés à des transactions déléguées.
+
+Pour les endpoints qui prennent en charge `Idempotency-Key`, envoyez une clé normale. lomi. la lie à l'adhésion et inclut `Lomi-Account` dans la signature, afin que deux Opérateurs ciblant le même membre n'entrent pas en collision.
+
+## Frais et règlement
+
+### Règles de frais
+
+Les règles de frais vivent dans l'onglet **Fees** du tableau de bord. Une règle est `fixed`, `percentage` (points de base) ou `blended`, avec minimum et maximum optionnels. Définissez une règle comme **défaut Opérateur** et, quand un membre a des conditions différentes, affectez une **règle par membre** depuis **Members**. Les adhésions activées sans règle explicite héritent du défaut au moment de l'activation. Chaque paiement délégué terminé écrit une écriture de frais consultable dans **Fees → Fee entries**.
+
+### `application_fee_amount`
+
+Passez `application_fee_amount` sur un paiement direct ou destination pour remplacer la règle de frais sur ce paiement. La valeur est dans la devise du paiement et ne peut pas dépasser le montant. Omettez-la pour appliquer la règle. Sur les paiements séparés, la commission est implicite : c'est la part que vous gardez quand vous transférez.
+
+### `fees_collector` et `losses_collector`
+
+- **`fees_collector: member`** (défaut) : les frais de traitement lomi. sont déduits de ce que reçoit le membre. Sur un paiement destination, le transfert par défaut est le montant moins votre commission moins les frais de traitement.
+- **`fees_collector: operator`** : les frais de traitement sont facturés à votre solde Opérateur. Sur un paiement direct, lomi. ajoute un transfert `processing_fee_cover` de vous vers le membre pour que le membre reste entier.
+- **`losses_collector`** (défaut `member`) : quand un remboursement dépasse le solde qui devrait le payer, lomi. écrit un transfert `loss_cover` du collecteur de pertes vers ce solde pour que le client soit remboursé en entier.
+
+### Ce qui bouge et quand
+
+| Événement | Direct | Destination | Séparé |
+| --- | --- | --- | --- |
+| Paiement terminé | Membre crédité du net. Transfert `operator_fee` membre → Opérateur. `processing_fee_cover` Opérateur → membre quand vous êtes le collecteur de frais. | Opérateur crédité. Transfert `destination` Opérateur → membre du montant moins commission (et moins frais de traitement quand le membre est le collecteur de frais). | Opérateur crédité. Aucun transfert. |
+| Vous appelez `POST /transfers` | Non utilisé | Complément optionnel | Transfert `separate` Opérateur → membre |
+| Remboursement | Solde membre débité. Transfert `fee_reversal` Opérateur → membre pour la commission proportionnelle (`refund_application_fee`). | Solde Opérateur débité. `transfer_reversal` membre → Opérateur pour la part proportionnelle (`reverse_transfer`). Commission gardée ou annulée selon `refund_application_fee`. | Comme destination, pour chaque transfert du `transfer_group`. |
+| Solde insuffisant au remboursement | `loss_cover` depuis le collecteur de pertes | `loss_cover` depuis le collecteur de pertes | `loss_cover` depuis le collecteur de pertes |
+
+Les soldes bougent en XOF. Les paiements en USD ou EUR sont convertis au taux de règlement et le transfert porte à la fois `amount` / `currency_code` et `settled_amount` / `settled_currency`.
+
+## Transferts
+
+Les transferts utilisent la clé Opérateur **sans** `Lomi-Account`, exigent `Idempotency-Key` et passent par une confirmation en deux étapes pour qu'un bug ne puisse pas déplacer d'argent par accident.
+
+### Créer un transfert
+
+Premier appel, sans `confirmation_token`. lomi. renvoie un aperçu :
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: order-95-seller-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 9000,
+    "currency_code": "XOF",
+    "destination": "acct_1a2b3c4d5e6f7g8h",
+    "transfer_group": "ORDER_95",
+    "description": "Versement commande 95"
+  }'
+```
+
+```json
+{
+  "requires_confirmation": true,
+  "confirmation_token": "...",
+  "expires_at": "2026-09-09T12:10:00.000Z",
+  "preview": {
+    "amount": 9000,
+    "currency_code": "XOF",
+    "destination": "acct_1a2b3c4d5e6f7g8h",
+    "transfer_group": "ORDER_95"
+  }
+}
+```
+
+Deuxième appel, même corps plus le jeton. C'est cet appel qui déplace l'argent et consomme l'`Idempotency-Key` :
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: order-95-seller-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 9000,
+    "currency_code": "XOF",
+    "destination": "acct_1a2b3c4d5e6f7g8h",
+    "transfer_group": "ORDER_95",
+    "description": "Versement commande 95",
+    "confirmation_token": "..."
+  }'
+```
+
+Le jeton est valable 10 minutes et lié à `amount`, `currency_code`, `destination` et `transfer_group`. Changer l'un d'eux l'invalide ; rappelez sans jeton pour un nouvel aperçu. Rejouer l'appel d'exécution avec la même `Idempotency-Key` renvoie le transfert d'origine avec `Idempotency-Cache-Hit: true`. Champs optionnels : `source_transaction_id` (le paiement que ce transfert règle), `description`, `metadata`.
+
+La destination doit être une adhésion **Activée** avec `transfer.receive` pour l'environnement de la clé, et le montant ne peut pas dépasser votre solde disponible.
+
+### Lister et récupérer
+
+```bash
+curl -sS "https://sandbox.api.lomi.africa/transfers?transfer_group=ORDER_95" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+`GET /transfers` renvoie une liste paginée (`cursor`, `limit`), du plus récent au plus ancien, filtrable par `destination`, `transfer_group`, `source_transaction_id` et `transfer_type` (séparés par des virgules). `GET /transfers/{id}` renvoie un transfert. Pages de référence : [Créer un transfert](/api/transfers/TransfersController_create), [Lister les transferts](/api/transfers/TransfersController_findAll), [Récupérer un transfert](/api/transfers/TransfersController_findOne), [Annuler un transfert](/api/transfers/TransfersController_reverse).
+
+### Annuler un transfert
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers/tr_.../reversals" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: order-95-seller-1-reversal" \
+  -H "Content-Type: application/json" \
+  -d '{ "amount": 4500, "description": "Commande 95 partiellement annulée" }'
+```
+
+Même parcours en deux étapes : le premier appel prévisualise, le second avec `confirmation_token` exécute. Omettez `amount` pour annuler le reste non annulé. Le membre doit avoir assez de solde disponible pour couvrir l'annulation. Les remboursements sur paiements destination et séparés annulent les transferts pour vous (voir [Remboursements et responsabilité](#remboursements-et-responsabilité)) ; utilisez cet endpoint pour les corrections manuelles.
+
+### Objet transfert
+
+| Champ | Description |
+| --- | --- |
+| `id` | `tr_...` |
+| `object` | `transfer` |
+| `amount`, `currency_code` | Montant demandé dans la devise de la requête |
+| `settled_amount`, `settled_currency` | Montant réellement déplacé entre les soldes (XOF) |
+| `transfer_type` | `destination`, `separate`, `operator_fee`, `processing_fee_cover`, `fee_reversal`, `transfer_reversal`, `loss_cover` |
+| `status` | `pending`, `posted`, `reversed`, `failed` |
+| `environment` | `test` ou `live` |
+| `destination`, `source` | `acct_...` du côté qui reçoit et du côté qui paie |
+| `source_transaction_id` | Paiement que ce transfert règle, quand il est connu |
+| `refund_id` | Remboursement à l'origine d'une annulation ou d'une annulation de commission |
+| `reversed_transfer_id`, `reversed_amount` | Lien et cumul des annulations |
+| `transfer_group` | Votre clé de regroupement |
+| `description`, `metadata` | Texte libre et vos propres clés |
+| `created_at` | ISO 8601 |
+
+## Remboursements et responsabilité
+
+Remboursez avec `POST /refunds` comme d'habitude. Deux options Network contrôlent l'argent :
+
+- `reverse_transfer` (défaut `true`) : sur les paiements destination et séparés, rapatrie la part proportionnelle du ou des transferts membre. Passez `false` pour rembourser le client depuis votre solde et laisser le membre entier.
+- `refund_application_fee` (défaut `true`) : annule votre commission proportionnellement. Passez `false` pour garder votre commission sur un paiement remboursé.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/refunds" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: refund-order-95" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction_id": "TXN_...",
+    "amount": 5000,
+    "reason": "requested_by_customer",
+    "reverse_transfer": true,
+    "refund_application_fee": true
+  }'
+```
+
+Pour un paiement **direct**, ajoutez `Lomi-Account` (capacité `refund.create`). Le remboursement est payé depuis le solde du membre et la commission proportionnelle revient de vous vers le membre via un transfert `fee_reversal`. Pour les paiements **destination** et **séparés**, le remboursement est payé depuis votre solde et la part du membre est rapatriée par des transferts `transfer_reversal`. Les remboursements suivent la même confirmation en deux étapes que les transferts.
+
+La responsabilité suit le marchand de référence. Sur les paiements directs, le membre porte les litiges et les découverts de remboursement ; sur les paiements destination et séparés, c'est vous. `losses_collector` permet de changer qui couvre un découvert quand le solde payeur est vide : lomi. écrit un transfert `loss_cover` pour que le client soit quand même remboursé en entier. Les remboursements émettent `NETWORK_OPERATOR_FEE_REVERSED` et, quand un transfert est rapatrié, `NETWORK_TRANSFER_REVERSED`.
+
+## Tableau de bord membre et liens de connexion
+
+Un membre connecté garde un compte lomi. complet. Quand une organisation est uniquement membre Network (et pas Opérateur elle-même), son tableau de bord passe en **mode membre**, une console réduite :
+
+- **Accueil** : solde disponible pour versement, activité récente et un bloc « Connecté à » au nom de votre plateforme, avec l'id `acct_...` et le statut de l'adhésion.
+- **Solde** : moyens de versement et versements. Les paiements délégués et les transferts créditent directement ce solde.
+- **Transactions** : chaque paiement, y compris ceux que vous avez créés pour le compte du membre.
+- **Paramètres** : informations de l'entreprise, équipe, moyens de versement.
+
+Les liens de paiement, le catalogue, la facturation et la console Opérateur sont masqués pour les organisations uniquement membres.
+
+Pour amener un membre dans ce tableau de bord depuis votre produit, créez un lien de connexion (capacité `account.login_link`) :
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/accounts/acct_1a2b3c4d5e6f7g8h/login_links" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+```json
+{ "url": "https://dashboard.lomi.africa/...", "expires_at": "2026-09-09T12:05:00.000Z" }
+```
+
+L'URL est valable 5 minutes et à usage unique. Créez-la côté serveur quand le membre clique, puis redirigez. Remettez-la uniquement au membre ; ne l'envoyez jamais par e-mail et ne la stockez pas.
+
+## Composants intégrés
+
+Les composants intégrés affichent des écrans membre dans vos propres pages : `payments`, `payouts`, `balance`, `onboarding` et `notification-banner` (exigences ouvertes et avertissements Bientôt restreint).
+
+1. Côté serveur, créez une session de compte pour le membre :
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/account-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "account": "acct_1a2b3c4d5e6f7g8h", "components": { "payments": { "enabled": true }, "payouts": { "enabled": true }, "notification_banner": { "enabled": true }, "onboarding": { "enabled": false }, "balance": { "enabled": false } } }'
+```
+
+```json
+{ "client_secret": "nas_...", "embed_base_url": "https://dashboard.lomi.africa/embed" }
+```
+
+2. Dans le navigateur, chargez le script et montez :
+
+```html
+<script src="https://dashboard.lomi.africa/embed/network.js"></script>
+<div id="member-payments"></div>
+<script>
+  LomiNetwork.mount({
+    container: document.getElementById('member-payments'),
+    component: 'payments',
+    clientSecret: 'nas_...',
+  });
+</script>
+```
+
+Ou de façon déclarative, un composant par élément :
+
+```html
+<div data-lomi-embed="payments" data-client-secret="nas_..."></div>
+```
+
+`components` limite ce que le `client_secret` peut afficher (clés `payments`, `payouts`, `balance`, `onboarding`, `notification_banner`, chacune avec `enabled`) ; omettez-le, ou omettez une clé, pour autoriser ce composant. Le secret est de courte durée et limité à un membre. Créez une nouvelle session à chaque chargement de page et n'exposez jamais votre clé Opérateur au navigateur.
+
+## Webhooks
+
+Enregistrez des endpoints webhook sur l'organisation **Opérateur** et abonnez-vous aux événements Network. Les payloads portent le membre (`network_account_id`, `public_account_id`, organisation membre), l'environnement et l'objet concerné.
+
+| Événement | Quand | Contenu clé |
+| --- | --- | --- |
+| `NETWORK_PAYMENT_CREATED` | Un paiement délégué ou destination est terminé | `transaction_id`, montant, type de paiement |
+| `NETWORK_OPERATOR_FEE_CREATED` | Votre commission a été réglée sur votre solde | écriture de frais, id du transfert `operator_fee` |
+| `NETWORK_OPERATOR_FEE_REVERSED` | Un remboursement a annulé une partie de votre commission | `refund_id`, id du transfert `fee_reversal` |
+| `NETWORK_TRANSFER_CREATED` | Un transfert `destination` ou `separate` a été comptabilisé | l'objet transfert |
+| `NETWORK_TRANSFER_REVERSED` | Un transfert a été rapatrié par un remboursement ou `POST /transfers/{id}/reversals` | l'annulation, `reversed_transfer` |
+| `NETWORK_MEMBER_PAYOUT_PAID` | Un versement membre a quitté lomi. | id du versement, montant, membre |
+
+Les membres avec `webhook.receive` reçoivent aussi leurs propres webhooks sur leur organisation. Vérifiez les signatures et confirmez avec `GET /transactions/{id}` ou `GET /transfers/{id}` avant de livrer ; voir [Gérer les webhooks](/build/reliability/handling-webhooks).
+
+## Passer en production
+
+1. **Test.** Ouvrez **Network** dans le tableau de bord et terminez l'assistant de configuration (profil de plateforme, règle de frais par défaut, `fees_collector`, `losses_collector`). Votre Network est actif en **test** tout de suite : invitez des membres test, testez chaque type de paiement, transfert et remboursement avec une clé `lomi_sk_test_...` sur `https://sandbox.api.lomi.africa`.
+2. **Demander l'accès live.** Dans **Network → Paramètres**, cliquez sur **Demander l'accès live** et décrivez votre plateforme. lomi. examine le cas d'usage et la configuration des frais.
+3. **Approbation.** Une fois approuvé, les adhésions live et les capacités live deviennent disponibles. Invitez des membres en live (ou réinvitez les membres test), enregistrez les webhooks live et passez à une clé `lomi_sk_live_...` sur `https://api.lomi.africa`.
+
+Les membres doivent aussi être vérifiés en live : un membre inscrit uniquement en test passe la vérification une fois, en acceptant l'invitation live. Voir [Passer en production](/start/go-live) pour la check-list côté marchand.
+
+## Tests
+
+- **Clés et hôtes.** Utilisez une clé Opérateur `lomi_sk_test_...` sur `https://sandbox.api.lomi.africa`. La clé choisit l'environnement ; capacités et adhésions test sont séparées du live.
+- **Identifiants membres.** Les ids `acct_...` sont par membre et par environnement. Un membre inscrit en test a un id test ; l'id live est émis quand il rejoint en live.
+- **Soldes.** Les paiements test créditent uniquement les soldes test. Transferts, mouvements de frais et annulations en test ne touchent jamais l'argent live, vous pouvez donc répéter remboursements et découverts (`loss_cover`) sans risque.
+- **Paiements.** Payez les sessions de checkout test avec les moyens sandbox décrits dans [Paiements sandbox](/start/sandbox-payments). Les paiements MTN et Wave test se terminent dans le grand livre sans appeler le prestataire.
+- **Confirmation.** Les exigences `confirmation_token` en deux étapes et `Idempotency-Key` sont identiques en test et en live ; testez-y votre logique de retry.
+- **Erreurs.** Essayez un membre sans `transfer.receive`, un transfert supérieur à votre solde, ou `Lomi-Account` sur un endpoint non pris en charge pour voir les erreurs ci-dessous.
+
+## Erreurs
 
 | Message | Signification |
 | --- | --- |
 | `network_account_not_found` | L'id `acct_...` n'existe pas. |
-| `network_account_not_active` | Le compte membre n'est pas actif pour Network. |
-| `operator_not_active` | L'organisation de la clé API n'est pas un Opérateur actif. |
-| `Network requests require a secret API key` | Les clés publiques ne peuvent pas servir aux requêtes Network déléguées. |
+| `network_account_not_active` | Le compte membre est Restreint, Refusé ou Suspendu. |
+| `operator_not_active` | L'organisation de la clé API n'est pas un Opérateur actif dans cet environnement. |
+| `Network requests require a secret API key` | Les clés publiques ne peuvent pas servir aux requêtes déléguées ni aux transferts. |
 | `network_membership_not_found` | L'Opérateur n'est pas connecté à ce compte membre. |
-| `network_membership_not_active` | La connexion existe mais n'est pas active. |
+| `network_membership_not_active` | L'adhésion existe mais est En revue, Restreinte ou Suspendue. |
 | `network_capability_missing` | L'adhésion n'a pas la capacité requise pour cet environnement. |
-
-## Rapports
-
-Les rapports Opérateur sont disponibles dans le panneau Network du tableau de bord. Les pages Transactions normales et les API transactions restent limitées à l'organisation courante sauf si `Lomi-Account` est fourni.
+| `confirmation_token is invalid or expired` | Le jeton de transfert ou de remboursement a été réutilisé, modifié ou a plus de 10 minutes. Rappelez sans jeton. |

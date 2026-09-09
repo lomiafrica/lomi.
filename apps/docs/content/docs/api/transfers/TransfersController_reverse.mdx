@@ -1,0 +1,110 @@
+---
+title: "Reverse transfer"
+description: "Reverse transfer"
+full: true
+method: post
+path: /transfers/{id}/reversals
+operationId: TransfersController_reverse
+---
+
+## Overview
+
+Reverse transfer
+
+Pulls funds back from the Member Account to your Operator balance. Defaults to the remaining unreversed amount; pass `amount` for a partial reversal. Same two-step `confirmation_token` flow as create.
+
+
+### When to use this
+
+Use when a separate transfer was too large or an order was cancelled after you paid the member. Refunds on destination and separate charges reverse transfers automatically (`reverse_transfer`).
+
+### Good to know
+
+The member must have enough available balance to cover the reversal. `Idempotency-Key` is required. Emits `NETWORK_TRANSFER_REVERSED`.
+
+### See also
+
+[Create transfer](/api/transfers/TransfersController_create) · [Create refund](/api/refunds/RefundsController_create) · [lomi. Network guide](/build/platform/network#refunds-and-liability)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /transfers/{id}/reversals`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | - | Transfer id (tr_...) |
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Yes | - | Required unique key for this write. Replays return the original response. |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Request body
+
+JSON request payload.
+
+Schema: `CreateTransferReversalDto`
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `amount` | No | `number` | Amount to reverse, in the transfer currency. Defaults to the remaining unreversed amount. |
+| `description` | No | `string` | - |
+| `metadata` | No | `object` | - |
+
+Example body:
+
+```json
+{
+  "amount": 4500,
+  "description": "Order 95 refunded",
+  "metadata": {}
+}
+```
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Reversal transfer created |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers/value/reversals" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":4500,"description":"Order 95 refunded","metadata":{}}'
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_reverse`
+- **Operation**: `POST /transfers/{id}/reversals`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

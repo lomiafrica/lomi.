@@ -29,6 +29,7 @@ import {
   resolveRef,
   LIST_METHOD_NAMES,
   expandSdkManifestMethods,
+  withoutHandwrittenServices,
 } from './public-sdk-operations.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -416,7 +417,11 @@ function main() {
   const { spec, allowed } = readSpecAndAllowlist(openapiPath, allowlistPath);
   const apiTypesContent = readFileSync(apiTypesPath, 'utf-8');
 
-  const { byService, operations } = getNormalizedOperations(spec, allowed);
+  const { byService: allServices, operations } = getNormalizedOperations(
+    spec,
+    allowed,
+  );
+  const byService = withoutHandwrittenServices(allServices);
 
   /** @type {Map<string, { methodName: string; source: string; listAllSource?: string | null }[]>} */
   const groups = new Map();

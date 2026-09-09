@@ -6828,6 +6828,18 @@ export type Database = {
         Row: {
           approved_at: string | null
           approved_by: string | null
+          branding: Json
+          charge_model: string
+          fees_collector: string
+          live_rejected_reason: string | null
+          live_requested_at: string | null
+          live_status: Database["public"]["Enums"]["network_operator_status"]
+          losses_collector: string
+          member_dashboard: string
+          onboarding_mode: string
+          platform_type: string
+          profile: Json
+          responsibilities_acknowledged_at: string | null
           created_at: string
           default_capabilities: string[]
           default_fee_rule_id: string | null
@@ -6841,6 +6853,18 @@ export type Database = {
         Insert: {
           approved_at?: string | null
           approved_by?: string | null
+          branding?: Json
+          charge_model?: string
+          fees_collector?: string
+          live_rejected_reason?: string | null
+          live_requested_at?: string | null
+          live_status?: Database["public"]["Enums"]["network_operator_status"]
+          losses_collector?: string
+          member_dashboard?: string
+          onboarding_mode?: string
+          platform_type?: string
+          profile?: Json
+          responsibilities_acknowledged_at?: string | null
           created_at?: string
           default_capabilities?: string[]
           default_fee_rule_id?: string | null
@@ -6854,6 +6878,18 @@ export type Database = {
         Update: {
           approved_at?: string | null
           approved_by?: string | null
+          branding?: Json
+          charge_model?: string
+          fees_collector?: string
+          live_rejected_reason?: string | null
+          live_requested_at?: string | null
+          live_status?: Database["public"]["Enums"]["network_operator_status"]
+          losses_collector?: string
+          member_dashboard?: string
+          onboarding_mode?: string
+          platform_type?: string
+          profile?: Json
+          responsibilities_acknowledged_at?: string | null
           created_at?: string
           default_capabilities?: string[]
           default_fee_rule_id?: string | null
@@ -6888,11 +6924,202 @@ export type Database = {
           },
         ]
       }
+      network_transfers: {
+        Row: {
+          actor_merchant_id: string | null
+          amount: number
+          api_key: string | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description: string | null
+          environment: string
+          from_organization_id: string
+          idempotency_key: string | null
+          member_organization_id: string
+          metadata: Json
+          network_account_id: string
+          network_membership_id: string
+          network_transaction_context_id: string | null
+          network_transfer_id: string
+          operator_fee_entry_id: string | null
+          operator_organization_id: string
+          public_transfer_id: string
+          refund_id: string | null
+          reversed_amount: number
+          reversed_transfer_id: string | null
+          settled_amount: number
+          settled_currency: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id: string | null
+          status: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id: string
+          transfer_group: string | null
+          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at: string
+        }
+        Insert: {
+          actor_merchant_id?: string | null
+          amount: number
+          api_key?: string | null
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          environment: string
+          from_organization_id: string
+          idempotency_key?: string | null
+          member_organization_id: string
+          metadata?: Json
+          network_account_id: string
+          network_membership_id: string
+          network_transaction_context_id?: string | null
+          network_transfer_id?: string
+          operator_fee_entry_id?: string | null
+          operator_organization_id: string
+          public_transfer_id?: string
+          refund_id?: string | null
+          reversed_amount?: number
+          reversed_transfer_id?: string | null
+          settled_amount: number
+          settled_currency?: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id: string
+          transfer_group?: string | null
+          transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at?: string
+        }
+        Update: {
+          actor_merchant_id?: string | null
+          amount?: number
+          api_key?: string | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          description?: string | null
+          environment?: string
+          from_organization_id?: string
+          idempotency_key?: string | null
+          member_organization_id?: string
+          metadata?: Json
+          network_account_id?: string
+          network_membership_id?: string
+          network_transaction_context_id?: string | null
+          network_transfer_id?: string
+          operator_fee_entry_id?: string | null
+          operator_organization_id?: string
+          public_transfer_id?: string
+          refund_id?: string | null
+          reversed_amount?: number
+          reversed_transfer_id?: string | null
+          settled_amount?: number
+          settled_currency?: Database["public"]["Enums"]["currency_code"]
+          source_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["network_transfer_status"]
+          to_organization_id?: string
+          transfer_group?: string | null
+          transfer_type?: Database["public"]["Enums"]["network_transfer_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_transfers_network_membership_id_fkey"
+            columns: ["network_membership_id"]
+            isOneToOne: false
+            referencedRelation: "network_memberships"
+            referencedColumns: ["network_membership_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_network_account_id_fkey"
+            columns: ["network_account_id"]
+            isOneToOne: false
+            referencedRelation: "network_accounts"
+            referencedColumns: ["network_account_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_source_transaction_id_fkey"
+            columns: ["source_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["transaction_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_refund_id_fkey"
+            columns: ["refund_id"]
+            isOneToOne: false
+            referencedRelation: "refunds"
+            referencedColumns: ["refund_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_reversed_transfer_id_fkey"
+            columns: ["reversed_transfer_id"]
+            isOneToOne: false
+            referencedRelation: "network_transfers"
+            referencedColumns: ["network_transfer_id"]
+          },
+        ]
+      }
+      network_account_sessions: {
+        Row: {
+          client_secret_hash: string
+          components: Json
+          consumed_at: string | null
+          created_at: string
+          environment: string
+          expires_at: string
+          member_organization_id: string
+          network_account_id: string
+          network_account_session_id: string
+          network_membership_id: string
+          operator_organization_id: string
+        }
+        Insert: {
+          client_secret_hash: string
+          components?: Json
+          consumed_at?: string | null
+          created_at?: string
+          environment: string
+          expires_at: string
+          member_organization_id: string
+          network_account_id: string
+          network_account_session_id?: string
+          network_membership_id: string
+          operator_organization_id: string
+        }
+        Update: {
+          client_secret_hash?: string
+          components?: Json
+          consumed_at?: string | null
+          created_at?: string
+          environment?: string
+          expires_at?: string
+          member_organization_id?: string
+          network_account_id?: string
+          network_account_session_id?: string
+          network_membership_id?: string
+          operator_organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "network_account_sessions_network_membership_id_fkey"
+            columns: ["network_membership_id"]
+            isOneToOne: false
+            referencedRelation: "network_memberships"
+            referencedColumns: ["network_membership_id"]
+          },
+          {
+            foreignKeyName: "network_account_sessions_network_account_id_fkey"
+            columns: ["network_account_id"]
+            isOneToOne: false
+            referencedRelation: "network_accounts"
+            referencedColumns: ["network_account_id"]
+          },
+        ]
+      }
       network_transaction_contexts: {
         Row: {
           actor_merchant_id: string | null
           api_key: string | null
+          application_fee_amount: number | null
           capability_key: string | null
+          charge_type: string
           checkout_session_id: string | null
           created_at: string
           environment: string
@@ -6907,12 +7134,17 @@ export type Database = {
             | null
           operator_organization_id: string
           refund_id: string | null
+          settled_at: string | null
           transaction_id: string | null
+          transfer_amount: number | null
+          transfer_group: string | null
         }
         Insert: {
           actor_merchant_id?: string | null
           api_key?: string | null
+          application_fee_amount?: number | null
           capability_key?: string | null
+          charge_type?: string
           checkout_session_id?: string | null
           created_at?: string
           environment: string
@@ -6927,12 +7159,17 @@ export type Database = {
             | null
           operator_organization_id: string
           refund_id?: string | null
+          settled_at?: string | null
           transaction_id?: string | null
+          transfer_amount?: number | null
+          transfer_group?: string | null
         }
         Update: {
           actor_merchant_id?: string | null
           api_key?: string | null
+          application_fee_amount?: number | null
           capability_key?: string | null
+          charge_type?: string
           checkout_session_id?: string | null
           created_at?: string
           environment?: string
@@ -6947,7 +7184,10 @@ export type Database = {
             | null
           operator_organization_id?: string
           refund_id?: string | null
+          settled_at?: string | null
           transaction_id?: string | null
+          transfer_amount?: number | null
+          transfer_group?: string | null
         }
         Relationships: [
           {
@@ -16663,14 +16903,27 @@ export type Database = {
         Returns: {
           active_members: number
           approved_at: string
+          branding: Json
+          charge_model: string
           created_at: string
+          fees_collector: string
           gross_amount: number
+          live_rejected_reason: string
+          live_requested_at: string
+          live_status: Database["public"]["Enums"]["network_operator_status"]
+          losses_collector: string
+          member_dashboard: string
+          onboarding_mode: string
           operator_fee_amount: number
           operator_profile_id: string
           organization_email: string
           organization_id: string
           organization_name: string
+          organization_verification_status: string
           pending_enrollments: number
+          platform_type: string
+          profile: Json
+          responsibilities_acknowledged_at: string
           risk_tier: string
           status: Database["public"]["Enums"]["network_operator_status"]
           total_transactions: number
@@ -17714,11 +17967,22 @@ export type Database = {
           metadata: Json
           network_account_id: string
           network_membership_id: string
+          operator_fee_rule_id: string
           public_account_id: string
           registry_identifier: string
           status: Database["public"]["Enums"]["network_membership_status"]
           tax_identifier: string
           terms_version: string
+          verification_status: string
+          onboarding_completed: boolean
+          has_payout_method: boolean
+          live_grants: string[]
+          test_grants: string[]
+          terms_currency: string
+          balance_live: number
+          balance_test: number
+          health_status: string
+          actions_required: string[]
         }[]
       }
       fetch_network_operator_fee_entries: {
@@ -17777,15 +18041,27 @@ export type Database = {
         Returns: {
           active_member_count: number
           approved_at: string
+          branding: Json
+          charge_model: string
           connected_operator_count: number
           default_capabilities: string[]
           default_fee_rule_id: string
           default_terms_version: string
+          fees_collector: string
           is_member: boolean
+          live_rejected_reason: string
+          live_requested_at: string
+          losses_collector: string
+          member_dashboard: string
           network_account_id: string
+          onboarding_mode: string
+          operator_live_status: string
           operator_profile_id: string
           operator_status: string
+          platform_type: string
+          profile: Json
           public_account_id: string
+          responsibilities_acknowledged_at: string
           risk_tier: string
         }[]
       }
@@ -17800,6 +18076,16 @@ export type Database = {
           pending_fee_amount: number
           total_members: number
           total_transactions: number
+          volume_direct: number
+          volume_destination: number
+          volume_separate: number
+          fees_posted: number
+          transfers_count: number
+          transfers_amount: number
+          members_enabled: number
+          members_restricted: number
+          members_in_review: number
+          live_status: string
         }[]
       }
       fetch_network_provider_settings_for_api: {
@@ -25728,6 +26014,162 @@ export type Database = {
         }
         Returns: string
       }
+      move_network_funds: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_allow_negative?: boolean
+          p_amount: number
+          p_api_key?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_description?: string
+          p_environment: string
+          p_from_organization_id: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_network_membership_id: string
+          p_network_transaction_context_id?: string
+          p_operator_fee_entry_id?: string
+          p_refund_id?: string
+          p_reversed_transfer_id?: string
+          p_source_transaction_id?: string
+          p_to_organization_id: string
+          p_transfer_group?: string
+          p_transfer_type: Database["public"]["Enums"]["network_transfer_type"]
+        }
+        Returns: string
+      }
+      build_network_transfer_payload: {
+        Args: { p_network_transfer_id: string }
+        Returns: Json
+      }
+      settle_network_transaction: {
+        Args: { p_transaction_id: string }
+        Returns: boolean
+      }
+      settle_network_refund: {
+        Args: {
+          p_refund_application_fee?: boolean
+          p_refund_id: string
+          p_reverse_transfer?: boolean
+        }
+        Returns: Json
+      }
+      create_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_amount: number
+          p_api_key?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_description?: string
+          p_destination_account: string
+          p_environment?: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_operator_organization_id: string
+          p_source_transaction_id?: string
+          p_transfer_group?: string
+        }
+        Returns: Json
+      }
+      reverse_network_transfer_for_api: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_amount?: number
+          p_api_key?: string
+          p_description?: string
+          p_idempotency_key?: string
+          p_metadata?: Json
+          p_operator_organization_id: string
+          p_transfer_id: string
+        }
+        Returns: Json
+      }
+      fetch_network_transfers_for_api: {
+        Args: {
+          p_destination_account?: string
+          p_environment?: string
+          p_limit?: number
+          p_offset?: number
+          p_operator_organization_id: string
+          p_source_transaction_id?: string
+          p_transfer_group?: string
+          p_transfer_types?: string[]
+        }
+        Returns: Json[]
+      }
+      get_network_transfer_for_api: {
+        Args: { p_operator_organization_id: string; p_transfer_id: string }
+        Returns: Json
+      }
+      fetch_network_balance_for_api: {
+        Args: {
+          p_currency_code?: string
+          p_environment?: string
+          p_network_membership_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          environment: string
+          last_updated: string
+          public_account_id: string
+        }[]
+      }
+      fetch_network_transfers: {
+        Args: {
+          p_environment?: string
+          p_limit?: number
+          p_member_organization_id?: string
+          p_offset?: number
+          p_organization_id: string
+        }
+        Returns: Json[]
+      }
+      fetch_network_member_balance: {
+        Args: {
+          p_environment?: string
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: {
+          balance: number
+          currency_code: string
+          last_updated: string
+        }[]
+      }
+      network_member_health: {
+        Args: { p_network_membership_id: string }
+        Returns: {
+          actions_required: string[]
+          health_status: string
+        }[]
+      }
+      record_network_login_link: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_api_key?: string
+          p_environment?: string
+          p_metadata?: Json
+          p_network_membership_id: string
+          p_operator_organization_id: string
+        }
+        Returns: Json
+      }
+      create_network_account_session: {
+        Args: {
+          p_client_secret_hash: string
+          p_components: Json
+          p_environment: string
+          p_operator_organization_id: string
+          p_public_account_id: string
+          p_ttl_minutes?: number
+        }
+        Returns: Json
+      }
+      resolve_network_account_session: {
+        Args: { p_client_secret_hash: string }
+        Returns: Json
+      }
       record_network_operator_fee_reversal: {
         Args: {
           p_metadata?: Json
@@ -25751,6 +26193,10 @@ export type Database = {
           p_operator_fee_currency?: Database["public"]["Enums"]["currency_code"]
           p_refund_id?: string
           p_transaction_id?: string
+          p_charge_type?: string
+          p_application_fee_amount?: number
+          p_transfer_amount?: number
+          p_transfer_group?: string
         }
         Returns: string
       }
@@ -25926,6 +26372,14 @@ export type Database = {
         Args: { p_email: string }
         Returns: boolean
       }
+      reject_network_operator_live: {
+        Args: {
+          p_operator_organization_id: string
+          p_reason?: string
+          p_rejected_by?: string
+        }
+        Returns: string
+      }
       reorder_product_files: {
         Args: {
           p_file_ids: string[]
@@ -25937,6 +26391,10 @@ export type Database = {
       replace_service_availability_rules: {
         Args: { p_organization_id: string; p_rules: Json }
         Returns: undefined
+      }
+      request_network_operator_live: {
+        Args: { p_note?: string; p_organization_id: string }
+        Returns: string
       }
       request_live_activation: {
         Args: {
@@ -26415,6 +26873,14 @@ export type Database = {
         }
         Returns: string
       }
+      set_network_membership_fee_rule: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_fee_rule_id?: string
+          p_network_membership_id: string
+        }
+        Returns: boolean
+      }
       set_network_membership_status: {
         Args: {
           p_actor_merchant_id?: string
@@ -26423,6 +26889,30 @@ export type Database = {
           p_status: Database["public"]["Enums"]["network_membership_status"]
         }
         Returns: boolean
+      }
+      set_network_operator_default_fee_rule: {
+        Args: {
+          p_actor_merchant_id?: string
+          p_fee_rule_id?: string
+          p_operator_organization_id: string
+        }
+        Returns: boolean
+      }
+      setup_network_operator_profile: {
+        Args: {
+          p_acknowledge_responsibilities?: boolean
+          p_branding?: Json
+          p_charge_model: string
+          p_default_capabilities?: string[]
+          p_fees_collector?: string
+          p_losses_collector?: string
+          p_member_dashboard?: string
+          p_onboarding_mode?: string
+          p_organization_id: string
+          p_platform_type: string
+          p_profile?: Json
+        }
+        Returns: string
       }
       set_organization_api_access_suspended: {
         Args: { p_organization_id: string; p_suspended: boolean }
@@ -26920,6 +27410,20 @@ export type Database = {
           p_is_active?: boolean
           p_meter_id: string
           p_organization_id: string
+        }
+        Returns: string
+      }
+      update_network_operator_profile: {
+        Args: {
+          p_branding?: Json
+          p_charge_model?: string
+          p_fees_collector?: string
+          p_losses_collector?: string
+          p_member_dashboard?: string
+          p_onboarding_mode?: string
+          p_organization_id: string
+          p_platform_type?: string
+          p_profile?: Json
         }
         Returns: string
       }
@@ -28144,6 +28648,15 @@ export type Database = {
         | "cancelled"
       network_fee_entry_status: "pending" | "posted" | "reversed" | "voided"
       network_fee_entry_type: "charge" | "refund_reversal" | "adjustment"
+      network_transfer_status: "pending" | "posted" | "reversed" | "failed"
+      network_transfer_type:
+        | "destination"
+        | "separate"
+        | "operator_fee"
+        | "processing_fee_cover"
+        | "fee_reversal"
+        | "transfer_reversal"
+        | "loss_cover"
       network_fee_rule_status: "active" | "inactive" | "archived"
       network_membership_status:
         | "invited"
@@ -28371,6 +28884,9 @@ export type Database = {
         | "NETWORK_PAYMENT_CREATED"
         | "NETWORK_OPERATOR_FEE_CREATED"
         | "NETWORK_OPERATOR_FEE_REVERSED"
+        | "NETWORK_TRANSFER_CREATED"
+        | "NETWORK_TRANSFER_REVERSED"
+        | "NETWORK_MEMBER_PAYOUT_PAID"
         | "USAGE_RECORDED"
         | "USAGE_INVOICE_CREATED"
         | "USAGE_INVOICE_PAID"
@@ -28805,6 +29321,16 @@ export const Constants = {
       ],
       network_fee_entry_status: ["pending", "posted", "reversed", "voided"],
       network_fee_entry_type: ["charge", "refund_reversal", "adjustment"],
+      network_transfer_status: ["pending", "posted", "reversed", "failed"],
+      network_transfer_type: [
+        "destination",
+        "separate",
+        "operator_fee",
+        "processing_fee_cover",
+        "fee_reversal",
+        "transfer_reversal",
+        "loss_cover",
+      ],
       network_fee_rule_status: ["active", "inactive", "archived"],
       network_membership_status: [
         "invited",
@@ -29046,6 +29572,9 @@ export const Constants = {
         "NETWORK_PAYMENT_CREATED",
         "NETWORK_OPERATOR_FEE_CREATED",
         "NETWORK_OPERATOR_FEE_REVERSED",
+        "NETWORK_TRANSFER_CREATED",
+        "NETWORK_TRANSFER_REVERSED",
+        "NETWORK_MEMBER_PAYOUT_PAID",
         "USAGE_RECORDED",
         "USAGE_INVOICE_CREATED",
         "USAGE_INVOICE_PAID",

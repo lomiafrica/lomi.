@@ -1,0 +1,114 @@
+---
+title: "Create transfer"
+description: "Create transfer"
+full: true
+method: post
+path: /transfers
+operationId: TransfersController_create
+---
+
+## Overview
+
+Create transfer
+
+Moves funds from your Operator balance to a connected Member Account (`acct_...`). Two-step confirmation: the first call returns `requires_confirmation: true` and a `confirmation_token`; repeat the same request with `confirmation_token` to execute. Balances move in XOF.
+
+
+### When to use this
+
+Use for lomi. Network separate charges and transfers: charge on your own account first, then pay the member later (after delivery, at the end of the day, or in a batch).
+
+### Good to know
+
+Operator secret key **without** `Lomi-Account`. `Idempotency-Key` is required. The destination must be an active membership with `transfer.receive` for the key environment. A transfer cannot exceed your available balance.
+
+### See also
+
+[List transfers](/api/transfers/TransfersController_findAll) · [Reverse transfer](/api/transfers/TransfersController_reverse) · [lomi. Network guide](/build/platform/network#transfers)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /transfers`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Yes | - | Required unique key for this write. Replays return the original response. |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Request body
+
+JSON request payload.
+
+Schema: `CreateTransferDto`
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `amount` | Yes | `number` | Amount to transfer, in `currency_code` (integer units). |
+| `currency_code` | Yes | `string` | Currency of the transfer (XOF, USD, EUR). Balances settle in XOF. |
+| `destination` | Yes | `string` | Member Account that receives the funds. Must be an active membership with the transfer.receive capability for this environment. |
+| `transfer_group` | No | `string` | Transfer group linking this transfer to the payment(s) it settles (separate charges and transfers). |
+| `source_transaction_id` | No | `string` | Transaction this transfer settles (optional, for reporting and refunds). |
+| `description` | No | `string` | - |
+| `metadata` | No | `object` | - |
+
+Example body:
+
+```json
+{
+  "amount": 9000,
+  "currency_code": "XOF",
+  "destination": "acct_1a2b3c4d5e6f7g8h"
+}
+```
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Transfer created (object: transfer) |
+| `400` | Invalid destination, capability, or insufficient balance |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/transfers" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":9000,"currency_code":"XOF","destination":"acct_1a2b3c4d5e6f7g8h"}'
+```
+
+## OpenAPI
+
+- **operationId**: `TransfersController_create`
+- **Operation**: `POST /transfers`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

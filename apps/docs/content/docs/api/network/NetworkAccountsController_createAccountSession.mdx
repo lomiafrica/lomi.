@@ -1,0 +1,107 @@
+---
+title: "Create account session"
+description: "Create account session"
+full: true
+method: post
+path: /network/account-sessions
+operationId: NetworkAccountsController_createAccountSession
+---
+
+## Overview
+
+Create account session
+
+Mints a short-lived `client_secret` (`nas_...`) that your front end passes to the embedded member components: `payments`, `payouts`, `balance`, `onboarding`, and `notification_banner`. Sessions expire after 60 minutes and are scoped to one Member Account.
+
+
+### When to use this
+
+Use to render member surfaces inside your own pages instead of sending members to the lomi. dashboard. Create a new session on each page load.
+
+### Good to know
+
+Operator secret key **without** `Lomi-Account`. Requires `account.read` for the key environment and `member_dashboard` set to `full` or `member_mode` on your operator profile. Never expose your Operator key to the browser; only the `client_secret` goes client-side.
+
+### See also
+
+[Create login link](/api/network/NetworkAccountsController_createLoginLink) · [lomi. Network guide](/build/platform/network#embedded-components)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /network/account-sessions`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Request body
+
+JSON request payload.
+
+Schema: `CreateAccountSessionDto`
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `account` | Yes | `string` | Member Account the embedded components are rendered for. Must be an active membership of your Network. |
+| `components` | No | `object` | Components the session may render. Omitted components default to enabled. |
+
+Example body:
+
+```json
+{
+  "account": "acct_1a2b3c4d5e6f7g8h"
+}
+```
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Account session created (object: account_session): &#123; account, client_secret, expires_at, components, embed_base_url &#125; |
+| `400` | Membership inactive, member dashboard disabled, or Lomi-Account header sent |
+| `404` | Member Account not found |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/network/account-sessions" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"account":"acct_1a2b3c4d5e6f7g8h"}'
+```
+
+## OpenAPI
+
+- **operationId**: `NetworkAccountsController_createAccountSession`
+- **Operation**: `POST /network/account-sessions`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

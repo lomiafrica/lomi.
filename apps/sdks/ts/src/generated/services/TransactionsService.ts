@@ -27,8 +27,8 @@ export class TransactionsService {
      * List transactions
      * @see OpenAPI `TransactionsController_findAll`
      */
-    public async list(params?: paths['/transactions']['get']['parameters'] extends { query: infer Q } ? Q : Record<string, unknown>, options?: import("../../request-options.js").LomiRequestOptions): Promise<(NonNullable<NonNullable<paths['/transactions']['get']['responses'][200]>['content']>['application/json'])> {
-        return requestWithClient<(NonNullable<NonNullable<paths['/transactions']['get']['responses'][200]>['content']>['application/json'])>(this.client, {
+    public async list(params?: paths['/transactions']['get']['parameters'] extends { query: infer Q } ? Q : Record<string, unknown>, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['TransactionResponseDto']> {
+        return requestWithClient<components['schemas']['TransactionResponseDto']>(this.client, {
             method: 'GET',
             url: '/transactions',
             query: params,
@@ -70,5 +70,18 @@ export class TransactionsService {
 
             page += 1;
         }
+    }
+
+    /**
+     * Receipt PDF
+     * @see OpenAPI `TransactionsController_receiptPdf`
+     */
+    public async receiptPdf(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['InvoicePdfResponseDto']> {
+        return requestWithClient<components['schemas']['InvoicePdfResponseDto']>(this.client, {
+            method: 'GET',
+            url: '/transactions/{id}/receipt.pdf',
+            path: { id: id },
+            ...options,
+        });
     }
 }

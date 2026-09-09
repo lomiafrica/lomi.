@@ -199,6 +199,14 @@
     "title": "Get transaction",
     "description": "Retrieve one payment by id, including status, amount, channel, customer, and fees."
   },
+  "GET /transfers": {
+    "title": "List Network transfers",
+    "description": "lomi. Network: list transfers your Operator account made to Member Accounts (destination transfers, separate transfers, operator fees, reversals). Filter by destination, transfer_group, source_transaction_id, or transfer_type. Operator key only, no Lomi-Account."
+  },
+  "GET /transfers/{id}": {
+    "title": "Get Network transfer",
+    "description": "lomi. Network: retrieve one transfer (tr_…) with amount, destination, status, transfer_type, reversed_amount, and transfer_group."
+  },
   "GET /usage/entitlements": {
     "title": "Check an entitlement",
     "description": "Check whether a customer/subscription is entitled to a feature and its remaining quota. Use to gate access in usage-based plans."
@@ -279,6 +287,14 @@
     "title": "Create meter",
     "description": "Define a billable metric for usage-based products. Usage events with the matching code update this meter's balances."
   },
+  "POST /network/account-sessions": {
+    "title": "Create Network account session",
+    "description": "lomi. Network: mint a short-lived client_secret so a Member Account (acct_…) can render embedded components (onboarding, payments, payouts, balance, notification_banner) inside your own UI. Operator key only, no Lomi-Account."
+  },
+  "POST /network/accounts/{account}/login_links": {
+    "title": "Create Network login link",
+    "description": "lomi. Network: create a single-use URL that signs a Member Account (acct_…) into its lomi. dashboard. Hand it to the member; it expires quickly. Operator key only, no Lomi-Account."
+  },
   "POST /payment-links": {
     "title": "Create payment link",
     "description": "Create a reusable, shareable payment URL for a fixed amount or product. Good for agents: returns a link you can hand to one or many customers."
@@ -310,6 +326,14 @@
   "POST /settlements/instant": {
     "title": "Request an instant settlement",
     "description": "Nitro: record a rail fee on an existing payout, or unlock held card funds (advance) up to the org cap. Requires Idempotency-Key. Advance stays off until ops approves a limit."
+  },
+  "POST /transfers": {
+    "title": "Create Network transfer",
+    "description": "lomi. Network: move funds from your Operator balance to a Member Account (acct_…) for separate charges and transfers or an ad-hoc payout. Two-step: the first call (no confirmation_token) returns a preview with confirmation_token; call again with that token to execute. Requires Idempotency-Key (reuse the same key on both calls). Operator key only, no Lomi-Account."
+  },
+  "POST /transfers/{id}/reversals": {
+    "title": "Reverse Network transfer",
+    "description": "lomi. Network: reverse a transfer fully or partially (optional amount) back to your Operator balance. Same two-step confirmation_token flow and Idempotency-Key as transfer creation."
   },
   "POST /subscriptions/{id}/cancel": {
     "title": "Cancel subscription",
