@@ -26,9 +26,10 @@
  * Keep `@types/react` / `@types/react-dom` in pay `dependencies` so checkout
  * typecheck can resolve `react` next to the nested runtime copy lucide pulls.
  * Keep `date-fns` in UI `dependencies` so Vite can resolve react-day-picker.
- * After a source-only UI install, drop leaked React 18 `@types/react` so a
- * React 19 app (storefront) does not typecheck against them. Do not strip
- * those types from pay.
+ * After a source-only UI install, drop nested `react` / `react-dom` and
+ * leaked React 18 `@types/react` so each app typechecks UI source against
+ * its own React (18 on dashboard/admin, 19 on storefront/checkout). Do not
+ * strip those from pay.
  *
  * Usage: node tooling/scripts/install-app-with-packages.mjs <app-dir>
  *   e.g. node tooling/scripts/install-app-with-packages.mjs apps/docs
@@ -205,9 +206,13 @@ function installDeps(appRel, dir, { frozen }) {
 
 function stripLeakedReactTypes(dir) {
   if (path.relative(ROOT, dir) !== "packages/ui") return;
-  const typesDir = path.join(dir, "node_modules", "@types");
-  for (const name of ["react", "react-dom"]) {
-    const target = path.join(typesDir, name);
+  const targets = [
+    path.join(dir, "node_modules", "@types", "react"),
+    path.join(dir, "node_modules", "@types", "react-dom"),
+    path.join(dir, "node_modules", "react"),
+    path.join(dir, "node_modules", "react-dom"),
+  ];
+  for (const target of targets) {
     if (!existsSync(target)) continue;
     rmSync(target, { recursive: true, force: true });
     console.log(`==> removed leaked ${path.relative(ROOT, target)}`);
