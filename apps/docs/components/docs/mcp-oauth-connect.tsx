@@ -39,19 +39,19 @@ export function McpOauthConnect({ className }: { className?: string }) {
   );
 
   const clientUi = {
-      cursor: {
-        icon: <CursorBrandIcon className="size-4 shrink-0" />,
-        href: buildCursorOauthDeeplink(),
-      },
-      claude: {
-        icon: <ClaudeBrandIcon className="size-4 shrink-0" />,
-        href: buildClaudeOauthInstallUrl(),
-      },
-      vscode: {
-        icon: <VscodeBrandIcon className="size-4 shrink-0" />,
-        href: buildVscodeOauthInstallUrl(),
-      },
-    } satisfies { [K in McpOauthClientId]: { icon: ReactNode; href: string } };
+    cursor: {
+      icon: <CursorBrandIcon className="size-4 shrink-0" />,
+      href: buildCursorOauthDeeplink(),
+    },
+    claude: {
+      icon: <ClaudeBrandIcon className="size-4 shrink-0" />,
+      href: buildClaudeOauthInstallUrl(),
+    },
+    vscode: {
+      icon: <VscodeBrandIcon className="size-4 shrink-0" />,
+      href: buildVscodeOauthInstallUrl(),
+    },
+  } satisfies { [K in McpOauthClientId]: { icon: ReactNode; href: string } };
 
   return (
     <div className={cn('not-prose my-4 flex flex-wrap gap-2', className)}>

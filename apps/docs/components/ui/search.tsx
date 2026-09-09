@@ -70,9 +70,7 @@ async function searchLocal(
   return hits;
 }
 
-function isSortedResultType(
-  value: string,
-): value is SortedResult['type'] {
+function isSortedResultType(value: string): value is SortedResult['type'] {
   return value === 'page' || value === 'heading' || value === 'text';
 }
 

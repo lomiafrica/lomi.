@@ -39,10 +39,7 @@ export async function GET() {
     return NextResponse.json(signedOut);
   }
 
-  const context = await docsApiGet(
-    '/auth/docs-session/tryit-context',
-    token,
-  );
+  const context = await docsApiGet('/auth/docs-session/tryit-context', token);
 
   const organizations: TryitOrg[] = [];
   if (context && isJsonObject(context) && isJsonArray(context.organizations)) {

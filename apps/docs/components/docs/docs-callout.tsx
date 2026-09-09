@@ -26,8 +26,13 @@ export function DocsCallout(props: DocsCalloutProps) {
   const rest = { ...props };
   delete rest.emoji;
   delete rest.icon;
-  const { title, type: inputType = 'info', children, className, ...forward } =
-    rest;
+  const {
+    title,
+    type: inputType = 'info',
+    children,
+    className,
+    ...forward
+  } = rest;
   const type = resolveType(inputType);
 
   return (

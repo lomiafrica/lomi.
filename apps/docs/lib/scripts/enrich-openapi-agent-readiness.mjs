@@ -125,11 +125,11 @@ function enrichMerchantSpec(spec) {
     },
   };
 
-function isPlainObject(value) {
-  return value instanceof Object && !Array.isArray(value);
-}
+  function isPlainObject(value) {
+    return value instanceof Object && !Array.isArray(value);
+  }
 
-const methods = ['get', 'post', 'put', 'patch', 'delete'];
+  const methods = ['get', 'post', 'put', 'patch', 'delete'];
   for (const [pathKey, pathItem] of Object.entries(spec.paths ?? {})) {
     for (const method of methods) {
       const op = pathItem[method];

@@ -58,11 +58,15 @@ type DocsWorkspaceValue = {
 
 const DocsWorkspaceContext = createContext<DocsWorkspaceValue | null>(null);
 
-function isPricingPlan(value: string | undefined): value is Exclude<DocsPricingPlan, null> {
+function isPricingPlan(
+  value: string | undefined,
+): value is Exclude<DocsPricingPlan, null> {
   return value === 'fixed' || value === 'dynamic' || value === 'custom';
 }
 
-function isVolumeTier(value: string | undefined): value is Exclude<DocsVolumeTier, null> {
+function isVolumeTier(
+  value: string | undefined,
+): value is Exclude<DocsVolumeTier, null> {
   return (
     value === 'starter' ||
     value === 'growth' ||

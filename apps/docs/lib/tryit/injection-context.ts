@@ -2,11 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
-import {
-  isJsonArray,
-  isJsonObject,
-  readString,
-} from '@lomi./shared';
+import { isJsonArray, isJsonObject, readString } from '@lomi./shared';
 import { COOKIE_TRYIT_ORG } from '@/lib/tryit/constants';
 import { parseTryitOrgId, selectTryitOrganizationId } from '@/lib/tryit/gating';
 
@@ -30,10 +26,7 @@ export async function resolveTryitInjectionContext(): Promise<{
     return { shouldInjectTestKey: true, activeOrganizationId: cookieOrg };
   }
 
-  const context = await docsApiGet(
-    '/auth/docs-session/tryit-context',
-    token,
-  );
+  const context = await docsApiGet('/auth/docs-session/tryit-context', token);
   const organizations: TryitSessionContext['organizations'] = [];
   if (context && isJsonObject(context) && isJsonArray(context.organizations)) {
     for (const item of context.organizations) {

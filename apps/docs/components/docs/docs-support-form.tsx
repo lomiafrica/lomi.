@@ -7,11 +7,7 @@ import { cn } from '@lomi./ui/cn';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { t as translate } from '@/lib/i18n/translations';
 import { useDocsTurnstile } from '@/components/docs/use-docs-turnstile';
-import {
-  isJsonObject,
-  readString,
-  validateJsonValue,
-} from '@lomi./shared';
+import { isJsonObject, readString, validateJsonValue } from '@lomi./shared';
 
 const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

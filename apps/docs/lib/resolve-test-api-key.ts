@@ -16,10 +16,7 @@ export async function resolveTestSecretApiKey(
   const query = options.activeOrganizationId
     ? `?organizationId=${encodeURIComponent(options.activeOrganizationId)}`
     : '';
-  const result = await docsApiGet(
-    `/auth/docs-session/test-key${query}`,
-    token,
-  );
+  const result = await docsApiGet(`/auth/docs-session/test-key${query}`, token);
   if (!result || !isJsonObject(result)) return null;
   return readString(result, 'api_key') ?? null;
 }

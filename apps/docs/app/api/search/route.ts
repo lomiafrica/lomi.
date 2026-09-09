@@ -66,7 +66,9 @@ export const { GET } = createFromSource(source, {
   async buildIndex(page) {
     const { data } = page;
     const title = isString(data.title) ? data.title : undefined;
-    const description = isString(data.description) ? data.description : undefined;
+    const description = isString(data.description)
+      ? data.description
+      : undefined;
     const structuredData = await structuredDataFromPage(data);
 
     if (!structuredData) {

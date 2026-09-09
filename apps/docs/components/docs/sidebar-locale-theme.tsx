@@ -174,10 +174,7 @@ export function DocsSidebarLocaleAndTheme({
     }
     function onPointerDown(event: PointerEvent) {
       const target = event.target;
-      if (
-        target instanceof Node &&
-        rootRef.current?.contains(target)
-      ) {
+      if (target instanceof Node && rootRef.current?.contains(target)) {
         return;
       }
       dismiss();

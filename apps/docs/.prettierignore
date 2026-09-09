@@ -6,6 +6,8 @@ content/
 # Prettier reformats arrays inline, which breaks the CI "verify committed spec"
 # step (it diffs against the export script's output). Leave it untouched.
 openapi.json
+agent-openapi.json
+pnpm-lock.yaml
 
 # Other common files to ignore
 node_modules/
