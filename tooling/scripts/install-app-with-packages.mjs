@@ -27,9 +27,11 @@
  * typecheck can resolve `react` next to the nested runtime copy lucide pulls.
  * Keep `date-fns` in UI `dependencies` so Vite can resolve react-day-picker.
  * After a source-only UI install, drop nested `react` / `react-dom` and
- * leaked React 18 `@types/react` so each app typechecks UI source against
- * its own React (18 on dashboard/admin, 19 on storefront/checkout). Do not
- * strip those from pay.
+ * leaked React 18 `@types/react`, then symlink the consuming app's React
+ * (and its `@types/react`) into `packages/ui/node_modules`. TypeScript
+ * resolves `react` from the UI file, not from `apps/<app>/node_modules`,
+ * so a strip without the relink leaves storefront/checkout/admin/dashboard
+ * unable to find a module. Do not strip those from pay.
  *
  * Usage: node tooling/scripts/install-app-with-packages.mjs <app-dir>
  *   e.g. node tooling/scripts/install-app-with-packages.mjs apps/docs
@@ -219,6 +221,42 @@ function stripLeakedReactTypes(dir) {
   }
 }
 
+/**
+ * Next typechecks `@lomi./ui` sources as files under `packages/ui`.
+ * Module resolution starts there, so the app's React is invisible
+ * until it is linked into the UI tree.
+ */
+function linkAppReactIntoUi(appRel) {
+  const uiNm = path.join(ROOT, "packages", "ui", "node_modules");
+  const appNm = path.join(ROOT, appRel, "node_modules");
+  if (!existsSync(path.join(ROOT, "packages", "ui", "package.json"))) return;
+  if (!existsSync(appNm)) return;
+
+  mkdirSync(uiNm, { recursive: true });
+  for (const name of ["react", "react-dom"]) {
+    const from = path.join(appNm, name);
+    const to = path.join(uiNm, name);
+    if (!existsSync(from)) continue;
+    rmSync(to, { recursive: true, force: true });
+    symlinkSync(from, to);
+    console.log(
+      `==> linked packages/ui/node_modules/${name} -> ${path.relative(ROOT, from)}`,
+    );
+  }
+
+  mkdirSync(path.join(uiNm, "@types"), { recursive: true });
+  for (const name of ["react", "react-dom"]) {
+    const from = path.join(appNm, "@types", name);
+    const to = path.join(uiNm, "@types", name);
+    if (!existsSync(from)) continue;
+    rmSync(to, { recursive: true, force: true });
+    symlinkSync(from, to);
+    console.log(
+      `==> linked packages/ui/node_modules/@types/${name} -> ${path.relative(ROOT, from)}`,
+    );
+  }
+}
+
 function installSourceOnlyPackage(appRel, dir) {
   wipeCachedNodeModules(dir);
   if (useNpm(appRel)) {
@@ -341,7 +379,7 @@ function installFileApp(appRel, pkg, { frozen }) {
     } else {
       // Source-only packages still need runtime deps (clsx, radix, pay
       // React types). Omit peers so a second Next does not install. Strip
-      // leaked React 18 types from UI only.
+      // nested react and leaked React 18 types from UI only.
       installSourceOnlyPackage(appRel, dir);
     }
     hoistNodeModules(dir);
@@ -378,6 +416,7 @@ function main() {
     rewritePnpmScriptsForNpm(appDir);
   }
   installFileApp(appRel, pkg, { frozen: !rewritten });
+  linkAppReactIntoUi(appRel);
   if (
     useNpm(appRel) &&
     (appRel === "apps/website" ||
