@@ -1204,7 +1204,8 @@
             "scopes": {
               "provisioning.onboard": "Create and complete merchant onboarding",
               "merchant.read": "Read merchant resources",
-              "merchant.write": "Write merchant resources"
+              "merchant.write": "Write merchant resources (no payouts, refunds, or instant settlement)",
+              "merchant.money": "Move money: payouts, refunds, and instant settlement"
             }
           }
         },
@@ -1270,6 +1271,13 @@
           },
           "content_type": {
             "type": "string",
+            "enum": [
+              "application/pdf",
+              "image/jpeg",
+              "image/png",
+              "image/heic",
+              "image/heif"
+            ],
             "example": "image/jpeg"
           },
           "file_name": {

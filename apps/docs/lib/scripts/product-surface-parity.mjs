@@ -72,8 +72,13 @@ for (const link of productFooterLinks) {
     errors.push(`sitemap.ts missing route: ${link}`);
   }
   const routeDir = link === '/relay' ? 'relay' : link.slice(1);
-  const pagePath = join(websiteRoot, 'src/app/(home)', routeDir, 'page.tsx');
-  if (!existsSync(pagePath)) {
+  // Marketing pages live under the localized segment `(home)/l/[lang]/<route>`
+  // (root-level `(home)/<route>` is kept for older layouts).
+  const pageCandidates = [
+    join(websiteRoot, 'src/app/(home)/l/[lang]', routeDir, 'page.tsx'),
+    join(websiteRoot, 'src/app/(home)', routeDir, 'page.tsx'),
+  ];
+  if (!pageCandidates.some((pagePath) => existsSync(pagePath))) {
     errors.push(`Missing marketing page.tsx for ${link}`);
   }
 }
