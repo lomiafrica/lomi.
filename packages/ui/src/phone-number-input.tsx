@@ -3,7 +3,7 @@
 import * as React from "react";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import * as RPNInput from "react-phone-number-input";
-import flags from "react-phone-number-input/flags";
+import * as flagIcons from "react-phone-number-input/flags";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { CheckIcon, ChevronDown, PencilIcon, Phone } from "lucide-react";
 import { cn } from "./cn";
@@ -255,7 +255,7 @@ export function PhoneNumberInput({
             />
           </div>
           {requiredMark ? (
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-red-500 dark:text-[#56A5F9]">
               *
             </span>
           ) : null}
@@ -411,19 +411,39 @@ function CountrySelect({
   );
 }
 
+type CountryFlagRender = React.ComponentType<{
+  title?: string;
+  className?: string;
+}>;
+
+function resolveCountryFlag(country: string): CountryFlagRender | undefined {
+  const bag = flagIcons as Record<string, unknown> & {
+    default?: Record<string, unknown>;
+  };
+  const named = bag[country];
+  if (typeof named === "function") {
+    return named as CountryFlagRender;
+  }
+  const fromDefault = bag.default?.[country];
+  if (typeof fromDefault === "function") {
+    return fromDefault as CountryFlagRender;
+  }
+  return undefined;
+}
+
 function FlagComponent({ country, countryName }: RPNInput.FlagProps) {
   const compact = useContext(PhoneInputCompactContext);
-  const Flag = flags[country];
+  const Flag = country ? resolveCountryFlag(country) : undefined;
 
   return (
     <span
       className={cn(
-        "flex items-center justify-center overflow-hidden rounded-[3px]",
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-[3px] [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-none",
         compact ? "h-3 w-4" : "h-4 w-5",
       )}
     >
       {Flag ? (
-        <Flag title={countryName} />
+        <Flag title={countryName} className="block h-full w-full max-w-none" />
       ) : (
         <Phone
           size={compact ? 12 : 16}
