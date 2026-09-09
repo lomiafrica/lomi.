@@ -15,6 +15,7 @@ jobs:
       cli: ${{ steps.changes.outputs.cli }}
       admin: ${{ steps.changes.outputs.admin }}
       checkout: ${{ steps.changes.outputs.checkout }}
+      shared: ${{ steps.changes.outputs.shared }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -39,6 +40,8 @@ jobs:
               - 'apps/checkout'
               - 'packages/shared/**'
               - 'packages/queries/**'
+            shared:
+              - 'packages/shared/**'
 
   build-api:
     needs: detect-changes
@@ -167,4 +170,22 @@ jobs:
       - name: Install checkout dependencies
         working-directory: .
         run: node tooling/scripts/install-app-with-packages.mjs apps/checkout
+      - run: pnpm test
+
+  test-shared:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.shared == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/shared
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: pnpm install --ignore-workspace --no-frozen-lockfile
       - run: pnpm test

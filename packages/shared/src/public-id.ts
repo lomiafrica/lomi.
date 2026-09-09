@@ -32,6 +32,21 @@ const UUID_PATTERN =
 
 const PREFIX_VALUES = new Set<string>(Object.values(PUBLIC_ID_PREFIXES));
 
+/**
+ * Longest prefix wins. `re_` (refund) is a prefix of `req_` (payment
+ * request); first-match on insertion order misclassifies `req_*` as a refund.
+ */
+function matchPublicIdPrefix(normalized: string): string | null {
+  let matched: string | null = null;
+  for (const prefix of PREFIX_VALUES) {
+    if (!normalized.startsWith(prefix.toUpperCase())) continue;
+    if (!matched || prefix.length > matched.length) {
+      matched = prefix;
+    }
+  }
+  return matched;
+}
+
 export function normalizePublicId(raw: string): string {
   return raw.trim().replace(/[\s-]/g, "").toUpperCase();
 }
@@ -46,17 +61,13 @@ export function isPublicIdPrefix(prefix: string): boolean {
 
 export function isPublicId(value: string, prefix?: string): boolean {
   const normalized = normalizePublicId(value);
-  const expectedPrefix = prefix ? prefix.toUpperCase() : null;
-  if (expectedPrefix && !normalized.startsWith(expectedPrefix)) {
+  const matchedPrefix = matchPublicIdPrefix(normalized);
+  if (!matchedPrefix) return false;
+  if (prefix && matchedPrefix.toUpperCase() !== prefix.toUpperCase()) {
     return false;
   }
 
-  const matchedPrefix = [...PREFIX_VALUES].find((item) =>
-    normalized.startsWith(item.toUpperCase()),
-  );
-  if (!matchedPrefix) return false;
-
-  const body = normalized.slice(matchedPrefix.length);
+  const body = normalized.slice(matchedPrefix.toUpperCase().length);
   if (body.length !== PUBLIC_ID_BODY_LENGTH) return false;
   for (const ch of body) {
     if (!PUBLIC_ID_ALPHABET.includes(ch)) return false;
@@ -65,11 +76,7 @@ export function isPublicId(value: string, prefix?: string): boolean {
 }
 
 export function publicIdPrefix(value: string): string | null {
-  const normalized = normalizePublicId(value);
-  const matched = [...PREFIX_VALUES].find((item) =>
-    normalized.startsWith(item.toUpperCase()),
-  );
-  return matched ?? null;
+  return matchPublicIdPrefix(normalizePublicId(value));
 }
 
 export function formatPublicId(value: string | null | undefined): string | null {

@@ -71,6 +71,17 @@ export async function manualAdjustChannelBalance(
   return callRpc(client, "manual_adjust_channel_balance", args, "manual_adjust_channel_balance", options);
 }
 
+export async function restoreMerchant(
+  client: TypedSupabaseClient,
+  args: DbFunctions["restore_merchant"]["Args"],
+  options?: SupabaseRpcOptions<DbFunctions["restore_merchant"]["Returns"]> | null,
+): Promise<DbFunctions["restore_merchant"]["Returns"] | null | boolean> {
+  if (options === null) {
+    return callRpc(client, "restore_merchant", args, "restore_merchant", { fallbackValue: null });
+  }
+  return callRpc(client, "restore_merchant", args, "restore_merchant", options);
+}
+
 export async function rejectManualRefundRequest(
   client: TypedSupabaseClient,
   args: DbFunctions["reject_manual_refund_request"]["Args"],
