@@ -285,14 +285,17 @@
       "capabilities": [
         "install",
         "dev",
+        "start",
         "lint",
         "format",
         "knip",
+        "typecheck",
+        "test",
         "types:generate"
       ],
       "owner": "mobile",
       "risk": "medium",
-      "notes": "dev is the Expo bundler. start remains an Expo-compatible alias."
+      "notes": "dev is the Expo bundler. start is an Expo-compatible alias. Monorepo CI runs lint, knip, tsc, and Jest."
     },
     {
       "id": "cli",
