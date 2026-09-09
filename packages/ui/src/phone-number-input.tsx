@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import * as RPNInput from "react-phone-number-input";
 import * as flagIcons from "react-phone-number-input/flags";
 import { isValidPhoneNumber } from "react-phone-number-input";
@@ -204,94 +211,98 @@ export function PhoneNumberInput({
   return (
     <PhoneInputCompactContext.Provider value={compact}>
       <PhoneInputForceLightContext.Provider value={forceLight}>
-      <PhoneInputStackContext.Provider value={stackRole}>
-        <div className={cn(compact || stackRole !== "solo" ? "space-y-0" : "space-y-2")}>
-          <div className="relative">
+        <PhoneInputStackContext.Provider value={stackRole}>
           <div
             className={cn(
-              "flex w-full overflow-hidden transition-colors",
-              forceLight
-                ? "bg-white"
-                : stackRole === "solo"
-                  ? "bg-transparent"
-                  : "bg-white dark:bg-secondary",
-              compact
-                ? forceLight
-                  ? "phone-input-compact h-7 rounded-sm border border-gray-300 dark:border-gray-300"
-                  : "phone-input-compact h-7 rounded-sm border border-stone-200 dark:border-white/[0.16]"
-                : stackWrapperClass,
-              showActionButton && !compact && "pr-9",
-              className,
+              compact || stackRole !== "solo" ? "space-y-0" : "space-y-2",
             )}
-            style={forceLight ? { borderColor: "#d1d5db" } : undefined}
           >
-            <RPNInput.default
-              className={cn(
-                "flex PhoneInput w-full",
-                compact
-                  ? "h-7 min-h-0 items-stretch"
-                  : "h-full min-h-0 items-stretch",
-              )}
-              international
-              defaultCountry={resolvedDefault}
-              {...(countriesProp &&
-                countriesProp.length > 0 && { countries: countriesProp })}
-              flagComponent={FlagComponent}
-              countrySelectComponent={CountrySelect}
-              inputComponent={PhoneField}
-              placeholder={placeholder}
-              value={value}
-              onChange={(next) => {
-                markTouched();
-                onChange(next);
-              }}
-              onCountryChange={(countryCode) => {
-                markTouched();
-                onCountryChange?.(countryCode);
-              }}
-              smartCaret={true}
-              countryCallingCodeEditable={true}
-              disabled={fieldDisabled}
-              onKeyDown={handleKeyDown}
-              onBlur={() => {
-                markTouched();
-                validatePhoneNumber(value);
-              }}
-            />
+            <div className="relative">
+              <div
+                className={cn(
+                  "flex w-full overflow-hidden transition-colors",
+                  forceLight
+                    ? "bg-white"
+                    : stackRole === "solo"
+                      ? "bg-transparent"
+                      : "bg-white dark:bg-secondary",
+                  compact
+                    ? forceLight
+                      ? "phone-input-compact h-7 rounded-sm border border-gray-300 dark:border-gray-300"
+                      : "phone-input-compact h-7 rounded-sm border border-stone-200 dark:border-white/[0.16]"
+                    : stackWrapperClass,
+                  showActionButton && !compact && "pr-9",
+                  className,
+                )}
+                style={forceLight ? { borderColor: "#d1d5db" } : undefined}
+              >
+                <RPNInput.default
+                  className={cn(
+                    "flex PhoneInput w-full",
+                    compact
+                      ? "h-7 min-h-0 items-stretch"
+                      : "h-full min-h-0 items-stretch",
+                  )}
+                  international
+                  defaultCountry={resolvedDefault}
+                  {...(countriesProp &&
+                    countriesProp.length > 0 && { countries: countriesProp })}
+                  flagComponent={FlagComponent}
+                  countrySelectComponent={CountrySelect}
+                  inputComponent={PhoneField}
+                  placeholder={placeholder}
+                  value={value}
+                  onChange={(next) => {
+                    markTouched();
+                    onChange(next);
+                  }}
+                  onCountryChange={(countryCode) => {
+                    markTouched();
+                    onCountryChange?.(countryCode);
+                  }}
+                  smartCaret={true}
+                  countryCallingCodeEditable={true}
+                  disabled={fieldDisabled}
+                  onKeyDown={handleKeyDown}
+                  onBlur={() => {
+                    markTouched();
+                    validatePhoneNumber(value);
+                  }}
+                />
+              </div>
+              {requiredMark ? (
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-red-500 dark:text-[#56A5F9]">
+                  *
+                </span>
+              ) : null}
+              {showActionButton && !isEditing ? (
+                <Button
+                  onClick={handleEdit}
+                  variant="transparent"
+                  size="icon-sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 focus-visible:ring-0 dark:hover:text-stone-200"
+                  type="button"
+                  aria-label="Edit phone number"
+                >
+                  <PencilIcon className="h-3 w-3" />
+                </Button>
+              ) : null}
+              {showActionButton && isEditing ? (
+                <Button
+                  type="button"
+                  onClick={() => void handleSave()}
+                  variant="transparent"
+                  size="icon-sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-green-500 hover:text-green-600 focus-visible:ring-0"
+                  disabled={isLoading}
+                  aria-label="Save phone number"
+                >
+                  <CheckIcon className="h-4 w-4" />
+                </Button>
+              ) : null}
+            </div>
           </div>
-          {requiredMark ? (
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-red-500 dark:text-[#56A5F9]">
-              *
-            </span>
-          ) : null}
-          {showActionButton && !isEditing ? (
-            <Button
-              onClick={handleEdit}
-              variant="transparent"
-              size="icon-sm"
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 focus-visible:ring-0 dark:hover:text-stone-200"
-              type="button"
-              aria-label="Edit phone number"
-            >
-              <PencilIcon className="h-3 w-3" />
-            </Button>
-          ) : null}
-          {showActionButton && isEditing ? (
-            <Button
-              type="button"
-              onClick={() => void handleSave()}
-              variant="transparent"
-              size="icon-sm"
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-green-500 hover:text-green-600 focus-visible:ring-0"
-              disabled={isLoading}
-              aria-label="Save phone number"
-            >
-              <CheckIcon className="h-4 w-4" />
-            </Button>
-          ) : null}
-        </div>
-        </div>
-      </PhoneInputStackContext.Provider>
+        </PhoneInputStackContext.Provider>
       </PhoneInputForceLightContext.Provider>
     </PhoneInputCompactContext.Provider>
   );
@@ -421,17 +432,28 @@ type CountryFlagRender = React.ComponentType<{
   className?: string;
 }>;
 
+type FlagIconBag = {
+  [country: string]: CountryFlagRender | FlagIconBag | undefined;
+};
+
+function isFunction(value: FlagIconBag[string]): value is CountryFlagRender {
+  return typeof value === "function";
+}
+
 function resolveCountryFlag(country: string): CountryFlagRender | undefined {
-  const bag = flagIcons as Record<string, unknown> & {
-    default?: Record<string, unknown>;
-  };
+  // SAFETY: country-flag-icons maps ISO codes to React components.
+  const bag = flagIcons as FlagIconBag;
   const named = bag[country];
-  if (typeof named === "function") {
-    return named as CountryFlagRender;
+  if (isFunction(named)) {
+    return named;
   }
-  const fromDefault = bag.default?.[country];
-  if (typeof fromDefault === "function") {
-    return fromDefault as CountryFlagRender;
+  const nested = bag.default;
+  if (!nested || isFunction(nested)) {
+    return undefined;
+  }
+  const fromDefault = nested[country];
+  if (isFunction(fromDefault)) {
+    return fromDefault;
   }
   return undefined;
 }
