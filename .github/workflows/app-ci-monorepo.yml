@@ -13,6 +13,8 @@ jobs:
       api: ${{ steps.changes.outputs.api }}
       docs: ${{ steps.changes.outputs.docs }}
       cli: ${{ steps.changes.outputs.cli }}
+      admin: ${{ steps.changes.outputs.admin }}
+      checkout: ${{ steps.changes.outputs.checkout }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -30,6 +32,13 @@ jobs:
               - 'apps/docs/**'
             cli:
               - 'apps/cli/**'
+            admin:
+              - 'apps/admin'
+              - 'packages/shared/**'
+            checkout:
+              - 'apps/checkout'
+              - 'packages/shared/**'
+              - 'packages/queries/**'
 
   build-api:
     needs: detect-changes
@@ -107,3 +116,55 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test -- --test-threads=1
       - run: cargo build --release
+
+  test-admin:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.admin == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/admin
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout private admin submodule
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/admin
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install admin dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/admin
+      - run: pnpm test
+
+  test-checkout:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.checkout == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/checkout
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout checkout submodule
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/checkout
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/checkout/pnpm-lock.yaml
+      - name: Install checkout dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/checkout
+      - run: pnpm test
