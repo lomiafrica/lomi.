@@ -197,10 +197,21 @@ function installDeps(appRel, dir, { frozen }) {
   run("pnpm", args, dir);
 }
 
+function stripLeakedReactTypes(dir) {
+  const typesDir = path.join(dir, "node_modules", "@types");
+  for (const name of ["react", "react-dom"]) {
+    const target = path.join(typesDir, name);
+    if (!existsSync(target)) continue;
+    rmSync(target, { recursive: true, force: true });
+    console.log(`==> removed leaked ${path.relative(ROOT, target)}`);
+  }
+}
+
 function installSourceOnlyPackage(appRel, dir) {
   wipeCachedNodeModules(dir);
   if (useNpm(appRel)) {
     run("npm", ["install", "--ignore-scripts", "--omit=dev", "--omit=peer"], dir);
+    stripLeakedReactTypes(dir);
     return;
   }
   const args = [
@@ -214,6 +225,7 @@ function installSourceOnlyPackage(appRel, dir) {
     args.push("--no-frozen-lockfile");
   }
   run("pnpm", args, dir);
+  stripLeakedReactTypes(dir);
 }
 
 function runBuildScript(appRel, dir) {
