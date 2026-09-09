@@ -197,7 +197,10 @@ export function hostedPaymentLinkUrl(
       if (isCanonicalPaymentLinkPath(parsed.pathname)) {
         return `${parsed.origin}${parsed.pathname}`;
       }
-      if (isLegacyPaymentLinkPath(parsed.pathname)) {
+      if (
+        isLegacyPaymentLinkPath(parsed.pathname) ||
+        isLegacyCheckoutSessionPath(parsed.pathname)
+      ) {
         return buildPaymentLinkCheckoutUrl(id, parsed.origin);
       }
     } catch {
