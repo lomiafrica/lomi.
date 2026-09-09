@@ -26,6 +26,9 @@
  * Keep `@types/react` / `@types/react-dom` in pay `dependencies` so checkout
  * typecheck can resolve `react` next to the nested runtime copy lucide pulls.
  * Keep `date-fns` in UI `dependencies` so Vite can resolve react-day-picker.
+ * After a source-only UI install, drop leaked React 18 `@types/react` so a
+ * React 19 app (storefront) does not typecheck against them. Do not strip
+ * those types from pay.
  *
  * Usage: node tooling/scripts/install-app-with-packages.mjs <app-dir>
  *   e.g. node tooling/scripts/install-app-with-packages.mjs apps/docs
@@ -201,6 +204,7 @@ function installDeps(appRel, dir, { frozen }) {
 }
 
 function stripLeakedReactTypes(dir) {
+  if (path.relative(ROOT, dir) !== "packages/ui") return;
   const typesDir = path.join(dir, "node_modules", "@types");
   for (const name of ["react", "react-dom"]) {
     const target = path.join(typesDir, name);
@@ -330,9 +334,9 @@ function installFileApp(appRel, pkg, { frozen }) {
       installDeps(appRel, dir, { frozen: false });
       runBuildScript(appRel, dir);
     } else {
-      // Source-only packages such as @lomi./ui still need runtime deps
-      // (clsx, radix). Omit dev and peers so React 18 types / a second
-      // Next (pay) do not leak into the consuming app.
+      // Source-only packages still need runtime deps (clsx, radix, pay
+      // React types). Omit peers so a second Next does not install. Strip
+      // leaked React 18 types from UI only.
       installSourceOnlyPackage(appRel, dir);
     }
     hoistNodeModules(dir);
