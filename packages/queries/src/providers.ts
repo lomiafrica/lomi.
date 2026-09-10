@@ -46,18 +46,23 @@ function isOnboardingStatus(value: string): value is OnboardingStatus {
   );
 }
 
+function parseOnboardingStatus(
+  value: string | undefined,
+  isConnected: boolean,
+): OnboardingStatus {
+  if (value && isOnboardingStatus(value)) return value;
+  return isConnected ? "completed" : "pending";
+}
+
 function parseOrganizationProviderRow(
   object: JsonObject,
 ): OrganizationProviderRow | null {
   const providerCode = readString(object, "provider_code");
   const isConnected = readBoolean(object, "is_connected");
-  const onboardingStatus = readString(object, "onboarding_status");
   if (
     !providerCode ||
     !isProviderCode(providerCode) ||
-    isConnected === undefined ||
-    !onboardingStatus ||
-    !isOnboardingStatus(onboardingStatus)
+    isConnected === undefined
   ) {
     return null;
   }
@@ -66,7 +71,10 @@ function parseOrganizationProviderRow(
     provider_code: providerCode,
     is_connected: isConnected,
     provider_merchant_id: readString(object, "provider_merchant_id") ?? null,
-    onboarding_status: onboardingStatus,
+    onboarding_status: parseOnboardingStatus(
+      readString(object, "onboarding_status"),
+      isConnected,
+    ),
     phone_number: readString(object, "phone_number") ?? null,
     is_phone_verified: readBoolean(object, "is_phone_verified") ?? false,
   };
