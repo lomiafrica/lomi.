@@ -96,7 +96,7 @@ export function PriceSelector({
                 const index = activePrices.findIndex(
                   (item) => item.price_id === price.price_id,
                 );
-                let next = index;
+                let next: number;
                 if (event.key === "ArrowDown" || event.key === "ArrowRight") {
                   next = (index + 1) % activePrices.length;
                 } else if (

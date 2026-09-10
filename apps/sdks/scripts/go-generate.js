@@ -6,7 +6,6 @@
 import {
   writeFileSync,
   mkdirSync,
-  existsSync,
   readdirSync,
   unlinkSync,
 } from 'fs';
@@ -354,14 +353,19 @@ func TestWithSandbox(t *testing.T) {
 writeFileSync(join(outputDir, 'client_test.go'), clientTest);
 
 const goModPath = join(outputDir, 'go.mod');
-if (!existsSync(goModPath)) {
+try {
   writeFileSync(
     goModPath,
     `module github.com/lomiafrica/lomi-go
 
 go 1.24
 `,
+    { flag: 'wx' },
   );
+} catch (error) {
+  if (error?.code !== 'EEXIST') {
+    throw error;
+  }
 }
 
 const manifestSdk = {};

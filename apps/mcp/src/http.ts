@@ -690,7 +690,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             res.setHeader(
               'WWW-Authenticate',
               oauthUnauthorizedChallenge(staleOAuth ? 'invalid_token' : undefined),
-            )
+            );
             res.status(401).json({
               jsonrpc: '2.0',
               error: {
