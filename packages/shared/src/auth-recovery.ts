@@ -57,6 +57,21 @@ export function isInvalidRefreshTokenResponseBody(json: JsonValue): boolean {
   return (
     message.includes("refresh token not found") ||
     message.includes("invalid refresh token") ||
-    message.includes("refresh_token_not_found")
+    message.includes("refresh_token_not_found") ||
+    message.includes("already used") ||
+    message.includes("invalid_grant") ||
+    message.includes("session_not_found")
+  );
+}
+
+/** Cookie names @supabase/ssr writes for a given `auth.storageKey`. */
+export function isAuthStorageCookieName(
+  cookieName: string,
+  storageKey: string,
+): boolean {
+  return (
+    cookieName === storageKey ||
+    cookieName.startsWith(`${storageKey}.`) ||
+    cookieName.startsWith(`${storageKey}-`)
   );
 }

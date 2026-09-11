@@ -141,6 +141,7 @@ export {
   isSupabaseAuthTokenRequest,
   isSupabaseRefreshTokenRequest,
   isInvalidRefreshTokenResponseBody,
+  isAuthStorageCookieName,
 } from "./auth-recovery.js";
 export {
   isPhoneRequiredForPayment,
