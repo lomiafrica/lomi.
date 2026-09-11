@@ -6,7 +6,10 @@ on:
   push:
     branches: [main]
     paths:
+      - "apps/dashboard"
       - "apps/dashboard/**"
+      - "apps/api"
+      - "apps/api/**"
       - "packages/**"
       - "pnpm-workspace.yaml"
       - "package.json"
