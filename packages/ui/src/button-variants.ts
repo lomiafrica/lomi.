@@ -1,7 +1,11 @@
 import { cva } from "class-variance-authority";
+import {
+  interiorButtonRelief,
+  interiorPrimaryRelief,
+  interiorSurface as interiorSurfaceBase,
+} from "./tokens";
 
-const interiorSurface =
-  "border border-stone-200 bg-white text-stone-700 shadow-none hover:bg-stone-50 dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]";
+const interiorSurface = `${interiorSurfaceBase} hover:bg-stone-50 dark:hover:bg-[#2A2A27]`;
 
 const settingsButtonAction = `relative rounded-sm font-medium transition-[border-color,box-shadow,background-color] duration-150 ${interiorSurface}`;
 
@@ -14,7 +18,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-stone-800 text-stone-50 border-transparent shadow-none hover:bg-stone-700 dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]",
+          `bg-stone-800 text-stone-50 border-stone-800 ${interiorPrimaryRelief} hover:bg-stone-700 dark:border-white/10 dark:bg-[#2A2A27] dark:text-stone-100 dark:hover:bg-[#32322E]`,
         destructive:
           "bg-red-600 text-white border-transparent shadow-none hover:bg-red-700 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/40",
         outline: interiorSurface,
@@ -56,7 +60,7 @@ export const buttonVariants = cva(
         "icon-sm": "h-8 w-8",
         "icon-md": "h-9 w-9",
         header: "h-8 px-3",
-        sidebarActions: "h-8 px-3 justify-start",
+        sidebarActions: "h-9 px-3 justify-start",
         small: "h-7 w-7 p-0",
         sidebar: "h-7 py-2 w-56",
       },

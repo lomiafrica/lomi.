@@ -3,6 +3,8 @@ export {
   interiorRadiusPx,
   interiorRadiusClass,
   interiorSurface,
+  interiorButtonRelief,
+  interiorPrimaryRelief,
   interiorControl,
   interiorField,
 } from "./tokens";

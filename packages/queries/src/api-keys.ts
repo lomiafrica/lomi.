@@ -62,7 +62,11 @@ export async function fetchOrganizationApiKeys(
 ): Promise<ApiKey[]> {
   const rows = await fetchApiKeyRows(client, organizationId);
   return rows
-    .filter((key) => !key.name.startsWith("Token ["))
+    .filter(
+      (key) =>
+        !key.name.startsWith("Token [") &&
+        !key.name.startsWith("MCP connect ["),
+    )
     .map(mapApiKeyRow);
 }
 

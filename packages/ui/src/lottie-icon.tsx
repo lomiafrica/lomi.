@@ -102,6 +102,17 @@ const isAnimationPath = (
   value: string | LottieAnimationData,
 ): value is string => isString(value);
 
+function parseLottieRgb(
+  colorKey: string,
+): [number, number, number] | undefined {
+  if (!colorKey) return undefined;
+  const [red, green, blue] = colorKey.split(",").map((part) => Number(part));
+  if (!isNumber(red) || !isNumber(green) || !isNumber(blue)) {
+    return undefined;
+  }
+  return [red, green, blue];
+}
+
 const applyColorToVectorElements = (
   node: JsonValue | JsonInputObject,
   color: [number, number, number],
@@ -155,13 +166,15 @@ const LottieIconCoreComponent = ({
 
   const isHovered =
     externalHovered !== undefined ? externalHovered : internalHovered;
+  const customColorKey = customColor ? customColor.join(",") : "";
 
   useEffect(() => {
     if (!isAnimationPath(animationData)) {
+      const color = parseLottieRgb(customColorKey);
       let processedData = animationData;
       const layers = readArray(processedData, "layers");
 
-      if (customColor && layers !== undefined) {
+      if (color && layers !== undefined) {
         processedData = structuredClone(processedData);
         const clonedLayers = readArray(processedData, "layers") ?? [];
         let appliedCustomColor = false;
@@ -191,7 +204,7 @@ const LottieIconCoreComponent = ({
                 colorVector !== undefined &&
                 isColorVector(colorVector)
               ) {
-                value["k"] = [...customColor, 1];
+                value["k"] = [...color, 1];
                 appliedCustomColor = true;
               }
             }
@@ -199,11 +212,13 @@ const LottieIconCoreComponent = ({
         }
 
         if (!appliedCustomColor) {
-          applyColorToVectorElements(processedData, customColor);
+          applyColorToVectorElements(processedData, color);
         }
       }
 
-      setAnimData(processedData);
+      setAnimData((current) =>
+        current === processedData ? current : processedData,
+      );
       setIsLoading(false);
       return;
     }
@@ -213,7 +228,7 @@ const LottieIconCoreComponent = ({
     );
     setAnimData(null);
     setIsLoading(false);
-  }, [animationData, customColor]);
+  }, [animationData, customColorKey]);
 
   useEffect(() => {
     if (lottieRef.current && animData && initialFrame !== undefined) {
