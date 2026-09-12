@@ -123,7 +123,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         style={{ touchAction: "manipulation", ...style }}
         {...props}
       >
-        {content}
+        {content as React.ComponentPropsWithoutRef<typeof motion.button>["children"]}
       </motion.button>
     );
   },
