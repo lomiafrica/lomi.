@@ -248,11 +248,15 @@
   }
 
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior-y: none;
   }
 
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
+    overscroll-behavior-y: none;
     font-family: var(--font-main);
     font-size: var(--docs-text-size);
     line-height: var(--docs-text-line-height);
@@ -607,6 +611,14 @@ html.dark .docs-turnstile-mount {
 /* Sidebar Hover Styles */
 .sidebar-hover {
   @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+}
+
+/* Fumadocs sets overflow-x-clip on the layout, so overflow-y computes to
+   auto and the grid rubber-bands as a scrollport. Hard-stop like the website.
+   Do not clip overflow-y here: body is a flex column and clip would let the
+   layout shrink and hide the page. */
+#nd-docs-layout {
+  overscroll-behavior: none;
 }
 
 /* Docs sidebar: floating 9px card, compact well-active items (Beecargo chrome). */
@@ -2814,6 +2826,19 @@ html {
     transform: translateX(212px);
   }
 } */
+
+/* Clip + no overscroll so the page hard-stops at the edges (same as website). */
+html {
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+  background-color: var(--color-fd-background);
+}
 
 /* After Tailwind utilities so overlay blur actually clears (Lightning CSS
    drops `backdrop-filter: none` from unlayered rules). */

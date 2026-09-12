@@ -37,7 +37,10 @@ function resolvePageFile(page: Page): string {
   if (path.isAbsolute(page.absolutePath)) {
     return page.absolutePath;
   }
-  return path.join(process.cwd(), page.absolutePath);
+  return path.join(
+    /* turbopackIgnore: true */ process.cwd(),
+    page.absolutePath,
+  );
 }
 
 async function readPageMdx(filePath: string): Promise<string> {
