@@ -60,7 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           aria-disabled={isDisabled || undefined}
           {...props}
         >
-          {children}
+          {children as React.ComponentPropsWithoutRef<typeof Slot>["children"]}
         </Slot>
       );
     }
