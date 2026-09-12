@@ -43,6 +43,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Load local actions
         uses: actions/checkout@v5
@@ -90,6 +91,8 @@ jobs:
           git add -f package.json
 
       - name: Deploy to Vercel
+        id: vercel
+        continue-on-error: true
         uses: amondnet/vercel-action@v42.2.0
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -97,3 +100,10 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ${{ steps.wd.outputs.dir }}
           target: ${{ inputs.vercel-target || github.event.client_payload.target || 'production' }}
+
+      - name: Confirm Vercel production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: node .github/scripts/wait-vercel-deployment.mjs

@@ -1,6 +1,5 @@
 import { cva } from "class-variance-authority";
 import {
-  interiorButtonRelief,
   interiorPrimaryRelief,
   interiorSurface as interiorSurfaceBase,
 } from "./tokens";
