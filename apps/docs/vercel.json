@@ -1,5 +1,5 @@
 {
-  "ignoreCommand": "git diff HEAD^ HEAD --quiet .",
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- . ../../packages/ui ../../packages/shared",
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 60
