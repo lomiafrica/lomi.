@@ -10,6 +10,15 @@ import { buttonVariants } from "./button-variants";
 
 const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
 
+// motion/react ships React 18 button types. Docs typechecks this file with React 19.
+const MotionButton = motion.button as React.ForwardRefExoticComponent<
+  React.ButtonHTMLAttributes<HTMLButtonElement> &
+    React.RefAttributes<HTMLButtonElement> & {
+      whileTap?: { y: number };
+      transition?: typeof CELL;
+    }
+>;
+
 interface ButtonProps
   extends Omit<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -114,7 +123,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <motion.button
+      <MotionButton
         className={cn(buttonVariants({ variant, size, className }))}
         disabled={isDisabled}
         ref={ref}
@@ -123,8 +132,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         style={{ touchAction: "manipulation", ...style }}
         {...props}
       >
-        {content as React.ComponentPropsWithoutRef<typeof motion.button>["children"]}
-      </motion.button>
+        {content}
+      </MotionButton>
     );
   },
 );
