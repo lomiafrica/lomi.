@@ -92,7 +92,9 @@ function DocsSupportForm({ kind }: { kind: DocsSupportFormKind }) {
       return;
     }
 
-    if (siteKey && !turnstileToken) {
+    const requireChallenge =
+      Boolean(siteKey) || process.env.NODE_ENV === 'production';
+    if (requireChallenge && !turnstileToken) {
       setErrorKey('support.errorVerification');
       setSubmitState('error');
       return;

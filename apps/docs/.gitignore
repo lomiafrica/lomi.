@@ -19,3 +19,4 @@
 # Environment
 .env
 next-env.d.ts
+.env*

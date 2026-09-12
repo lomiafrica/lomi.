@@ -57,7 +57,9 @@ async function verifyTurnstile(input: {
   expectedAction: string;
 }): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
-  if (!secret) return true;
+  if (!secret) {
+    return process.env.NODE_ENV !== 'production';
+  }
   if (!input.token) return false;
   const body = new URLSearchParams({
     secret,
