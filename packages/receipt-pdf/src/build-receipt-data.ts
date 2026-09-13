@@ -1,3 +1,4 @@
+import { displayPublicId } from "@lomi./shared";
 import {
   formatReceiptPaymentMethod,
   isFreeReceiptRail,
@@ -340,7 +341,10 @@ export function buildReceiptDocumentData(
 
   const document: ReceiptDocumentData = {
     title: options.receiptTitle || "Receipt",
-    transactionId: transaction.transaction_id,
+    transactionId:
+      displayPublicId(transaction.public_id) ??
+      displayPublicId(transaction.transaction_id) ??
+      "",
     providerTransactionId: transaction.provider_transaction_id || undefined,
     date: formatReceiptDate(transaction.date || transaction.created_at, {
       includeTime: true,

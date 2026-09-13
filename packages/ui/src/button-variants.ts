@@ -24,7 +24,8 @@ export const buttonVariants = cva(
         secondary: interiorSurface,
         ghost:
           "text-foreground shadow-none hover:bg-stone-100 hover:text-foreground dark:hover:bg-[#2A2A27] dark:hover:text-stone-200",
-        filter: interiorSurface,
+        filter:
+          "rounded-sm border border-border bg-card text-card-foreground shadow-none hover:bg-accent dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]",
         transparent: "bg-transparent border-0 shadow-none",
         link: "text-primary underline-offset-4 hover:underline",
         blue: liveButton,

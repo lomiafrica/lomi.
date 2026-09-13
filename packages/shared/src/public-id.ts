@@ -95,6 +95,14 @@ export function formatPublicId(value: string | null | undefined): string | null 
   return `${prefix}${body}`;
 }
 
+/** Merchant and customer facing id. Never a UUID. */
+export function displayPublicId(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed || isUuid(trimmed) || !isPublicId(trimmed)) return null;
+  return formatPublicId(trimmed);
+}
+
 export function publicIdsMatch(
   left: string | null | undefined,
   right: string | null | undefined,

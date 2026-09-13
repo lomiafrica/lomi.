@@ -82,6 +82,7 @@ export interface ReceiptDocumentData {
 
 export interface ReceiptTransactionInput {
   transaction_id: string;
+  public_id?: string | null;
   date?: string;
   created_at?: string;
   currency?: string;

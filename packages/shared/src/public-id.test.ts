@@ -4,6 +4,7 @@ import {
   DEFAULT_PAY_ORIGIN,
   PUBLIC_ID_PREFIXES,
   buildPaymentLinkCheckoutUrl,
+  displayPublicId,
   formatPublicId,
   hostedPaymentLinkUrl,
   isCanonicalPaymentLinkPath,
@@ -56,6 +57,14 @@ test("formatPublicId keeps canonical prefixes except TXN_", () => {
   assert.equal(formatPublicId(`Txn_${BODY.toLowerCase()}`), `TXN_${BODY}`);
   assert.equal(formatPublicId(TXN_ID), `TXN_${BODY}`);
   assert.equal(formatPublicId("orphan-id"), "ORPHANID");
+});
+
+test("displayPublicId never returns a UUID", () => {
+  assert.equal(displayPublicId(null), null);
+  assert.equal(displayPublicId(UUID), null);
+  assert.equal(displayPublicId(` ${ORG_ID.toLowerCase()} `), ORG_ID);
+  assert.equal(displayPublicId(`txn_${BODY.toLowerCase()}`), `TXN_${BODY}`);
+  assert.equal(displayPublicId("orphan-id"), null);
 });
 
 test("publicIdsMatch compares UUIDs and public ids independently of case", () => {

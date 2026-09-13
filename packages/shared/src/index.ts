@@ -217,6 +217,7 @@ export {
   buildHostedCheckoutSessionUrl,
   buildPaymentLinkCheckoutUrl,
   checkoutSessionPathSegment,
+  displayPublicId,
   formatPublicId,
   hostedPaymentLinkUrl,
   isCanonicalPaymentLinkPath,
