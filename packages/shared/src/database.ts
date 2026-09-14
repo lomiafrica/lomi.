@@ -11960,6 +11960,81 @@ export type Database = {
           },
         ]
       }
+      stellar_settlements: {
+        Row: {
+          amount: number
+          amount_usdc: string
+          bridge_transfer_id: string | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          destination: string
+          environment: string
+          id: string
+          last_mile_rail: string
+          memo: string
+          organization_id: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          stellar_from: string | null
+          stellar_to: string | null
+          stellar_tx_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          amount_usdc: string
+          bridge_transfer_id?: string | null
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          destination: string
+          environment?: string
+          id?: string
+          last_mile_rail?: string
+          memo: string
+          organization_id: string
+          payout_id: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          stellar_from?: string | null
+          stellar_to?: string | null
+          stellar_tx_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          amount_usdc?: string
+          bridge_transfer_id?: string | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          destination?: string
+          environment?: string
+          id?: string
+          last_mile_rail?: string
+          memo?: string
+          organization_id?: string
+          payout_id?: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          stellar_from?: string | null
+          stellar_to?: string | null
+          stellar_tx_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stellar_settlements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "stellar_settlements_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: true
+            referencedRelation: "payouts"
+            referencedColumns: ["payout_id"]
+          },
+        ]
+      }
       storefronts: {
         Row: {
           announcement_active: boolean
@@ -14847,6 +14922,23 @@ export type Database = {
         }
         Returns: Json
       }
+      complete_stellar_settlement: {
+        Args: {
+          p_bridge_transfer_id?: string
+          p_organization_id: string
+          p_payout_id: string
+          p_status?: Database["public"]["Enums"]["payout_status"]
+          p_stellar_from?: string
+          p_stellar_to?: string
+          p_stellar_tx_hash: string
+        }
+        Returns: {
+          message: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          success: boolean
+        }[]
+      }
       complete_stripe_deferred_subscription_setup: {
         Args: {
           p_checkout_session_id: string
@@ -16393,6 +16485,14 @@ export type Database = {
           challenge_id: string
         }[]
       }
+      customer_portal_create_invoice_checkout: {
+        Args: {
+          p_expiration_minutes?: number
+          p_invoice_id: string
+          p_session_token: string
+        }
+        Returns: Json
+      }
       customer_portal_create_trusted_session: {
         Args: {
           p_customer_id: string
@@ -16444,6 +16544,14 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      customer_portal_get_billing_profile: {
+        Args: { p_session_token: string }
+        Returns: {
+          company_name: string
+          customer_email: string
+          vat_number: string
+        }[]
       }
       customer_portal_get_subscription_detail: {
         Args: { p_session_token: string; p_subscription_id: string }
@@ -16934,6 +17042,36 @@ export type Database = {
       ensure_merchant_for_invitation: {
         Args: { p_email: string; p_full_name?: string; p_merchant_id: string }
         Returns: undefined
+      }
+      ensure_onboarding_after_kyc: {
+        Args: {
+          p_address_proof_url?: string
+          p_business_registration_url?: string
+          p_document_extraction?: Json
+          p_first_name?: string
+          p_id_document_number?: string
+          p_identity_proof_url?: string
+          p_is_starter_business?: boolean
+          p_last_name?: string
+          p_legal_city?: string
+          p_legal_country?: string
+          p_legal_organization_name?: string
+          p_legal_postal_code?: string
+          p_legal_region?: string
+          p_legal_street?: string
+          p_lock_legal?: boolean
+          p_merchant_id: string
+          p_org_city?: string
+          p_org_country?: string
+          p_org_district?: string
+          p_org_email?: string
+          p_org_name?: string
+          p_org_postal_code?: string
+          p_org_region?: string
+          p_org_street?: string
+          p_tax_number?: string
+        }
+        Returns: string
       }
       ensure_organization_publishable_keys: {
         Args: { p_organization_id?: string }
@@ -23967,6 +24105,21 @@ export type Database = {
           total_amount: number
         }[]
       }
+      get_stellar_settlement: {
+        Args: { p_organization_id: string; p_payout_id: string }
+        Returns: {
+          amount: number
+          amount_usdc: string
+          bridge_transfer_id: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment: string
+          memo: string
+          organization_id: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          stellar_tx_hash: string
+        }[]
+      }
       get_storefront: {
         Args: { org_id: string }
         Returns: {
@@ -24621,6 +24774,26 @@ export type Database = {
           status: Database["public"]["Enums"]["payout_status"]
         }[]
       }
+      initiate_stellar_payout: {
+        Args: {
+          p_amount: number
+          p_amount_usdc?: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_destination?: string
+          p_environment: string
+          p_last_mile_rail?: string
+          p_merchant_id: string
+          p_organization_id: string
+        }
+        Returns: {
+          memo: string
+          message: string
+          payout_id: string
+          settlement_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          success: boolean
+        }[]
+      }
       initiate_withdrawal: {
         Args: {
           p_amount: number
@@ -24685,6 +24858,7 @@ export type Database = {
         Args: { p_email: string }
         Returns: boolean
       }
+      is_lomi_platform_email: { Args: { p_email: string }; Returns: boolean }
       is_organization_admin: {
         Args: { p_organization_id: string }
         Returns: boolean
@@ -25646,6 +25820,10 @@ export type Database = {
         }
         Returns: Json
       }
+      merchant_active_organization_count: {
+        Args: { p_merchant_id: string }
+        Returns: number
+      }
       merchant_approve_live_activation: {
         Args: { p_merchant_id: string; p_request_id: string }
         Returns: Json
@@ -25657,6 +25835,10 @@ export type Database = {
           p_support_request_id: string
         }
         Returns: undefined
+      }
+      merchant_has_completed_live_transaction: {
+        Args: { p_merchant_id: string }
+        Returns: boolean
       }
       merchant_list_customer_portal_audit_events: {
         Args: {
@@ -25676,6 +25858,10 @@ export type Database = {
           organization_id: string
           total_count: number
         }[]
+      }
+      merchant_primary_organization_id: {
+        Args: { p_merchant_id: string }
+        Returns: string
       }
       merchant_retrieve_live_secret_key: {
         Args: { p_merchant_id: string; p_request_id: string }
@@ -25984,6 +26170,15 @@ export type Database = {
           p_organization_id: string
         }
         Returns: number
+      }
+      persist_pos_checkout_line_items: {
+        Args: {
+          p_checkout_session_id: string
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_metadata?: Json
+          p_organization_id: string
+        }
+        Returns: undefined
       }
       ping_api: { Args: never; Returns: string }
       platform_setting_boolean: {
@@ -28860,6 +29055,7 @@ export type Database = {
         | "CYBERSOURCE"
         | "FREE"
         | "GIM"
+        | "STELLAR"
       provider_payment_status:
         | "processing"
         | "cancelled"
@@ -29528,6 +29724,7 @@ export const Constants = {
         "CYBERSOURCE",
         "FREE",
         "GIM",
+        "STELLAR",
       ],
       provider_payment_status: [
         "processing",
