@@ -19,6 +19,8 @@
   },
   "ignore": ["lib/supabase/server.ts", "lib/tryit/verify-org-access.ts"],
   "ignoreDependencies": [
+    "@lomi./shared",
+    "@lomi./ui",
     "@tailwindcss/container-queries",
     "tailwindcss",
     "tailwindcss-animate",

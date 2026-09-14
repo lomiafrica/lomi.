@@ -10,7 +10,7 @@ import { buttonVariants } from "./button-variants";
 
 const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
 
-// motion/react ships React 18 button types. Docs typechecks this file with React 19.
+// SAFETY: motion/react ships React 18 button types. Docs typechecks this file with React 19.
 const MotionButton = motion.button as React.ForwardRefExoticComponent<
   React.ButtonHTMLAttributes<HTMLButtonElement> &
     React.RefAttributes<HTMLButtonElement> & {
@@ -69,7 +69,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           aria-disabled={isDisabled || undefined}
           {...props}
         >
-          {children as React.ComponentPropsWithoutRef<typeof Slot>["children"]}
+          {
+            // SAFETY: asChild Slot receives the same children Button already accepted.
+            children as React.ComponentPropsWithoutRef<typeof Slot>["children"]
+          }
         </Slot>
       );
     }
