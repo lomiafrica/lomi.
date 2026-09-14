@@ -72,12 +72,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ref={ref}
           style={{ touchAction: "manipulation", ...style }}
           aria-disabled={isDisabled || undefined}
-          {...props}
+          // SAFETY: Slot hosts the same attributes Button already accepted.
+          {...(props as React.ComponentPropsWithoutRef<typeof Slot>)}
         >
-          {
-            // SAFETY: asChild Slot receives the same children Button already accepted.
-            children as React.ComponentPropsWithoutRef<typeof Slot>["children"]
-          }
+          {children as React.ComponentPropsWithoutRef<typeof Slot>["children"]}
         </Slot>
       );
     }
