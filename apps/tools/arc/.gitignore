@@ -1,8 +1,0 @@
-node_modules
-dist
-.env
-keys/
-data/*
-!data/.gitkeep
-!data/testnet-proof.json
-*.log

@@ -86,3 +86,15 @@
 	path = apps/tools/agent-plugin
 	url = https://github.com/lomiafrica/agent-plugin.git
 	branch = main
+[submodule "apps/tools/arc"]
+	path = apps/tools/arc
+	url = https://github.com/lomiafrica/arc.git
+	branch = main
+[submodule "apps/tools/xrpl"]
+	path = apps/tools/xrpl
+	url = https://github.com/lomiafrica/xrpl.git
+	branch = main
+[submodule "apps/tools/zcash"]
+	path = apps/tools/zcash
+	url = https://github.com/lomiafrica/zcash.git
+	branch = main

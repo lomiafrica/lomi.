@@ -466,6 +466,42 @@
       "risk": "ops"
     },
     {
+      "id": "arc",
+      "path": "apps/tools/arc",
+      "kind": "tool",
+      "manager": "pnpm",
+      "workspace": false,
+      "submodule": true,
+      "required": false,
+      "capabilities": ["install", "typecheck"],
+      "owner": "tools",
+      "risk": "ops"
+    },
+    {
+      "id": "xrpl",
+      "path": "apps/tools/xrpl",
+      "kind": "tool",
+      "manager": "pnpm",
+      "workspace": false,
+      "submodule": true,
+      "required": false,
+      "capabilities": ["install", "typecheck", "test"],
+      "owner": "tools",
+      "risk": "ops"
+    },
+    {
+      "id": "zcash",
+      "path": "apps/tools/zcash",
+      "kind": "tool",
+      "manager": "pnpm",
+      "workspace": false,
+      "submodule": true,
+      "required": false,
+      "capabilities": ["install", "typecheck"],
+      "owner": "tools",
+      "risk": "ops"
+    },
+    {
       "id": "doctool",
       "path": "apps/tools/doctool",
       "kind": "tool",

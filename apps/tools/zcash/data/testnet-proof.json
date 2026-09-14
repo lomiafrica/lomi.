@@ -1,7 +1,0 @@
-{
-  "status": "pending",
-  "reason": "No zcash-cli on PATH. Shielded testnet hop not run. Do not file ZCG until pnpm hop writes status=shielded.",
-  "officialApply": "https://github.com/ZcashCommunityGrants/zcashcommunitygrants/issues/new?template=grant_application.yaml",
-  "neverUse": "https://zcashgranthub.vercel.app/apply",
-  "updatedAt": "2026-09-14T16:45:18.316Z"
-}
