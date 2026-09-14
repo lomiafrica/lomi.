@@ -4,15 +4,18 @@ on:
   push:
     branches: [main, develop]
     paths:
+      - "apps/tools/agent-plugin"
       - "apps/tools/agent-plugin/**"
       - ".gitmodules"
       - ".github/workflows/app-ci-agent-plugin.yml"
   pull_request:
     branches: [main]
     paths:
+      - "apps/tools/agent-plugin"
       - "apps/tools/agent-plugin/**"
       - ".gitmodules"
       - ".github/workflows/app-ci-agent-plugin.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -4,12 +4,14 @@ on:
   push:
     branches: [main, develop]
     paths:
+      - "apps/plugins/bubble"
       - "apps/plugins/bubble/**"
       - "apps/sdks/embed/**"
       - ".github/workflows/app-ci-bubble.yml"
   pull_request:
     branches: [main, develop]
     paths:
+      - "apps/plugins/bubble"
       - "apps/plugins/bubble/**"
       - "apps/sdks/embed/**"
       - ".github/workflows/app-ci-bubble.yml"

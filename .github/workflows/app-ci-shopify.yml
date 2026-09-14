@@ -4,11 +4,13 @@ on:
   push:
     branches: [main, develop]
     paths:
+      - "apps/plugins/shopify"
       - "apps/plugins/shopify/**"
       - ".github/workflows/app-ci-shopify.yml"
   pull_request:
     branches: [main]
     paths:
+      - "apps/plugins/shopify"
       - "apps/plugins/shopify/**"
       - ".github/workflows/app-ci-shopify.yml"
   workflow_dispatch:

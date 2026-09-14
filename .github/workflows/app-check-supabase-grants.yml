@@ -8,11 +8,13 @@ on:
   push:
     branches: [main, develop]
     paths:
+      - "apps/dashboard"
       - "apps/dashboard/**"
       - ".github/scripts/check-authenticated-grants.mjs"
       - ".github/workflows/app-check-supabase-grants.yml"
   pull_request:
     paths:
+      - "apps/dashboard"
       - "apps/dashboard/**"
       - ".github/scripts/check-authenticated-grants.mjs"
       - ".github/workflows/app-check-supabase-grants.yml"
