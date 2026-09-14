@@ -1,0 +1,25 @@
+{
+  "name": "@lomi./arc",
+  "version": "0.1.0",
+  "description": "lomi. Arc testnet lab for custodial USDC settlement",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11.1"
+  },
+  "scripts": {
+    "bootstrap": "tsx scripts/bootstrap.ts",
+    "settle": "tsx scripts/settle.ts",
+    "proof": "tsx scripts/proof.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "viem": "^2.37.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3"
+  }
+}
