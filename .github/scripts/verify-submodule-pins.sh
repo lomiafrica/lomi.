@@ -31,8 +31,11 @@ while read -r key path; do
     echo "ok      ${path}  ${sha:0:12}  ${repo}"
   else
     echo "MISSING ${path}  ${sha}  ${repo}  HTTP ${code}"
-    if [[ "$code" == "404" || "$code" == "403" ]]; then
-      echo "        Pin is not on origin, or this token cannot read ${repo}."
+    if [[ -s "$tmp" ]]; then
+      echo "        $(tr '\n' ' ' < "$tmp" | head -c 300)"
+    fi
+    if [[ "$code" == "404" || "$code" == "403" || "$code" == "422" ]]; then
+      echo "        Pin is not a commit on origin (dirty/unpushed SHA), or this token cannot read ${repo}."
       echo "        Push the submodule commit first, then update the parent gitlink."
     fi
     failed=1

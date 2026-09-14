@@ -1,0 +1,26 @@
+# Security updates only for in-tree public npm dirs.
+# Do not point Dependabot at private submodules (storefront/checkout/…)
+# or at the retired apps/sdks/typescript path — those clones 404 and email forever.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /apps/sdks/ts
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    labels:
+      - dependencies
+  - package-ecosystem: npm
+    directory: /apps/sdks
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    labels:
+      - dependencies
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    labels:
+      - dependencies
