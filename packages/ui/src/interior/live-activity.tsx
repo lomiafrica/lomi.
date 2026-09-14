@@ -9,10 +9,30 @@ import {
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-const SURFACE = { type: "spring", stiffness: 420, damping: 36, mass: 0.9 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
-const SMALL = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
-const FILL = { type: "spring", stiffness: 210, damping: 34, mass: 0.9 } as const;
+const SURFACE = {
+  type: "spring",
+  stiffness: 420,
+  damping: 36,
+  mass: 0.9,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
+const SMALL = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
+const FILL = {
+  type: "spring",
+  stiffness: 210,
+  damping: 34,
+  mass: 0.9,
+} as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
 const LEAVE = [0.4, 0, 1, 1] as const;
 const DRAW = { duration: 0.3, ease: EASE } as const;
@@ -48,7 +68,9 @@ export type UseLiveActivityOptions = {
   linger?: number;
 };
 
-export function useLiveActivity({ linger = 2000 }: UseLiveActivityOptions = {}) {
+export function useLiveActivity({
+  linger = 2000,
+}: UseLiveActivityOptions = {}) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const seq = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -347,7 +369,13 @@ export function LiveActivity({
                     onClick={onDismiss}
                     className="grid size-[22px] shrink-0 place-items-center rounded-[6px] text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-700 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] focus-visible:outline-none dark:text-stone-500 dark:hover:bg-white/10 dark:hover:text-stone-100 dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF]"
                   >
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden>
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      aria-hidden
+                    >
                       <path
                         d="M2.8 2.8l6.4 6.4M9.2 2.8l-6.4 6.4"
                         stroke="currentColor"
@@ -383,7 +411,6 @@ export function LiveActivity({
                   </span>
                 </div>
               ) : null}
-
             </motion.div>
           </motion.div>
         ) : null}
@@ -395,7 +422,13 @@ export function LiveActivity({
   );
 }
 
-function PhaseGlyph({ phase, reduced }: { phase: ActivityPhase; reduced: boolean }) {
+function PhaseGlyph({
+  phase,
+  reduced,
+}: {
+  phase: ActivityPhase;
+  reduced: boolean;
+}) {
   return (
     <span className="grid size-[18px] shrink-0 place-items-center">
       <motion.span
@@ -409,7 +442,16 @@ function PhaseGlyph({ phase, reduced }: { phase: ActivityPhase; reduced: boolean
       >
         {reduced ? (
           <svg width="13" height="13" viewBox="0 0 12 12" aria-hidden>
-            <circle cx="6" cy="6" r="4.4" stroke="currentColor" strokeWidth="1.6" fill="none" className="text-stone-400 dark:text-stone-500" opacity="0.4" />
+            <circle
+              cx="6"
+              cy="6"
+              r="4.4"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              fill="none"
+              className="text-stone-400 dark:text-stone-500"
+              opacity="0.4"
+            />
           </svg>
         ) : (
           <motion.svg
@@ -422,8 +464,22 @@ function PhaseGlyph({ phase, reduced }: { phase: ActivityPhase; reduced: boolean
             transition={SPIN}
             className="text-[#4568FF] dark:text-[#93B0FF]"
           >
-            <circle cx="6" cy="6" r="4.4" stroke="currentColor" strokeWidth="1.6" fill="none" opacity="0.25" />
-            <path d="M6 1.6a4.4 4.4 0 0 1 4.4 4.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+            <circle
+              cx="6"
+              cy="6"
+              r="4.4"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              fill="none"
+              opacity="0.25"
+            />
+            <path
+              d="M6 1.6a4.4 4.4 0 0 1 4.4 4.4"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              fill="none"
+            />
           </motion.svg>
         )}
       </motion.span>
@@ -459,8 +515,20 @@ function PhaseGlyph({ phase, reduced }: { phase: ActivityPhase; reduced: boolean
         transition={reduced ? INSTANT : SMALL}
       >
         <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden>
-          <path d="M6 2.6v3.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          <rect x="5.2" y="8.2" width="1.6" height="1.6" rx="0.4" fill="currentColor" />
+          <path
+            d="M6 2.6v3.6"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+          <rect
+            x="5.2"
+            y="8.2"
+            width="1.6"
+            height="1.6"
+            rx="0.4"
+            fill="currentColor"
+          />
         </svg>
       </motion.span>
     </span>

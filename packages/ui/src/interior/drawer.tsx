@@ -248,7 +248,13 @@ export function useDrawer({
 export type UseDrawerResult = ReturnType<typeof useDrawer>;
 
 const CLOSE_ICON = (
-  <svg width="13" height="13" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <line
       x1="200"
       y1="56"
@@ -337,7 +343,12 @@ export function Drawer({
         ref={drawer.panelRef}
         aria-labelledby={titleId}
         aria-describedby={hintId}
-        style={{ x: drawer.x, width, maxWidth: "calc(100% - 40px)", touchAction: "pan-y" }}
+        style={{
+          x: drawer.x,
+          width,
+          maxWidth: "calc(100% - 40px)",
+          touchAction: "pan-y",
+        }}
         className={`absolute inset-y-0 flex flex-col border-stone-200 bg-white shadow-[0_28px_56px_-24px_rgba(24,22,20,0.45)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] ${edge} ${
           drawer.dragging ? "select-none" : ""
         } ${className}`}

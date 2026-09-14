@@ -13,8 +13,18 @@ import {
 
 const WAVE_MS = 1.25;
 
-const SURFACE = { type: "spring", stiffness: 380, damping: 30, mass: 0.8 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const SURFACE = {
+  type: "spring",
+  stiffness: 380,
+  damping: 30,
+  mass: 0.8,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
 const LEAVE = [0.4, 0, 1, 1] as const;
 const INSTANT = { duration: 0 } as const;
@@ -40,10 +50,12 @@ export function useTypingPresence({
   timeout = 3000,
   minVisible = 900,
 }: UseTypingPresenceOptions = {}): TypingPresence {
-  const [presence, setPresence] = useState<{ typists: string[]; beat: number }>({
-    typists: [],
-    beat: 0,
-  });
+  const [presence, setPresence] = useState<{ typists: string[]; beat: number }>(
+    {
+      typists: [],
+      beat: 0,
+    },
+  );
   const [sending, setSending] = useState(false);
 
   const seen = useRef(new Map<string, number>());
@@ -62,7 +74,8 @@ export function useTypingPresence({
       }
 
       let next = Infinity;
-      for (const at of seen.current.values()) next = Math.min(next, at + timeout);
+      for (const at of seen.current.values())
+        next = Math.min(next, at + timeout);
 
       let roster = Array.from(seen.current.keys());
       if (roster.length === 0 && shown.current.length > 0) {
@@ -86,7 +99,12 @@ export function useTypingPresence({
         setPresence((prev) => ({
           typists: changed ? roster : prev.typists,
 
-          beat: changed && roster.length === 0 ? 0 : bump ? prev.beat + 1 : prev.beat,
+          beat:
+            changed && roster.length === 0
+              ? 0
+              : bump
+                ? prev.beat + 1
+                : prev.beat,
         }));
       }
 
@@ -339,7 +357,12 @@ export function TypingIndicator({
         </span>
       ) : null}
 
-      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
         {announced}
       </span>
     </div>

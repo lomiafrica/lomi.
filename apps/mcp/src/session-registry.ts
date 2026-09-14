@@ -1,8 +1,8 @@
-import type { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import type { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
 import { isFunction } from "@lomi./shared";
 
-export type MerchantAccessLevel = 'read' | 'write' | 'full';
+export type MerchantAccessLevel = "read" | "write" | "full";
 
 export type SessionRegistryEntry = {
   transport: StreamableHTTPServerTransport;
@@ -82,7 +82,7 @@ export class McpSessionRegistry {
   }
 
   getMerchantAccessLevel(sessionId: string): MerchantAccessLevel {
-    return this.sessions.get(sessionId)?.merchantAccessLevel ?? 'full';
+    return this.sessions.get(sessionId)?.merchantAccessLevel ?? "full";
   }
 
   updateProvisioningApiKey(sessionId: string, apiKey: string | null): void {
@@ -129,15 +129,20 @@ export class McpSessionRegistry {
     fingerprint: string | null,
     clientIp: string | null,
     now: number = Date.now(),
-  ): { ok: true } | { ok: false; reason: 'max_sessions' | 'max_per_key' | 'max_per_ip' } {
+  ):
+    | { ok: true }
+    | { ok: false; reason: "max_sessions" | "max_per_key" | "max_per_ip" } {
     if (!this.canAcceptNewSession(now)) {
-      return { ok: false, reason: 'max_sessions' };
+      return { ok: false, reason: "max_sessions" };
     }
-    if (fingerprint && this.countByFingerprint(fingerprint) >= this.maxSessionsPerKey) {
-      return { ok: false, reason: 'max_per_key' };
+    if (
+      fingerprint &&
+      this.countByFingerprint(fingerprint) >= this.maxSessionsPerKey
+    ) {
+      return { ok: false, reason: "max_per_key" };
     }
     if (clientIp && this.countByIp(clientIp) >= this.maxSessionsPerIp) {
-      return { ok: false, reason: 'max_per_ip' };
+      return { ok: false, reason: "max_per_ip" };
     }
     return { ok: true };
   }
@@ -173,7 +178,7 @@ export class McpSessionRegistry {
     transport: StreamableHTTPServerTransport,
     merchantApiKey: string | null,
     provisioningApiKey: string | null = null,
-    merchantAccessLevel: MerchantAccessLevel = 'full',
+    merchantAccessLevel: MerchantAccessLevel = "full",
     partnerApiKey: string | null = null,
     credentialFingerprint: string | null = null,
     clientIp: string | null = null,

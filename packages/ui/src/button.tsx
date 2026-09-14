@@ -8,7 +8,12 @@ import Spinner from "./spinner";
 import { cn } from "./cn";
 import { buttonVariants } from "./button-variants";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
 // SAFETY: motion/react ships React 18 button types. Docs typechecks this file with React 19.
 const MotionButton = motion.button as React.ForwardRefExoticComponent<

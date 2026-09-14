@@ -29,8 +29,7 @@ export function isSupabaseRefreshTokenRequest(
 ): boolean {
   const href = readRequestHref(url);
   return (
-    href.includes("/auth/v1/token") &&
-    href.includes("grant_type=refresh_token")
+    href.includes("/auth/v1/token") && href.includes("grant_type=refresh_token")
   );
 }
 

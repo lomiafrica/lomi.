@@ -101,8 +101,7 @@ export function sha256Bytes(data: Uint8Array): Uint8Array {
     for (let t = 16; t < 64; t += 1) {
       const s0 =
         rotr(w[t - 15]!, 7) ^ rotr(w[t - 15]!, 18) ^ (w[t - 15]! >>> 3);
-      const s1 =
-        rotr(w[t - 2]!, 17) ^ rotr(w[t - 2]!, 19) ^ (w[t - 2]! >>> 10);
+      const s1 = rotr(w[t - 2]!, 17) ^ rotr(w[t - 2]!, 19) ^ (w[t - 2]! >>> 10);
       w[t] = (w[t - 16]! + s0 + w[t - 7]! + s1) >>> 0;
     }
 
@@ -190,7 +189,10 @@ function toBase64Url(bytes: Uint8Array): string {
   for (const byte of bytes) {
     binary += String.fromCharCode(byte);
   }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
 }
 
 function fromBase64Url(raw: string): Uint8Array | null {
@@ -252,10 +254,7 @@ export function agentRegisterPowDigest(
 }
 
 /** Stable IP fingerprint bound into the signed challenge. */
-export function fingerprintAgentRegisterIp(
-  secret: string,
-  ip: string,
-): string {
+export function fingerprintAgentRegisterIp(secret: string, ip: string): string {
   return toHex(sha256Bytes(textEncoder.encode(`${secret}:${ip.trim()}`))).slice(
     0,
     32,

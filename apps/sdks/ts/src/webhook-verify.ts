@@ -2,26 +2,28 @@
  * Webhook signature verification (HMAC SHA-256).
  */
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 function hmacHex(secret: string, value: string): string {
-  return createHmac('sha256', secret).update(value).digest('hex');
+  return createHmac("sha256", secret).update(value).digest("hex");
 }
 
 function safeEqualHex(a: string, b: string): boolean {
-  const left = Buffer.from(a, 'utf8');
-  const right = Buffer.from(b, 'utf8');
+  const left = Buffer.from(a, "utf8");
+  const right = Buffer.from(b, "utf8");
   if (left.length !== right.length) return false;
   return timingSafeEqual(left, right);
 }
 
-function parseV1Header(header: string): { timestamp: string; v1: string } | null {
+function parseV1Header(
+  header: string,
+): { timestamp: string; v1: string } | null {
   let timestamp: string | undefined;
   let v1: string | undefined;
-  for (const part of header.split(',')) {
+  for (const part of header.split(",")) {
     const trimmed = part.trim();
-    if (trimmed.startsWith('t=')) timestamp = trimmed.slice(2);
-    else if (trimmed.startsWith('v1=')) v1 = trimmed.slice(3);
+    if (trimmed.startsWith("t=")) timestamp = trimmed.slice(2);
+    else if (trimmed.startsWith("v1=")) v1 = trimmed.slice(3);
   }
   if (!timestamp || !v1) return null;
   return { timestamp, v1 };
@@ -44,9 +46,7 @@ export function verifyWebhookSignature(
 ): boolean {
   if (!signature || !secret) return false;
 
-  const payload = Buffer.isBuffer(rawBody)
-    ? rawBody.toString('utf8')
-    : rawBody;
+  const payload = Buffer.isBuffer(rawBody) ? rawBody.toString("utf8") : rawBody;
 
   const parsed = parseV1Header(signature);
   if (parsed) {

@@ -11,7 +11,10 @@ import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const PACKAGES = ["packages/shared", "packages/queries"];
 
 function runBuild(relDir) {
@@ -28,11 +31,15 @@ function runBuild(relDir) {
 function watchAll() {
   const children = PACKAGES.map((relDir) => {
     console.log(`==> ${relDir} (watch)`);
-    return spawn("pnpm", ["exec", "tsc", "-p", "tsconfig.build.json", "--watch"], {
-      cwd: path.join(ROOT, relDir),
-      stdio: "inherit",
-      env: process.env,
-    });
+    return spawn(
+      "pnpm",
+      ["exec", "tsc", "-p", "tsconfig.build.json", "--watch"],
+      {
+        cwd: path.join(ROOT, relDir),
+        stdio: "inherit",
+        env: process.env,
+      },
+    );
   });
 
   const stop = () => {

@@ -1,18 +1,37 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const LEAVE = [0.4, 0, 1, 1] as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
-const CHIP = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
+const CHIP = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 const EXIT = { duration: 0.18, ease: LEAVE } as const;
 const INSTANT = { duration: 0 } as const;
 
 const clean = (raw: string) => raw.trim().replace(/\s+/g, " ");
 
 const splitter = (separators: string[]) =>
-  new RegExp(`[${separators.map((s) => s.replace(/[\\\]^-]/g, "\\$&")).join("")}\\n\\r\\t]+`);
+  new RegExp(
+    `[${separators.map((s) => s.replace(/[\\\]^-]/g, "\\$&")).join("")}\\n\\r\\t]+`,
+  );
 
 export type TagRejection = "duplicate" | "limit" | "invalid";
 
@@ -67,7 +86,9 @@ export function useTagInput({
   const dismiss = useCallback(() => {
     if (rejectTimer.current) clearTimeout(rejectTimer.current);
     rejectTimer.current = null;
-    setRejection((prev) => (prev && prev.visible ? { ...prev, visible: false } : prev));
+    setRejection((prev) =>
+      prev && prev.visible ? { ...prev, visible: false } : prev,
+    );
   }, []);
 
   const refuse = useCallback(
@@ -118,7 +139,9 @@ export function useTagInput({
         }
 
         if (!allowDuplicates) {
-          const twin = next.find((t) => t.toLowerCase() === candidate.toLowerCase());
+          const twin = next.find(
+            (t) => t.toLowerCase() === candidate.toLowerCase(),
+          );
           if (twin) {
             failure = { reason: "duplicate", tag: twin };
             continue;
@@ -166,7 +189,9 @@ export function useTagInput({
   const arm = useCallback(
     (index: number) => {
       setArmed(index);
-      setAnnouncement(`${tags[index]} selected, press Backspace again to remove it.`);
+      setAnnouncement(
+        `${tags[index]} selected, press Backspace again to remove it.`,
+      );
     },
     [tags],
   );
@@ -278,8 +303,17 @@ export function TagInput({
   className = "",
   ...options
 }: TagInputProps) {
-  const { tags, draft, armedIndex, flashed, rejection, announcement, inputProps, removeAt, max } =
-    useTagInput(options);
+  const {
+    tags,
+    draft,
+    armedIndex,
+    flashed,
+    rejection,
+    announcement,
+    inputProps,
+    removeAt,
+    max,
+  } = useTagInput(options);
 
   const reduced = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -434,7 +468,12 @@ export function TagInput({
         )}
       </div>
 
-      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
         {announcement}
       </span>
     </div>

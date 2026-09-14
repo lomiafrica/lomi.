@@ -1,10 +1,10 @@
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import type { ToolsManifest } from './manifest.js';
-import { toolRefForOperation } from './manifest-lookup.js';
-import { buildServerInstructions } from './server-instructions.js';
+import type { ToolsManifest } from "./manifest.js";
+import { toolRefForOperation } from "./manifest-lookup.js";
+import { buildServerInstructions } from "./server-instructions.js";
 
-const GETTING_STARTED = buildServerInstructions('http');
+const GETTING_STARTED = buildServerInstructions("http");
 
 const ERRORS_DOC = `# lomi. MCP tool result format
 
@@ -84,13 +84,16 @@ function nameFor(manifest: ToolsManifest, operationKey: string): string {
 }
 
 function buildWebhooksDoc(manifest: ToolsManifest): string {
-  const create = nameFor(manifest, 'POST /webhooks');
-  const test = nameFor(manifest, 'POST /webhooks/{id}/test');
-  const listDeliveries = nameFor(manifest, 'GET /webhooks/deliveries');
-  const getDelivery = nameFor(manifest, 'GET /webhooks/deliveries/{id}');
-  const retry = nameFor(manifest, 'POST /webhooks/{id}/deliveries/{deliveryId}/retry');
-  const update = nameFor(manifest, 'PATCH /webhooks/{id}');
-  const remove = nameFor(manifest, 'DELETE /webhooks/{id}');
+  const create = nameFor(manifest, "POST /webhooks");
+  const test = nameFor(manifest, "POST /webhooks/{id}/test");
+  const listDeliveries = nameFor(manifest, "GET /webhooks/deliveries");
+  const getDelivery = nameFor(manifest, "GET /webhooks/deliveries/{id}");
+  const retry = nameFor(
+    manifest,
+    "POST /webhooks/{id}/deliveries/{deliveryId}/retry",
+  );
+  const update = nameFor(manifest, "PATCH /webhooks/{id}");
+  const remove = nameFor(manifest, "DELETE /webhooks/{id}");
   return `# Webhooks
 
 Receive event notifications (payments, subscriptions, disputes) at your own URL.
@@ -105,13 +108,13 @@ Always verify the signature and treat delivery as at-least-once (handle duplicat
 }
 
 function buildMoneyDoc(manifest: ToolsManifest): string {
-  const balance = nameFor(manifest, 'GET /accounts/balance');
-  const checkBalance = nameFor(manifest, 'GET /accounts/balance/{currency}');
-  const payout = nameFor(manifest, 'POST /payouts');
-  const settlements = nameFor(manifest, 'GET /settlements');
-  const settlementTx = nameFor(manifest, 'GET /settlements/{id}/transactions');
-  const checkout = nameFor(manifest, 'POST /checkout-sessions');
-  const link = nameFor(manifest, 'POST /payment-links');
+  const balance = nameFor(manifest, "GET /accounts/balance");
+  const checkBalance = nameFor(manifest, "GET /accounts/balance/{currency}");
+  const payout = nameFor(manifest, "POST /payouts");
+  const settlements = nameFor(manifest, "GET /settlements");
+  const settlementTx = nameFor(manifest, "GET /settlements/{id}/transactions");
+  const checkout = nameFor(manifest, "POST /checkout-sessions");
+  const link = nameFor(manifest, "POST /payment-links");
   return `# Money, currency, and reconciliation
 
 - **Amounts** are integers in minor units of \`currency_code\`. \`10000\` is 10,000 XOF (exponent 0) or 100.00 USD/EUR (exponent 2). Reject fractions.
@@ -127,12 +130,12 @@ function buildFinanceDoc(manifest: ToolsManifest): string {
 
 Use these tools as a bookkeeper, not only a REST proxy.
 
-- **Snapshot:** \`${n('GET /finance/summary')}\` (cash, receivables, overdue, payouts, refunds, disputes).
-- **Aging:** \`${n('GET /finance/aging')}\` for open invoices by days past due.
-- **Cashflow:** \`${n('GET /finance/cashflow')}\` daily in/out.
-- **Reconcile:** \`${n('GET /finance/reconcile')}\` completed net vs payouts.
-- **Invoices:** \`${n('POST /invoices')}\` then \`${n('GET /invoices/{id}/pdf')}\`. Send hosted_url to the human.
-- **Exports:** \`${n('POST /exports')}\` with type transactions_csv, statement_pdf, or journal_csv. Poll \`${n('GET /exports/{id}')}\` for download_url.
+- **Snapshot:** \`${n("GET /finance/summary")}\` (cash, receivables, overdue, payouts, refunds, disputes).
+- **Aging:** \`${n("GET /finance/aging")}\` for open invoices by days past due.
+- **Cashflow:** \`${n("GET /finance/cashflow")}\` daily in/out.
+- **Reconcile:** \`${n("GET /finance/reconcile")}\` completed net vs payouts.
+- **Invoices:** \`${n("POST /invoices")}\` then \`${n("GET /invoices/{id}/pdf")}\`. Send hosted_url to the human.
+- **Exports:** \`${n("POST /exports")}\` with type transactions_csv, statement_pdf, or journal_csv. Poll \`${n("GET /exports/{id}")}\` for download_url.
 - **Money moves** require a confirmation_token from the first create call, and the merchant.money OAuth scope.
 `;
 }
@@ -144,46 +147,49 @@ function buildRecipesDoc(manifest: ToolsManifest): string {
 Task-oriented sequences. Pass \`idempotency_key\` on every write. Use \`lomi_search_tools\` if a tool is not loaded.
 
 ## Collect a one-time payment
-1. \`${n('POST /checkout-sessions')}\` (or \`${n('POST /payment-links')}\` for a reusable link) with an amount/currency or a product.
+1. \`${n("POST /checkout-sessions")}\` (or \`${n("POST /payment-links")}\` for a reusable link) with an amount/currency or a product.
 2. Share the returned URL with the customer.
-3. Confirm payment with \`${n('GET /checkout-sessions/{id}')}\` or \`${n('GET /transactions')}\`.
+3. Confirm payment with \`${n("GET /checkout-sessions/{id}")}\` or \`${n("GET /transactions")}\`.
 
 ## Bill one specific customer
-1. \`${n('POST /customers')}\` (or find them with \`${n('GET /customers')}\`).
-2. \`${n('POST /invoices')}\` for a numbered invoice with PDF, or \`${n('POST /payment-requests')}\` for a one-off payable link.
+1. \`${n("POST /customers")}\` (or find them with \`${n("GET /customers")}\`).
+2. \`${n("POST /invoices")}\` for a numbered invoice with PDF, or \`${n("POST /payment-requests")}\` for a one-off payable link.
 
 ## Month-end close
-1. \`${n('GET /finance/summary')}\` and \`${n('GET /finance/aging')}\`.
-2. \`${n('POST /exports')}\` type=statement_pdf and type=journal_csv; poll \`${n('GET /exports/{id}')}\`.
+1. \`${n("GET /finance/summary")}\` and \`${n("GET /finance/aging")}\`.
+2. \`${n("POST /exports")}\` type=statement_pdf and type=journal_csv; poll \`${n("GET /exports/{id}")}\`.
 3. Send reminders on overdue invoices; do not move money without a confirmation_token.
 
 ## Start a subscription
-1. \`${n('GET /products')}\` (or \`${n('POST /products')}\` first) to pick a plan.
-2. \`${n('POST /checkout-sessions')}\` referencing the product to collect the first payment and enroll.
-3. Manage later with \`${n('GET /customers/{id}/subscriptions')}\`, \`${n('POST /subscriptions/{id}/change-plan')}\`, \`${n('POST /subscriptions/{id}/cancel')}\`, \`${n('POST /subscriptions/{id}/resume')}\`.
+1. \`${n("GET /products")}\` (or \`${n("POST /products")}\` first) to pick a plan.
+2. \`${n("POST /checkout-sessions")}\` referencing the product to collect the first payment and enroll.
+3. Manage later with \`${n("GET /customers/{id}/subscriptions")}\`, \`${n("POST /subscriptions/{id}/change-plan")}\`, \`${n("POST /subscriptions/{id}/cancel")}\`, \`${n("POST /subscriptions/{id}/resume")}\`.
 
 ## Issue a refund
-1. \`${n('GET /transactions')}\` to find the payment.
-2. \`${n('POST /refunds')}\` with the transaction id and an optional partial amount.
+1. \`${n("GET /transactions")}\` to find the payment.
+2. \`${n("POST /refunds")}\` with the transaction id and an optional partial amount.
 
 ## Pay out funds
-1. \`${n('GET /accounts/balance')}\` / \`${n('GET /accounts/balance/{currency}')}\` to confirm available funds.
-2. \`${n('POST /payouts')}\` for the amount and currency.
+1. \`${n("GET /accounts/balance")}\` / \`${n("GET /accounts/balance/{currency}")}\` to confirm available funds.
+2. \`${n("POST /payouts")}\` for the amount and currency.
 
 ## Set up webhooks
-1. \`${n('POST /webhooks')}\` with URL + events (store the signing secret).
-2. \`${n('POST /webhooks/{id}/test')}\`, then verify with \`${n('GET /webhooks/deliveries')}\`.
+1. \`${n("POST /webhooks")}\` with URL + events (store the signing secret).
+2. \`${n("POST /webhooks/{id}/test")}\`, then verify with \`${n("GET /webhooks/deliveries")}\`.
 
 ## Investigate a failed payment
-1. \`${n('GET /transactions')}\` (filter by status/customer/date).
-2. \`${n('GET /transactions/{id}')}\` for detail. Do not refund or cancel until the root cause is clear.
+1. \`${n("GET /transactions")}\` (filter by status/customer/date).
+2. \`${n("GET /transactions/{id}")}\` for detail. Do not refund or cancel until the root cause is clear.
 `;
 }
 
 function buildToolsIndex(manifest: ToolsManifest): string {
-  const byTag = new Map<string, Array<{ name: string; title: string; write: boolean }>>();
+  const byTag = new Map<
+    string,
+    Array<{ name: string; title: string; write: boolean }>
+  >();
   for (const tool of manifest.tools) {
-    const tag = tool.tags[0] ?? 'Other';
+    const tag = tool.tags[0] ?? "Other";
     const list = byTag.get(tag) ?? [];
     list.push({ name: tool.name, title: tool.title, write: tool.write });
     byTag.set(tag, list);
@@ -211,66 +217,68 @@ export function registerLomiResources(
 ): void {
   const markdownResources: MarkdownResource[] = [
     {
-      name: 'getting-started',
-      uri: 'lomi://docs/getting-started',
-      title: 'lomi. MCP getting started',
-      description: 'Authentication, base URLs, and usage conventions.',
+      name: "getting-started",
+      uri: "lomi://docs/getting-started",
+      title: "lomi. MCP getting started",
+      description: "Authentication, base URLs, and usage conventions.",
       text: GETTING_STARTED,
     },
     {
-      name: 'authentication',
-      uri: 'lomi://docs/authentication',
-      title: 'lomi. MCP authentication',
-      description: 'OAuth, merchant keys, provisioning keys, and test vs live.',
+      name: "authentication",
+      uri: "lomi://docs/authentication",
+      title: "lomi. MCP authentication",
+      description: "OAuth, merchant keys, provisioning keys, and test vs live.",
       text: AUTH_DOC,
     },
     {
-      name: 'idempotency',
-      uri: 'lomi://docs/idempotency',
-      title: 'lomi. idempotency',
-      description: 'How and when to pass idempotency_key on write tools.',
+      name: "idempotency",
+      uri: "lomi://docs/idempotency",
+      title: "lomi. idempotency",
+      description: "How and when to pass idempotency_key on write tools.",
       text: IDEMPOTENCY_DOC,
     },
     {
-      name: 'pagination',
-      uri: 'lomi://docs/pagination',
-      title: 'lomi. listing and filtering',
-      description: 'Filtering, pagination, and tool discovery conventions.',
+      name: "pagination",
+      uri: "lomi://docs/pagination",
+      title: "lomi. listing and filtering",
+      description: "Filtering, pagination, and tool discovery conventions.",
       text: PAGINATION_DOC,
     },
     {
-      name: 'webhooks',
-      uri: 'lomi://docs/webhooks',
-      title: 'lomi. webhooks',
-      description: 'Register, test, verify, and debug webhook endpoints.',
+      name: "webhooks",
+      uri: "lomi://docs/webhooks",
+      title: "lomi. webhooks",
+      description: "Register, test, verify, and debug webhook endpoints.",
       text: buildWebhooksDoc(manifest),
     },
     {
-      name: 'money',
-      uri: 'lomi://docs/money',
-      title: 'lomi. money and reconciliation',
-      description: 'Currency, balances, payouts, and settlement reconciliation.',
+      name: "money",
+      uri: "lomi://docs/money",
+      title: "lomi. money and reconciliation",
+      description:
+        "Currency, balances, payouts, and settlement reconciliation.",
       text: buildMoneyDoc(manifest),
     },
     {
-      name: 'recipes',
-      uri: 'lomi://docs/recipes',
-      title: 'lomi. common workflows',
-      description: 'End-to-end task recipes referencing the right tools.',
+      name: "recipes",
+      uri: "lomi://docs/recipes",
+      title: "lomi. common workflows",
+      description: "End-to-end task recipes referencing the right tools.",
       text: buildRecipesDoc(manifest),
     },
     {
-      name: 'finance',
-      uri: 'lomi://docs/finance',
-      title: 'lomi. finance partner',
-      description: 'Summary, aging, cashflow, reconcile, invoices, and exports.',
+      name: "finance",
+      uri: "lomi://docs/finance",
+      title: "lomi. finance partner",
+      description:
+        "Summary, aging, cashflow, reconcile, invoices, and exports.",
       text: buildFinanceDoc(manifest),
     },
     {
-      name: 'errors',
-      uri: 'lomi://docs/errors',
-      title: 'lomi. tool result format',
-      description: 'How to interpret ok/status/body envelopes from tool calls.',
+      name: "errors",
+      uri: "lomi://docs/errors",
+      title: "lomi. tool result format",
+      description: "How to interpret ok/status/body envelopes from tool calls.",
       text: ERRORS_DOC,
     },
   ];
@@ -282,13 +290,13 @@ export function registerLomiResources(
       {
         title: resource.title,
         description: resource.description,
-        mimeType: 'text/markdown',
+        mimeType: "text/markdown",
       },
       async () => ({
         contents: [
           {
             uri: resource.uri,
-            mimeType: 'text/markdown',
+            mimeType: "text/markdown",
             text: resource.text,
           },
         ],
@@ -299,18 +307,18 @@ export function registerLomiResources(
   const toolsIndexJson = buildToolsIndex(manifest);
 
   server.registerResource(
-    'tools-index',
-    'lomi://tools/index',
+    "tools-index",
+    "lomi://tools/index",
     {
-      title: 'lomi. tools index',
-      description: 'All MCP tools grouped by OpenAPI tag.',
-      mimeType: 'application/json',
+      title: "lomi. tools index",
+      description: "All MCP tools grouped by OpenAPI tag.",
+      mimeType: "application/json",
     },
     async () => ({
       contents: [
         {
-          uri: 'lomi://tools/index',
-          mimeType: 'application/json',
+          uri: "lomi://tools/index",
+          mimeType: "application/json",
           text: toolsIndexJson,
         },
       ],

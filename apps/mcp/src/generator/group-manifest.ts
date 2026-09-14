@@ -24,7 +24,10 @@ function stringArray(value: JsonValue | undefined): string[] {
   return Array.isArray(value) ? value.filter(isString) : [];
 }
 
-function parseGroups(raw: JsonValue | undefined, field: string): ToolGroupDef[] {
+function parseGroups(
+  raw: JsonValue | undefined,
+  field: string,
+): ToolGroupDef[] {
   if (!Array.isArray(raw) || raw.length === 0) {
     throw new Error(`mcp-tool-policy.json ${field} must be a non-empty array`);
   }
@@ -51,9 +54,7 @@ function parseGroups(raw: JsonValue | undefined, field: string): ToolGroupDef[] 
     const actions: { [action: string]: string } = {};
     for (const [action, op] of Object.entries(actionsRaw)) {
       if (!ACTION_NAME.test(action)) {
-        throw new Error(
-          `${name} action "${action}" must match ${ACTION_NAME}`,
-        );
+        throw new Error(`${name} action "${action}" must match ${ACTION_NAME}`);
       }
       if (!isString(op)) {
         throw new Error(`${name}.${action} must be an operation key string`);
@@ -111,9 +112,7 @@ export function assertGroupsCoverOperations(
   }
 }
 
-export function requiredInputFromSchema(
-  schema: ResolvedJsonSchema,
-): string[] {
+export function requiredInputFromSchema(schema: ResolvedJsonSchema): string[] {
   return stringArray(schema["required"]);
 }
 

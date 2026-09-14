@@ -4,7 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const INSTANT = { duration: 0 } as const;
 const SPIN = { duration: 0.7, ease: "linear", repeat: Infinity } as const;
 
@@ -163,7 +168,14 @@ export function useLoadMore({
 
 function ChevronMark() {
   return (
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" className="shrink-0">
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0"
+    >
       <path
         d="M2.6 4.2 5.5 7.1 8.4 4.2"
         stroke="currentColor"
@@ -177,7 +189,14 @@ function ChevronMark() {
 
 function CheckMark() {
   return (
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" className="shrink-0">
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0"
+    >
       <path
         d="M2.2 5.7 4.5 8 8.8 3"
         stroke="currentColor"
@@ -191,9 +210,28 @@ function CheckMark() {
 
 function AlertMark() {
   return (
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" className="shrink-0">
-      <path d="M5.5 2.4v3.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <rect x="4.7" y="7.5" width="1.6" height="1.6" rx="0.4" fill="currentColor" />
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 11 11"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <path
+        d="M5.5 2.4v3.4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <rect
+        x="4.7"
+        y="7.5"
+        width="1.6"
+        height="1.6"
+        rx="0.4"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -212,7 +250,14 @@ function SpinnerMark({ spinning }: { spinning: boolean }) {
       animate={spinning ? { rotate: 360 } : { rotate: 0 }}
       transition={spinning ? SPIN : INSTANT}
     >
-      <circle cx="5.5" cy="5.5" r="3.9" stroke="currentColor" strokeWidth="1.5" opacity="0.25" />
+      <circle
+        cx="5.5"
+        cy="5.5"
+        r="3.9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.25"
+      />
       <path
         d="M5.5 1.6a3.9 3.9 0 0 1 3.9 3.9"
         stroke="currentColor"
@@ -341,7 +386,12 @@ export function LoadMore({
         </motion.span>
       </button>
 
-      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
         {status === "error" || status === "end" ? text[status] : ""}
       </span>
     </div>

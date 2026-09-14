@@ -10,12 +10,12 @@
  * Member balance is `sdk.accounts.getBalance(undefined, { account: 'acct_…' })`.
  */
 
-import type { LomiClient } from '../client.js';
-import { requestWithClient } from '../http.js';
-import type { LomiRequestOptions } from '../request-options.js';
+import type { LomiClient } from "../client.js";
+import { requestWithClient } from "../http.js";
+import type { LomiRequestOptions } from "../request-options.js";
 
 export interface LoginLink {
-  object: 'login_link';
+  object: "login_link";
   account: string;
   url: string;
   created_at: string;
@@ -42,7 +42,7 @@ export interface CreateAccountSessionParams {
 }
 
 export interface AccountSession {
-  object: 'account_session';
+  object: "account_session";
   account: string;
   client_secret: string;
   expires_at: string;
@@ -59,8 +59,8 @@ export class NetworkAccountsResource {
     options?: LomiRequestOptions,
   ): Promise<LoginLink> {
     return requestWithClient<LoginLink>(this.client, {
-      method: 'POST',
-      url: '/network/accounts/{account}/login_links',
+      method: "POST",
+      url: "/network/accounts/{account}/login_links",
       path: { account },
       ...options,
     });
@@ -76,8 +76,8 @@ export class NetworkAccountSessionsResource {
     options?: LomiRequestOptions,
   ): Promise<AccountSession> {
     return requestWithClient<AccountSession>(this.client, {
-      method: 'POST',
-      url: '/network/account-sessions',
+      method: "POST",
+      url: "/network/account-sessions",
       body: params,
       ...options,
     });

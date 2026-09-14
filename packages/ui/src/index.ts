@@ -8,7 +8,10 @@ export {
   interiorControl,
   interiorField,
 } from "./tokens";
-export { buttonVariants, settingsButtonActionClassName } from "./button-variants";
+export {
+  buttonVariants,
+  settingsButtonActionClassName,
+} from "./button-variants";
 export { Button } from "./button";
 export type { ButtonProps } from "./button";
 export { Input } from "./input";
@@ -84,13 +87,15 @@ export {
   TableFooter,
   TableCaption,
 } from "./table";
-export { Popover, PopoverTrigger, PopoverAnchor, PopoverContent } from "./popover";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverAnchor,
+  PopoverContent,
+} from "./popover";
 // Calendar: deep import only (`@lomi./ui/calendar`) — optional peer react-day-picker.
 export { createToastAwarePointerDownOutside } from "./overlay-interaction";
-export {
-  PhoneNumberInput,
-  WhatsAppNumberInput,
-} from "./phone-number-input";
+export { PhoneNumberInput, WhatsAppNumberInput } from "./phone-number-input";
 export type {
   PhoneNumberInputProps,
   WhatsAppNumberInputProps,

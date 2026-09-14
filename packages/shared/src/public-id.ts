@@ -79,7 +79,9 @@ export function publicIdPrefix(value: string): string | null {
   return matchPublicIdPrefix(normalizePublicId(value));
 }
 
-export function formatPublicId(value: string | null | undefined): string | null {
+export function formatPublicId(
+  value: string | null | undefined,
+): string | null {
   if (!value) return null;
   const trimmed = value.trim();
   if (!trimmed) return null;
@@ -96,7 +98,9 @@ export function formatPublicId(value: string | null | undefined): string | null 
 }
 
 /** Merchant and customer facing id. Never a UUID. */
-export function displayPublicId(value: string | null | undefined): string | null {
+export function displayPublicId(
+  value: string | null | undefined,
+): string | null {
   if (!value) return null;
   const trimmed = value.trim();
   if (!trimmed || isUuid(trimmed) || !isPublicId(trimmed)) return null;
@@ -171,9 +175,7 @@ export function isCheckoutLinkIdentifier(value: string): boolean {
 }
 
 export function isLegacyPaymentLinkPath(pathname: string): boolean {
-  return (
-    pathname.startsWith("/instant/") || pathname.startsWith("/product/")
-  );
+  return pathname.startsWith("/instant/") || pathname.startsWith("/product/");
 }
 
 /** Share URL path is `/{body}` only. Old `/instant/` and `/product/` are not canonical. */
@@ -218,11 +220,7 @@ export function hostedPaymentLinkUrl(
   return buildPaymentLinkCheckoutUrl(id);
 }
 
-const CHECKOUT_SESSION_RESERVED_SEGMENTS = new Set([
-  "error",
-  "mtn",
-  "success",
-]);
+const CHECKOUT_SESSION_RESERVED_SEGMENTS = new Set(["error", "mtn", "success"]);
 
 export function isCheckoutSessionIdentifier(value: string): boolean {
   return isPublicId(value, PUBLIC_ID_PREFIXES.checkoutSession);

@@ -212,10 +212,7 @@ function PdfDigitalDelivery({
         >
           <PdfSectionLabel>{delivery.downloadsTitle}</PdfSectionLabel>
           {delivery.files.map((file, index) => (
-            <View
-              key={`file-${index.toString()}`}
-              style={{ marginBottom: 8 }}
-            >
+            <View key={`file-${index.toString()}`} style={{ marginBottom: 8 }}>
               <Text
                 style={{
                   fontSize: PDF_FONT_SIZE.body,
@@ -483,7 +480,10 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
                   {data.showQuantityAndPrice ? (
                     <PdfLineValue width={PDF_PRICE_COL_WIDTH} align="right">
                       {!item.isFee
-                        ? formatCurrencyForReceipt(item.unitPrice, data.currency)
+                        ? formatCurrencyForReceipt(
+                            item.unitPrice,
+                            data.currency,
+                          )
                         : ""}
                     </PdfLineValue>
                   ) : null}

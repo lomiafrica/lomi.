@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const SETTLE = 420;
 const RELEASE = 900;
 
@@ -73,7 +78,8 @@ export function useScrollSpy({
     }
 
     const atEnd = container
-      ? container.scrollTop + container.clientHeight >= container.scrollHeight - 2
+      ? container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 2
       : window.scrollY + window.innerHeight >=
         document.documentElement.scrollHeight - 2;
 
@@ -174,9 +180,7 @@ export function useScrollSpy({
             document.documentElement.scrollHeight - window.innerHeight,
           );
       const H = container
-        ? rect.top -
-          container.getBoundingClientRect().top +
-          container.scrollTop
+        ? rect.top - container.getBoundingClientRect().top + container.scrollTop
         : rect.top + window.scrollY;
       const usable = Math.max(0, viewport - offset - 1);
       const top =

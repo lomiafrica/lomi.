@@ -27,7 +27,7 @@ export class LomiError extends Error {
     public body?: LomiApiErrorBody,
   ) {
     super(message);
-    this.name = 'LomiError';
+    this.name = "LomiError";
     this.status = statusCode;
     Object.setPrototypeOf(this, LomiError.prototype);
   }
@@ -40,46 +40,53 @@ export class LomiValidationError extends LomiError {
     requestId?: string,
     body?: LomiApiErrorBody,
   ) {
-    super(message, 400, 'VALIDATION_ERROR', errors, requestId, body);
-    this.name = 'LomiValidationError';
+    super(message, 400, "VALIDATION_ERROR", errors, requestId, body);
+    this.name = "LomiValidationError";
     Object.setPrototypeOf(this, LomiValidationError.prototype);
   }
 }
 
 export class LomiAuthError extends LomiError {
   constructor(
-    message: string = 'Authentication failed',
+    message: string = "Authentication failed",
     statusCode: number = 401,
     code?: string,
     requestId?: string,
     body?: LomiApiErrorBody,
   ) {
-    super(message, statusCode, code ?? 'AUTH_ERROR', undefined, requestId, body);
-    this.name = 'LomiAuthError';
+    super(
+      message,
+      statusCode,
+      code ?? "AUTH_ERROR",
+      undefined,
+      requestId,
+      body,
+    );
+    this.name = "LomiAuthError";
     Object.setPrototypeOf(this, LomiAuthError.prototype);
   }
 }
 
 export class LomiNotFoundError extends LomiError {
   constructor(
-    message: string = 'Resource not found',
+    message: string = "Resource not found",
     requestId?: string,
     body?: LomiApiErrorBody,
   ) {
-    super(message, 404, 'NOT_FOUND', undefined, requestId, body);
-    this.name = 'LomiNotFoundError';
+    super(message, 404, "NOT_FOUND", undefined, requestId, body);
+    this.name = "LomiNotFoundError";
     Object.setPrototypeOf(this, LomiNotFoundError.prototype);
   }
 }
 
 export class LomiRateLimitError extends LomiError {
   constructor(
-    message: string = 'Rate limit exceeded',
+    message: string = "Rate limit exceeded",
     requestId?: string,
     body?: LomiApiErrorBody,
   ) {
-    super(message, 429, 'RATE_LIMIT_ERROR', undefined, requestId, body);
-    this.name = 'LomiRateLimitError';
+    super(message, 429, "RATE_LIMIT_ERROR", undefined, requestId, body);
+    this.name = "LomiRateLimitError";
     Object.setPrototypeOf(this, LomiRateLimitError.prototype);
   }
 }
@@ -95,13 +102,13 @@ export class ApiError extends LomiError {
     message: string,
     status: number,
     body?: LomiApiErrorBody,
-    url = '',
-    statusText = '',
+    url = "",
+    statusText = "",
     requestId?: string,
   ) {
     const code = body?.error?.code;
     super(message, status, code, body?.error?.details, requestId, body);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.statusText = statusText;
     this.url = url;
     Object.setPrototypeOf(this, ApiError.prototype);

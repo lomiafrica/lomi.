@@ -85,7 +85,8 @@ function diffSection(label, prodMap, testMap) {
   const changed = [...prodMap.keys()]
     .filter(
       (k) =>
-        testMap.has(k) && normalize(prodMap.get(k)) !== normalize(testMap.get(k)),
+        testMap.has(k) &&
+        normalize(prodMap.get(k)) !== normalize(testMap.get(k)),
     )
     .sort();
   return { label, onlyProd, onlyTest, changed, prodMap, testMap };
@@ -121,7 +122,9 @@ const enumDiff = diffSection(
   extractPublicSection(test, "Enums"),
 );
 
-console.log("# packages/shared/src/database.ts (PROD) vs live test project types\n");
+console.log(
+  "# packages/shared/src/database.ts (PROD) vs live test project types\n",
+);
 console.log(`PROD project: ${PROD_PROJECT_ID}`);
 console.log(`TEST project: ${TEST_PROJECT_ID}\n`);
 console.log(

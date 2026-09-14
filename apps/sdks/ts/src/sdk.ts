@@ -3,8 +3,8 @@
  * AUTO-GENERATED - Do not edit manually
  */
 
-import type { LomiConfig } from './config.js';
-import { LomiClient } from './client.js';
+import type { LomiConfig } from "./config.js";
+import { LomiClient } from "./client.js";
 import {
   AccountService,
   AccountsService,
@@ -37,9 +37,9 @@ import {
   TransactionsService,
   UsageService,
   WebhooksService,
-} from './generated/index.js';
-import { NetworkResource } from './resources/network.js';
-import { TransfersResource } from './resources/transfers.js';
+} from "./generated/index.js";
+import { NetworkResource } from "./resources/network.js";
+import { TransfersResource } from "./resources/transfers.js";
 
 export class LomiSDK {
   private readonly client: LomiClient;

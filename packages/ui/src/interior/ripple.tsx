@@ -162,7 +162,8 @@ export function useRipple({
         spawn(e.currentTarget, e.clientX, e.clientY),
       );
     },
-    onPointerUp: (e: React.PointerEvent<HTMLElement>) => endPointer(e.pointerId),
+    onPointerUp: (e: React.PointerEvent<HTMLElement>) =>
+      endPointer(e.pointerId),
     onPointerCancel: (e: React.PointerEvent<HTMLElement>) =>
       endPointer(e.pointerId),
     onLostPointerCapture: (e: React.PointerEvent<HTMLElement>) =>
@@ -209,7 +210,10 @@ export function Ripple({
       type="button"
       disabled={disabled}
       onClick={onPress}
-      style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
+      style={{
+        touchAction: "manipulation",
+        WebkitTapHighlightColor: "transparent",
+      }}
       className={`relative isolate inline-flex select-none items-center justify-center gap-2 rounded-md border border-stone-200 bg-white px-3.5 py-2 text-[13px] font-medium text-stone-700 outline-none focus-visible:ring-2 focus-visible:ring-stone-400 disabled:opacity-50 dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-200 dark:focus-visible:ring-white/25 ${className}`}
       {...bind}
     >

@@ -21,7 +21,7 @@ export type LomiRequestOptions = {
   headers?: LomiHeaders;
 };
 
-export type LomiHttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type LomiHttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export type LomiClientRequestOptions = LomiRequestOptions & {
   method: LomiHttpMethod;

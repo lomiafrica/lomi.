@@ -13,9 +13,9 @@ import {
   existsSync,
   readdirSync,
   rmSync,
-} from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+} from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import {
   HTTP_WITH_BODY,
   DEFAULT_OPENAPI_PATH,
@@ -30,20 +30,20 @@ import {
   LIST_METHOD_NAMES,
   expandSdkManifestMethods,
   withoutHandwrittenServices,
-} from './public-sdk-operations.js';
+} from "./public-sdk-operations.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const apiTypesPath = join(__dirname, '../api-types.ts');
+const apiTypesPath = join(__dirname, "../api-types.ts");
 const openapiPath = DEFAULT_OPENAPI_PATH;
 const allowlistPath = DEFAULT_ALLOWLIST_PATH;
-const outputDir = join(__dirname, '../ts/src/generated');
+const outputDir = join(__dirname, "../ts/src/generated");
 const isObjectRecord = (value) =>
   value !== null && Object(value) === value && !Array.isArray(value);
 const enOverridesPath = join(
   __dirname,
-  '../../docs/lib/scripts/manual-api/en-operation-overrides.ts',
+  "../../docs/lib/scripts/manual-api/en-operation-overrides.ts",
 );
 
 /** @returns {Record<string, string>} operationId -> English summary */
@@ -51,7 +51,7 @@ function loadEnSummaries() {
   /** @type {Record<string, string>} */
   const map = {};
   if (!existsSync(enOverridesPath)) return map;
-  const content = readFileSync(enOverridesPath, 'utf-8');
+  const content = readFileSync(enOverridesPath, "utf-8");
   const re = /(\w+):\s*\{[^}]*?summary:\s*['"]([^'"]+)['"]/gs;
   let m;
   while ((m = re.exec(content))) {
@@ -69,16 +69,16 @@ function pathsOpType(pathTpl, httpMethod) {
 /** @param {any} op */
 function first2xxResponseCode(op) {
   const codes = Object.keys(op.responses ?? {}).filter((c) => /^2/.test(c));
-  return codes.sort((a, b) => Number(a) - Number(b))[0] ?? '200';
+  return codes.sort((a, b) => Number(a) - Number(b))[0] ?? "200";
 }
 
 /** @param {any} schema @param {any} spec @param {string} opType @param {'request'|'response'} kind */
 function resolveSchemaType(schema, spec, opType, kind) {
   if (schema?.$ref) {
-    const name = schema.$ref.split('/').pop();
+    const name = schema.$ref.split("/").pop();
     if (name) return `components['schemas']['${name}']`;
   }
-  if (kind === 'request') {
+  if (kind === "request") {
     return `NonNullable<${opType}['requestBody']>['content']['application/json']`;
   }
   return `(NonNullable<NonNullable<${opType}['responses'][201]>['content']>['application/json'])`;
@@ -95,17 +95,18 @@ function buildOperationTypes(pathTpl, httpMethod, op, spec) {
   const code = first2xxResponseCode(op);
 
   const hasBody = wantsBody(httpMethod, op);
-  const reqSchema = op.requestBody?.content?.['application/json']?.schema;
+  const reqSchema = op.requestBody?.content?.["application/json"]?.schema;
   const bodyType = hasBody
-    ? resolveSchemaType(reqSchema, spec, opType, 'request')
+    ? resolveSchemaType(reqSchema, spec, opType, "request")
     : null;
 
-  const resSchema = op.responses?.[code]?.content?.['application/json']?.schema;
-  const responseType = resSchema || op.responses?.[code]?.content?.['application/json']
-    ? resSchema?.$ref
-      ? resolveSchemaType(resSchema, spec, opType, 'response')
-      : `(NonNullable<NonNullable<${opType}['responses'][${code}]>['content']>['application/json'])`
-    : 'unknown';
+  const resSchema = op.responses?.[code]?.content?.["application/json"]?.schema;
+  const responseType =
+    resSchema || op.responses?.[code]?.content?.["application/json"]
+      ? resSchema?.$ref
+        ? resolveSchemaType(resSchema, spec, opType, "response")
+        : `(NonNullable<NonNullable<${opType}['responses'][${code}]>['content']>['application/json'])`
+      : "unknown";
 
   const queryType = `${opType}['parameters'] extends { query: infer Q } ? Q : Record<string, unknown>`;
 
@@ -136,7 +137,9 @@ function buildMethodSource(
   }
 
   const ids = pathIds(pathTpl);
-  const qParams = flattenParams(spec, pathItem, op).filter((q) => q.in === 'query');
+  const qParams = flattenParams(spec, pathItem, op).filter(
+    (q) => q.in === "query",
+  );
   const { bodyType, responseType, queryType, hasBody } = buildOperationTypes(
     pathTpl,
     httpMethod,
@@ -150,14 +153,14 @@ function buildMethodSource(
   if (hasBody) {
     argParts.push(`body: ${bodyType}`);
     argParts.push(`options?: ${opt}`);
-  } else if (httpMethod === 'get' && qParams.length > 0) {
+  } else if (httpMethod === "get" && qParams.length > 0) {
     argParts.push(`params?: ${queryType}`);
     argParts.push(`options?: ${opt}`);
   } else {
     argParts.push(`options?: ${opt}`);
   }
 
-  const args = argParts.join(', ');
+  const args = argParts.join(", ");
 
   const reqLines = [
     `        return requestWithClient<${responseType}>(this.client, {`,
@@ -167,36 +170,36 @@ function buildMethodSource(
 
   if (ids.length) {
     reqLines.push(
-      `            path: { ${ids.map((id) => `${id}: ${id}`).join(', ')} },`,
+      `            path: { ${ids.map((id) => `${id}: ${id}`).join(", ")} },`,
     );
   }
 
-  if (httpMethod === 'get' && qParams.length > 0) {
-    reqLines.push('            query: params,');
-    reqLines.push('            ...options,');
+  if (httpMethod === "get" && qParams.length > 0) {
+    reqLines.push("            query: params,");
+    reqLines.push("            ...options,");
   } else if (hasBody) {
-    reqLines.push('            body,');
-    reqLines.push('            ...options,');
+    reqLines.push("            body,");
+    reqLines.push("            ...options,");
   } else {
-    reqLines.push('            ...options,');
+    reqLines.push("            ...options,");
   }
 
-  reqLines.push('        });');
+  reqLines.push("        });");
 
   const summary =
     enSummaries[operationId] ?? (op.summary ? String(op.summary) : methodName);
 
   const desc = [
-    '    /**',
-    `     * ${summary.replace(/\*\//g, '')}`,
+    "    /**",
+    `     * ${summary.replace(/\*\//g, "")}`,
     `     * @see OpenAPI \`${operationId}\``,
-    '     */',
+    "     */",
     `    public async ${methodName}(${args}): Promise<${responseType}> {`,
     ...reqLines,
-    '    }',
+    "    }",
   ];
 
-  return desc.join('\n');
+  return desc.join("\n");
 }
 
 /** @param {string} methodName @param {string} pathTpl @param {string} httpMethod @param {any} op */
@@ -204,8 +207,15 @@ function buildListAllSource(methodName, pathTpl, httpMethod, op, spec) {
   if (!LIST_METHOD_NAMES.has(methodName)) return null;
 
   const pathItem = spec.paths[pathTpl];
-  const qParams = flattenParams(spec, pathItem, op).filter((q) => q.in === 'query');
-  const { queryType, responseType } = buildOperationTypes(pathTpl, httpMethod, op, spec);
+  const qParams = flattenParams(spec, pathItem, op).filter(
+    (q) => q.in === "query",
+  );
+  const { queryType, responseType } = buildOperationTypes(
+    pathTpl,
+    httpMethod,
+    op,
+    spec,
+  );
   const listMethod = methodName;
   const opt = 'import("../../request-options.js").LomiRequestOptions';
 
@@ -294,12 +304,12 @@ function generateServiceClass(serviceName, methods) {
     .map((m) => {
       const parts = [m.source];
       if (m.listAllSource) parts.push(m.listAllSource);
-      return parts.join('\n\n');
+      return parts.join("\n\n");
     })
-    .join('\n\n');
+    .join("\n\n");
 
   const webhookExtra =
-    serviceName === 'WebhooksService'
+    serviceName === "WebhooksService"
       ? `
 
     /**
@@ -312,12 +322,12 @@ function generateServiceClass(serviceName, methods) {
     ): boolean {
         return verifyWebhookSignature(rawBody, signature, secret);
     }`
-      : '';
+      : "";
 
   const webhookImport =
-    serviceName === 'WebhooksService'
+    serviceName === "WebhooksService"
       ? `\nimport { verifyWebhookSignature } from '../../webhook-verify.js';`
-      : '';
+      : "";
 
   return `/**
  * ${serviceName}
@@ -363,22 +373,22 @@ function generateSchemaTypeAliases(spec, flatOps) {
     const collectRef = (ref) => {
       if (!ref || ref.constructor !== String) return;
       const resolved = resolveRef(ref, spec);
-      if (ref.includes('/components/schemas/')) {
-        const name = ref.split('/').pop();
+      if (ref.includes("/components/schemas/")) {
+        const name = ref.split("/").pop();
         if (name) schemaNames.add(name);
       }
     };
 
-    const rb = op.requestBody?.content?.['application/json']?.schema;
+    const rb = op.requestBody?.content?.["application/json"]?.schema;
     if (rb?.$ref) collectRef(rb.$ref);
 
-    const res = op.responses?.[code]?.content?.['application/json']?.schema;
+    const res = op.responses?.[code]?.content?.["application/json"]?.schema;
     if (res?.$ref) collectRef(res.$ref);
   }
 
   const lines = [...schemaNames].sort().map((name) => {
-    const alias = name.replace(/Dto$/, '').replace(/^Create/, 'Create');
-    const exportName = name.replace(/Dto$/, '');
+    const alias = name.replace(/Dto$/, "").replace(/^Create/, "Create");
+    const exportName = name.replace(/Dto$/, "");
     return `export type ${exportName} = components['schemas']['${name}'];`;
   });
 
@@ -389,7 +399,7 @@ function generateSchemaTypeAliases(spec, flatOps) {
 
 import type { components } from './schema.js';
 
-${lines.join('\n')}
+${lines.join("\n")}
 `;
 }
 
@@ -406,16 +416,16 @@ export type { paths, components, operations } from './schema.js';
 export * from './type-aliases.js';
 export * from './types.js';
 
-${lines.join('\n')}
+${lines.join("\n")}
 `;
 }
 
 function main() {
-  console.log('OpenAPI-filtered merchant SDK generation…');
+  console.log("OpenAPI-filtered merchant SDK generation…");
 
   const enSummaries = loadEnSummaries();
   const { spec, allowed } = readSpecAndAllowlist(openapiPath, allowlistPath);
-  const apiTypesContent = readFileSync(apiTypesPath, 'utf-8');
+  const apiTypesContent = readFileSync(apiTypesPath, "utf-8");
 
   const { byService: allServices, operations } = getNormalizedOperations(
     spec,
@@ -454,14 +464,14 @@ function main() {
     }
   }
 
-  const schemaPath = join(outputDir, 'schema.d.ts');
+  const schemaPath = join(outputDir, "schema.d.ts");
   const preservedSchema = existsSync(schemaPath)
-    ? readFileSync(schemaPath, 'utf-8')
+    ? readFileSync(schemaPath, "utf-8")
     : null;
 
   if (existsSync(outputDir)) {
     for (const entry of readdirSync(outputDir)) {
-      if (entry === 'schema.d.ts') continue;
+      if (entry === "schema.d.ts") continue;
       const full = join(outputDir, entry);
       rmSync(full, { recursive: true, force: true });
     }
@@ -469,20 +479,25 @@ function main() {
     mkdirSync(outputDir, { recursive: true });
   }
 
-  mkdirSync(join(outputDir, 'services'), { recursive: true });
+  mkdirSync(join(outputDir, "services"), { recursive: true });
 
   if (preservedSchema) {
-    writeFileSync(schemaPath, preservedSchema, 'utf-8');
+    writeFileSync(schemaPath, preservedSchema, "utf-8");
   }
 
-  writeFileSync(join(outputDir, 'types.ts'), generateTypesFile(apiTypesContent));
   writeFileSync(
-    join(outputDir, 'type-aliases.ts'),
+    join(outputDir, "types.ts"),
+    generateTypesFile(apiTypesContent),
+  );
+  writeFileSync(
+    join(outputDir, "type-aliases.ts"),
     generateSchemaTypeAliases(spec, operations),
   );
 
   const manifest = {};
-  const serviceNamesSorted = [...groups.keys()].sort((a, b) => a.localeCompare(b));
+  const serviceNamesSorted = [...groups.keys()].sort((a, b) =>
+    a.localeCompare(b),
+  );
 
   for (const serviceName of serviceNamesSorted) {
     const methods = groups.get(serviceName) ?? [];
@@ -496,10 +511,10 @@ function main() {
     console.log(`   ${serviceName}`);
   }
 
-  writeFileSync(join(outputDir, 'index.ts'), generateIndex(serviceNamesSorted));
+  writeFileSync(join(outputDir, "index.ts"), generateIndex(serviceNamesSorted));
 
   writeFileSync(
-    join(outputDir, 'sdk-public-methods.json'),
+    join(outputDir, "sdk-public-methods.json"),
     `${JSON.stringify({ generatedAt: new Date().toISOString(), sdk: manifest }, null, 2)}\n`,
   );
 

@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isJsPlainObject } from "./lib/js-guards.mjs";
 import { loadTaskRegistry } from "./lib/task-registry.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const COMMANDS = [
   "list",
   "install",
@@ -24,6 +27,58 @@ const COMMANDS = [
 
 function relOf(abs) {
   return path.relative(ROOT, abs) || ".";
+}
+
+const SKIP_FORMAT_WALK = new Set([
+  "node_modules",
+  ".git",
+  "dist",
+  ".next",
+  "coverage",
+  "vendor",
+  "target",
+  ".expo",
+]);
+
+const SKIP_FORMAT_REL = new Set([
+  "apps/dashboard/apps",
+  "apps/jumbo/modules",
+  "apps/plugins/references",
+]);
+
+const PRETTIER_SOURCE_GLOB = "**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,css}";
+
+function listNodePackageDirs(dir, acc = []) {
+  if (!existsSync(dir)) return acc;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (SKIP_FORMAT_WALK.has(entry.name)) continue;
+    const abs = path.join(dir, entry.name);
+    const rel = relOf(abs).split(path.sep).join("/");
+    if (SKIP_FORMAT_REL.has(rel)) continue;
+    if (rel.includes("/tests/fixtures/") || rel.includes("/fixtures/"))
+      continue;
+    if (existsSync(path.join(abs, "package.json"))) acc.push(rel);
+    listNodePackageDirs(abs, acc);
+  }
+  return acc;
+}
+
+function runRootPrettier(fix, relDir) {
+  const glob = `${relDir}/${PRETTIER_SOURCE_GLOB}`;
+  console.log(`\n==> ${relDir} (prettier ${fix ? "write" : "check"})`);
+  return run(
+    "pnpm",
+    [
+      "exec",
+      "prettier",
+      fix ? "--write" : "--check",
+      "--ignore-unknown",
+      "--no-error-on-unmatched-pattern",
+      glob,
+    ],
+    ROOT,
+  );
 }
 
 function run(command, args, cwd) {
@@ -82,7 +137,9 @@ function reportMissing(missingRequired, missingOptional) {
     console.log(`==> skip ${project.path} (not checked out, optional)`);
   }
   for (const project of missingRequired) {
-    console.error(`==> missing ${project.path} (required ${project.manager} project)`);
+    console.error(
+      `==> missing ${project.path} (required ${project.manager} project)`,
+    );
   }
 }
 
@@ -105,7 +162,8 @@ function exitIfFailed(label, failures) {
 }
 
 function listProjects(registry) {
-  const { present, missingRequired, missingOptional } = presentProjects(registry);
+  const { present, missingRequired, missingOptional } =
+    presentProjects(registry);
   console.log("id\tpath\tmanager\tworkspace\tstatus");
   for (const project of registry.projects) {
     const checkedOut = present.some((item) => item.id === project.id);
@@ -123,7 +181,8 @@ function listProjects(registry) {
 }
 
 function installOrUpdate(registry, command) {
-  const { present, missingRequired, missingOptional } = presentProjects(registry);
+  const { present, missingRequired, missingOptional } =
+    presentProjects(registry);
   reportMissing(missingRequired, missingOptional);
   failIfRequiredMissing(missingRequired);
 
@@ -152,7 +211,8 @@ function installOrUpdate(registry, command) {
 }
 
 function runPnpmScript(registry, capability, scriptName) {
-  const { present, missingRequired, missingOptional } = presentProjects(registry);
+  const { present, missingRequired, missingOptional } =
+    presentProjects(registry);
   reportMissing(missingRequired, missingOptional);
   failIfRequiredMissing(missingRequired);
 
@@ -198,7 +258,13 @@ function lintAll(registry, fix) {
       registry,
       "lint",
       fix
-        ? ["clippy", "--all-targets", "--fix", "--allow-dirty", "--allow-staged"]
+        ? [
+            "clippy",
+            "--all-targets",
+            "--fix",
+            "--allow-dirty",
+            "--allow-staged",
+          ]
         : ["clippy", "--all-targets"],
       fix ? "cargo clippy --fix" : "cargo clippy",
     ),
@@ -208,6 +274,7 @@ function lintAll(registry, fix) {
 
 function formatAll(registry, fix) {
   const scriptName = fix ? "format:fix" : "format";
+  const { present } = presentProjects(registry);
   const failures = [
     ...runPnpmScript(registry, "format", scriptName),
     ...runCargo(
@@ -217,11 +284,35 @@ function formatAll(registry, fix) {
       fix ? "cargo fmt" : "cargo fmt --check",
     ),
   ];
+
+  const alreadyRan = new Set(
+    present
+      .filter((project) => {
+        if (project.manager !== "pnpm") return false;
+        if (!project.capabilities.includes("format")) return false;
+        const scripts = packageScripts(project.path);
+        return Boolean(scripts?.[scriptName]);
+      })
+      .map((project) => project.path),
+  );
+
+  if (runRootPrettier(fix, "tooling") !== 0) failures.push("tooling");
+
+  const leftover = [
+    ...listNodePackageDirs(path.join(ROOT, "apps")),
+    ...listNodePackageDirs(path.join(ROOT, "packages")),
+  ];
+  for (const rel of leftover) {
+    if (alreadyRan.has(rel)) continue;
+    if (runRootPrettier(fix, rel) !== 0) failures.push(rel);
+  }
+
   exitIfFailed(scriptName, failures);
 }
 
 function typecheckAll(registry) {
-  const { present, missingRequired, missingOptional } = presentProjects(registry);
+  const { present, missingRequired, missingOptional } =
+    presentProjects(registry);
   reportMissing(missingRequired, missingOptional);
   failIfRequiredMissing(missingRequired);
 
@@ -241,7 +332,9 @@ function typecheckAll(registry) {
         !project.workspace,
       );
     } else {
-      console.error(`==> ${project.path} lists typecheck but has no typecheck script or tsconfig`);
+      console.error(
+        `==> ${project.path} lists typecheck but has no typecheck script or tsconfig`,
+      );
       failures.push(project.path);
       continue;
     }
@@ -249,13 +342,19 @@ function typecheckAll(registry) {
   }
 
   failures.push(
-    ...runCargo(registry, "typecheck", ["check", "--all-targets"], "cargo check"),
+    ...runCargo(
+      registry,
+      "typecheck",
+      ["check", "--all-targets"],
+      "cargo check",
+    ),
   );
   exitIfFailed("typecheck", failures);
 }
 
 function knipAll(registry) {
-  const { present, missingRequired, missingOptional } = presentProjects(registry);
+  const { present, missingRequired, missingOptional } =
+    presentProjects(registry);
   reportMissing(missingRequired, missingOptional);
   failIfRequiredMissing(missingRequired);
 

@@ -11,7 +11,12 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
 
-const ARRIVE = { type: "spring", stiffness: 540, damping: 34, mass: 0.5 } as const;
+const ARRIVE = {
+  type: "spring",
+  stiffness: 540,
+  damping: 34,
+  mass: 0.5,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const useIsoLayoutEffect =
@@ -166,7 +171,9 @@ export function NewItemsPill({
             type="button"
             onClick={onJump}
             aria-label={text}
-            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: off }}
+            initial={
+              reduced ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: off }
+            }
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={
               reduced

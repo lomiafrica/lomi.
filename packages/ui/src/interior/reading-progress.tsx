@@ -3,8 +3,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const FILL = { type: "spring", stiffness: 210, damping: 34, mass: 0.9 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const FILL = {
+  type: "spring",
+  stiffness: 210,
+  damping: 34,
+  mass: 0.9,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
 const DRAW = { duration: 0.3, ease: EASE, delay: 0.08 } as const;
 const INSTANT = { duration: 0 } as const;
@@ -84,7 +94,9 @@ export function useReadingProgress({
     window.addEventListener("resize", schedule);
 
     const observer =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(schedule);
     if (observer) {
       if (targetEl) observer.observe(targetEl);
       if (scrollEl) observer.observe(scrollEl);
@@ -103,7 +115,8 @@ export function useReadingProgress({
   }, [read, scroller, target]);
 
   const progress = steps > 0 ? step / steps : 1;
-  const totalMinutes = words > 0 ? Math.max(1, Math.ceil(words / wordsPerMinute)) : 0;
+  const totalMinutes =
+    words > 0 ? Math.max(1, Math.ceil(words / wordsPerMinute)) : 0;
   const minutesLeft =
     words > 0 ? Math.ceil(((1 - progress) * words) / wordsPerMinute) : 0;
 

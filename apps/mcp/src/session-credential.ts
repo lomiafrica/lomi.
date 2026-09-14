@@ -1,7 +1,7 @@
-import { createHash, timingSafeEqual } from 'node:crypto';
+import { createHash, timingSafeEqual } from "node:crypto";
 
 export function hashSessionMaterial(value: string): string {
-  return createHash('sha256').update(value).digest('hex');
+  return createHash("sha256").update(value).digest("hex");
 }
 
 export function fingerprintsEqual(a: string, b: string): boolean {

@@ -1,19 +1,14 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "commonjs",
-        "lib": [
-            "es2019",
-            "dom"
-        ],
-        "declaration": true,
-        "strict": true,
-        "jsx": "react",
-        "outDir": "dist",
-        "esModuleInterop": true,
-        "skipLibCheck": true
-    },
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["es2019", "dom"],
+    "declaration": true,
+    "strict": true,
+    "jsx": "react",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
 }

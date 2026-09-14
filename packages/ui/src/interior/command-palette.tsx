@@ -4,8 +4,18 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const BOUNDARY = /[\s\-_/.:]/;
 const ROW = 36;
 const GAP = 2;
@@ -349,7 +359,12 @@ export function CommandPalette({
           </motion.p>
         ) : null}
       </div>
-      <span ref={liveRef} role="status" aria-live="polite" className="sr-only" />
+      <span
+        ref={liveRef}
+        role="status"
+        aria-live="polite"
+        className="sr-only"
+      />
     </div>
   );
 
@@ -368,7 +383,12 @@ export function CommandPalette({
 
 const LAYER_EASE = [0.23, 1, 0.32, 1] as const;
 const LAYER_OUT = [0.4, 0, 1, 1] as const;
-const PANEL = { type: "spring", stiffness: 420, damping: 36, mass: 0.9 } as const;
+const PANEL = {
+  type: "spring",
+  stiffness: 420,
+  damping: 36,
+  mass: 0.9,
+} as const;
 
 function PaletteLayer({
   open,
@@ -462,7 +482,9 @@ function PaletteLayer({
           <motion.div
             className="relative flex w-full justify-center"
             variants={{
-              closed: reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 12 },
+              closed: reduced
+                ? { opacity: 0 }
+                : { opacity: 0, scale: 0.96, y: 12 },
               open: {
                 opacity: 1,
                 scale: 1,

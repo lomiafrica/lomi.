@@ -27,7 +27,10 @@ const PLINK_ID = `${PUBLIC_ID_PREFIXES.paymentLink}${BODY}`;
 const UUID = "550e8400-e29b-41d4-a716-446655440000";
 
 test("normalizePublicId strips separators and uppercases", () => {
-  assert.equal(normalizePublicId(" org_2345-6789 abcdef "), "ORG_23456789ABCDEF");
+  assert.equal(
+    normalizePublicId(" org_2345-6789 abcdef "),
+    "ORG_23456789ABCDEF",
+  );
 });
 
 test("isUuid accepts RFC-4122 ids and rejects public ids", () => {
@@ -44,7 +47,10 @@ test("isPublicId validates prefix, body length, and alphabet", () => {
   assert.equal(isPublicId(` ${ORG_ID.toLowerCase()} `), true);
   assert.equal(isPublicId(ORG_ID, PUBLIC_ID_PREFIXES.organization), true);
   assert.equal(isPublicId(ORG_ID, PUBLIC_ID_PREFIXES.customer), false);
-  assert.equal(isPublicId(`${PUBLIC_ID_PREFIXES.organization}23456789ABCDE0`), false);
+  assert.equal(
+    isPublicId(`${PUBLIC_ID_PREFIXES.organization}23456789ABCDE0`),
+    false,
+  );
   assert.equal(isPublicId(`${PUBLIC_ID_PREFIXES.organization}${BODY}X`), false);
   assert.equal(isPublicId(BODY), false);
 });
@@ -106,17 +112,20 @@ test("hostedPaymentLinkUrl keeps custom domains and rebuilds legacy paths", () =
     `https://shop.example.com/${BODY}`,
   );
   assert.equal(
-    hostedPaymentLinkUrl(PLINK_ID, `https://shop.example.com/instant/${PLINK_ID}`),
+    hostedPaymentLinkUrl(
+      PLINK_ID,
+      `https://shop.example.com/instant/${PLINK_ID}`,
+    ),
     `https://shop.example.com/${BODY}`,
   );
   assert.equal(
-    hostedPaymentLinkUrl(
-      PLINK_ID,
-      `https://pay.lomi.africa/checkout/${UUID}`,
-    ),
+    hostedPaymentLinkUrl(PLINK_ID, `https://pay.lomi.africa/checkout/${UUID}`),
     `${DEFAULT_PAY_ORIGIN}/${BODY}`,
   );
-  assert.equal(hostedPaymentLinkUrl(PLINK_ID, "not a url"), `${DEFAULT_PAY_ORIGIN}/${BODY}`);
+  assert.equal(
+    hostedPaymentLinkUrl(PLINK_ID, "not a url"),
+    `${DEFAULT_PAY_ORIGIN}/${BODY}`,
+  );
   assert.equal(hostedPaymentLinkUrl(PLINK_ID), `${DEFAULT_PAY_ORIGIN}/${BODY}`);
 });
 
@@ -127,7 +136,10 @@ const PAYOUT_ID = `${PUBLIC_ID_PREFIXES.payout}${BODY}`;
 
 test("payment-request ids are not classified as refunds (re_ vs req_)", () => {
   assert.equal(publicIdPrefix(REQ_ID), PUBLIC_ID_PREFIXES.paymentRequest);
-  assert.equal(publicIdPrefix(REQ_ID.toUpperCase()), PUBLIC_ID_PREFIXES.paymentRequest);
+  assert.equal(
+    publicIdPrefix(REQ_ID.toUpperCase()),
+    PUBLIC_ID_PREFIXES.paymentRequest,
+  );
   assert.equal(isPublicId(REQ_ID), true);
   assert.equal(isPublicId(REQ_ID, PUBLIC_ID_PREFIXES.paymentRequest), true);
   assert.equal(isPublicId(REQ_ID, PUBLIC_ID_PREFIXES.refund), false);

@@ -2,7 +2,11 @@ import { isValidPhoneNumber, toCountryCode } from "./phone.js";
 import { resolveStripeCountry } from "./country.js";
 
 export type CheckoutCustomFieldType =
-  "text" | "email" | "url" | "checkbox" | "terms";
+  | "text"
+  | "email"
+  | "url"
+  | "checkbox"
+  | "terms";
 
 export interface CheckoutCustomFieldDefinition {
   id: string;
@@ -51,7 +55,11 @@ export interface ValidateCheckoutCustomerOptions {
 }
 
 export type CheckoutValidationField =
-  "name" | "email" | "phone" | "billing" | "custom";
+  | "name"
+  | "email"
+  | "phone"
+  | "billing"
+  | "custom";
 
 export interface ValidateCheckoutCustomerResult {
   valid: boolean;

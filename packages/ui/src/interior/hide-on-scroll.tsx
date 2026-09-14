@@ -3,8 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const DISCLOSE = { type: "spring", stiffness: 150, damping: 27, mass: 1 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const DISCLOSE = {
+  type: "spring",
+  stiffness: 150,
+  damping: 27,
+  mass: 1,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 
 export type UseHideOnScrollOptions = {
   hideAfter?: number;
@@ -201,7 +211,6 @@ export function HideOnScroll({
       </motion.div>
       <div
         ref={ref}
-
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         role="region"

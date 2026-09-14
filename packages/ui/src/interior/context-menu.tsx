@@ -61,7 +61,8 @@ function clamp(value: number, min: number, max: number) {
 
 function measure(items: ContextMenuItem[]) {
   let height = PAD * 2 + BORDER * 2;
-  for (const item of items) height += item.type === "separator" ? SEP_H : ITEM_H;
+  for (const item of items)
+    height += item.type === "separator" ? SEP_H : ITEM_H;
   return height;
 }
 
@@ -137,8 +138,16 @@ export function useContextMenu({
       const cap = Math.max(ITEM_H + PAD * 2, vh - margin * 2);
       const h = Math.min(height, cap);
 
-      const left = clamp(x + w + margin <= vw ? x : x - w, margin, vw - w - margin);
-      const top = clamp(y + h + margin <= vh ? y : y - h, margin, vh - h - margin);
+      const left = clamp(
+        x + w + margin <= vw ? x : x - w,
+        margin,
+        vw - w - margin,
+      );
+      const top = clamp(
+        y + h + margin <= vh ? y : y - h,
+        margin,
+        vh - h - margin,
+      );
 
       opened.current = true;
       pressed.current = -1;
@@ -171,7 +180,9 @@ export function useContextMenu({
     const at = order.indexOf(activeRef.current);
     setActive(
       at === -1
-        ? (dir === 1 ? order[0] : order[order.length - 1])
+        ? dir === 1
+          ? order[0]
+          : order[order.length - 1]
         : order[(at + dir + order.length) % order.length],
     );
   }, []);
@@ -194,7 +205,10 @@ export function useContextMenu({
     for (let k = 0; k < order.length; k += 1) {
       const index = order[(from + k) % order.length];
       const item = list.current[index];
-      if (item.type !== "separator" && item.label.toLowerCase().startsWith(query.current)) {
+      if (
+        item.type !== "separator" &&
+        item.label.toLowerCase().startsWith(query.current)
+      ) {
         setActive(index);
         return;
       }
@@ -205,7 +219,10 @@ export function useContextMenu({
 
   useEffect(() => {
     if (!isOpen) return;
-    const node = activeRef.current >= 0 ? itemRefs.current[activeRef.current] : menuRef.current;
+    const node =
+      activeRef.current >= 0
+        ? itemRefs.current[activeRef.current]
+        : menuRef.current;
     node?.focus({ preventScroll: true });
     if (activeRef.current >= 0) node?.scrollIntoView({ block: "nearest" });
   }, [isOpen, active]);
@@ -218,7 +235,11 @@ export function useContextMenu({
 
     const onDown = (event: PointerEvent) => {
       if (inside(event.target)) return;
-      if (event.button === 2 && triggerRef.current?.contains(event.target as Node)) return;
+      if (
+        event.button === 2 &&
+        triggerRef.current?.contains(event.target as Node)
+      )
+        return;
       close(false);
     };
     const onScroll = (event: Event) => {
@@ -234,7 +255,10 @@ export function useContextMenu({
     const bail = () => close(false);
 
     document.addEventListener("pointerdown", onDown, true);
-    document.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    document.addEventListener("scroll", onScroll, {
+      capture: true,
+      passive: true,
+    });
     document.addEventListener("keydown", onKey, true);
     window.addEventListener("resize", bail);
     window.addEventListener("blur", bail);
@@ -260,7 +284,10 @@ export function useContextMenu({
     tabIndex: disabled ? -1 : 0,
     "aria-haspopup": "menu" as const,
     "aria-expanded": isOpen,
-    style: { touchAction: "manipulation", WebkitTouchCallout: "none" } as CSSProperties,
+    style: {
+      touchAction: "manipulation",
+      WebkitTouchCallout: "none",
+    } as CSSProperties,
     onContextMenu: (event: ReactMouseEvent<HTMLElement>) => {
       if (disabled) return;
       event.preventDefault();
@@ -296,7 +323,11 @@ export function useContextMenu({
     onPointerMove: (event: ReactPointerEvent<HTMLElement>) => {
       const from = holdFrom.current;
       if (hold.current === null || !from) return;
-      if (Math.hypot(event.clientX - from.x, event.clientY - from.y) > moveTolerance) clearHold();
+      if (
+        Math.hypot(event.clientX - from.x, event.clientY - from.y) >
+        moveTolerance
+      )
+        clearHold();
     },
     onPointerUp: clearHold,
     onPointerCancel: clearHold,
@@ -350,7 +381,12 @@ export function useContextMenu({
     tabIndex: -1,
     onPointerMove: () => {
       const item = list.current[index];
-      if (activeRef.current === index || item.type === "separator" || item.disabled) return;
+      if (
+        activeRef.current === index ||
+        item.type === "separator" ||
+        item.disabled
+      )
+        return;
       setActive(index);
     },
     onPointerDown: () => {
@@ -432,74 +468,82 @@ export function ContextMenu({
         </span>
       </div>
       <Portal host={host}>
-      <AnimatePresence>
-        {placement ? (
-          <motion.div
-            key={menuId}
-            ref={menuRef}
-            id={menuId}
-            {...menuProps}
-            aria-label={label}
-            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={
-              reduced
-                ? { opacity: 0, transition: { duration: 0 } }
-                : { opacity: 0, scale: 0.98, transition: { duration: 0.14, ease: EXIT } }
-            }
-            transition={reduced ? { duration: 0 } : { duration: 0.2, ease: EASE }}
-            style={{
-              position: "fixed",
-              left: placement.left,
-              top: placement.top,
-              width: placement.width,
-              maxHeight: placement.maxHeight,
-              transformOrigin: placement.transformOrigin,
-              zIndex: 60,
-            }}
-            className="overflow-y-auto overscroll-contain rounded-sm border border-stone-200 bg-white p-[5px] shadow-[0_1px_2px_rgba(28,25,23,0.06),0_16px_36px_-18px_rgba(28,25,23,0.5)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
-          >
-            {items.map((item, index) =>
-              item.type === "separator" ? (
-                <div key={item.id} className="px-1 py-1">
-                  <hr className="h-px border-0 bg-stone-200 dark:bg-white/10" />
-                </div>
-              ) : (
-                <button
-                  key={item.id}
-                  type="button"
-                  aria-disabled={item.disabled || undefined}
-                  {...getItemProps(index)}
-                  className={`flex h-[32px] w-full cursor-default select-none items-center gap-2 rounded-[7px] px-2.5 text-left text-[13px] outline-none ${
-                    item.disabled
-                      ? "text-stone-400 dark:text-stone-500"
-                      : "text-stone-700 dark:text-stone-200"
-                  } ${active === index ? "bg-stone-100 dark:bg-white/10" : ""}`}
-                >
-                  {hasIcons ? (
-                    <span
-                      aria-hidden
-                      className="grid size-4 shrink-0 place-items-center text-stone-500 dark:text-stone-400"
-                    >
-                      {item.icon}
-                    </span>
-                  ) : null}
+        <AnimatePresence>
+          {placement ? (
+            <motion.div
+              key={menuId}
+              ref={menuRef}
+              id={menuId}
+              {...menuProps}
+              aria-label={label}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={
+                reduced
+                  ? { opacity: 0, transition: { duration: 0 } }
+                  : {
+                      opacity: 0,
+                      scale: 0.98,
+                      transition: { duration: 0.14, ease: EXIT },
+                    }
+              }
+              transition={
+                reduced ? { duration: 0 } : { duration: 0.2, ease: EASE }
+              }
+              style={{
+                position: "fixed",
+                left: placement.left,
+                top: placement.top,
+                width: placement.width,
+                maxHeight: placement.maxHeight,
+                transformOrigin: placement.transformOrigin,
+                zIndex: 60,
+              }}
+              className="overflow-y-auto overscroll-contain rounded-sm border border-stone-200 bg-white p-[5px] shadow-[0_1px_2px_rgba(28,25,23,0.06),0_16px_36px_-18px_rgba(28,25,23,0.5)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
+            >
+              {items.map((item, index) =>
+                item.type === "separator" ? (
+                  <div key={item.id} className="px-1 py-1">
+                    <hr className="h-px border-0 bg-stone-200 dark:bg-white/10" />
+                  </div>
+                ) : (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-disabled={item.disabled || undefined}
+                    {...getItemProps(index)}
+                    className={`flex h-[32px] w-full cursor-default select-none items-center gap-2 rounded-[7px] px-2.5 text-left text-[13px] outline-none ${
+                      item.disabled
+                        ? "text-stone-400 dark:text-stone-500"
+                        : "text-stone-700 dark:text-stone-200"
+                    } ${active === index ? "bg-stone-100 dark:bg-white/10" : ""}`}
+                  >
+                    {hasIcons ? (
+                      <span
+                        aria-hidden
+                        className="grid size-4 shrink-0 place-items-center text-stone-500 dark:text-stone-400"
+                      >
+                        {item.icon}
+                      </span>
+                    ) : null}
 
-                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                  {item.shortcut ? (
-                    <span
-                      aria-hidden
-                      className="shrink-0 font-mono text-[10.5px] tabular-nums text-stone-500 dark:text-stone-400"
-                    >
-                      {item.shortcut}
+                    <span className="min-w-0 flex-1 truncate">
+                      {item.label}
                     </span>
-                  ) : null}
-                </button>
-              ),
-            )}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+                    {item.shortcut ? (
+                      <span
+                        aria-hidden
+                        className="shrink-0 font-mono text-[10.5px] tabular-nums text-stone-500 dark:text-stone-400"
+                      >
+                        {item.shortcut}
+                      </span>
+                    ) : null}
+                  </button>
+                ),
+              )}
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </Portal>
     </>
   );

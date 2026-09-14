@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const POP = { type: "spring", stiffness: 640, damping: 22, mass: 0.7 } as const;
 const INSTANT = { duration: 0 } as const;
 
@@ -179,7 +184,13 @@ export function LongPressButton({
 }: LongPressButtonProps) {
   const hintId = useId();
   const reduced = useReducedMotion() === true;
-  const { bind, step, steps: cells, holding, fired } = useLongPress({
+  const {
+    bind,
+    step,
+    steps: cells,
+    holding,
+    fired,
+  } = useLongPress({
     onLongPress,
     duration,
     steps,

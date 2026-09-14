@@ -9,8 +9,12 @@ import {
   useTransform,
 } from "motion/react";
 
-const FACE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
-
+const FACE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 
 export type HoldPhase = "idle" | "holding" | "releasing" | "committed";
 
@@ -159,7 +163,10 @@ export function useHoldToConfirm({
     onPointerLeave: release,
     onKeyDown: (e: React.KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (phaseRef.current === "holding" || phaseRef.current === "releasing") {
+        if (
+          phaseRef.current === "holding" ||
+          phaseRef.current === "releasing"
+        ) {
           e.preventDefault();
           reset();
         }
@@ -233,10 +240,7 @@ export function HoldToConfirm({
   const seconds = Math.round(duration / 100) / 10;
 
   const swept = useMotionValue(0);
-  const clipPath = useTransform(
-    swept,
-    (v) => `inset(0 ${(1 - v) * 100}% 0 0)`,
-  );
+  const clipPath = useTransform(swept, (v) => `inset(0 ${(1 - v) * 100}% 0 0)`);
 
   useEffect(() => {
     if (phase !== "committed" || resetAfter <= 0) return;

@@ -24,14 +24,14 @@ The SDK adds `embedded=true` and `embed_origin` automatically, do not append the
 ## Modal (bundler)
 
 ```javascript
-import { loadLomiCheckout } from '@lomi./embed';
+import { loadLomiCheckout } from "@lomi./embed";
 
-document.getElementById('pay').addEventListener('click', () => {
+document.getElementById("pay").addEventListener("click", () => {
   loadLomiCheckout({
-    checkoutUrl: 'https://checkout.lomi.africa/checkout/cs_...',
-    mode: 'modal',
+    checkoutUrl: "https://checkout.lomi.africa/checkout/cs_...",
+    mode: "modal",
     onComplete: (payload) => {
-      console.log('Paid:', payload.transactionId);
+      console.log("Paid:", payload.transactionId);
     },
   });
 });
@@ -45,7 +45,7 @@ document.getElementById('pay').addEventListener('click', () => {
   data-lomi-checkout-url="https://checkout.lomi.africa/checkout/cs_..."
 ></div>
 <script type="module">
-  import '@lomi./embed';
+  import "@lomi./embed";
 </script>
 ```
 
@@ -67,8 +67,8 @@ Copy `node_modules/@lomi./embed/dist/lomi.js` to your static assets and load it:
 <script src="/assets/lomi.js"></script>
 <script>
   window.Lomi.loadLomiCheckout({
-    checkoutUrl: 'https://checkout.lomi.africa/checkout/cs_...',
-    mode: 'modal',
+    checkoutUrl: "https://checkout.lomi.africa/checkout/cs_...",
+    mode: "modal",
     onComplete: (p) => console.log(p),
   });
 </script>
@@ -78,17 +78,17 @@ There is no CDN, host the file yourself or use npm + your bundler.
 
 ## Options
 
-| Option | Required | Description |
-|--------|----------|-------------|
-| `checkoutUrl` | Preferred | Full URL from API or payment link |
-| `sessionId` | If no `checkoutUrl` | Checkout session id |
-| `checkoutBaseUrl` | With `sessionId` | Defaults to `https://checkout.lomi.africa` |
-| `publicKey` | Optional | Not required when using `checkoutUrl` |
-| `mode` | No | `modal` (default) or `inline` |
-| `elementId` | Inline | DOM id of container (default: `#lomi-checkout`) |
-| `onComplete` | No | Fired when payment succeeds |
-| `onResize` | No | Iframe height changes (inline) |
-| `onError` | No | Checkout errors |
+| Option            | Required            | Description                                     |
+| ----------------- | ------------------- | ----------------------------------------------- |
+| `checkoutUrl`     | Preferred           | Full URL from API or payment link               |
+| `sessionId`       | If no `checkoutUrl` | Checkout session id                             |
+| `checkoutBaseUrl` | With `sessionId`    | Defaults to `https://checkout.lomi.africa`      |
+| `publicKey`       | Optional            | Not required when using `checkoutUrl`           |
+| `mode`            | No                  | `modal` (default) or `inline`                   |
+| `elementId`       | Inline              | DOM id of container (default: `#lomi-checkout`) |
+| `onComplete`      | No                  | Fired when payment succeeds                     |
+| `onResize`        | No                  | Iframe height changes (inline)                  |
+| `onError`         | No                  | Checkout errors                                 |
 
 ## Events
 
@@ -119,8 +119,8 @@ Point at a local checkout app:
 
 ```javascript
 loadLomiCheckout({
-  checkoutUrl: 'http://localhost:3000/checkout/cs_test_...',
-  mode: 'modal',
+  checkoutUrl: "http://localhost:3000/checkout/cs_test_...",
+  mode: "modal",
 });
 ```
 
@@ -128,10 +128,10 @@ Or override the base URL when using `sessionId`:
 
 ```javascript
 loadLomiCheckout({
-  sessionId: 'cs_test_...',
-  checkoutBaseUrl: 'http://localhost:3000',
-  mode: 'inline',
-  elementId: 'lomi-checkout',
+  sessionId: "cs_test_...",
+  checkoutBaseUrl: "http://localhost:3000",
+  mode: "inline",
+  elementId: "lomi-checkout",
 });
 ```
 

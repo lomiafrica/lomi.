@@ -51,7 +51,9 @@ export function useCheckoutColors(
           rows !== null && isJsonArray(rows) && isJsonObject(rows[0])
             ? rows[0]
             : null;
-        const color = first ? readString(first, "pay_button_bg_color") : undefined;
+        const color = first
+          ? readString(first, "pay_button_bg_color")
+          : undefined;
         setColors({
           payButtonBgColor: color || "#121317",
         });

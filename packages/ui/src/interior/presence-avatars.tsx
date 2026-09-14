@@ -8,7 +8,12 @@ import {
   useReducedMotion,
 } from "motion/react";
 
-const SLOT = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const SLOT = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const FADE = { duration: 0.24, ease: [0.23, 1, 0.32, 1] } as const;
 const INSTANT = { duration: 0 } as const;
 
@@ -38,7 +43,8 @@ function initials(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return "?";
   const first = Array.from(words[0])[0] ?? "";
-  const last = words.length > 1 ? (Array.from(words[words.length - 1])[0] ?? "") : "";
+  const last =
+    words.length > 1 ? (Array.from(words[words.length - 1])[0] ?? "") : "";
   return (first + last).toUpperCase();
 }
 
@@ -161,7 +167,14 @@ function useFace(src?: string) {
   return { ref, status: state.status, instant: state.instant };
 }
 
-function PresenceTile({ person, index, step, size, zIndex, reduced }: TileProps) {
+function PresenceTile({
+  person,
+  index,
+  step,
+  size,
+  zIndex,
+  reduced,
+}: TileProps) {
   const { ref, status, instant } = useFace(person.src);
 
   return (
@@ -171,7 +184,12 @@ function PresenceTile({ person, index, step, size, zIndex, reduced }: TileProps)
       animate={{ opacity: 1, scale: 1, x: index * step }}
       exit={{ opacity: 0, scale: 0.86 }}
       transition={reduced ? INSTANT : SLOT}
-      style={{ width: size, height: size, zIndex, fontSize: Math.round(size * 0.34) }}
+      style={{
+        width: size,
+        height: size,
+        zIndex,
+        fontSize: Math.round(size * 0.34),
+      }}
       className={TILE}
     >
       <span className={WELL}>
@@ -246,7 +264,11 @@ export function PresenceAvatars({
     "absolute left-0 top-0 grid place-items-center rounded-md border border-stone-200 bg-white font-mono text-[10.5px] leading-none tabular-nums text-stone-500 outline-none ring-2 ring-white dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:ring-stone-900";
 
   return (
-    <div role="group" aria-label={label} className={`inline-flex items-center ${className}`}>
+    <div
+      role="group"
+      aria-label={label}
+      className={`inline-flex items-center ${className}`}
+    >
       <motion.div
         className="relative shrink-0"
         style={{ height: size }}
@@ -298,7 +320,12 @@ export function PresenceAvatars({
           <li key={person.id}>{person.name}</li>
         ))}
       </ul>
-      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
         {announcement}
       </span>
     </div>

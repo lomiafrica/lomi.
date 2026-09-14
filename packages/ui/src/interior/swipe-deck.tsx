@@ -10,9 +10,24 @@ import {
   useTransform,
 } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const DISCLOSE = { type: "spring", stiffness: 150, damping: 27, mass: 1 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const DISCLOSE = {
+  type: "spring",
+  stiffness: 150,
+  damping: 27,
+  mass: 1,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const LEAVE = [0.4, 0, 1, 1] as const;
 
 export type SwipeChoice = "left" | "right";
@@ -179,7 +194,13 @@ export function useSwipeDeck({
 export type UseSwipeDeckResult = ReturnType<typeof useSwipeDeck>;
 
 const ICON_LEFT = (
-  <svg width="12" height="12" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <line
       x1="200"
       y1="56"
@@ -202,7 +223,13 @@ const ICON_LEFT = (
 );
 
 const ICON_RIGHT = (
-  <svg width="12" height="12" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <polyline
       points="216 72 104 184 48 128"
       stroke="currentColor"
@@ -214,7 +241,13 @@ const ICON_RIGHT = (
 );
 
 const ICON_UNDO = (
-  <svg width="12" height="12" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <polyline
       points="72 104 24 104 24 56"
       stroke="currentColor"
@@ -445,22 +478,24 @@ export function SwipeDeck<T>({
           <AnimatePresence initial={false} custom={deck.flow.dir}>
             {stack.map((item, depth) => (
               <DeckCard
-              key={itemKey(item)}
-              depth={depth}
-              height={height}
-              entryX={
-                depth === 0 && deck.flow.kind === "undo" ? deck.flow.dir * 560 : 0
-              }
-              active={depth === 0}
-              reduced={reduced}
-              label={itemLabel(item)}
-              leftLabel={leftLabel}
-              rightLabel={rightLabel}
-              intent={deck.intent}
-              steps={deck.steps}
-              onMove={deck.report}
-              onRelease={deck.release}
-            >
+                key={itemKey(item)}
+                depth={depth}
+                height={height}
+                entryX={
+                  depth === 0 && deck.flow.kind === "undo"
+                    ? deck.flow.dir * 560
+                    : 0
+                }
+                active={depth === 0}
+                reduced={reduced}
+                label={itemLabel(item)}
+                leftLabel={leftLabel}
+                rightLabel={rightLabel}
+                intent={deck.intent}
+                steps={deck.steps}
+                onMove={deck.report}
+                onRelease={deck.release}
+              >
                 {children(item)}
               </DeckCard>
             ))}

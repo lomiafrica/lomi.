@@ -10,8 +10,18 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const HEART =
@@ -205,7 +215,13 @@ export function LikeBurst({
 }: LikeBurstProps & { ref?: React.Ref<LikeBurstHandle> }) {
   const reduced = useReducedMotion();
   const { liked, count, base, pending, burst, settled, toggle } =
-    useOptimisticLike({ initialLiked, initialCount, onCommit, onError, settle });
+    useOptimisticLike({
+      initialLiked,
+      initialCount,
+      onCommit,
+      onError,
+      settle,
+    });
 
   useImperativeHandle(ref, () => ({ toggle }), [toggle]);
 
@@ -272,7 +288,11 @@ export function LikeBurst({
                   }}
                   initial={{ x: 0, y: 0, scale: 0.6, opacity: 0.85 }}
                   animate={{ x: spark.x, y: spark.y, scale: 1, opacity: 0 }}
-                  transition={{ duration: 0.44, delay: spark.delay, ease: EASE }}
+                  transition={{
+                    duration: 0.44,
+                    delay: spark.delay,
+                    ease: EASE,
+                  }}
                 />
               ))}
             </span>
@@ -316,7 +336,6 @@ export function LikeBurst({
             </motion.span>
           </AnimatePresence>
         </span>
-
       </button>
 
       <span role="status" aria-live="polite" className="sr-only">

@@ -45,10 +45,7 @@ test("findProcessingFeeRate matches provider and rail", () => {
 
 test("calculateProcessingFeeSurcharge grosses up so the merchant nets the base", () => {
   assert.equal(calculateProcessingFeeSurcharge(10000, WAVE_RATE, "XOF"), 505);
-  assert.equal(
-    calculateProcessingFeeSurcharge(100, WAVE_RATE, "XOF"),
-    3,
-  );
+  assert.equal(calculateProcessingFeeSurcharge(100, WAVE_RATE, "XOF"), 3);
   assert.equal(
     Number(
       calculateProcessingFeeSurcharge(
@@ -60,7 +57,11 @@ test("calculateProcessingFeeSurcharge grosses up so the merchant nets the base",
     2.45,
   );
   assert.equal(
-    calculateProcessingFeeSurcharge(10000, { ...WAVE_RATE, percentage: 100 }, "XOF"),
+    calculateProcessingFeeSurcharge(
+      10000,
+      { ...WAVE_RATE, percentage: 100 },
+      "XOF",
+    ),
     0,
   );
   assert.equal(calculateProcessingFeeSurcharge(0, WAVE_RATE, "XOF"), 0);

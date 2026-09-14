@@ -32,10 +32,7 @@ function isMutableRefObject<T>(
   return ref != null && typeof ref === "object" && "current" in ref;
 }
 
-function setForwardedRef<T>(
-  ref: React.ForwardedRef<T>,
-  value: T | null,
-): void {
+function setForwardedRef<T>(ref: React.ForwardedRef<T>, value: T | null): void {
   if (!ref) return;
   if (isForwardedRefCallback(ref)) {
     ref(value);
@@ -110,7 +107,9 @@ const FuzzyText = React.forwardRef<HTMLCanvasElement, FuzzyTextProps>(
             : fontFamily;
 
         const fontSizeIsNumber = isFiniteNumber(fontSize);
-        const fontSizeStr = fontSizeIsNumber ? `${fontSize}px` : String(fontSize);
+        const fontSizeStr = fontSizeIsNumber
+          ? `${fontSize}px`
+          : String(fontSize);
         let numericFontSize: number;
         if (fontSizeIsNumber) {
           numericFontSize = fontSize;

@@ -11,7 +11,12 @@ import {
   useTransform,
 } from "motion/react";
 
-const FILL = { type: "spring", stiffness: 210, damping: 34, mass: 0.9 } as const;
+const FILL = {
+  type: "spring",
+  stiffness: 210,
+  damping: 34,
+  mass: 0.9,
+} as const;
 
 const POP = { type: "spring", stiffness: 640, damping: 22, mass: 0.7 } as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
@@ -55,10 +60,7 @@ export function usePollResults({
   );
 
   const total = options.reduce((sum, o) => sum + Math.max(0, o.votes), 0);
-  const top = options.reduce(
-    (best, o) => (o.votes > best ? o.votes : best),
-    0,
-  );
+  const top = options.reduce((best, o) => (o.votes > best ? o.votes : best), 0);
 
   const rows = options.map((option) => ({
     ...option,
@@ -98,7 +100,15 @@ type RowProps = {
   onPick: () => void;
 };
 
-function Row({ label, share, winner, mine, revealed, reduced, onPick }: RowProps) {
+function Row({
+  label,
+  share,
+  winner,
+  mine,
+  revealed,
+  reduced,
+  onPick,
+}: RowProps) {
   const progress = useRef(motionValue(0)).current;
   const clipPath = useTransform(
     progress,

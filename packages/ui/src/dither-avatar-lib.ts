@@ -158,8 +158,14 @@ function resolveColors(
 ): DitherAvatarColors {
   const derived = seedToDitherColors(seed);
   return {
-    background: svgHexColor(overrides?.background ?? derived.background, derived.background),
-    foreground: svgHexColor(overrides?.foreground ?? derived.foreground, derived.foreground),
+    background: svgHexColor(
+      overrides?.background ?? derived.background,
+      derived.background,
+    ),
+    foreground: svgHexColor(
+      overrides?.foreground ?? derived.foreground,
+      derived.foreground,
+    ),
   };
 }
 
@@ -235,7 +241,9 @@ export function generateDitherAvatarSvg({
   const colors = resolveColors(seed, colorOverrides);
   const grid = buildPixelGrid(cells, seed);
   const pathData = svgPathData(encodeDitherPath(grid));
-  const displaySize = Number.isFinite(size) ? Math.max(1, Math.round(size)) : 40;
+  const displaySize = Number.isFinite(size)
+    ? Math.max(1, Math.round(size))
+    : 40;
   const dimensions = fluid
     ? `width="100%" height="100%"`
     : `width="${displaySize}" height="${displaySize}"`;

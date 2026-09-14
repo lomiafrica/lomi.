@@ -1,13 +1,13 @@
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import manifestJson from './generated/tools-manifest.json' with { type: 'json' };
-import { parseManifest } from './manifest-parse.js';
+import manifestJson from "./generated/tools-manifest.json" with { type: "json" };
+import { parseManifest } from "./manifest-parse.js";
 import { validateJsonValue } from "@lomi./shared";
 import {
   getOptionalMerchantApiKey,
   getOptionalProvisioningKey,
-} from './env-config.js';
-import { wireMcpServer } from './wire-mcp-server.js';
+} from "./env-config.js";
+import { wireMcpServer } from "./wire-mcp-server.js";
 
 export async function startStdioServer(): Promise<void> {
   const manifest = parseManifest(validateJsonValue(manifestJson));
@@ -19,7 +19,7 @@ export async function startStdioServer(): Promise<void> {
 
   const server = wireMcpServer({
     manifest,
-    mode: 'stdio',
+    mode: "stdio",
     getApiKey: () => promotedMerchantKey ?? getOptionalMerchantApiKey(),
     getProvisioningKey: () =>
       promotedProvisioningKey ?? getOptionalProvisioningKey(),

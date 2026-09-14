@@ -173,12 +173,9 @@ export async function fetchNitroSettings(
   client: TypedSupabaseClient,
   args: { p_organization_id: string },
 ): Promise<NitroSettingsRow[]> {
-  const data = await handleUntypedRpc(
-    client,
-    "fetch_nitro_settings",
-    args,
-    { fallbackValue: [] },
-  );
+  const data = await handleUntypedRpc(client, "fetch_nitro_settings", args, {
+    fallbackValue: [],
+  });
   return parseRowArray(data, parseNitroSettingsRow);
 }
 
@@ -191,12 +188,9 @@ export async function quoteNitroSettlement(
     p_amount: number;
   },
 ): Promise<NitroQuoteRow[]> {
-  const data = await handleUntypedRpc(
-    client,
-    "quote_nitro_settlement",
-    args,
-    { fallbackValue: [] },
-  );
+  const data = await handleUntypedRpc(client, "quote_nitro_settlement", args, {
+    fallbackValue: [],
+  });
   return parseRowArray(data, parseNitroQuoteRow);
 }
 
@@ -265,12 +259,9 @@ export async function fetchNitroRequests(
   };
   if (args.p_page !== undefined) payload["p_page"] = args.p_page;
   if (args.p_page_size !== undefined) payload["p_page_size"] = args.p_page_size;
-  const data = await handleUntypedRpc(
-    client,
-    "fetch_nitro_requests",
-    payload,
-    { fallbackValue: [] },
-  );
+  const data = await handleUntypedRpc(client, "fetch_nitro_requests", payload, {
+    fallbackValue: [],
+  });
   return parseRowArray(data, parseNitroRequestRow);
 }
 
@@ -278,12 +269,9 @@ export async function getNitroRequest(
   client: TypedSupabaseClient,
   args: { p_organization_id: string; p_nitro_request_id: string },
 ): Promise<JsonValue | null> {
-  const data = await handleUntypedRpc(
-    client,
-    "get_nitro_request",
-    args,
-    { fallbackValue: null },
-  );
+  const data = await handleUntypedRpc(client, "get_nitro_request", args, {
+    fallbackValue: null,
+  });
   return data === false ? null : data;
 }
 

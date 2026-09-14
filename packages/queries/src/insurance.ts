@@ -50,7 +50,9 @@ function parseStringArray(value: JsonValue | undefined): string[] {
   return value.filter((item): item is string => isString(item));
 }
 
-function parseInsuranceProductRow(value: JsonValue): InsuranceProductRow | null {
+function parseInsuranceProductRow(
+  value: JsonValue,
+): InsuranceProductRow | null {
   if (!isJsonObject(value)) return null;
   const product_id = readString(value, "product_id");
   const kind = readString(value, "kind");

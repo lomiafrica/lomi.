@@ -106,12 +106,23 @@ export function TextReveal({
   amount = 0.35,
   className = "",
 }: TextRevealProps) {
-  const { ref, groups, step, started, reduced } = useTextReveal<HTMLSpanElement>(
-    { text, by, stagger, maxDuration, startOnView, play, once, amount },
-  );
+  const { ref, groups, step, started, reduced } =
+    useTextReveal<HTMLSpanElement>({
+      text,
+      by,
+      stagger,
+      maxDuration,
+      startOnView,
+      play,
+      once,
+      amount,
+    });
 
   return (
-    <span ref={ref} className={`text-stone-700 dark:text-stone-200 ${className}`}>
+    <span
+      ref={ref}
+      className={`text-stone-700 dark:text-stone-200 ${className}`}
+    >
       <span className="sr-only">{text}</span>
 
       <span aria-hidden="true">

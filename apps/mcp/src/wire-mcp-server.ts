@@ -1,24 +1,27 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import type { ToolsManifest } from './manifest.js';
-import { parseManifest } from './manifest-parse.js';
-import { registerLomiPrompts } from './register-prompts.js';
-import { registerLomiResources } from './register-resources.js';
-import { registerMerchantTools } from './register-tools.js';
-import provisioningManifestJson from './generated/provisioning-tools-manifest.json' with { type: 'json' };
+import type { ToolsManifest } from "./manifest.js";
+import { parseManifest } from "./manifest-parse.js";
+import { registerLomiPrompts } from "./register-prompts.js";
+import { registerLomiResources } from "./register-resources.js";
+import { registerMerchantTools } from "./register-tools.js";
+import provisioningManifestJson from "./generated/provisioning-tools-manifest.json" with { type: "json" };
 import {
   registerProvisioningTools,
   type ProvisioningToolsManifest,
-} from './register-provisioning-tools.js';
-import { buildServerInstructions, type InstructionMode } from './server-instructions.js';
+} from "./register-provisioning-tools.js";
+import {
+  buildServerInstructions,
+  type InstructionMode,
+} from "./server-instructions.js";
 import {
   getOptionalPartnerKey,
   getOptionalProvisioningKey,
-} from './env-config.js';
-import { registerSearchToolsMetaTool } from './register-search-tools.js';
-import { registerLomiRegisterAgent } from './register-agent.js';
-import { registerLomiSupport } from './register-support.js';
-import { mcpLog } from './mcp-request-context.js';
+} from "./env-config.js";
+import { registerSearchToolsMetaTool } from "./register-search-tools.js";
+import { registerLomiRegisterAgent } from "./register-agent.js";
+import { registerLomiSupport } from "./register-support.js";
+import { mcpLog } from "./mcp-request-context.js";
 import { validateJsonValue } from "@lomi./shared";
 
 export type WireMcpServerOptions = {
@@ -29,7 +32,7 @@ export type WireMcpServerOptions = {
   getProvisioningKey?: () => string | null;
   getPartnerKey?: () => string | null;
   /** When read, only register merchant tools marked readOnly. */
-  merchantAccessLevel?: 'read' | 'write' | 'full';
+  merchantAccessLevel?: "read" | "write" | "full";
   /**
    * Invoked when a provisioning tool returns a usable merchant secret key.
    * Implementations should adopt it as the session's merchant credential so
@@ -52,18 +55,20 @@ export type WireMcpServerOptions = {
 export function wireMcpServer(options: WireMcpServerOptions): McpServer {
   const {
     manifest,
-    provisioningManifest = parseManifest(validateJsonValue(provisioningManifestJson)),
+    provisioningManifest = parseManifest(
+      validateJsonValue(provisioningManifestJson),
+    ),
     mode,
     getApiKey,
     getProvisioningKey = getOptionalProvisioningKey,
     getPartnerKey = getOptionalPartnerKey,
-    merchantAccessLevel = 'full',
+    merchantAccessLevel = "full",
     onMerchantKeyDiscovered,
     onProvisioningKeyDiscovered,
     guest = false,
   } = options;
   const server = new McpServer(
-    { name: 'lomi', title: 'lomi.', version: manifest.apiVersion },
+    { name: "lomi", title: "lomi.", version: manifest.apiVersion },
     {
       instructions: buildServerInstructions(mode, guest),
     },
@@ -74,15 +79,20 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     getProvisioningKey,
     getPartnerKey,
     onMerchantKeyDiscovered: guest
-      ? guestUpgradeOnMerchantKey(server, manifest, getApiKey, onMerchantKeyDiscovered)
+      ? guestUpgradeOnMerchantKey(
+          server,
+          manifest,
+          getApiKey,
+          onMerchantKeyDiscovered,
+        )
       : onMerchantKeyDiscovered,
     skipPartner: guest,
   });
   if (!guest) {
     registerMerchantTools(server, manifest, {
       getApiKey,
-      readOnlyOnly: merchantAccessLevel === 'read',
-      excludeMoney: merchantAccessLevel === 'write',
+      readOnlyOnly: merchantAccessLevel === "read",
+      excludeMoney: merchantAccessLevel === "write",
       onMerchantKeyDiscovered,
     });
   } else {
@@ -119,9 +129,9 @@ function guestUpgradeOnMerchantKey(
       onMerchantKeyDiscovered,
     });
     mcpLog(
-      'guest_session_upgraded',
+      "guest_session_upgraded",
       { toolCount: manifest.tools.length },
-      'info',
+      "info",
     );
   };
 }
@@ -134,7 +144,8 @@ function registerSearchToolsOnGuest(
   const combined = {
     ...merchantManifest,
     tools: [...provisioningManifest.tools, ...merchantManifest.tools],
-    toolCount: provisioningManifest.tools.length + merchantManifest.tools.length,
+    toolCount:
+      provisioningManifest.tools.length + merchantManifest.tools.length,
   };
   registerSearchToolsMetaTool(server, combined);
 }

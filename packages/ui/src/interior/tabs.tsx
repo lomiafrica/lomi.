@@ -1,15 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const INDICATOR = { type: "spring", stiffness: 620, damping: 42, mass: 0.35 } as const;
+const INDICATOR = {
+  type: "spring",
+  stiffness: 620,
+  damping: 42,
+  mass: 0.35,
+} as const;
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-const PANEL = { type: "spring", stiffness: 460, damping: 38, mass: 0.8 } as const;
+const PANEL = {
+  type: "spring",
+  stiffness: 460,
+  damping: 38,
+  mass: 0.8,
+} as const;
 
 export type TabItem = {
   value: string;
@@ -38,7 +55,11 @@ export function useTabs({
   const direction = useRef(1);
 
   const [internal, setInternal] = useState(
-    () => defaultValue ?? items.find((i) => !i.disabled)?.value ?? items[0]?.value ?? "",
+    () =>
+      defaultValue ??
+      items.find((i) => !i.disabled)?.value ??
+      items[0]?.value ??
+      "",
   );
 
   const value = controlled ?? internal;
@@ -183,7 +204,13 @@ export function Tabs({
   panelClassName = "",
   className = "",
 }: TabsProps) {
-  const tabs = useTabs({ items, value, defaultValue, onValueChange, activation });
+  const tabs = useTabs({
+    items,
+    value,
+    defaultValue,
+    onValueChange,
+    activation,
+  });
   const reduced = useReducedMotion();
 
   const rowRef = useRef<HTMLDivElement | null>(null);
@@ -266,7 +293,10 @@ export function Tabs({
               }`}
             >
               <span className="relative grid place-items-center leading-[1.4]">
-                <span aria-hidden className="invisible col-start-1 row-start-1 font-medium">
+                <span
+                  aria-hidden
+                  className="invisible col-start-1 row-start-1 font-medium"
+                >
                   {item.label}
                 </span>
                 <span

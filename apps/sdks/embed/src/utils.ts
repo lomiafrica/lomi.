@@ -47,7 +47,10 @@ export function validateEmbedOptions(options: LomiEmbedOptions): void {
   }
 }
 
-export const withEmbeddedParam = (url: string, embedOrigin?: string): string => {
+export const withEmbeddedParam = (
+  url: string,
+  embedOrigin?: string,
+): string => {
   const defaultOrigin = globalThis.window?.location.origin;
   try {
     const parsed = new URL(url);

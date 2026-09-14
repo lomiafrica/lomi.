@@ -13,13 +13,33 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const LEAVE = [0.4, 0, 1, 1] as const;
 
-const RISE = { type: "spring", stiffness: 560, damping: 34, mass: 0.6 } as const;
+const RISE = {
+  type: "spring",
+  stiffness: 560,
+  damping: 34,
+  mass: 0.6,
+} as const;
 
-const WARM = { type: "spring", stiffness: 900, damping: 48, mass: 0.5 } as const;
+const WARM = {
+  type: "spring",
+  stiffness: 900,
+  damping: 48,
+  mass: 0.5,
+} as const;
 
-const GLIDE = { type: "spring", stiffness: 520, damping: 40, mass: 0.75 } as const;
+const GLIDE = {
+  type: "spring",
+  stiffness: 520,
+  damping: 40,
+  mass: 0.75,
+} as const;
 
-const SWAP = { type: "spring", stiffness: 700, damping: 44, mass: 0.5 } as const;
+const SWAP = {
+  type: "spring",
+  stiffness: 700,
+  damping: 44,
+  mass: 0.5,
+} as const;
 
 let groups = 0;
 
@@ -377,7 +397,15 @@ export function useTooltip({
     },
   };
 
-  return { open, warm, skipped, travel, tooltipId, seat: store.seat, triggerProps };
+  return {
+    open,
+    warm,
+    skipped,
+    travel,
+    tooltipId,
+    seat: store.seat,
+    triggerProps,
+  };
 }
 
 type TriggerChild = React.ReactElement<
@@ -421,7 +449,10 @@ export function Tooltip({
   });
   const reduced = useReducedMotion();
 
-  const described = [children.props["aria-describedby"], open ? tooltipId : null]
+  const described = [
+    children.props["aria-describedby"],
+    open ? tooltipId : null,
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -493,7 +524,9 @@ export function Tooltip({
                   ? { duration: 0 }
                   : { ...(skipped ? WARM : RISE), layout: GLIDE }
               }
-              style={{ transformOrigin: side === "top" ? "50% 100%" : "50% 0%" }}
+              style={{
+                transformOrigin: side === "top" ? "50% 100%" : "50% 0%",
+              }}
               className={`relative w-max max-w-[220px] shrink-0 overflow-hidden rounded-[8px] px-2 py-1 text-[11.5px] font-medium leading-snug text-stone-700 dark:text-stone-100 ${contentClassName}`}
             >
               <motion.span

@@ -1,11 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
-const SMALL = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const SMALL = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 
 const EASE = [0.23, 1, 0.32, 1] as const;
 const LEAVE = [0.4, 0, 1, 1] as const;
@@ -169,7 +186,12 @@ export function SortableTable<T>({
     [columns],
   );
 
-  const { sort: current, ordered, toggle, ariaSort } = useSortableRows<T>({
+  const {
+    sort: current,
+    ordered,
+    toggle,
+    ariaSort,
+  } = useSortableRows<T>({
     rows,
     getRowId,
     getValue,
@@ -284,7 +306,12 @@ export function SortableTable<T>({
                         }}
                         transition={reduced ? { duration: 0 } : SMALL}
                       >
-                        <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                        <svg
+                          width="9"
+                          height="9"
+                          viewBox="0 0 10 10"
+                          fill="none"
+                        >
                           <path
                             d="M5 8.6V1.6M5 1.6 2.2 4.4M5 1.6l2.8 2.8"
                             stroke="currentColor"

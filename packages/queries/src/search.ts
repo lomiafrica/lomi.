@@ -23,12 +23,20 @@ export async function searchGlobal(
   options?: SupabaseRpcOptions<DbFunctions["search_global"]["Returns"]> | null,
 ): Promise<DbFunctions["search_global"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "search_global", args), "search_global", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "search_global", args),
+      "search_global",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "search_global", args), "search_global", options);
+    return handleSupabaseRpc(
+      rpc(client, "search_global", args),
+      "search_global",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "search_global", args), "search_global");
 }

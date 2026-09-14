@@ -23,9 +23,7 @@ function truncateId(id: string, maxLength = 20): string {
   return `${id.slice(0, maxLength)}…`;
 }
 
-function cardLineDetail(
-  detail: string | null | undefined,
-): string | undefined {
+function cardLineDetail(detail: string | null | undefined): string | undefined {
   const trimmed = detail?.trim();
   if (!trimmed) return undefined;
   if (trimmed.length > CARD_DETAIL_MAX_CHARS) return undefined;

@@ -4,8 +4,18 @@ import type { AriaAttributes } from "react";
 import { useId } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const FILL = { type: "spring", stiffness: 210, damping: 34, mass: 0.9 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const FILL = {
+  type: "spring",
+  stiffness: 210,
+  damping: 34,
+  mass: 0.9,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 export type ProgressBarProps = {

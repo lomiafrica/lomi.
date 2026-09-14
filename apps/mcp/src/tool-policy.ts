@@ -21,7 +21,7 @@ export type ToolPolicyFlags = {
 /** GET/HEAD operations are read-only for MCP clients. */
 export function isReadOnlyMethod(method: string): boolean {
   const m = method.toLowerCase();
-  return m === 'get' || m === 'head';
+  return m === "get" || m === "head";
 }
 
 /** DELETE and cancel/revoke mutations are destructive. */
@@ -30,9 +30,9 @@ export function isDestructiveOperation(
   operationKey: string,
 ): boolean {
   const m = method.toLowerCase();
-  if (m === 'delete') return true;
+  if (m === "delete") return true;
   const key = operationKey.toLowerCase();
-  return key.includes('cancel') || key.includes('revoke');
+  return key.includes("cancel") || key.includes("revoke");
 }
 
 /** Space-separated lowercase tokens for deferred tool discovery (Composer/Cursor). */
@@ -44,17 +44,17 @@ export function buildSearchHint(input: ToolPolicyInput): string {
     }
   }
   tokens.add(input.method.toLowerCase());
-  for (const segment of input.pathTemplate.replace(/^\//, '').split('/')) {
-    if (segment.startsWith('{')) continue;
-    for (const word of segment.split('-')) {
+  for (const segment of input.pathTemplate.replace(/^\//, "").split("/")) {
+    if (segment.startsWith("{")) continue;
+    for (const word of segment.split("-")) {
       if (word.length > 1) tokens.add(word.toLowerCase());
     }
   }
-  const nameTail = input.name.replace(/^lomi_/, '');
-  for (const word of nameTail.split('_')) {
+  const nameTail = input.name.replace(/^lomi_/, "");
+  for (const word of nameTail.split("_")) {
     if (word.length > 1) tokens.add(word);
   }
-  return [...tokens].sort().join(' ');
+  return [...tokens].sort().join(" ");
 }
 
 export function resolveToolPolicy(
@@ -69,9 +69,9 @@ export function resolveToolPolicy(
   };
 }
 
-export function loadAlwaysLoadKeys(
-  policyJson: { alwaysLoadOperationKeys?: string[] },
-): Set<string> {
+export function loadAlwaysLoadKeys(policyJson: {
+  alwaysLoadOperationKeys?: string[];
+}): Set<string> {
   return new Set(policyJson.alwaysLoadOperationKeys ?? []);
 }
 
@@ -82,8 +82,8 @@ export function loadAlwaysLoadKeys(
  * PCI card collection or push an interactive payment prompt to an end user).
  * Agents should request money via checkout-sessions / payment-links instead.
  */
-export function loadExcludedOperationKeys(
-  policyJson: { mcpExcludedOperationKeys?: string[] },
-): Set<string> {
+export function loadExcludedOperationKeys(policyJson: {
+  mcpExcludedOperationKeys?: string[];
+}): Set<string> {
   return new Set(policyJson.mcpExcludedOperationKeys ?? []);
 }

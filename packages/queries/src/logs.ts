@@ -15,22 +15,37 @@ export async function fetchApiInteractions(
 export async function fetchApiInteractions(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_api_interactions"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_api_interactions"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_api_interactions"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_api_interactions"]["Returns"] | null>;
 export async function fetchApiInteractions(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_api_interactions"]["Args"] = emptyRpcArgs<"fetch_api_interactions">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_api_interactions"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_api_interactions"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_api_interactions"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_api_interactions", args), "fetch_api_interactions", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_api_interactions", args),
+      "fetch_api_interactions",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_api_interactions", args), "fetch_api_interactions", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_api_interactions", args),
+      "fetch_api_interactions",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_api_interactions", args), "fetch_api_interactions");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_api_interactions", args),
+    "fetch_api_interactions",
+  );
 }
 
 export async function fetchLogs(
@@ -58,7 +73,11 @@ export async function fetchLogs(
     });
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_logs", args), "fetch_logs", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_logs", args),
+      "fetch_logs",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "fetch_logs", args), "fetch_logs");
 }
@@ -83,12 +102,23 @@ export async function logWideEvent(
   options?: SupabaseRpcOptions<DbFunctions["log_wide_event"]["Returns"]> | null,
 ): Promise<DbFunctions["log_wide_event"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "log_wide_event", args), "log_wide_event", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "log_wide_event", args),
+      "log_wide_event",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "log_wide_event", args), "log_wide_event", options);
+    return handleSupabaseRpc(
+      rpc(client, "log_wide_event", args),
+      "log_wide_event",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "log_wide_event", args), "log_wide_event");
+  return handleSupabaseRpc(
+    rpc(client, "log_wide_event", args),
+    "log_wide_event",
+  );
 }

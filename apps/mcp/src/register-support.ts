@@ -1,67 +1,75 @@
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 
-import { getLomiApiBaseUrl } from './env-config.js';
-import { callLomiRest, formatHttpResult } from './lomi-http.js';
+import { getLomiApiBaseUrl } from "./env-config.js";
+import { callLomiRest, formatHttpResult } from "./lomi-http.js";
 import {
   isString,
   validateJsonValue,
   type JsonObject,
   type JsonValue,
-} from '@lomi./shared';
+} from "@lomi./shared";
 
 export type RegisterSupportContext = {
   getApiKey: () => string | null;
 };
 
 const GUEST_HINT =
-  'Connect with a merchant key (OAuth or x-lomi-api-key) to list, get, or close Settings → Support tickets. Guest sessions can only file a contact email (action=file with email + message). See https://docs.lomi.africa/build/mcp';
+  "Connect with a merchant key (OAuth or x-lomi-api-key) to list, get, or close Settings → Support tickets. Guest sessions can only file a contact email (action=file with email + message). See https://docs.lomi.africa/build/mcp";
 
 const CONTACT_TOPICS = [
-  'general',
-  'billing',
-  'integration',
-  'abuse',
-  'security',
+  "general",
+  "billing",
+  "integration",
+  "abuse",
+  "security",
 ] as const;
 
 const MERCHANT_CATEGORIES = [
-  'account',
-  'billing',
-  'technical',
-  'feature',
-  'other',
+  "account",
+  "billing",
+  "technical",
+  "feature",
+  "other",
 ] as const;
 
 const inputSchema = {
   action: z
-    .enum(['file', 'list', 'get', 'close', 'status', 'export', 'delete_account'])
+    .enum([
+      "file",
+      "list",
+      "get",
+      "close",
+      "status",
+      "export",
+      "delete_account",
+    ])
     .describe(
-      'file: send a complaint (guest email or merchant ticket). list/get/close: merchant tickets. status: platform status URLs. export: GDPR bundle for the current org. delete_account: preview then confirmation_token.',
+      "file: send a complaint (guest email or merchant ticket). list/get/close: merchant tickets. status: platform status URLs. export: GDPR bundle for the current org. delete_account: preview then confirmation_token.",
     ),
   email: z
     .string()
     .email()
     .optional()
-    .describe('Required for guest file (no merchant key)'),
-  name: z.string().max(200).optional().describe('Guest file display name'),
+    .describe("Required for guest file (no merchant key)"),
+  name: z.string().max(200).optional().describe("Guest file display name"),
   topic: z
     .enum(CONTACT_TOPICS)
     .optional()
-    .describe('Guest file topic (default general)'),
+    .describe("Guest file topic (default general)"),
   locale: z.string().max(8).optional(),
   message: z
     .string()
     .min(10)
     .max(5000)
     .optional()
-    .describe('Required for file'),
+    .describe("Required for file"),
   category: z
     .enum(MERCHANT_CATEGORIES)
     .optional()
-    .describe('Merchant ticket category (default other)'),
+    .describe("Merchant ticket category (default other)"),
   subject: z.string().max(200).optional(),
-  id: z.string().optional().describe('Ticket id for get or close'),
+  id: z.string().optional().describe("Ticket id for get or close"),
   cursor: z.string().optional(),
   limit: z.number().int().min(1).max(100).optional(),
   transaction_id: z.string().optional(),
@@ -75,12 +83,12 @@ const inputSchema = {
   confirmation_token: z
     .string()
     .optional()
-    .describe('Required to execute delete_account after the preview'),
+    .describe("Required to execute delete_account after the preview"),
 };
 
 function textResult(text: string, isError = false) {
   return {
-    content: [{ type: 'text' as const, text }],
+    content: [{ type: "text" as const, text }],
     isError,
   };
 }
@@ -105,13 +113,13 @@ function connectHint() {
         status: 401,
         body: {
           error: {
-            code: 'unauthorized',
+            code: "unauthorized",
             message: GUEST_HINT,
           },
         },
         next_steps: [
-          'Reconnect https://mcp.lomi.africa/mcp with OAuth or x-lomi-api-key.',
-          'Then call lomi_support action=list or action=file with category + message.',
+          "Reconnect https://mcp.lomi.africa/mcp with OAuth or x-lomi-api-key.",
+          "Then call lomi_support action=list or action=file with category + message.",
         ],
       },
       null,
@@ -126,36 +134,39 @@ export function registerLomiSupport(
   ctx: RegisterSupportContext,
 ): void {
   server.registerTool(
-    'lomi_support',
+    "lomi_support",
     {
-      title: 'Contact lomi. support',
+      title: "Contact lomi. support",
       description:
-        'File a complaint or support request. Guest sessions email lomi. (email + message). A merchant key creates a real Settings → Support ticket you can list, get, and close. action=status returns the status page and /ready URL. Merchant-only: action=export downloads a GDPR bundle for the current org; action=delete_account returns a confirmation_token then soft-deletes the merchant.',
+        "File a complaint or support request. Guest sessions email lomi. (email + message). A merchant key creates a real Settings → Support ticket you can list, get, and close. action=status returns the status page and /ready URL. Merchant-only: action=export downloads a GDPR bundle for the current org; action=delete_account returns a confirmation_token then soft-deletes the merchant.",
       inputSchema,
       annotations: {
         readOnlyHint: false,
         destructiveHint: false,
       },
       _meta: {
-        'anthropic/alwaysLoad': true,
-        'anthropic/searchHint':
-          'support complaint ticket contact help status feedback',
+        "anthropic/alwaysLoad": true,
+        "anthropic/searchHint":
+          "support complaint ticket contact help status feedback",
       },
     },
     async (args) => {
       const parsed = z.object(inputSchema).safeParse(args);
       if (!parsed.success) {
-        return textResult(`Invalid tool arguments: ${parsed.error.message}`, true);
+        return textResult(
+          `Invalid tool arguments: ${parsed.error.message}`,
+          true,
+        );
       }
       const input = parsed.data;
       const baseUrl = getLomiApiBaseUrl();
       const apiKey = ctx.getApiKey();
 
-      if (input.action === 'status') {
+      if (input.action === "status") {
         const ready = await callLomiRest(
           {
-            method: 'get',
-            pathTemplate: '/ready',
+            method: "get",
+            pathTemplate: "/ready",
             pathParamNames: [],
             queryParamNames: [],
             wantsBody: false,
@@ -170,7 +181,7 @@ export function registerLomiSupport(
               ok: true,
               status: ready.status,
               body: {
-                status_page: 'https://status.lomi.africa',
+                status_page: "https://status.lomi.africa",
                 ready_url: `${baseUrl}/ready`,
                 ready: (() => {
                   try {
@@ -187,18 +198,18 @@ export function registerLomiSupport(
         );
       }
 
-      if (input.action === 'file') {
+      if (input.action === "file") {
         if (!isString(input.message) || input.message.trim().length < 10) {
           return textResult(
-            'action=file requires message (at least 10 characters).',
+            "action=file requires message (at least 10 characters).",
             true,
           );
         }
         if (apiKey) {
           const result = await callLomiRest(
             {
-              method: 'post',
-              pathTemplate: '/support-requests',
+              method: "post",
+              pathTemplate: "/support-requests",
               pathParamNames: [],
               queryParamNames: [],
               wantsBody: true,
@@ -206,7 +217,7 @@ export function registerLomiSupport(
             },
             {
               body: compactJson({
-                category: input.category ?? 'other',
+                category: input.category ?? "other",
                 message: input.message,
                 subject: input.subject,
                 transaction_id: input.transaction_id,
@@ -225,14 +236,14 @@ export function registerLomiSupport(
         }
         if (!isString(input.email)) {
           return textResult(
-            'Guest file requires email and message. Or connect a merchant key to open a Settings → Support ticket.',
+            "Guest file requires email and message. Or connect a merchant key to open a Settings → Support ticket.",
             true,
           );
         }
         const result = await callLomiRest(
           {
-            method: 'post',
-            pathTemplate: '/contact',
+            method: "post",
+            pathTemplate: "/contact",
             pathParamNames: [],
             queryParamNames: [],
             wantsBody: true,
@@ -243,7 +254,7 @@ export function registerLomiSupport(
               email: input.email,
               message: input.message,
               name: input.name,
-              topic: input.topic ?? 'general',
+              topic: input.topic ?? "general",
               locale: input.locale,
             }),
           },
@@ -256,11 +267,11 @@ export function registerLomiSupport(
         return connectHint();
       }
 
-      if (input.action === 'export') {
+      if (input.action === "export") {
         const result = await callLomiRest(
           {
-            method: 'post',
-            pathTemplate: '/account/export',
+            method: "post",
+            pathTemplate: "/account/export",
             pathParamNames: [],
             queryParamNames: [],
             wantsBody: false,
@@ -272,11 +283,11 @@ export function registerLomiSupport(
         return textResult(formatHttpResult(result), result.status >= 400);
       }
 
-      if (input.action === 'delete_account') {
+      if (input.action === "delete_account") {
         const result = await callLomiRest(
           {
-            method: 'post',
-            pathTemplate: '/account/delete',
+            method: "post",
+            pathTemplate: "/account/delete",
             pathParamNames: [],
             queryParamNames: [],
             wantsBody: true,
@@ -292,13 +303,13 @@ export function registerLomiSupport(
         return textResult(formatHttpResult(result), result.status >= 400);
       }
 
-      if (input.action === 'list') {
+      if (input.action === "list") {
         const result = await callLomiRest(
           {
-            method: 'get',
-            pathTemplate: '/support-requests',
+            method: "get",
+            pathTemplate: "/support-requests",
             pathParamNames: [],
-            queryParamNames: ['cursor', 'limit'],
+            queryParamNames: ["cursor", "limit"],
             wantsBody: false,
             inputSchema: {},
           },
@@ -312,15 +323,15 @@ export function registerLomiSupport(
       }
 
       if (!isString(input.id)) {
-        return textResult('action=get and action=close require id.', true);
+        return textResult("action=get and action=close require id.", true);
       }
 
-      if (input.action === 'get') {
+      if (input.action === "get") {
         const result = await callLomiRest(
           {
-            method: 'get',
-            pathTemplate: '/support-requests/{id}',
-            pathParamNames: ['id'],
+            method: "get",
+            pathTemplate: "/support-requests/{id}",
+            pathParamNames: ["id"],
             queryParamNames: [],
             wantsBody: false,
             inputSchema: {},
@@ -333,9 +344,9 @@ export function registerLomiSupport(
 
       const result = await callLomiRest(
         {
-          method: 'post',
-          pathTemplate: '/support-requests/{id}/close',
-          pathParamNames: ['id'],
+          method: "post",
+          pathTemplate: "/support-requests/{id}/close",
+          pathParamNames: ["id"],
           queryParamNames: [],
           wantsBody: false,
           inputSchema: {},

@@ -10,7 +10,11 @@ import {
 } from "@lomi./shared";
 import type { Database } from "@lomi./shared/database";
 import { rpc } from "./rpc.js";
-import type { OnboardingStatus, ProviderCode, TypedSupabaseClient } from "./types.js";
+import type {
+  OnboardingStatus,
+  ProviderCode,
+  TypedSupabaseClient,
+} from "./types.js";
 
 export type OrganizationProviderRow = {
   provider_code: ProviderCode;

@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const PRESS = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const PRESS = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
 export type UsePressDepthOptions = {
   disabled?: boolean;
@@ -115,8 +120,14 @@ export function usePressDepth(
       if (event.pointerType === "mouse" && event.button !== 0) return;
       const r = event.currentTarget.getBoundingClientRect();
       setOrigin({
-        x: Math.max(-1, Math.min(1, ((event.clientX - r.left) / r.width) * 2 - 1)),
-        y: Math.max(-1, Math.min(1, ((event.clientY - r.top) / r.height) * 2 - 1)),
+        x: Math.max(
+          -1,
+          Math.min(1, ((event.clientX - r.left) / r.width) * 2 - 1),
+        ),
+        y: Math.max(
+          -1,
+          Math.min(1, ((event.clientY - r.top) / r.height) * 2 - 1),
+        ),
       });
       pointer.current = event.pointerId;
       setTracking(true);
@@ -127,7 +138,11 @@ export function usePressDepth(
       if (event.key === " " || event.key === "Enter") setDown(true);
     },
     onKeyUp: (event: React.KeyboardEvent) => {
-      if (event.key === " " || event.key === "Enter" || event.key === "Escape") {
+      if (
+        event.key === " " ||
+        event.key === "Enter" ||
+        event.key === "Escape"
+      ) {
         setDown(false);
       }
     },

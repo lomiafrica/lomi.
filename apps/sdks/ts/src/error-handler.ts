@@ -2,7 +2,7 @@
  * Error handler for API calls (legacy axios interop).
  */
 
-import axios from 'axios';
+import axios from "axios";
 import {
   LomiError,
   LomiValidationError,
@@ -10,8 +10,8 @@ import {
   LomiNotFoundError,
   LomiRateLimitError,
   ApiError,
-} from './errors.js';
-import { mapResponseToLomiError, parseApiBody } from './http.js';
+} from "./errors.js";
+import { mapResponseToLomiError, parseApiBody } from "./http.js";
 
 export function handleApiError(error: Error | string): never {
   if (error instanceof LomiError) {
@@ -29,20 +29,24 @@ export function handleApiError(error: Error | string): never {
       status,
       body,
       error.message,
-      error.config?.url ?? '',
+      error.config?.url ?? "",
       statusText,
     );
   }
 
   if (axios.isAxiosError(error) && error.request) {
-    throw new LomiError('Network error - no response received', undefined, 'NETWORK_ERROR');
+    throw new LomiError(
+      "Network error - no response received",
+      undefined,
+      "NETWORK_ERROR",
+    );
   }
 
   if (error instanceof Error) {
     throw new LomiError(error.message);
   }
 
-  throw new LomiError('An unknown error occurred');
+  throw new LomiError("An unknown error occurred");
 }
 
 // Re-export for instanceof checks in docs

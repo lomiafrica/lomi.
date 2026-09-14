@@ -10,12 +10,14 @@ const NAMED_ENTITIES = {
 type NamedEntityKey = keyof typeof NAMED_ENTITIES;
 
 function isNamedEntityKey(name: string): name is NamedEntityKey {
-  return name === "nbsp" ||
+  return (
+    name === "nbsp" ||
     name === "amp" ||
     name === "lt" ||
     name === "gt" ||
     name === "quot" ||
-    name === "apos";
+    name === "apos"
+  );
 }
 
 function namedEntity(name: string): string | undefined {

@@ -1,7 +1,4 @@
-import {
-  attachOverlayDismiss,
-  createOverlayShell,
-} from "./overlay";
+import { attachOverlayDismiss, createOverlayShell } from "./overlay";
 import {
   buildCheckoutUrl,
   validateEmbedOptions,
@@ -148,7 +145,9 @@ export const loadLomiCheckout = (
 };
 
 export const mountInlineProductEmbeds = (): void => {
-  const nodes = document.querySelectorAll<HTMLElement>("[data-lomi-session-id]");
+  const nodes = document.querySelectorAll<HTMLElement>(
+    "[data-lomi-session-id]",
+  );
   nodes.forEach((node) => {
     const sessionId = node.dataset.lomiSessionId;
     const checkoutUrl = node.dataset.lomiCheckoutUrl;
@@ -181,7 +180,10 @@ export const mountInlineProductEmbeds = (): void => {
 export const interceptCheckoutLinks = (): void => {
   document.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((anchor) => {
     const href = anchor.getAttribute("href") || "";
-    if (!CHECKOUT_HOST_PATTERN.test(href) || anchor.dataset.lomiBound === "true") {
+    if (
+      !CHECKOUT_HOST_PATTERN.test(href) ||
+      anchor.dataset.lomiBound === "true"
+    ) {
       return;
     }
 

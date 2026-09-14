@@ -15,20 +15,37 @@ export async function fetchOrganizationDisputes(
 export async function fetchOrganizationDisputes(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_disputes"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_organization_disputes"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_disputes"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_organization_disputes"]["Returns"] | null>;
 export async function fetchOrganizationDisputes(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_disputes"]["Args"] = emptyRpcArgs<"fetch_organization_disputes">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_organization_disputes"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_organization_disputes"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_disputes"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_organization_disputes"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_disputes", args), "fetch_organization_disputes", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_disputes", args),
+      "fetch_organization_disputes",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_disputes", args), "fetch_organization_disputes", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_disputes", args),
+      "fetch_organization_disputes",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_organization_disputes", args), "fetch_organization_disputes");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_organization_disputes", args),
+    "fetch_organization_disputes",
+  );
 }

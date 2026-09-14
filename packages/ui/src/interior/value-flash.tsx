@@ -3,15 +3,35 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
-const ROLL = { type: "spring", stiffness: 460, damping: 32, mass: 0.55 } as const;
+const ROLL = {
+  type: "spring",
+  stiffness: 460,
+  damping: 32,
+  mass: 0.55,
+} as const;
 
 const POP = { type: "spring", stiffness: 640, damping: 22, mass: 0.7 } as const;
 
-const LIFT = { type: "spring", stiffness: 380, damping: 26, mass: 0.7 } as const;
+const LIFT = {
+  type: "spring",
+  stiffness: 380,
+  damping: 26,
+  mass: 0.7,
+} as const;
 
-const SETTLE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const SETTLE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 
 const CLEAR = { duration: 0.16, ease: [0.4, 0, 1, 1] } as const;
 const DROP = { duration: 0.14, ease: [0.4, 0, 1, 1] } as const;

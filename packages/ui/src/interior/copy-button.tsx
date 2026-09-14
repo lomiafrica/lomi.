@@ -5,8 +5,18 @@ import { motion, useReducedMotion } from "motion/react";
 import { interiorRadiusPx } from "../tokens";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const DRAW = { duration: 0.26, ease: EASE } as const;
 const INSTANT = { duration: 0 } as const;
 
@@ -246,7 +256,11 @@ export function CopyButton({
       </span>
 
       <span role="status" aria-live="polite" className="sr-only">
-        {status === "copied" ? copiedLabel : status === "error" ? errorLabel : ""}
+        {status === "copied"
+          ? copiedLabel
+          : status === "error"
+            ? errorLabel
+            : ""}
       </span>
     </motion.button>
   );

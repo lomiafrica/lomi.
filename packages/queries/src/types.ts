@@ -21,5 +21,4 @@ export type ProviderCode = Database["public"]["Enums"]["provider_code"];
 export type CurrencyCode = Database["public"]["Enums"]["currency_code"];
 export type OrganizationVerificationStatus =
   Database["public"]["Enums"]["organization_verification_status"];
-export type OnboardingStatus =
-  Database["public"]["Enums"]["onboarding_status"];
+export type OnboardingStatus = Database["public"]["Enums"]["onboarding_status"];

@@ -20,15 +20,28 @@ export async function createFeedback(
 export async function createFeedback(
   client: TypedSupabaseClient,
   args: DbFunctions["create_feedback"]["Args"] = emptyRpcArgs<"create_feedback">(),
-  options?: SupabaseRpcOptions<DbFunctions["create_feedback"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["create_feedback"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["create_feedback"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "create_feedback", args), "create_feedback", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "create_feedback", args),
+      "create_feedback",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "create_feedback", args), "create_feedback", options);
+    return handleSupabaseRpc(
+      rpc(client, "create_feedback", args),
+      "create_feedback",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "create_feedback", args), "create_feedback");
+  return handleSupabaseRpc(
+    rpc(client, "create_feedback", args),
+    "create_feedback",
+  );
 }

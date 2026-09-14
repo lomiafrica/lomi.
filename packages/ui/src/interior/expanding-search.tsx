@@ -10,9 +10,24 @@ import {
 } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const DISCLOSE = { type: "spring", stiffness: 380, damping: 38, mass: 0.7 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const DISCLOSE = {
+  type: "spring",
+  stiffness: 380,
+  damping: 38,
+  mass: 0.7,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const COLLAPSED = 40;
@@ -200,7 +215,8 @@ export function useExpandingSearch({
   const onInputFocus = useCallback(() => setOpen(true), [setOpen]);
 
   const onInputChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => commit(event.currentTarget.value),
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      commit(event.currentTarget.value),
     [commit],
   );
 
@@ -376,7 +392,13 @@ export function ExpandingSearch({
               open && filled ? "pointer-events-auto" : ""
             }`}
           >
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden>
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 11 11"
+              fill="none"
+              aria-hidden
+            >
               <path
                 d="M1.7 1.7 L9.3 9.3 M9.3 1.7 L1.7 9.3"
                 stroke="currentColor"
@@ -386,7 +408,6 @@ export function ExpandingSearch({
             </svg>
           </motion.button>
         </motion.div>
-
       </motion.div>
 
       <motion.button
@@ -403,7 +424,13 @@ export function ExpandingSearch({
         } ${open ? "pointer-events-none" : ""}`}
       >
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
-          <circle cx="6.4" cy="6.4" r="4.5" stroke="currentColor" strokeWidth="1.4" />
+          <circle
+            cx="6.4"
+            cy="6.4"
+            r="4.5"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
           <path
             d="M9.8 9.8 L13.2 13.2"
             stroke="currentColor"

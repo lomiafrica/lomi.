@@ -127,10 +127,14 @@ function registerOneTool(
       try {
         const action = resolveManifestAction(tool, input);
         const t0 = Date.now();
-        const result = await callLomiRest(restCallSpecFor(tool, action), input, {
-          baseUrl: ctx.baseUrl,
-          apiKey,
-        });
+        const result = await callLomiRest(
+          restCallSpecFor(tool, action),
+          input,
+          {
+            baseUrl: ctx.baseUrl,
+            apiKey,
+          },
+        );
         const latencyMs = Date.now() - t0;
         mcpLog(
           "tool_upstream_complete",

@@ -83,16 +83,24 @@ export function createDigitalDownloadHandler(
         ? null
         : validateJsonValue(validationRaw),
     );
-    if (!validation?.valid || !validation.storage_path || !validation.filename) {
+    if (
+      !validation?.valid ||
+      !validation.storage_path ||
+      !validation.filename
+    ) {
       return NextResponse.json(
         { error: validation?.error ?? "Invalid or expired download link" },
         { status: 403 },
       );
     }
 
-    const { error: recordError } = await rpc(supabase, "record_download_access", {
-      p_token: token,
-    });
+    const { error: recordError } = await rpc(
+      supabase,
+      "record_download_access",
+      {
+        p_token: token,
+      },
+    );
 
     if (recordError) {
       console.error("record_download_access failed:", recordError);

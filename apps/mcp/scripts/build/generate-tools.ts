@@ -2,54 +2,54 @@
  * Generates src/generated/tools-manifest.json from apps/docs/openapi.json
  * and the public merchant operation allowlist (same contract as SDKs).
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   type OpenAPISpec,
   buildInputJsonSchema,
-} from '../../src/generator/openapi-helpers.js';
+} from "../../src/generator/openapi-helpers.js";
 import {
   type EnglishCopyOverride,
   resolveEnglishCopy,
-} from '../../src/generator/mcp-english-copy.js';
+} from "../../src/generator/mcp-english-copy.js";
 import {
   assertGroupsCoverOperations,
   buildGroupDescription,
   loadMerchantGroups,
   mergeGroupInputSchema,
   requiredInputFromSchema,
-} from '../../src/generator/group-manifest.js';
+} from "../../src/generator/group-manifest.js";
 import {
   buildSearchHint,
   isDestructiveOperation,
   isReadOnlyMethod,
   loadAlwaysLoadKeys,
   loadExcludedOperationKeys,
-} from '../../src/tool-policy.js';
-import { validateManifestToolEntry } from './validate-manifest-entry.js';
-import type { ManifestAction, ManifestTool } from '../../src/manifest.js';
+} from "../../src/tool-policy.js";
+import { validateManifestToolEntry } from "./validate-manifest-entry.js";
+import type { ManifestAction, ManifestTool } from "../../src/manifest.js";
 import {
   readSpecAndAllowlist,
   getNormalizedOperations,
   HTTP_WITH_BODY,
   METHOD_NAME_BY_OP,
-} from '@lomi./sdk-scripts/public-sdk-operations';
+} from "@lomi./sdk-scripts/public-sdk-operations";
 import { isJsonObject, isString, parseJson } from "@lomi./shared";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const mcpRoot = join(__dirname, '../..');
-const openapiPath = join(mcpRoot, '../docs/openapi.json');
+const mcpRoot = join(__dirname, "../..");
+const openapiPath = join(mcpRoot, "../docs/openapi.json");
 const allowlistPath = join(
   mcpRoot,
-  '../docs/lib/scripts/manual-api/_expected-public-operations.json',
+  "../docs/lib/scripts/manual-api/_expected-public-operations.json",
 );
-const policyPath = join(mcpRoot, 'config/mcp-tool-policy.json');
-const copyOverridesPath = join(mcpRoot, 'config/mcp-tool-copy.en.json');
-const outDir = join(mcpRoot, 'src/generated');
-const outFile = join(outDir, 'tools-manifest.json');
+const policyPath = join(mcpRoot, "config/mcp-tool-policy.json");
+const copyOverridesPath = join(mcpRoot, "config/mcp-tool-copy.en.json");
+const outDir = join(mcpRoot, "src/generated");
+const outFile = join(outDir, "tools-manifest.json");
 
-const WRITE_METHODS = new Set(['post', 'patch', 'put', 'delete']);
+const WRITE_METHODS = new Set(["post", "patch", "put", "delete"]);
 
 type CopyOverrideMap = { [operationKey: string]: EnglishCopyOverride };
 
@@ -62,9 +62,9 @@ function assertUniqueToolNames(names: string[]): void {
 }
 
 function loadCopyOverrides(): CopyOverrideMap {
-  const parsed = parseJson(readFileSync(copyOverridesPath, 'utf-8'));
+  const parsed = parseJson(readFileSync(copyOverridesPath, "utf-8"));
   if (!isJsonObject(parsed)) {
-    throw new Error('mcp-tool-copy.en.json must be a JSON object');
+    throw new Error("mcp-tool-copy.en.json must be a JSON object");
   }
   // SAFETY: Curated copy file maps operation keys to EnglishCopyOverride objects.
   return parsed as CopyOverrideMap;
@@ -75,24 +75,30 @@ function main(): void {
   // SAFETY: openapi.json is the OpenAPI document shape OpenAPISpec expects.
   const apiSpec = spec as OpenAPISpec;
   const { operations } = getNormalizedOperations(spec, allowed);
-  const policyParsed = parseJson(readFileSync(policyPath, 'utf-8'));
+  const policyParsed = parseJson(readFileSync(policyPath, "utf-8"));
   if (!isJsonObject(policyParsed)) {
-    throw new Error('mcp-tool-policy.json must be a JSON object');
+    throw new Error("mcp-tool-policy.json must be a JSON object");
   }
   const alwaysLoadKeys = loadAlwaysLoadKeys({
-    alwaysLoadOperationKeys: Array.isArray(policyParsed['alwaysLoadOperationKeys'])
-      ? policyParsed['alwaysLoadOperationKeys'].filter(isString)
+    alwaysLoadOperationKeys: Array.isArray(
+      policyParsed["alwaysLoadOperationKeys"],
+    )
+      ? policyParsed["alwaysLoadOperationKeys"].filter(isString)
       : [],
   });
   const excludedKeys = loadExcludedOperationKeys({
-    mcpExcludedOperationKeys: Array.isArray(policyParsed['mcpExcludedOperationKeys'])
-      ? policyParsed['mcpExcludedOperationKeys'].filter(isString)
+    mcpExcludedOperationKeys: Array.isArray(
+      policyParsed["mcpExcludedOperationKeys"],
+    )
+      ? policyParsed["mcpExcludedOperationKeys"].filter(isString)
       : [],
   });
   const groups = loadMerchantGroups(policyParsed);
   const copyOverrides = loadCopyOverrides();
 
-  const allowedKeys = new Set(operations.map((op: { operationKey: string }) => op.operationKey));
+  const allowedKeys = new Set(
+    operations.map((op: { operationKey: string }) => op.operationKey),
+  );
   for (const key of excludedKeys) {
     if (!allowedKeys.has(key)) {
       throw new Error(
@@ -111,7 +117,9 @@ function main(): void {
     ]),
   );
 
-  const includedKeys = new Set(includedOperations.map((op: { operationKey: string }) => op.operationKey));
+  const includedKeys = new Set(
+    includedOperations.map((op: { operationKey: string }) => op.operationKey),
+  );
   for (const key of Object.keys(copyOverrides)) {
     if (!includedKeys.has(key)) {
       throw new Error(
@@ -120,7 +128,7 @@ function main(): void {
     }
   }
 
-  assertGroupsCoverOperations(groups, includedKeys, 'merchant');
+  assertGroupsCoverOperations(groups, includedKeys, "merchant");
 
   const tools: ManifestTool[] = groups.map((group) => {
     const actionEntries = Object.entries(group.actions);
@@ -133,7 +141,9 @@ function main(): void {
     for (const [actionName, operationKey] of actionEntries) {
       const op = includedByKey.get(operationKey);
       if (!op) {
-        throw new Error(`Group ${group.name}.${actionName} missing operation ${operationKey}`);
+        throw new Error(
+          `Group ${group.name}.${actionName} missing operation ${operationKey}`,
+        );
       }
       const tags = op.openApiOp.tags ?? [];
       const write = WRITE_METHODS.has(op.httpMethodLower);
@@ -187,18 +197,23 @@ function main(): void {
       actions[built.name] = built.action;
     }
 
-    const title = group.title ?? group.name.replace(/^lomi_/, '').replace(/_/g, ' ');
+    const title =
+      group.title ?? group.name.replace(/^lomi_/, "").replace(/_/g, " ");
     const description = buildGroupDescription({
       title,
       actions: builtActions.map((built) => ({
         name: built.name,
         title: built.action.title,
         operationKey: built.action.operationKey,
-        required: built.action.requiredInput.filter((field) => field !== 'idempotency_key'),
+        required: built.action.requiredInput.filter(
+          (field) => field !== "idempotency_key",
+        ),
       })),
     });
 
-    const allTags = [...new Set(builtActions.flatMap((built) => built.action.tags))];
+    const allTags = [
+      ...new Set(builtActions.flatMap((built) => built.action.tags)),
+    ];
     const write = builtActions.some((built) => built.action.write);
     const readOnly = builtActions.every((built) =>
       isReadOnlyMethod(built.action.method),
@@ -240,7 +255,7 @@ function main(): void {
       readOnly,
       destructive,
       alwaysLoad,
-      searchHint: [...hintTokens].sort().join(' '),
+      searchHint: [...hintTokens].sort().join(" "),
       actions,
     };
   });
@@ -254,14 +269,14 @@ function main(): void {
 
   const manifest = {
     manifestVersion: 1 as const,
-    apiVersion: apiSpec.info?.version ?? 'unknown',
-    apiTitle: apiSpec.info?.title ?? 'lomi. API',
+    apiVersion: apiSpec.info?.version ?? "unknown",
+    apiTitle: apiSpec.info?.title ?? "lomi. API",
     toolCount: tools.length,
     tools,
   };
 
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(outFile, `${JSON.stringify(manifest, null, 2)}\n`, 'utf-8');
+  writeFileSync(outFile, `${JSON.stringify(manifest, null, 2)}\n`, "utf-8");
   console.log(`Wrote ${outFile} (${tools.length} tools)`);
 }
 

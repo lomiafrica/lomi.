@@ -18,19 +18,19 @@ node tooling/scripts/workspace.mjs list
 
 ## Command contract
 
-| Command | Meaning |
-| --- | --- |
-| `dev` | Watch-mode development |
-| `start` | Run the built artifact |
-| `build` | Produce deployable output |
-| `typecheck` | Static checking (`tsc --noEmit` or Cargo check) |
-| `types:generate` | Write generated database/API types |
-| `lint` / `format` | Check only |
-| `lint:fix` / `format:fix` | Apply fixes |
-| `check:*` | Read-only gate |
-| `generate:*` | Deterministic repository output |
-| `ops:*` | External side effects; dry-run by default |
-| `release:*` / `publish:*` | Publish artifacts |
+| Command                   | Meaning                                         |
+| ------------------------- | ----------------------------------------------- |
+| `dev`                     | Watch-mode development                          |
+| `start`                   | Run the built artifact                          |
+| `build`                   | Produce deployable output                       |
+| `typecheck`               | Static checking (`tsc --noEmit` or Cargo check) |
+| `types:generate`          | Write generated database/API types              |
+| `lint` / `format`         | Check only                                      |
+| `lint:fix` / `format:fix` | Apply fixes                                     |
+| `check:*`                 | Read-only gate                                  |
+| `generate:*`              | Deterministic repository output                 |
+| `ops:*`                   | External side effects; dry-run by default       |
+| `release:*` / `publish:*` | Publish artifacts                               |
 
 ## Layout
 

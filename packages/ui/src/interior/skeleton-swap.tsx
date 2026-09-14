@@ -42,7 +42,10 @@ export function useSkeletonSwap({
     }
 
     if (!visible) return;
-    const rest = Math.max(0, minVisible - (performance.now() - shownAt.current));
+    const rest = Math.max(
+      0,
+      minVisible - (performance.now() - shownAt.current),
+    );
     const t = setTimeout(() => setVisible(false), rest);
     return () => clearTimeout(t);
   }, [ready, visible, delay, minVisible]);
@@ -140,7 +143,9 @@ export function SkeletonSwap({
             className="pointer-events-none col-start-1 row-start-1 w-full self-start"
             initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={reduced ? { opacity: 0 } : { opacity: 0, filter: "blur(3px)" }}
+            exit={
+              reduced ? { opacity: 0 } : { opacity: 0, filter: "blur(3px)" }
+            }
             transition={reduced ? { duration: 0 } : CROSSFADE}
           >
             {skeleton ?? (

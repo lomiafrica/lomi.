@@ -5,10 +5,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTaskRegistry } from "./lib/task-registry.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const ALLOWED_SRC_SCRIPT_PREFIXES = [
-  "apps/docs/lib/scripts/",
-];
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
+const ALLOWED_SRC_SCRIPT_PREFIXES = ["apps/docs/lib/scripts/"];
 
 function walkApps(dir, files = []) {
   if (!existsSync(dir)) return files;
@@ -61,7 +62,11 @@ function collectErrors() {
         /(?:^|\/)src\/(?:lib\/)?scripts\//.test(relative) ||
         /(?:^|\/)src\/utils\/scripts\//.test(relative);
       if (!forbidden || !isExecutableScript(file)) continue;
-      if (ALLOWED_SRC_SCRIPT_PREFIXES.some((prefix) => relative.startsWith(prefix))) {
+      if (
+        ALLOWED_SRC_SCRIPT_PREFIXES.some((prefix) =>
+          relative.startsWith(prefix),
+        )
+      ) {
         continue;
       }
       errors.push(`executable automation under src: ${relative}`);
@@ -86,15 +91,27 @@ function collectErrors() {
     }
 
     if (project.manager !== "pnpm") continue;
-    const pkg = JSON.parse(readFileSync(path.join(abs, "package.json"), "utf8"));
+    const pkg = JSON.parse(
+      readFileSync(path.join(abs, "package.json"), "utf8"),
+    );
     const scripts = pkg.scripts ?? {};
     if (scripts.lint && / --fix\b/.test(scripts.lint) && !scripts["lint:fix"]) {
       errors.push(`${project.path} lint mutates files; move --fix to lint:fix`);
     }
-    if (scripts.format && / --write\b/.test(scripts.format) && !scripts["format:fix"]) {
-      errors.push(`${project.path} format mutates files; move --write to format:fix`);
+    if (
+      scripts.format &&
+      / --write\b/.test(scripts.format) &&
+      !scripts["format:fix"]
+    ) {
+      errors.push(
+        `${project.path} format mutates files; move --write to format:fix`,
+      );
     }
-    if (scripts.slop && scripts["anti-slop"] && scripts.slop === scripts["anti-slop"]) {
+    if (
+      scripts.slop &&
+      scripts["anti-slop"] &&
+      scripts.slop === scripts["anti-slop"]
+    ) {
       errors.push(`${project.path} has duplicate slop/anti-slop aliases`);
     }
 
@@ -115,7 +132,9 @@ function collectErrors() {
       }
       const resolved = path.resolve(abs, scriptPath);
       if (!existsSync(resolved)) {
-        errors.push(`${project.path} script "${name}" points at missing ${scriptPath}`);
+        errors.push(
+          `${project.path} script "${name}" points at missing ${scriptPath}`,
+        );
       }
     }
   }

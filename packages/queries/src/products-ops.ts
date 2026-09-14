@@ -23,12 +23,20 @@ export async function archivePrice(
   options?: SupabaseRpcOptions<DbFunctions["archive_price"]["Returns"]> | null,
 ): Promise<DbFunctions["archive_price"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "archive_price", args), "archive_price", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "archive_price", args),
+      "archive_price",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "archive_price", args), "archive_price", options);
+    return handleSupabaseRpc(
+      rpc(client, "archive_price", args),
+      "archive_price",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "archive_price", args), "archive_price");
 }
@@ -53,12 +61,20 @@ export async function createPrice(
   options?: SupabaseRpcOptions<DbFunctions["create_price"]["Returns"]> | null,
 ): Promise<DbFunctions["create_price"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "create_price", args), "create_price", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "create_price", args),
+      "create_price",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "create_price", args), "create_price", options);
+    return handleSupabaseRpc(
+      rpc(client, "create_price", args),
+      "create_price",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "create_price", args), "create_price");
 }
@@ -83,14 +99,25 @@ export async function createProduct(
   options?: SupabaseRpcOptions<DbFunctions["create_product"]["Returns"]> | null,
 ): Promise<DbFunctions["create_product"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "create_product", args), "create_product", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "create_product", args),
+      "create_product",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "create_product", args), "create_product", options);
+    return handleSupabaseRpc(
+      rpc(client, "create_product", args),
+      "create_product",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "create_product", args), "create_product");
+  return handleSupabaseRpc(
+    rpc(client, "create_product", args),
+    "create_product",
+  );
 }
 
 export async function deleteProduct(
@@ -113,14 +140,25 @@ export async function deleteProduct(
   options?: SupabaseRpcOptions<DbFunctions["delete_product"]["Returns"]> | null,
 ): Promise<DbFunctions["delete_product"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "delete_product", args), "delete_product", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "delete_product", args),
+      "delete_product",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "delete_product", args), "delete_product", options);
+    return handleSupabaseRpc(
+      rpc(client, "delete_product", args),
+      "delete_product",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "delete_product", args), "delete_product");
+  return handleSupabaseRpc(
+    rpc(client, "delete_product", args),
+    "delete_product",
+  );
 }
 
 export async function deleteProductFile(
@@ -135,22 +173,37 @@ export async function deleteProductFile(
 export async function deleteProductFile(
   client: TypedSupabaseClient,
   args: DbFunctions["delete_product_file"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["delete_product_file"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["delete_product_file"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["delete_product_file"]["Returns"] | null>;
 export async function deleteProductFile(
   client: TypedSupabaseClient,
   args: DbFunctions["delete_product_file"]["Args"] = emptyRpcArgs<"delete_product_file">(),
-  options?: SupabaseRpcOptions<DbFunctions["delete_product_file"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["delete_product_file"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["delete_product_file"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "delete_product_file", args), "delete_product_file", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "delete_product_file", args),
+      "delete_product_file",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "delete_product_file", args), "delete_product_file", options);
+    return handleSupabaseRpc(
+      rpc(client, "delete_product_file", args),
+      "delete_product_file",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "delete_product_file", args), "delete_product_file");
+  return handleSupabaseRpc(
+    rpc(client, "delete_product_file", args),
+    "delete_product_file",
+  );
 }
 
 export async function fetchOrganizationProducts(
@@ -165,22 +218,39 @@ export async function fetchOrganizationProducts(
 export async function fetchOrganizationProducts(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_products"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_organization_products"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_products"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_organization_products"]["Returns"] | null>;
 export async function fetchOrganizationProducts(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_products"]["Args"] = emptyRpcArgs<"fetch_organization_products">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_organization_products"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_organization_products"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_products"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_organization_products"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_products", args), "fetch_organization_products", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_products", args),
+      "fetch_organization_products",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_products", args), "fetch_organization_products", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_products", args),
+      "fetch_organization_products",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_organization_products", args), "fetch_organization_products");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_organization_products", args),
+    "fetch_organization_products",
+  );
 }
 
 export async function fetchProductFees(
@@ -195,22 +265,37 @@ export async function fetchProductFees(
 export async function fetchProductFees(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_fees"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_product_fees"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_product_fees"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_product_fees"]["Returns"] | null>;
 export async function fetchProductFees(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_fees"]["Args"] = emptyRpcArgs<"fetch_product_fees">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_product_fees"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_product_fees"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_product_fees"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_fees", args), "fetch_product_fees", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_fees", args),
+      "fetch_product_fees",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_fees", args), "fetch_product_fees", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_fees", args),
+      "fetch_product_fees",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_product_fees", args), "fetch_product_fees");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_product_fees", args),
+    "fetch_product_fees",
+  );
 }
 
 export async function fetchProductPrices(
@@ -225,22 +310,37 @@ export async function fetchProductPrices(
 export async function fetchProductPrices(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_prices"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_product_prices"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_product_prices"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_product_prices"]["Returns"] | null>;
 export async function fetchProductPrices(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_prices"]["Args"] = emptyRpcArgs<"fetch_product_prices">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_product_prices"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_product_prices"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_product_prices"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_prices", args), "fetch_product_prices", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_prices", args),
+      "fetch_product_prices",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_prices", args), "fetch_product_prices", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_prices", args),
+      "fetch_product_prices",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_product_prices", args), "fetch_product_prices");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_product_prices", args),
+    "fetch_product_prices",
+  );
 }
 
 export async function fetchProductTransactions(
@@ -255,22 +355,39 @@ export async function fetchProductTransactions(
 export async function fetchProductTransactions(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_transactions"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_product_transactions"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_product_transactions"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_product_transactions"]["Returns"] | null>;
 export async function fetchProductTransactions(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_product_transactions"]["Args"] = emptyRpcArgs<"fetch_product_transactions">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_product_transactions"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_product_transactions"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_product_transactions"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_product_transactions"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_transactions", args), "fetch_product_transactions", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_transactions", args),
+      "fetch_product_transactions",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_product_transactions", args), "fetch_product_transactions", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_product_transactions", args),
+      "fetch_product_transactions",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_product_transactions", args), "fetch_product_transactions");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_product_transactions", args),
+    "fetch_product_transactions",
+  );
 }
 
 export async function fetchTopPerformingProducts(
@@ -285,22 +402,39 @@ export async function fetchTopPerformingProducts(
 export async function fetchTopPerformingProducts(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_top_performing_products"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_top_performing_products"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_top_performing_products"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["fetch_top_performing_products"]["Returns"] | null>;
 export async function fetchTopPerformingProducts(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_top_performing_products"]["Args"] = emptyRpcArgs<"fetch_top_performing_products">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_top_performing_products"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_top_performing_products"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_top_performing_products"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_top_performing_products"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_top_performing_products", args), "fetch_top_performing_products", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_top_performing_products", args),
+      "fetch_top_performing_products",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_top_performing_products", args), "fetch_top_performing_products", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_top_performing_products", args),
+      "fetch_top_performing_products",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_top_performing_products", args), "fetch_top_performing_products");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_top_performing_products", args),
+    "fetch_top_performing_products",
+  );
 }
 
 export async function listProductFiles(
@@ -315,22 +449,37 @@ export async function listProductFiles(
 export async function listProductFiles(
   client: TypedSupabaseClient,
   args: DbFunctions["list_product_files"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["list_product_files"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["list_product_files"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["list_product_files"]["Returns"] | null>;
 export async function listProductFiles(
   client: TypedSupabaseClient,
   args: DbFunctions["list_product_files"]["Args"] = emptyRpcArgs<"list_product_files">(),
-  options?: SupabaseRpcOptions<DbFunctions["list_product_files"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["list_product_files"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["list_product_files"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "list_product_files", args), "list_product_files", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "list_product_files", args),
+      "list_product_files",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "list_product_files", args), "list_product_files", options);
+    return handleSupabaseRpc(
+      rpc(client, "list_product_files", args),
+      "list_product_files",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "list_product_files", args), "list_product_files");
+  return handleSupabaseRpc(
+    rpc(client, "list_product_files", args),
+    "list_product_files",
+  );
 }
 
 export async function moveProductToLive(
@@ -345,22 +494,37 @@ export async function moveProductToLive(
 export async function moveProductToLive(
   client: TypedSupabaseClient,
   args: DbFunctions["move_product_to_live"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["move_product_to_live"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["move_product_to_live"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["move_product_to_live"]["Returns"] | null>;
 export async function moveProductToLive(
   client: TypedSupabaseClient,
   args: DbFunctions["move_product_to_live"]["Args"] = emptyRpcArgs<"move_product_to_live">(),
-  options?: SupabaseRpcOptions<DbFunctions["move_product_to_live"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["move_product_to_live"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["move_product_to_live"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "move_product_to_live", args), "move_product_to_live", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "move_product_to_live", args),
+      "move_product_to_live",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "move_product_to_live", args), "move_product_to_live", options);
+    return handleSupabaseRpc(
+      rpc(client, "move_product_to_live", args),
+      "move_product_to_live",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "move_product_to_live", args), "move_product_to_live");
+  return handleSupabaseRpc(
+    rpc(client, "move_product_to_live", args),
+    "move_product_to_live",
+  );
 }
 
 export async function registerProductFile(
@@ -375,22 +539,37 @@ export async function registerProductFile(
 export async function registerProductFile(
   client: TypedSupabaseClient,
   args: DbFunctions["register_product_file"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["register_product_file"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["register_product_file"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["register_product_file"]["Returns"] | null>;
 export async function registerProductFile(
   client: TypedSupabaseClient,
   args: DbFunctions["register_product_file"]["Args"] = emptyRpcArgs<"register_product_file">(),
-  options?: SupabaseRpcOptions<DbFunctions["register_product_file"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["register_product_file"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["register_product_file"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "register_product_file", args), "register_product_file", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "register_product_file", args),
+      "register_product_file",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "register_product_file", args), "register_product_file", options);
+    return handleSupabaseRpc(
+      rpc(client, "register_product_file", args),
+      "register_product_file",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "register_product_file", args), "register_product_file");
+  return handleSupabaseRpc(
+    rpc(client, "register_product_file", args),
+    "register_product_file",
+  );
 }
 
 export async function reorderProductFiles(
@@ -405,22 +584,37 @@ export async function reorderProductFiles(
 export async function reorderProductFiles(
   client: TypedSupabaseClient,
   args: DbFunctions["reorder_product_files"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["reorder_product_files"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["reorder_product_files"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["reorder_product_files"]["Returns"] | null>;
 export async function reorderProductFiles(
   client: TypedSupabaseClient,
   args: DbFunctions["reorder_product_files"]["Args"] = emptyRpcArgs<"reorder_product_files">(),
-  options?: SupabaseRpcOptions<DbFunctions["reorder_product_files"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["reorder_product_files"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["reorder_product_files"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "reorder_product_files", args), "reorder_product_files", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "reorder_product_files", args),
+      "reorder_product_files",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "reorder_product_files", args), "reorder_product_files", options);
+    return handleSupabaseRpc(
+      rpc(client, "reorder_product_files", args),
+      "reorder_product_files",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "reorder_product_files", args), "reorder_product_files");
+  return handleSupabaseRpc(
+    rpc(client, "reorder_product_files", args),
+    "reorder_product_files",
+  );
 }
 
 export async function setDefaultPrice(
@@ -435,22 +629,37 @@ export async function setDefaultPrice(
 export async function setDefaultPrice(
   client: TypedSupabaseClient,
   args: DbFunctions["set_default_price"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["set_default_price"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["set_default_price"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["set_default_price"]["Returns"] | null>;
 export async function setDefaultPrice(
   client: TypedSupabaseClient,
   args: DbFunctions["set_default_price"]["Args"] = emptyRpcArgs<"set_default_price">(),
-  options?: SupabaseRpcOptions<DbFunctions["set_default_price"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["set_default_price"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["set_default_price"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "set_default_price", args), "set_default_price", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "set_default_price", args),
+      "set_default_price",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "set_default_price", args), "set_default_price", options);
+    return handleSupabaseRpc(
+      rpc(client, "set_default_price", args),
+      "set_default_price",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "set_default_price", args), "set_default_price");
+  return handleSupabaseRpc(
+    rpc(client, "set_default_price", args),
+    "set_default_price",
+  );
 }
 
 export async function syncProductWhatsappCatalog(
@@ -465,22 +674,39 @@ export async function syncProductWhatsappCatalog(
 export async function syncProductWhatsappCatalog(
   client: TypedSupabaseClient,
   args: DbFunctions["sync_product_whatsapp_catalog"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["sync_product_whatsapp_catalog"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["sync_product_whatsapp_catalog"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["sync_product_whatsapp_catalog"]["Returns"] | null>;
 export async function syncProductWhatsappCatalog(
   client: TypedSupabaseClient,
   args: DbFunctions["sync_product_whatsapp_catalog"]["Args"] = emptyRpcArgs<"sync_product_whatsapp_catalog">(),
-  options?: SupabaseRpcOptions<DbFunctions["sync_product_whatsapp_catalog"]["Returns"]> | null,
-): Promise<DbFunctions["sync_product_whatsapp_catalog"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["sync_product_whatsapp_catalog"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["sync_product_whatsapp_catalog"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "sync_product_whatsapp_catalog", args), "sync_product_whatsapp_catalog", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "sync_product_whatsapp_catalog", args),
+      "sync_product_whatsapp_catalog",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "sync_product_whatsapp_catalog", args), "sync_product_whatsapp_catalog", options);
+    return handleSupabaseRpc(
+      rpc(client, "sync_product_whatsapp_catalog", args),
+      "sync_product_whatsapp_catalog",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "sync_product_whatsapp_catalog", args), "sync_product_whatsapp_catalog");
+  return handleSupabaseRpc(
+    rpc(client, "sync_product_whatsapp_catalog", args),
+    "sync_product_whatsapp_catalog",
+  );
 }
 
 export async function updatePrice(
@@ -503,12 +729,20 @@ export async function updatePrice(
   options?: SupabaseRpcOptions<DbFunctions["update_price"]["Returns"]> | null,
 ): Promise<DbFunctions["update_price"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "update_price", args), "update_price", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "update_price", args),
+      "update_price",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "update_price", args), "update_price", options);
+    return handleSupabaseRpc(
+      rpc(client, "update_price", args),
+      "update_price",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "update_price", args), "update_price");
 }
@@ -533,12 +767,23 @@ export async function updateProduct(
   options?: SupabaseRpcOptions<DbFunctions["update_product"]["Returns"]> | null,
 ): Promise<DbFunctions["update_product"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "update_product", args), "update_product", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "update_product", args),
+      "update_product",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "update_product", args), "update_product", options);
+    return handleSupabaseRpc(
+      rpc(client, "update_product", args),
+      "update_product",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "update_product", args), "update_product");
+  return handleSupabaseRpc(
+    rpc(client, "update_product", args),
+    "update_product",
+  );
 }

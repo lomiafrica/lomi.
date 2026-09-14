@@ -14,8 +14,8 @@ Most teams use lomi.’s hosted server at `https://mcp.lomi.africa/mcp`.
 
 **Header on every MCP request:**
 
-| What | Header |
-|------|--------|
+| What                     | Header                                        |
+| ------------------------ | --------------------------------------------- |
 | Your merchant secret key | `x-lomi-api-key: <key>` or `x-api-key: <key>` |
 
 Your API key is all you need, it both unlocks the hosted endpoint and scopes every tool call. A shared transport secret (`Authorization: Bearer <LOMI_MCP_BEARER_TOKEN>`) is still accepted for legacy operator setups, but merchants do not need one.

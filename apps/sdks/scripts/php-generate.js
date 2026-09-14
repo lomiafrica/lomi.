@@ -3,28 +3,28 @@
  * PHP SDK generator — public merchant surface from OpenAPI + allowlist.
  */
 
-import { writeFileSync, mkdirSync, rmSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { writeFileSync, mkdirSync, rmSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 import {
   readSpecAndAllowlist,
   getNormalizedOperations,
   sdkPropertyName,
   expandSdkManifestMethods,
-} from './public-sdk-operations.js';
+} from "./public-sdk-operations.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const sdksRoot = join(__dirname, '..');
-const srcDir = join(sdksRoot, 'php/src');
-const servicesDir = join(srcDir, 'Services');
-const testsDir = join(sdksRoot, 'php/tests');
+const sdksRoot = join(__dirname, "..");
+const srcDir = join(sdksRoot, "php/src");
+const servicesDir = join(srcDir, "Services");
+const testsDir = join(sdksRoot, "php/tests");
 
-console.log('🔨 Generating PHP SDK from OpenAPI + allowlist…');
+console.log("🔨 Generating PHP SDK from OpenAPI + allowlist…");
 
-execSync('node scripts/pre-generate.js', {
+execSync("node scripts/pre-generate.js", {
   cwd: sdksRoot,
-  stdio: 'inherit',
+  stdio: "inherit",
 });
 
 rmSync(servicesDir, { recursive: true, force: true });
@@ -32,12 +32,12 @@ rmSync(testsDir, { recursive: true, force: true });
 mkdirSync(servicesDir, { recursive: true });
 mkdirSync(testsDir, { recursive: true });
 
-const modelsDir = join(srcDir, 'Models');
+const modelsDir = join(srcDir, "Models");
 rmSync(modelsDir, { recursive: true, force: true });
 mkdirSync(modelsDir, { recursive: true });
 
 writeFileSync(
-  join(modelsDir, 'Placeholder.php'),
+  join(modelsDir, "Placeholder.php"),
   `<?php
 namespace Lomi\Models;
 
@@ -59,7 +59,7 @@ function svcPhpFile(serviceClassName) {
 
 /** @param {string} s */
 function phpEscape(s) {
-  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
 
 /**
@@ -69,14 +69,14 @@ function phpMethod(nop) {
   const name = nop.sdkMethodName;
   const tmpl = nop.pathTemplate;
   const ids = nop.pathParamNames;
-  const hasQ = nop.httpMethodLower === 'get' && nop.queryParams.length > 0;
+  const hasQ = nop.httpMethodLower === "get" && nop.queryParams.length > 0;
   const hasB = nop.wantsBody;
 
   const paramsPhp = [];
   for (const id of ids) paramsPhp.push(`string $${id}`);
-  if (hasQ) paramsPhp.push('?array $params = null');
-  if (hasB) paramsPhp.push('?array $body = null');
-  const sig = paramsPhp.length ? paramsPhp.join(', ') : '';
+  if (hasQ) paramsPhp.push("?array $params = null");
+  if (hasB) paramsPhp.push("?array $body = null");
+  const sig = paramsPhp.length ? paramsPhp.join(", ") : "";
 
   let pathCode = `        $path = '${phpEscape(tmpl)}';\n`;
   for (const id of ids) {
@@ -87,11 +87,11 @@ function phpMethod(nop) {
   const opts = [];
   if (hasQ) opts.push("'query' => \$params ?? []");
   if (hasB) opts.push("'json' => \$body");
-  if (opts.length) req += `, [${opts.join(', ')}]`;
-  req += ');';
+  if (opts.length) req += `, [${opts.join(", ")}]`;
+  req += ");";
 
   const doc = nop.summary
-    ? phpEscape(nop.summary.replace(/\r?\n/g, ' '))
+    ? phpEscape(nop.summary.replace(/\r?\n/g, " "))
     : name;
 
   return `
@@ -112,7 +112,7 @@ for (const serviceClassName of sortedSvc) {
   const ops = [...byService.get(serviceClassName)].sort((a, b) =>
     a.sdkMethodName.localeCompare(b.sdkMethodName),
   );
-  const meth = ops.map((o) => phpMethod(o)).join('\n');
+  const meth = ops.map((o) => phpMethod(o)).join("\n");
   const cls = svcPhpClass(serviceClassName);
 
   const file = `<?php
@@ -139,9 +139,9 @@ ${meth}
   writeFileSync(join(servicesDir, svcPhpFile(serviceClassName)), file);
 }
 
-let useLines = '';
-let propLines = '';
-let ctorLines = '';
+let useLines = "";
+let propLines = "";
+let ctorLines = "";
 
 for (const svcClass of sortedSvc) {
   const cpp = svcPhpClass(svcClass);
@@ -219,7 +219,7 @@ class LomiException extends \\Exception
 }
 `;
 
-writeFileSync(join(srcDir, 'LomiClient.php'), lomiClientPhp);
+writeFileSync(join(srcDir, "LomiClient.php"), lomiClientPhp);
 
 const manifestSdk = {};
 for (const svc of sortedSvc) {
@@ -230,11 +230,11 @@ for (const svc of sortedSvc) {
 }
 
 writeFileSync(
-  join(srcDir, 'sdk_php_methods.json'),
+  join(srcDir, "sdk_php_methods.json"),
   `${JSON.stringify(
     {
       generatedAt: new Date().toISOString(),
-      language: 'php',
+      language: "php",
       sdk: manifestSdk,
     },
     null,
@@ -243,7 +243,7 @@ writeFileSync(
 );
 
 writeFileSync(
-  join(testsDir, 'SurfaceTest.php'),
+  join(testsDir, "SurfaceTest.php"),
   `<?php
 
 namespace Lomi\\Tests;

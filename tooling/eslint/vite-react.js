@@ -6,7 +6,10 @@ function loadAppModule(specifier) {
   return requireFromApp(specifier);
 }
 
-export function viteReactEslintConfig({ extraRules = {}, extraIgnores = [] } = {}) {
+export function viteReactEslintConfig({
+  extraRules = {},
+  extraIgnores = [],
+} = {}) {
   const js = loadAppModule("@eslint/js");
   const tsParser = loadAppModule("@typescript-eslint/parser");
   const tsPlugin = loadAppModule("@typescript-eslint/eslint-plugin");

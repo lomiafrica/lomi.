@@ -61,7 +61,9 @@ export function formatOfficialCountryName(
   return normalizeCountryName(trimmed);
 }
 
-function usesAnglophonePostalOrder(country: string | null | undefined): boolean {
+function usesAnglophonePostalOrder(
+  country: string | null | undefined,
+): boolean {
   const code = getCountryCodeByName(country);
   return code !== null && ANGLOPHONE_POSTAL_COUNTRY_CODES.has(code);
 }

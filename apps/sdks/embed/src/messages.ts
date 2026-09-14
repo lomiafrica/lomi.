@@ -43,7 +43,7 @@ export function legacyCompleteToPayload(
   return {
     type: "LOMI_CHECKOUT_COMPLETE",
     sessionId:
-      sessionId === null ? null : readString(data, "sessionId") ?? null,
+      sessionId === null ? null : (readString(data, "sessionId") ?? null),
     transactionId: readString(data, "transactionId"),
     amount: isNumber(data["amount"]) ? data["amount"] : undefined,
     currency: readString(data, "currency"),

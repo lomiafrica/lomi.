@@ -5,19 +5,19 @@
 /** @param {Record<string, string>} methodNameByOp */
 export function humanizePathSegment(segment: string): string {
   return segment
-    .split('-')
+    .split("-")
     .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-    .join(' ');
+    .join(" ");
 }
 
 /** Primary resource label from path template (first non-param segment). */
 export function resourceLabelFromPath(pathTemplate: string): string {
-  for (const part of pathTemplate.split('/').filter(Boolean)) {
-    if (!part.startsWith('{')) {
+  for (const part of pathTemplate.split("/").filter(Boolean)) {
+    if (!part.startsWith("{")) {
       return humanizePathSegment(part);
     }
   }
-  return 'Resource';
+  return "Resource";
 }
 
 interface MethodVerbMap {
@@ -25,11 +25,11 @@ interface MethodVerbMap {
 }
 
 const METHOD_VERB = {
-  get: 'Get',
-  post: 'Create',
-  patch: 'Update',
-  put: 'Update',
-  delete: 'Delete',
+  get: "Get",
+  post: "Create",
+  patch: "Update",
+  put: "Update",
+  delete: "Delete",
 } as const satisfies MethodVerbMap;
 
 function isMethodVerb(method: string): method is keyof typeof METHOD_VERB {
@@ -56,19 +56,19 @@ export function buildEnglishTitle(
 ): string {
   const sdkMethod = methodNameByOp[operationKey];
   const resource =
-    tags[0]?.trim() || resourceLabelFromPath(operationKey.split(' ')[1] ?? '');
+    tags[0]?.trim() || resourceLabelFromPath(operationKey.split(" ")[1] ?? "");
 
-  if (sdkMethod === 'list') return `List ${resource}`;
-  if (sdkMethod === 'get' || sdkMethod?.startsWith('get'))
+  if (sdkMethod === "list") return `List ${resource}`;
+  if (sdkMethod === "get" || sdkMethod?.startsWith("get"))
     return `Get ${resource}`;
-  if (sdkMethod === 'create' || httpMethodLower === 'post')
+  if (sdkMethod === "create" || httpMethodLower === "post")
     return `Create ${resource}`;
-  if (sdkMethod === 'update' || httpMethodLower === 'patch')
+  if (sdkMethod === "update" || httpMethodLower === "patch")
     return `Update ${resource}`;
-  if (sdkMethod === 'delete' || httpMethodLower === 'delete')
+  if (sdkMethod === "delete" || httpMethodLower === "delete")
     return `Delete ${resource}`;
-  if (sdkMethod?.includes('cancel')) return `Cancel ${resource}`;
-  if (sdkMethod?.includes('test')) return `Test ${resource}`;
+  if (sdkMethod?.includes("cancel")) return `Cancel ${resource}`;
+  if (sdkMethod?.includes("test")) return `Test ${resource}`;
 
   const verb = isMethodVerb(httpMethodLower)
     ? METHOD_VERB[httpMethodLower]
@@ -97,7 +97,7 @@ export function resolveEnglishSchemaDescription(
   if (trimmed && !/[àâäéèêëïîôùûüçœæ]/i.test(trimmed)) {
     return trimmed;
   }
-  const label = humanizePathSegment(fieldName.replace(/_/g, '-'));
+  const label = humanizePathSegment(fieldName.replace(/_/g, "-"));
   return trimmed ? `${label} (see lomi. API docs)` : label;
 }
 
@@ -136,10 +136,11 @@ export function resolveEnglishCopy(args: {
     return { title, description: override.description };
   }
 
-  const openApiParts = [openApiSummary?.trim(), openApiDescription?.trim()].filter(
-    Boolean,
-  );
-  const openApiText = openApiParts.join(' ');
+  const openApiParts = [
+    openApiSummary?.trim(),
+    openApiDescription?.trim(),
+  ].filter(Boolean);
+  const openApiText = openApiParts.join(" ");
   const looksEnglish =
     openApiParts.length > 0 &&
     !/[àâäéèêëïîôùûüçœæ]/i.test(openApiText) &&
@@ -148,11 +149,10 @@ export function resolveEnglishCopy(args: {
     );
 
   if (looksEnglish) {
-    const descriptionParts = [
-      ...openApiParts,
-      `REST: ${operationKey}`,
-    ].filter(Boolean);
-    return { title, description: descriptionParts.join('\n\n') };
+    const descriptionParts = [...openApiParts, `REST: ${operationKey}`].filter(
+      Boolean,
+    );
+    return { title, description: descriptionParts.join("\n\n") };
   }
 
   return {

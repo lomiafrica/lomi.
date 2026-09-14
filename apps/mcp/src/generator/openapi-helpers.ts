@@ -34,7 +34,8 @@ export function pathTemplateParamNames(template: string): string[] {
 
 function sortKeysStable(object: JsonObject): JsonObject {
   const sorted: JsonObject = {};
-  for (const key of Object.keys(object).sort()) sorted[key] = object[key] ?? null;
+  for (const key of Object.keys(object).sort())
+    sorted[key] = object[key] ?? null;
   return sorted;
 }
 
@@ -187,9 +188,7 @@ export function flattenOperationParameters(
 }
 
 function cloneSchema(value: JsonValue | undefined): JsonValue | undefined {
-  return value === undefined
-    ? undefined
-    : JSON.parse(JSON.stringify(value));
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
 
 export function inlineRefs(
@@ -206,11 +205,17 @@ export function inlineRefs(
 
   const ref = readString(node, "$ref");
   if (ref) {
-    if (seenRefs.has(ref)) return { type: "object", additionalProperties: true };
+    if (seenRefs.has(ref))
+      return { type: "object", additionalProperties: true };
     seenRefs.add(ref);
     const resolved = resolveRef(ref, spec);
     if (!resolved) return { type: "object", additionalProperties: true };
-    return inlineRefs(cloneSchema(resolved) ?? resolved, spec, seenRefs, depth + 1);
+    return inlineRefs(
+      cloneSchema(resolved) ?? resolved,
+      spec,
+      seenRefs,
+      depth + 1,
+    );
   }
 
   const output: JsonObject = {};
@@ -268,7 +273,10 @@ function mergeSchemas(
   ]);
   const schema: JsonObject = { type: "object", properties };
   if (required.size > 0) schema["required"] = [...required].sort();
-  if (a["additionalProperties"] === true || b["additionalProperties"] === true) {
+  if (
+    a["additionalProperties"] === true ||
+    b["additionalProperties"] === true
+  ) {
     schema["additionalProperties"] = true;
   }
   return schema;
@@ -296,7 +304,11 @@ export function buildInputJsonSchema(
   } = args;
   const properties: JsonObject = {};
   const required = new Set<string>();
-  for (const parameter of flattenOperationParameters(spec, pathItem, operation)) {
+  for (const parameter of flattenOperationParameters(
+    spec,
+    pathItem,
+    operation,
+  )) {
     const key =
       parameter.in === "header" ? `header_${parameter.name}` : parameter.name;
     properties[key] = jsonSchemaFromParameter(parameter, key);
@@ -308,10 +320,7 @@ export function buildInputJsonSchema(
     { type: "object", required: [...required].sort() },
   );
   const requestBody = readObject(operation, "requestBody");
-  if (
-    ["post", "patch", "put"].includes(httpMethodLower) &&
-    requestBody
-  ) {
+  if (["post", "patch", "put"].includes(httpMethodLower) && requestBody) {
     const content = readObject(requestBody, "content");
     const json = content ? readObject(content, "application/json") : undefined;
     const rawSchema = json?.["schema"];

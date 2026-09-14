@@ -6,16 +6,36 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 const EASE = [0.23, 1, 0.32, 1] as const;
 
 const EXIT = [0.4, 0, 1, 1] as const;
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
-const NUDGE = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const NUDGE = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 const NONE = { duration: 0 } as const;
 
-const SLIDE = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const SLIDE = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 
 const ROW_H = 32;
 
-const OPEN = { type: "spring", stiffness: 620, damping: 38, mass: 0.6 } as const;
+const OPEN = {
+  type: "spring",
+  stiffness: 620,
+  damping: 38,
+  mass: 0.6,
+} as const;
 
 export type DropdownItem = {
   value: string;
@@ -213,12 +233,7 @@ export function useDropdown({
       } else if (e.key === "Tab") {
         e.preventDefault();
         close();
-      } else if (
-        e.key.length === 1 &&
-        !e.metaKey &&
-        !e.ctrlKey &&
-        !e.altKey
-      ) {
+      } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         typeahead(e.key);
       }
@@ -298,7 +313,10 @@ export function Dropdown({
   const cell = reduced ? NONE : CELL;
 
   return (
-    <div ref={rootRef} className={`relative inline-block text-left ${className}`}>
+    <div
+      ref={rootRef}
+      className={`relative inline-block text-left ${className}`}
+    >
       <button
         {...triggerProps}
         className={`flex h-9 select-none items-center gap-2 whitespace-nowrap rounded-md border border-stone-200 bg-white px-3 text-[13px] font-medium text-stone-700 outline-none transition-[box-shadow,border-color] duration-150 disabled:opacity-50 dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-200 ${
@@ -332,7 +350,9 @@ export function Dropdown({
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: -8 }}
+            initial={
+              reduced ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: -8 }
+            }
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{
               opacity: 0,
@@ -393,7 +413,10 @@ export function Dropdown({
                     <motion.span
                       aria-hidden
                       initial={false}
-                      animate={{ opacity: picked ? 1 : 0, scale: picked ? 1 : 0.7 }}
+                      animate={{
+                        opacity: picked ? 1 : 0,
+                        scale: picked ? 1 : 0.7,
+                      }}
                       transition={cell}
                       className="relative ml-2 flex size-[14px] shrink-0 items-center justify-center"
                     >

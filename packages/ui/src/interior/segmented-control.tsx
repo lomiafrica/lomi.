@@ -9,7 +9,12 @@ import {
   useTransform,
 } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 
 const SEG =
   "px-3 py-[7px] text-center text-[13px] font-medium leading-[18px] tracking-[-0.01em] whitespace-nowrap";
@@ -153,7 +158,10 @@ export function SegmentedControl({
           >
             <div
               className="absolute inset-y-0 left-0 grid"
-              style={{ width: `${count * 100}%`, gridTemplateColumns: template }}
+              style={{
+                width: `${count * 100}%`,
+                gridTemplateColumns: template,
+              }}
             >
               {options.map((option) => (
                 <span

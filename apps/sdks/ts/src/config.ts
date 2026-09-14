@@ -1,4 +1,4 @@
-import type { LomiHeaders } from './request-options.js';
+import type { LomiHeaders } from "./request-options.js";
 
 /**
  * SDK Configuration
@@ -14,7 +14,7 @@ export interface LomiConfig {
    * Sandbox (`test`) or production (`live`). Maps to the API host when `baseUrl` is omitted.
    * @default 'live'
    */
-  environment?: 'live' | 'test';
+  environment?: "live" | "test";
 
   /**
    * Override API base URL (optional). When omitted, `environment` selects the host.
@@ -45,9 +45,9 @@ export interface LomiConfig {
 }
 
 export const DEFAULT_CONFIG = {
-  baseUrl: 'https://api.lomi.africa',
-  sandboxBaseUrl: 'https://sandbox.api.lomi.africa',
+  baseUrl: "https://api.lomi.africa",
+  sandboxBaseUrl: "https://sandbox.api.lomi.africa",
   timeout: 30000,
-  environment: 'live' as const,
+  environment: "live" as const,
   retries: 0,
 };

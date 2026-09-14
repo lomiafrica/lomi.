@@ -1,49 +1,54 @@
 /**
  * Generates src/generated/provisioning-tools-manifest.json from agent-openapi.json.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   type OpenAPISpec,
   buildInputJsonSchema,
   pathTemplateParamNames,
-} from '../../src/generator/openapi-helpers.js';
-import type { EnglishCopyOverride } from '../../src/generator/mcp-english-copy.js';
+} from "../../src/generator/openapi-helpers.js";
+import type { EnglishCopyOverride } from "../../src/generator/mcp-english-copy.js";
 import {
   assertGroupsCoverOperations,
   buildGroupDescription,
   loadProvisioningGroups,
   mergeGroupInputSchema,
   requiredInputFromSchema,
-} from '../../src/generator/group-manifest.js';
+} from "../../src/generator/group-manifest.js";
 import {
   buildSearchHint,
   isDestructiveOperation,
   isReadOnlyMethod,
-} from '../../src/tool-policy.js';
-import { validateManifestToolEntry } from './validate-manifest-entry.js';
-import type { ManifestAction, ManifestTool } from '../../src/manifest.js';
-import { isJsonObject, isString, parseJson, type JsonObject } from "@lomi./shared";
+} from "../../src/tool-policy.js";
+import { validateManifestToolEntry } from "./validate-manifest-entry.js";
+import type { ManifestAction, ManifestTool } from "../../src/manifest.js";
+import {
+  isJsonObject,
+  isString,
+  parseJson,
+  type JsonObject,
+} from "@lomi./shared";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const mcpRoot = join(__dirname, '../..');
-const openapiPath = join(mcpRoot, '../docs/agent-openapi.json');
+const mcpRoot = join(__dirname, "../..");
+const openapiPath = join(mcpRoot, "../docs/agent-openapi.json");
 const provisioningAllowlistPath = join(
   mcpRoot,
-  '../docs/lib/scripts/manual-api/_expected-provisioning-operations.json',
+  "../docs/lib/scripts/manual-api/_expected-provisioning-operations.json",
 );
 const partnerAllowlistPath = join(
   mcpRoot,
-  '../docs/lib/scripts/manual-api/_expected-partner-operations.json',
+  "../docs/lib/scripts/manual-api/_expected-partner-operations.json",
 );
-const policyPath = join(mcpRoot, 'config/mcp-tool-policy.json');
-const copyOverridesPath = join(mcpRoot, 'config/mcp-provisioning-copy.en.json');
-const outDir = join(mcpRoot, 'src/generated');
-const outFile = join(outDir, 'provisioning-tools-manifest.json');
+const policyPath = join(mcpRoot, "config/mcp-tool-policy.json");
+const copyOverridesPath = join(mcpRoot, "config/mcp-provisioning-copy.en.json");
+const outDir = join(mcpRoot, "src/generated");
+const outFile = join(outDir, "provisioning-tools-manifest.json");
 
-const WRITE_METHODS = new Set(['post', 'patch', 'put', 'delete']);
-const HTTP_WITH_BODY = new Set(['post', 'put', 'patch']);
+const WRITE_METHODS = new Set(["post", "patch", "put", "delete"]);
+const HTTP_WITH_BODY = new Set(["post", "put", "patch"]);
 
 type CopyOverrideMap = { [operationKey: string]: EnglishCopyOverride };
 
@@ -64,7 +69,7 @@ function asJsonObject(value: JsonValue | undefined, label: string): JsonObject {
 }
 
 function loadAllowlist(path: string): string[] {
-  const parsed = parseJson(readFileSync(path, 'utf-8'));
+  const parsed = parseJson(readFileSync(path, "utf-8"));
   if (!Array.isArray(parsed)) {
     throw new Error(`${path} must be a JSON array`);
   }
@@ -76,38 +81,38 @@ function queryParamNamesFromOpenApi(
   operation: JsonObject,
 ): string[] {
   const raw = [
-    ...(Array.isArray(pathItem['parameters']) ? pathItem['parameters'] : []),
-    ...(Array.isArray(operation['parameters']) ? operation['parameters'] : []),
+    ...(Array.isArray(pathItem["parameters"]) ? pathItem["parameters"] : []),
+    ...(Array.isArray(operation["parameters"]) ? operation["parameters"] : []),
   ];
   const names: string[] = [];
   for (const parameter of raw) {
     if (
       isJsonObject(parameter) &&
-      parameter['in'] === 'query' &&
-      isString(parameter['name'])
+      parameter["in"] === "query" &&
+      isString(parameter["name"])
     ) {
-      names.push(parameter['name']);
+      names.push(parameter["name"]);
     }
   }
   return names;
 }
 
 function main(): void {
-  const specParsed = parseJson(readFileSync(openapiPath, 'utf-8'));
+  const specParsed = parseJson(readFileSync(openapiPath, "utf-8"));
   if (!isJsonObject(specParsed)) {
-    throw new Error('agent-openapi.json must be a JSON object');
+    throw new Error("agent-openapi.json must be a JSON object");
   }
   // SAFETY: agent-openapi.json is the OpenAPI document shape OpenAPISpec expects.
   const apiSpec = specParsed as OpenAPISpec;
-  const policyParsed = parseJson(readFileSync(policyPath, 'utf-8'));
+  const policyParsed = parseJson(readFileSync(policyPath, "utf-8"));
   if (!isJsonObject(policyParsed)) {
-    throw new Error('mcp-tool-policy.json must be a JSON object');
+    throw new Error("mcp-tool-policy.json must be a JSON object");
   }
   const groups = loadProvisioningGroups(policyParsed);
 
-  const parsedCopy = parseJson(readFileSync(copyOverridesPath, 'utf-8'));
+  const parsedCopy = parseJson(readFileSync(copyOverridesPath, "utf-8"));
   if (!isJsonObject(parsedCopy)) {
-    throw new Error('mcp-provisioning-copy.en.json must be a JSON object');
+    throw new Error("mcp-provisioning-copy.en.json must be a JSON object");
   }
   // SAFETY: Curated copy file maps operation keys to EnglishCopyOverride objects.
   const copyOverrides = parsedCopy as CopyOverrideMap;
@@ -119,7 +124,7 @@ function main(): void {
   const allowedKeys = new Set(
     allowlist.map((entry) => {
       const [method, ...pathParts] = String(entry).split(/\s+/);
-      return `${method.toUpperCase()} ${pathParts.join(' ')}`;
+      return `${method.toUpperCase()} ${pathParts.join(" ")}`;
     }),
   );
   for (const key of Object.keys(copyOverrides)) {
@@ -132,7 +137,7 @@ function main(): void {
 
   const operations: AgentOperation[] = allowlist.map((entry) => {
     const [method, ...pathParts] = String(entry).split(/\s+/);
-    const pathTemplate = pathParts.join(' ');
+    const pathTemplate = pathParts.join(" ");
     const httpMethodLower = method.toLowerCase();
     const operationKey = `${method.toUpperCase()} ${pathTemplate}`;
     const pathItemRoot = apiSpec.paths?.[pathTemplate];
@@ -153,11 +158,9 @@ function main(): void {
       openApiOp,
     };
   });
-  const includedByKey = new Map(
-    operations.map((op) => [op.operationKey, op]),
-  );
+  const includedByKey = new Map(operations.map((op) => [op.operationKey, op]));
 
-  assertGroupsCoverOperations(groups, allowedKeys, 'provisioning');
+  assertGroupsCoverOperations(groups, allowedKeys, "provisioning");
 
   const tools: ManifestTool[] = groups.map((group) => {
     const builtActions: Array<{
@@ -169,11 +172,14 @@ function main(): void {
     for (const [actionName, operationKey] of Object.entries(group.actions)) {
       const op = includedByKey.get(operationKey);
       if (!op) {
-        throw new Error(`Group ${group.name}.${actionName} missing operation ${operationKey}`);
+        throw new Error(
+          `Group ${group.name}.${actionName} missing operation ${operationKey}`,
+        );
       }
       const write = WRITE_METHODS.has(op.httpMethodLower);
       const wantsBody =
-        HTTP_WITH_BODY.has(op.httpMethodLower) && Boolean(op.openApiOp['requestBody']);
+        HTTP_WITH_BODY.has(op.httpMethodLower) &&
+        Boolean(op.openApiOp["requestBody"]);
 
       const inputSchema = buildInputJsonSchema({
         spec: apiSpec,
@@ -185,18 +191,20 @@ function main(): void {
       });
 
       const override = copyOverrides[operationKey];
-      const summaryText = op.openApiOp['summary'];
-      const descriptionText = op.openApiOp['description'];
+      const summaryText = op.openApiOp["summary"];
+      const descriptionText = op.openApiOp["description"];
       const nameFallback = `${group.name} ${actionName}`;
       const title =
         override?.title ??
-        (isString(summaryText) && summaryText.length > 0 ? summaryText : nameFallback);
+        (isString(summaryText) && summaryText.length > 0
+          ? summaryText
+          : nameFallback);
       const description =
         override?.description ??
         (isString(descriptionText) ? descriptionText : title);
-      const tags = Array.isArray(op.openApiOp['tags'])
-        ? op.openApiOp['tags'].filter(isString)
-        : [group.authMode === 'partner' ? 'Partners' : 'Provisioning'];
+      const tags = Array.isArray(op.openApiOp["tags"])
+        ? op.openApiOp["tags"].filter(isString)
+        : [group.authMode === "partner" ? "Partners" : "Provisioning"];
 
       builtActions.push({
         name: actionName,
@@ -206,9 +214,12 @@ function main(): void {
           method: op.method,
           pathTemplate: op.pathTemplate,
           pathParamNames: pathTemplateParamNames(op.pathTemplate),
-          queryParamNames: queryParamNamesFromOpenApi(op.pathItem, op.openApiOp),
-          operationId: isString(op.openApiOp['operationId'])
-            ? op.openApiOp['operationId']
+          queryParamNames: queryParamNamesFromOpenApi(
+            op.pathItem,
+            op.openApiOp,
+          ),
+          operationId: isString(op.openApiOp["operationId"])
+            ? op.openApiOp["operationId"]
             : `${group.name}_${actionName}`,
           write,
           wantsBody,
@@ -225,18 +236,23 @@ function main(): void {
       actions[built.name] = built.action;
     }
 
-    const title = group.title ?? group.name.replace(/^lomi_/, '').replace(/_/g, ' ');
+    const title =
+      group.title ?? group.name.replace(/^lomi_/, "").replace(/_/g, " ");
     const description = buildGroupDescription({
       title,
       actions: builtActions.map((built) => ({
         name: built.name,
         title: built.action.title,
         operationKey: built.action.operationKey,
-        required: built.action.requiredInput.filter((field) => field !== 'idempotency_key'),
+        required: built.action.requiredInput.filter(
+          (field) => field !== "idempotency_key",
+        ),
       })),
     });
 
-    const allTags = [...new Set(builtActions.flatMap((built) => built.action.tags))];
+    const allTags = [
+      ...new Set(builtActions.flatMap((built) => built.action.tags)),
+    ];
     const write = builtActions.some((built) => built.action.write);
     const readOnly = builtActions.every((built) =>
       isReadOnlyMethod(built.action.method),
@@ -246,10 +262,10 @@ function main(): void {
     );
 
     const hintTokens = new Set<string>([
-      group.authMode === 'partner' ? 'partner' : 'provisioning',
-      'onboarding',
-      'merchant',
-      'account',
+      group.authMode === "partner" ? "partner" : "provisioning",
+      "onboarding",
+      "merchant",
+      "account",
     ]);
     for (const built of builtActions) {
       hintTokens.add(built.name);
@@ -265,7 +281,7 @@ function main(): void {
       }
     }
 
-    const authMode = group.authMode === 'partner' ? 'partner' : 'provisioning';
+    const authMode = group.authMode === "partner" ? "partner" : "provisioning";
 
     return {
       name: group.name,
@@ -279,8 +295,8 @@ function main(): void {
       ),
       readOnly,
       destructive,
-      alwaysLoad: group.name === 'lomi_provision',
-      searchHint: [...hintTokens].sort().join(' '),
+      alwaysLoad: group.name === "lomi_provision",
+      searchHint: [...hintTokens].sort().join(" "),
       actions,
       authMode,
     };
@@ -292,14 +308,14 @@ function main(): void {
 
   const manifest = {
     manifestVersion: 1 as const,
-    apiVersion: apiSpec.info?.version ?? '1.1.0',
-    apiTitle: 'lomi. Provisioning API',
+    apiVersion: apiSpec.info?.version ?? "1.1.0",
+    apiTitle: "lomi. Provisioning API",
     toolCount: tools.length,
     tools,
   };
 
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(outFile, `${JSON.stringify(manifest, null, 2)}\n`, 'utf-8');
+  writeFileSync(outFile, `${JSON.stringify(manifest, null, 2)}\n`, "utf-8");
   console.log(
     `Provisioning MCP manifest written (${tools.length} tools) to ${outFile}`,
   );

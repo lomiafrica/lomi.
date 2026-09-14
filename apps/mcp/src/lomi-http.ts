@@ -1,4 +1,4 @@
-import type { RestCallSpec } from './manifest.js';
+import type { RestCallSpec } from "./manifest.js";
 import {
   isJsonObject,
   isString,
@@ -6,7 +6,7 @@ import {
   type JsonObject,
   type JsonValue,
 } from "@lomi./shared";
-import { attachNextSteps } from './next-steps.js';
+import { attachNextSteps } from "./next-steps.js";
 
 export type LomiHttpResult = {
   status: number;
@@ -34,13 +34,9 @@ function serializeQueryValue(value: JsonValue | undefined): string | undefined {
 }
 
 function declaredHeaderInputKeys(inputSchema: JsonObject): Set<string> {
-  const props = readObject(inputSchema, 'properties');
+  const props = readObject(inputSchema, "properties");
   if (!props) return new Set();
-  return new Set(
-    Object.keys(props).filter((k) =>
-      k.startsWith('header_'),
-    ),
-  );
+  return new Set(Object.keys(props).filter((k) => k.startsWith("header_")));
 }
 
 function sleep(ms: number): Promise<void> {
@@ -48,12 +44,12 @@ function sleep(ms: number): Promise<void> {
 }
 
 function fetchTimeoutMs(): number {
-  const n = Number(process.env.LOMI_API_FETCH_TIMEOUT_MS ?? '30000');
+  const n = Number(process.env.LOMI_API_FETCH_TIMEOUT_MS ?? "30000");
   return Number.isFinite(n) && n > 0 ? n : 30000;
 }
 
 function fetchMaxRetries(): number {
-  const n = Number(process.env.LOMI_API_FETCH_RETRIES ?? '2');
+  const n = Number(process.env.LOMI_API_FETCH_RETRIES ?? "2");
   return Number.isFinite(n) && n >= 0 ? Math.min(n, 5) : 2;
 }
 
@@ -66,10 +62,10 @@ export async function callLomiRest(
     authHeaderName?: string;
   },
 ): Promise<LomiHttpResult> {
-  const { baseUrl, apiKey, authHeaderName = 'X-API-KEY' } = options;
+  const { baseUrl, apiKey, authHeaderName = "X-API-KEY" } = options;
   type LomiRequestHeaders = { [header: string]: string };
   const headers: LomiRequestHeaders = {
-    Accept: 'application/json',
+    Accept: "application/json",
   };
   if (apiKey) {
     headers[authHeaderName] = apiKey;
@@ -94,13 +90,13 @@ export async function callLomiRest(
   for (const key of declaredHeaderInputKeys(spec.inputSchema)) {
     const v = args[key];
     if (v === undefined || v === null) continue;
-    const headerName = key.slice('header_'.length);
+    const headerName = key.slice("header_".length);
     headers[headerName] = String(v);
   }
 
   const idem = args.idempotency_key;
   if (isString(idem) && idem.length > 0) {
-    headers['Idempotency-Key'] = idem;
+    headers["Idempotency-Key"] = idem;
   }
 
   let body: string | undefined;
@@ -109,22 +105,21 @@ export async function callLomiRest(
     if (b === undefined || b === null) {
       throw new Error('Missing required "body" object for this operation.');
     }
-    headers['Content-Type'] = 'application/json';
+    headers["Content-Type"] = "application/json";
     body = JSON.stringify(b);
   }
 
-  const root = baseUrl.replace(/\/$/, '');
+  const root = baseUrl.replace(/\/$/, "");
   const query = qp.toString();
-  const url = `${root}${path}${query ? `?${query}` : ''}`;
+  const url = `${root}${path}${query ? `?${query}` : ""}`;
 
   const methodLower = spec.method.toLowerCase();
-  const allowRetry =
-    methodLower === 'get' || methodLower === 'head';
+  const allowRetry = methodLower === "get" || methodLower === "head";
   const maxRetries = fetchMaxRetries();
   const maxAttempts = allowRetry ? maxRetries + 1 : 1;
   const timeoutMs = fetchTimeoutMs();
 
-  let lastError = new Error('lomi. API request failed');
+  let lastError = new Error("lomi. API request failed");
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -147,9 +142,9 @@ export async function callLomiRest(
         continue;
       }
 
-      const contentType = res.headers.get('content-type');
+      const contentType = res.headers.get("content-type");
       const bodyText = await res.text();
-      const retryAfter = parseRetryAfterSeconds(res.headers.get('retry-after'));
+      const retryAfter = parseRetryAfterSeconds(res.headers.get("retry-after"));
 
       return {
         status: res.status,
@@ -163,7 +158,7 @@ export async function callLomiRest(
     } catch (err) {
       clearTimeout(timer);
       lastError =
-        err instanceof Error ? err : new Error('Unexpected lomi. API failure');
+        err instanceof Error ? err : new Error("Unexpected lomi. API failure");
       if (!allowRetry || attempt >= maxAttempts - 1) {
         throw err instanceof Error ? err : new Error(String(err));
       }
@@ -194,7 +189,7 @@ export function formatHttpResult(result: LomiHttpResult): string {
 
   if (!ok) {
     envelope.error = {
-      kind: 'lomi_http_error',
+      kind: "lomi_http_error",
       status: result.status,
       statusText: result.statusText,
       body: parsed,

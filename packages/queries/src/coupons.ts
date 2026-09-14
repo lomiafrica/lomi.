@@ -15,22 +15,37 @@ export async function createDiscountCoupon(
 export async function createDiscountCoupon(
   client: TypedSupabaseClient,
   args: DbFunctions["create_discount_coupon"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["create_discount_coupon"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["create_discount_coupon"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["create_discount_coupon"]["Returns"] | null>;
 export async function createDiscountCoupon(
   client: TypedSupabaseClient,
   args: DbFunctions["create_discount_coupon"]["Args"] = emptyRpcArgs<"create_discount_coupon">(),
-  options?: SupabaseRpcOptions<DbFunctions["create_discount_coupon"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["create_discount_coupon"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["create_discount_coupon"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "create_discount_coupon", args), "create_discount_coupon", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "create_discount_coupon", args),
+      "create_discount_coupon",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "create_discount_coupon", args), "create_discount_coupon", options);
+    return handleSupabaseRpc(
+      rpc(client, "create_discount_coupon", args),
+      "create_discount_coupon",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "create_discount_coupon", args), "create_discount_coupon");
+  return handleSupabaseRpc(
+    rpc(client, "create_discount_coupon", args),
+    "create_discount_coupon",
+  );
 }
 
 export async function deleteDiscountCoupon(
@@ -45,22 +60,37 @@ export async function deleteDiscountCoupon(
 export async function deleteDiscountCoupon(
   client: TypedSupabaseClient,
   args: DbFunctions["delete_discount_coupon"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["delete_discount_coupon"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["delete_discount_coupon"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["delete_discount_coupon"]["Returns"] | null>;
 export async function deleteDiscountCoupon(
   client: TypedSupabaseClient,
   args: DbFunctions["delete_discount_coupon"]["Args"] = emptyRpcArgs<"delete_discount_coupon">(),
-  options?: SupabaseRpcOptions<DbFunctions["delete_discount_coupon"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["delete_discount_coupon"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["delete_discount_coupon"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "delete_discount_coupon", args), "delete_discount_coupon", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "delete_discount_coupon", args),
+      "delete_discount_coupon",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "delete_discount_coupon", args), "delete_discount_coupon", options);
+    return handleSupabaseRpc(
+      rpc(client, "delete_discount_coupon", args),
+      "delete_discount_coupon",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "delete_discount_coupon", args), "delete_discount_coupon");
+  return handleSupabaseRpc(
+    rpc(client, "delete_discount_coupon", args),
+    "delete_discount_coupon",
+  );
 }
 
 export async function getOrganizationCoupons(
@@ -75,20 +105,37 @@ export async function getOrganizationCoupons(
 export async function getOrganizationCoupons(
   client: TypedSupabaseClient,
   args: DbFunctions["get_organization_coupons"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["get_organization_coupons"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["get_organization_coupons"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["get_organization_coupons"]["Returns"] | null>;
 export async function getOrganizationCoupons(
   client: TypedSupabaseClient,
   args: DbFunctions["get_organization_coupons"]["Args"] = emptyRpcArgs<"get_organization_coupons">(),
-  options?: SupabaseRpcOptions<DbFunctions["get_organization_coupons"]["Returns"]> | null,
-): Promise<DbFunctions["get_organization_coupons"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["get_organization_coupons"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["get_organization_coupons"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "get_organization_coupons", args), "get_organization_coupons", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "get_organization_coupons", args),
+      "get_organization_coupons",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "get_organization_coupons", args), "get_organization_coupons", options);
+    return handleSupabaseRpc(
+      rpc(client, "get_organization_coupons", args),
+      "get_organization_coupons",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "get_organization_coupons", args), "get_organization_coupons");
+  return handleSupabaseRpc(
+    rpc(client, "get_organization_coupons", args),
+    "get_organization_coupons",
+  );
 }

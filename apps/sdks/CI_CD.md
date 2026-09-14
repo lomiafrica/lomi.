@@ -50,23 +50,27 @@ Python still uses **`app-release-sdks.yml`** and `PYPI_TOKEN`.
 ## 📋 Current Published Packages
 
 ### TypeScript SDK
+
 - **Package:** `@lomi./sdk`
 - **Install:** `npm i @lomi./sdk`
 - **Registry:** https://www.npmjs.com/package/@lomi./sdk
 
 ### JavaScript SDK
+
 - **Package:** `@lomi./sdk-js`
 - **Version:** `1.0.0` ✅
 - **Install:** `npm i @lomi./sdk-js`
 - **Registry:** https://www.npmjs.com/package/@lomi./sdk-js
 
 ### Python SDK
+
 - **Package:** `lomi-sdk`
 - **Version:** `1.5.11` (publish via workflow when ready)
 - **Install:** `pip install lomi-sdk`
 - **Registry:** https://pypi.org/project/lomi-sdk/
 
 ### Embed SDK
+
 - **Package:** `@lomi./embed`
 - **Version:** `0.2.0`
 - **Install:** `npm i @lomi./embed`
@@ -78,6 +82,7 @@ Python still uses **`app-release-sdks.yml`** and `PYPI_TOKEN`.
 ### Publish Locally (Manual)
 
 **TypeScript:**
+
 ```bash
 cd apps/sdks/ts
 npm run build
@@ -85,6 +90,7 @@ npm publish --access public
 ```
 
 **JavaScript:**
+
 ```bash
 cd apps/sdks/js
 npm run build
@@ -92,6 +98,7 @@ npm publish --access public
 ```
 
 **Python:**
+
 ```bash
 cd apps/sdks/python
 python -m build

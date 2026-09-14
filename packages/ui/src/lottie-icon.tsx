@@ -81,14 +81,20 @@ function readString(object: JsonInputObject, key: string): string | undefined {
   return isString(value) ? value : undefined;
 }
 
-function readArray(object: JsonInputObject, key: string): JsonValue[] | undefined {
+function readArray(
+  object: JsonInputObject,
+  key: string,
+): JsonValue[] | undefined {
   const value = object[key];
   return Array.isArray(value)
     ? value.filter((item): item is JsonValue => item !== undefined)
     : undefined;
 }
 
-function readObject(object: JsonInputObject, key: string): JsonObject | undefined {
+function readObject(
+  object: JsonInputObject,
+  key: string,
+): JsonObject | undefined {
   const value = object[key];
   return isJsonObject(value) ? value : undefined;
 }
@@ -121,10 +127,7 @@ const applyColorToVectorElements = (
 
   let changed = false;
 
-  if (
-    (node["ty"] === "fl" || node["ty"] === "st") &&
-    isJsonObject(node["c"])
-  ) {
+  if ((node["ty"] === "fl" || node["ty"] === "st") && isJsonObject(node["c"])) {
     const colorRecord = node["c"];
     const colorVector = colorRecord["k"];
     if (colorVector !== undefined && isColorVector(colorVector)) {
@@ -268,11 +271,11 @@ const LottieIconCoreComponent = ({
         className={`inline-flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        {isLoading && loadingFallback
-          ? loadingFallback
-          : (
-            <div className="w-full h-full bg-muted-foreground/20 rounded-sm animate-pulse" />
-          )}
+        {isLoading && loadingFallback ? (
+          loadingFallback
+        ) : (
+          <div className="w-full h-full bg-muted-foreground/20 rounded-sm animate-pulse" />
+        )}
       </div>
     );
   }

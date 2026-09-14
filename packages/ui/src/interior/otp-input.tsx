@@ -14,9 +14,13 @@ import {
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
-
 
 export type OtpMode = "numeric" | "alphanumeric";
 
@@ -114,7 +118,8 @@ export function useOtpInput({
     setChars(next);
     const value = next.join("");
     changed.current?.(value);
-    if (next.length > 0 && next.every((c) => c !== "")) completed.current?.(value);
+    if (next.length > 0 && next.every((c) => c !== ""))
+      completed.current?.(value);
   }, []);
 
   const focusAt = useCallback(
@@ -383,10 +388,7 @@ export function OtpInput({
           const gap = groupEvery > 0 && i > 0 && i % groupEvery === 0;
 
           return (
-            <div
-              key={i}
-              className={`relative h-12 w-10 ${gap ? "ml-3" : ""}`}
-            >
+            <div key={i} className={`relative h-12 w-10 ${gap ? "ml-3" : ""}`}>
               <input
                 {...getCellProps(i)}
                 aria-label={`${label}, character ${i + 1} of ${length}`}
@@ -416,13 +418,28 @@ export function OtpInput({
                       initial={
                         reduced
                           ? false
-                          : { opacity: 0, scale: 0.97, y: 10, filter: "blur(6px)" }
+                          : {
+                              opacity: 0,
+                              scale: 0.97,
+                              y: 10,
+                              filter: "blur(6px)",
+                            }
                       }
-                      animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        filter: "blur(0px)",
+                      }}
                       exit={
                         reduced
                           ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.98, y: -6, filter: "blur(3px)" }
+                          : {
+                              opacity: 0,
+                              scale: 0.98,
+                              y: -6,
+                              filter: "blur(3px)",
+                            }
                       }
                       transition={enter}
                       className="col-start-1 row-start-1 font-mono text-[15px] tabular-nums text-stone-700 dark:text-stone-200"
@@ -436,7 +453,9 @@ export function OtpInput({
                   <motion.span
                     className="col-start-1 row-start-1 block h-[17px] w-[1.5px] rounded-[1px] bg-stone-700 dark:bg-stone-200"
                     initial={{ opacity: 1 }}
-                    animate={reduced ? { opacity: 1 } : { opacity: [1, 1, 0, 0] }}
+                    animate={
+                      reduced ? { opacity: 1 } : { opacity: [1, 1, 0, 0] }
+                    }
                     transition={
                       reduced
                         ? { duration: 0 }
@@ -457,7 +476,10 @@ export function OtpInput({
 
       {hasStatus && (
         <>
-          <div aria-hidden className="mt-2 grid h-4 text-[11.5px] leading-[16px]">
+          <div
+            aria-hidden
+            className="mt-2 grid h-4 text-[11.5px] leading-[16px]"
+          >
             <AnimatePresence initial={false} mode="wait">
               <motion.span
                 key={status}

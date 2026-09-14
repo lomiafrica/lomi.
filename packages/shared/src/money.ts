@@ -1,4 +1,7 @@
-import { isCheckoutCurrencyCode, type CheckoutCurrencyCode } from "./currency-code.js";
+import {
+  isCheckoutCurrencyCode,
+  type CheckoutCurrencyCode,
+} from "./currency-code.js";
 
 export const MONEY_MAX_MINOR = 9_999_999_999;
 export const MONEY_MIN_CHARGEABLE_MINOR = 1;
@@ -74,35 +77,23 @@ export function assertAmountMinor(
 }
 
 /** Convert API minor units to the NUMERIC major amount stored in Postgres. */
-export function toLedgerMajor(
-  minor: number,
-  currencyCode: string,
-): number {
+export function toLedgerMajor(minor: number, currencyCode: string): number {
   return minorToMajorUnits(minor, currencyCode);
 }
 
 /** Convert a Postgres NUMERIC major amount to API minor units. */
-export function fromLedgerMajor(
-  major: number,
-  currencyCode: string,
-): number {
+export function fromLedgerMajor(major: number, currencyCode: string): number {
   return majorToMinorUnits(major, currencyCode);
 }
 
 /** Convert a major-unit number to minor units at the API/DB boundary. */
-export function majorToMinorUnits(
-  major: number,
-  currencyCode: string,
-): number {
+export function majorToMinorUnits(major: number, currencyCode: string): number {
   const factor = 10 ** currencyExponent(currencyCode);
   return Math.round(major * factor);
 }
 
 /** Convert minor units to the NUMERIC major amount stored in Postgres. */
-export function minorToMajorUnits(
-  minor: number,
-  currencyCode: string,
-): number {
+export function minorToMajorUnits(minor: number, currencyCode: string): number {
   const factor = 10 ** currencyExponent(currencyCode);
   return minor / factor;
 }

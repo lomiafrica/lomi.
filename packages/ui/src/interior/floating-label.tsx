@@ -12,7 +12,12 @@ import { motion, useReducedMotion } from "motion/react";
 
 const INSTANT = { duration: 0 } as const;
 
-const LIFT = { type: "spring", stiffness: 760, damping: 46, mass: 0.5 } as const;
+const LIFT = {
+  type: "spring",
+  stiffness: 760,
+  damping: 46,
+  mass: 0.5,
+} as const;
 
 const RAISE = -32;
 const SLIDE = -12;
@@ -59,7 +64,9 @@ export function useFloatingLabel({
 
   const settle = useCallback((next: number, instant: boolean) => {
     setFill((prev) =>
-      prev.length === next && prev.instant === instant ? prev : { length: next, instant },
+      prev.length === next && prev.instant === instant
+        ? prev
+        : { length: next, instant },
     );
   }, []);
 
@@ -113,7 +120,10 @@ export type FloatingLabelInputProps = {
   label: string;
   value?: string;
   defaultValue?: string;
-  onChange?: (value: string, event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (
+    value: string,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   hint?: string;
@@ -157,11 +167,12 @@ export function FloatingLabelInput({
   const hintId = `${auto}-hint`;
 
   const reduced = useReducedMotion();
-  const { ref, raised, focused, length, instant, fieldProps } = useFloatingLabel({
-    value,
-    defaultValue,
-    disabled,
-  });
+  const { ref, raised, focused, length, instant, fieldProps } =
+    useFloatingLabel({
+      value,
+      defaultValue,
+      disabled,
+    });
 
   const move = reduced || instant ? INSTANT : LIFT;
 
@@ -187,33 +198,33 @@ export function FloatingLabelInput({
           } ${disabled ? "opacity-55" : ""}`}
         >
           <input
-          ref={attach}
-          id={fieldId}
-          name={name}
-          type={type}
-          value={value}
-          defaultValue={defaultValue}
-          autoComplete={autoComplete}
-          inputMode={inputMode}
-          maxLength={maxLength}
-          required={required}
-          disabled={disabled}
-          readOnly={readOnly}
-          aria-required={required || undefined}
-          aria-invalid={invalid || undefined}
-          aria-describedby={hint ? hintId : undefined}
-          onFocus={() => {
-            fieldProps.onFocus();
-            onFocus?.();
-          }}
-          onBlur={() => {
-            fieldProps.onBlur();
-            onBlur?.();
-          }}
-          onChange={(event) => {
-            fieldProps.onChange(event);
-            onChange?.(event.currentTarget.value, event);
-          }}
+            ref={attach}
+            id={fieldId}
+            name={name}
+            type={type}
+            value={value}
+            defaultValue={defaultValue}
+            autoComplete={autoComplete}
+            inputMode={inputMode}
+            maxLength={maxLength}
+            required={required}
+            disabled={disabled}
+            readOnly={readOnly}
+            aria-required={required || undefined}
+            aria-invalid={invalid || undefined}
+            aria-describedby={hint ? hintId : undefined}
+            onFocus={() => {
+              fieldProps.onFocus();
+              onFocus?.();
+            }}
+            onBlur={() => {
+              fieldProps.onBlur();
+              onBlur?.();
+            }}
+            onChange={(event) => {
+              fieldProps.onChange(event);
+              onChange?.(event.currentTarget.value, event);
+            }}
             className="absolute inset-0 h-full w-full rounded-md bg-transparent px-3 py-0 text-[13px] leading-[20px] text-stone-700 outline-none focus-visible:outline-none disabled:cursor-not-allowed dark:text-stone-200"
           />
         </div>
@@ -238,7 +249,10 @@ export function FloatingLabelInput({
         >
           {label}
           {required ? (
-            <span aria-hidden className="ml-0.5 text-stone-400 dark:text-stone-500">
+            <span
+              aria-hidden
+              className="ml-0.5 text-stone-400 dark:text-stone-500"
+            >
               *
             </span>
           ) : null}

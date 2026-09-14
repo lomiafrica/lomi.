@@ -7,7 +7,11 @@ function readArg(name, fallback) {
   const match = process.argv.find((arg) => arg.startsWith(prefix));
   if (match) return match.slice(prefix.length);
   const index = process.argv.indexOf(name);
-  if (index !== -1 && process.argv[index + 1] && !String(process.argv[index + 1]).startsWith("-")) {
+  if (
+    index !== -1 &&
+    process.argv[index + 1] &&
+    !String(process.argv[index + 1]).startsWith("-")
+  ) {
     return process.argv[index + 1];
   }
   return fallback;
@@ -17,7 +21,11 @@ function collectRepeatable(name) {
   const values = [];
   for (let i = 0; i < process.argv.length; i += 1) {
     const arg = process.argv[i];
-    if (arg === name && process.argv[i + 1] && !String(process.argv[i + 1]).startsWith("-")) {
+    if (
+      arg === name &&
+      process.argv[i + 1] &&
+      !String(process.argv[i + 1]).startsWith("-")
+    ) {
       values.push(process.argv[i + 1]);
     } else if (arg.startsWith(`${name}=`)) {
       values.push(arg.slice(`${name}=`.length));
@@ -47,7 +55,10 @@ function walkSourceFiles(dir, files = []) {
   return files;
 }
 
-const COMMAND = process.argv[2] && !process.argv[2].startsWith("-") ? process.argv[2] : "clean";
+const COMMAND =
+  process.argv[2] && !process.argv[2].startsWith("-")
+    ? process.argv[2]
+    : "clean";
 const SRC_DIR = path.resolve(process.cwd(), readArg("--src-dir", "src"));
 const LOCALES_DIR = path.resolve(
   process.cwd(),
@@ -198,7 +209,9 @@ function removeUnusedKeys(obj, unusedKeys, prefix = "") {
 }
 
 async function analyzeTranslations() {
-  const files = walkSourceFiles(SRC_DIR).map((file) => path.relative(SRC_DIR, file));
+  const files = walkSourceFiles(SRC_DIR).map((file) =>
+    path.relative(SRC_DIR, file),
+  );
 
   console.log(`📁 Found ${files.length} source files`);
 

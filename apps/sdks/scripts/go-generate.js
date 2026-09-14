@@ -3,15 +3,10 @@
  * Go SDK generator — public merchant surface from OpenAPI + allowlist.
  */
 
-import {
-  writeFileSync,
-  mkdirSync,
-  readdirSync,
-  unlinkSync,
-} from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { writeFileSync, mkdirSync, readdirSync, unlinkSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 import {
   readSpecAndAllowlist,
   getNormalizedOperations,
@@ -20,20 +15,20 @@ import {
   tsMethodToGo,
   expandSdkManifestMethods,
   withoutHandwrittenServices,
-} from './public-sdk-operations.js';
+} from "./public-sdk-operations.js";
 
 /** Hand-written lomi. Network files (transfers, balance, network) kept across regenerations. */
-const HANDWRITTEN_GO_FILES = new Set(['network.go', 'network_test.go']);
+const HANDWRITTEN_GO_FILES = new Set(["network.go", "network_test.go"]);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const sdksRoot = join(__dirname, '..');
-const outputDir = join(sdksRoot, 'go');
+const sdksRoot = join(__dirname, "..");
+const outputDir = join(sdksRoot, "go");
 
 function stemSnake(serviceClassName) {
-  const inner = serviceClassName.replace(/Service$/, '');
+  const inner = serviceClassName.replace(/Service$/, "");
   return inner
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1_$2")
     .toLowerCase();
 }
 
@@ -41,17 +36,17 @@ function svcFileStem(serviceClassName) {
   return `${stemSnake(serviceClassName)}_service`;
 }
 
-console.log('🔨 Generating Go SDK from OpenAPI + allowlist…');
+console.log("🔨 Generating Go SDK from OpenAPI + allowlist…");
 
-execSync('node scripts/pre-generate.js', {
+execSync("node scripts/pre-generate.js", {
   cwd: sdksRoot,
-  stdio: 'inherit',
+  stdio: "inherit",
 });
 
 mkdirSync(outputDir, { recursive: true });
 
 for (const f of readdirSync(outputDir)) {
-  if (f.endsWith('.go') && !HANDWRITTEN_GO_FILES.has(f)) {
+  if (f.endsWith(".go") && !HANDWRITTEN_GO_FILES.has(f)) {
     unlinkSync(join(outputDir, f));
   }
 }
@@ -131,14 +126,36 @@ func paramsToQuery(params map[string]string) url.Values {
 }
 `;
 
-writeFileSync(join(outputDir, 'configuration.go'), cfg);
-writeFileSync(join(outputDir, 'response.go'), response);
-writeFileSync(join(outputDir, 'utils.go'), utils);
+writeFileSync(join(outputDir, "configuration.go"), cfg);
+writeFileSync(join(outputDir, "response.go"), response);
+writeFileSync(join(outputDir, "utils.go"), utils);
 
 const GO_RESERVED = new Set([
-  'break', 'default', 'func', 'interface', 'select', 'case', 'defer', 'go', 'map', 'struct',
-  'chan', 'else', 'goto', 'package', 'switch', 'const', 'fallthrough', 'if', 'range', 'type',
-  'continue', 'for', 'import', 'return', 'var',
+  "break",
+  "default",
+  "func",
+  "interface",
+  "select",
+  "case",
+  "defer",
+  "go",
+  "map",
+  "struct",
+  "chan",
+  "else",
+  "goto",
+  "package",
+  "switch",
+  "const",
+  "fallthrough",
+  "if",
+  "range",
+  "type",
+  "continue",
+  "for",
+  "import",
+  "return",
+  "var",
 ]);
 
 /** @param {string} name */
@@ -154,13 +171,13 @@ function buildGoMethod(serviceClassName, nop) {
   const goName = tsMethodToGo(nop.sdkMethodName);
   const tmpl = nop.pathTemplate;
   const ids = nop.pathParamNames;
-  const q = nop.httpMethodLower === 'get' && nop.queryParams.length > 0;
+  const q = nop.httpMethodLower === "get" && nop.queryParams.length > 0;
   const body = nop.wantsBody;
 
   const plist = [...ids.map((n) => `${goParamName(n)} string`)];
-  if (q) plist.push('params map[string]string');
-  if (body) plist.push('body interface{}');
-  const plistStr = plist.join(', ');
+  if (q) plist.push("params map[string]string");
+  if (body) plist.push("body interface{}");
+  const plistStr = plist.join(", ");
 
   const pathLines = [`path := ${JSON.stringify(tmpl)}`];
   for (const n of ids) {
@@ -168,12 +185,12 @@ function buildGoMethod(serviceClassName, nop) {
     pathLines.push(`path = strings.ReplaceAll(path, "{${n}}", ${p})`);
   }
 
-  let queryExpr = 'nil';
-  let bodyExpr = 'nil';
-  if (q) queryExpr = 'paramsToQuery(params)';
-  if (body) bodyExpr = 'body';
+  let queryExpr = "nil";
+  let bodyExpr = "nil";
+  if (q) queryExpr = "paramsToQuery(params)";
+  if (body) bodyExpr = "body";
   const pathBlock =
-    `${pathLines.map((ln) => '\t\t' + ln).join('\n')}\n` +
+    `${pathLines.map((ln) => "\t\t" + ln).join("\n")}\n` +
     `\t\tbodyResp, err := s.client.doRequest("${nop.httpMethodLower.toUpperCase()}", path, ${queryExpr}, ${bodyExpr})\n` +
     `\t\tif err != nil {\n\t\t\treturn nil, err\n\t\t}`;
 
@@ -198,7 +215,9 @@ for (const serviceClassName of sortedSvc) {
   const ops = [...byService.get(serviceClassName)].sort((a, b) =>
     tsMethodToGo(a.sdkMethodName).localeCompare(tsMethodToGo(b.sdkMethodName)),
   );
-  const methods = ops.map((o) => buildGoMethod(serviceClassName, o)).join('\n\n');
+  const methods = ops
+    .map((o) => buildGoMethod(serviceClassName, o))
+    .join("\n\n");
   const needsStrings = ops.some((o) => o.pathParamNames.length > 0);
   const imports = needsStrings
     ? `import (\n\t"encoding/json"\n\t"strings"\n)`
@@ -216,17 +235,18 @@ type ${serviceClassName} struct {
 ${methods}
 `;
 
-  writeFileSync(join(outputDir, `${svcFileStem(serviceClassName)}.go`), content);
+  writeFileSync(
+    join(outputDir, `${svcFileStem(serviceClassName)}.go`),
+    content,
+  );
 }
 
 const clientFields = sortedSvc.map(
-  (svc) =>
-    `\t${sdkPropToGoField(sdkPropertyName(svc))} *${svc}`,
+  (svc) => `\t${sdkPropToGoField(sdkPropertyName(svc))} *${svc}`,
 );
 
 const clientInits = sortedSvc.map(
-  (svc) =>
-    `\tc.${sdkPropToGoField(sdkPropertyName(svc))} = &${svc}{client: c}`,
+  (svc) => `\tc.${sdkPropToGoField(sdkPropertyName(svc))} = &${svc}{client: c}`,
 );
 
 const clientGo = `// AUTO-GENERATED — public merchant allowlist
@@ -246,7 +266,7 @@ type Client struct {
 	HTTPClient *http.Client
 	// LomiAccount (lomi. Network): default Lomi-Account header, see WithAccount / ForAccount.
 	LomiAccount string
-${clientFields.join('\n')}
+${clientFields.join("\n")}
 	// lomi. Network (hand-written, see network.go)
 	Transfers *TransfersService
 	Balance   *BalanceService
@@ -262,7 +282,7 @@ func NewClient(apiKey string, opts ...ClientOption) *Client {
 	for _, opt := range opts {
 		opt(c)
 	}
-${clientInits.join('\n')}
+${clientInits.join("\n")}
 	c.Transfers = &TransfersService{client: c}
 	c.Balance = &BalanceService{client: c}
 	c.Network = newNetworkService(c)
@@ -326,7 +346,7 @@ func (c *Client) doRequestWithOptions(method, path string, query url.Values, bod
 }
 `;
 
-writeFileSync(join(outputDir, 'client.go'), clientGo);
+writeFileSync(join(outputDir, "client.go"), clientGo);
 
 const clientTest = `package lomi
 
@@ -350,9 +370,9 @@ func TestWithSandbox(t *testing.T) {
 }
 `;
 
-writeFileSync(join(outputDir, 'client_test.go'), clientTest);
+writeFileSync(join(outputDir, "client_test.go"), clientTest);
 
-const goModPath = join(outputDir, 'go.mod');
+const goModPath = join(outputDir, "go.mod");
 try {
   writeFileSync(
     goModPath,
@@ -360,10 +380,10 @@ try {
 
 go 1.24
 `,
-    { flag: 'wx' },
+    { flag: "wx" },
   );
 } catch (error) {
-  if (error?.code !== 'EEXIST') {
+  if (error?.code !== "EEXIST") {
     throw error;
   }
 }
@@ -377,9 +397,9 @@ for (const svc of sortedSvc) {
 }
 
 writeFileSync(
-  join(outputDir, 'sdk_go_methods.json'),
+  join(outputDir, "sdk_go_methods.json"),
   `${JSON.stringify(
-    { generatedAt: new Date().toISOString(), language: 'go', sdk: manifestSdk },
+    { generatedAt: new Date().toISOString(), language: "go", sdk: manifestSdk },
     null,
     2,
   )}\n`,

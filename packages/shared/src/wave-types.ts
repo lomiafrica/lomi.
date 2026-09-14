@@ -76,7 +76,10 @@ export interface WaveAggregatedMerchantResponse {
 }
 
 export type WavePayoutStatus =
-  "pending" | "processing" | "completed" | "failed";
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed";
 
 export interface WavePayout {
   id: string;

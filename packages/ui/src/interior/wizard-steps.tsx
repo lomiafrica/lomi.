@@ -7,8 +7,18 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 const EASE = [0.23, 1, 0.32, 1] as const;
 const EXIT_EASE = [0.4, 0, 1, 1] as const;
 
-const RAIL = { type: "spring", stiffness: 520, damping: 40, mass: 0.5 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const RAIL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 40,
+  mass: 0.5,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 
 export type WizardDirection = 1 | -1;
 
@@ -44,10 +54,15 @@ export function useWizard({
   onIndexChange,
   onComplete,
 }: UseWizardOptions): UseWizardReturn {
-  const [internal, setInternal] = useState(() => clampIndex(defaultIndex, total));
+  const [internal, setInternal] = useState(() =>
+    clampIndex(defaultIndex, total),
+  );
   const current = clampIndex(index ?? internal, total);
 
-  const [seen, setSeen] = useState<{ index: number; direction: WizardDirection }>({
+  const [seen, setSeen] = useState<{
+    index: number;
+    direction: WizardDirection;
+  }>({
     index: current,
     direction: 1,
   });
@@ -152,7 +167,17 @@ export function WizardSteps({
   const viewportRef = useRef<HTMLDivElement>(null);
   const intent = useRef<"list" | "panel" | null>(null);
 
-  const { index: at, direction, furthest, total, isFirst, isLast, next, back, goTo } = wizard;
+  const {
+    index: at,
+    direction,
+    furthest,
+    total,
+    isFirst,
+    isLast,
+    next,
+    back,
+    goTo,
+  } = wizard;
 
   useEffect(() => {
     const move = intent.current;
@@ -168,7 +193,8 @@ export function WizardSteps({
 
   const variants = useMemo(
     () => ({
-      enter: (d: WizardDirection) => (reduced ? { opacity: 0 } : { opacity: 0, x: d * 22 }),
+      enter: (d: WizardDirection) =>
+        reduced ? { opacity: 0 } : { opacity: 0, x: d * 22 },
       center: reduced ? { opacity: 1 } : { opacity: 1, x: 0 },
       exit: (d: WizardDirection) =>
         reduced
@@ -270,8 +296,10 @@ export function WizardSteps({
           );
 
           return (
-            <li key={s.id} className="flex flex-1 items-center gap-1 last:flex-none">
-
+            <li
+              key={s.id}
+              className="flex flex-1 items-center gap-1 last:flex-none"
+            >
               {i <= furthest ? (
                 <button
                   type="button"
@@ -333,7 +361,6 @@ export function WizardSteps({
             style={{ scrollbarGutter: "stable" }}
             className="absolute inset-0 overflow-y-auto overscroll-contain p-4 text-[13.5px] leading-relaxed text-stone-700 dark:text-stone-200"
           >
-
             {complete ? (
               <div className="flex h-full flex-col items-center justify-center gap-1.5">
                 <p className="text-[13px] font-medium text-stone-700 dark:text-stone-100">
@@ -359,9 +386,13 @@ export function WizardSteps({
               animate={{ opacity: 1 }}
               exit={{
                 opacity: 0,
-                transition: reduced ? { duration: 0 } : { duration: 0.12, ease: EXIT_EASE },
+                transition: reduced
+                  ? { duration: 0 }
+                  : { duration: 0.12, ease: EXIT_EASE },
               }}
-              transition={reduced ? { duration: 0 } : { duration: 0.16, ease: EASE }}
+              transition={
+                reduced ? { duration: 0 } : { duration: 0.16, ease: EASE }
+              }
               onClick={() => {
                 intent.current = "panel";
                 back();
@@ -395,7 +426,9 @@ export function WizardSteps({
               className="ml-auto grid h-9 place-items-center rounded-md bg-stone-800 px-3.5 text-[13px] font-medium text-white outline-none focus-visible:shadow-[inset_0_0_0_1.5px_#93B0FF] dark:bg-stone-100 dark:text-stone-900 dark:focus-visible:shadow-[inset_0_0_0_1.5px_#4568FF]"
             >
               <span aria-hidden className="invisible col-start-1 row-start-1">
-                {finishLabel.length > nextLabel.length ? finishLabel : nextLabel}
+                {finishLabel.length > nextLabel.length
+                  ? finishLabel
+                  : nextLabel}
               </span>
               <motion.span
                 aria-hidden

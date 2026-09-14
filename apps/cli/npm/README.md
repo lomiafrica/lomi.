@@ -76,14 +76,14 @@ lomi install-rules
 
 ### Other commands
 
-| Command | Description |
-| --- | --- |
-| `lomi whoami` | Show current profile and account |
-| `lomi logout` | Clear stored credentials |
-| `lomi dev` | Local webhook development server |
-| `lomi checkout create` | Create a hosted checkout session |
-| `lomi payments create` | Create a payment link |
-| `lomi list-profiles` / `lomi switch` | Multi-profile auth |
+| Command                              | Description                      |
+| ------------------------------------ | -------------------------------- |
+| `lomi whoami`                        | Show current profile and account |
+| `lomi logout`                        | Clear stored credentials         |
+| `lomi dev`                           | Local webhook development server |
+| `lomi checkout create`               | Create a hosted checkout session |
+| `lomi payments create`               | Create a payment link            |
+| `lomi list-profiles` / `lomi switch` | Multi-profile auth               |
 
 ## Documentation
 

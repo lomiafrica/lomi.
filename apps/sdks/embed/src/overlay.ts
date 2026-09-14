@@ -42,9 +42,7 @@ export const getModalStyles = (options: LomiEmbedOptions) => ({
   `,
 });
 
-export const createOverlayShell = (
-  options: LomiEmbedOptions,
-): OverlayShell => {
+export const createOverlayShell = (options: LomiEmbedOptions): OverlayShell => {
   const existing = document.getElementById(OVERLAY_ID);
   existing?.remove();
 

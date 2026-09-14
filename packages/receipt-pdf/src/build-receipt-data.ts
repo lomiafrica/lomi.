@@ -113,8 +113,7 @@ function readMetadataLineItems(
   for (const entry of raw) {
     if (!isJsonObject(entry)) continue;
     const named = readMetadataString(entry, "name");
-    const name =
-      named ?? readMetadataString(entry, "description") ?? "Item";
+    const name = named ?? readMetadataString(entry, "description") ?? "Item";
     const quantityValue = entry["quantity"];
     const quantity = isFiniteNumber(quantityValue)
       ? Math.max(1, quantityValue)
@@ -328,7 +327,8 @@ export function buildReceiptDocumentData(
     : isMerchantReceipt
       ? subtotal - platformFee
       : subtotal;
-  const isFree = !isTrial && (isFreeReceiptRail(transaction) || totalAmount <= 0);
+  const isFree =
+    !isTrial && (isFreeReceiptRail(transaction) || totalAmount <= 0);
   const totalLabel = isMerchantReceipt ? "Amount received" : "Total paid";
 
   const logoUrl =

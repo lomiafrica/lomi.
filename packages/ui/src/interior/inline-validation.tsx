@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const LINE = 16;
@@ -78,7 +83,9 @@ export function useInlineValidation({
 
     const t = setTimeout(() => {
       setSettled((prev) =>
-        prev.error === next ? prev : { status: "invalid", error: next, message: next },
+        prev.error === next
+          ? prev
+          : { status: "invalid", error: next, message: next },
       );
     }, debounce);
 
@@ -91,7 +98,11 @@ export function useInlineValidation({
     const next = check.current(v);
     setSettled((prev) =>
       next === null
-        ? { status: v.length > 0 ? "valid" : "idle", error: null, message: prev.message }
+        ? {
+            status: v.length > 0 ? "valid" : "idle",
+            error: null,
+            message: prev.message,
+          }
         : { status: "invalid", error: next, message: next },
     );
   }, []);
@@ -108,7 +119,10 @@ export function useInlineValidation({
     touched,
     commit,
     reset,
-    fieldProps: { onBlur: commit, "aria-invalid": settled.status === "invalid" },
+    fieldProps: {
+      onBlur: commit,
+      "aria-invalid": settled.status === "invalid",
+    },
   };
 }
 
@@ -240,13 +254,28 @@ export function InlineValidation({
             animate={{ opacity: invalid ? 1 : 0, scale: invalid ? 1 : 0.7 }}
             transition={fade}
           >
-            <path d="M6 2v4.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-            <rect x="5.15" y="8.4" width="1.7" height="1.7" rx="0.5" fill="currentColor" />
+            <path
+              d="M6 2v4.4"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            />
+            <rect
+              x="5.15"
+              y="8.4"
+              width="1.7"
+              height="1.7"
+              rx="0.5"
+              fill="currentColor"
+            />
           </motion.svg>
         </span>
       </div>
 
-      <div className="relative mt-1.5 grid" style={{ height: reserveLines * LINE }}>
+      <div
+        className="relative mt-1.5 grid"
+        style={{ height: reserveLines * LINE }}
+      >
         {hint ? (
           <motion.p
             aria-hidden

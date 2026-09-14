@@ -3,7 +3,11 @@ import { fromJSONSchema } from "zod";
 
 import type { ManifestTool, ToolsManifest } from "./manifest.js";
 import { callLomiRest, formatHttpResult } from "./lomi-http.js";
-import { getLomiApiBaseUrl, getOptionalPartnerKey, getOptionalProvisioningKey } from "./env-config.js";
+import {
+  getLomiApiBaseUrl,
+  getOptionalPartnerKey,
+  getOptionalProvisioningKey,
+} from "./env-config.js";
 import { mcpLog } from "./mcp-request-context.js";
 import { truncateToolResultText } from "./truncate-result.js";
 import { extractMerchantSecretKey } from "./extract-secret-key.js";
@@ -104,14 +108,18 @@ function registerOneProvisioningTool(
         const input: JsonObject = validated;
         const action = resolveManifestAction(tool, input);
         const t0 = Date.now();
-        const result = await callLomiRest(restCallSpecFor(tool, action), input, {
-          baseUrl: ctx.baseUrl,
-          apiKey: credential,
-          authHeaderName:
-            authMode === "partner"
-              ? "X-Lomi-Partner-Key"
-              : "X-Lomi-Provisioning-Key",
-        });
+        const result = await callLomiRest(
+          restCallSpecFor(tool, action),
+          input,
+          {
+            baseUrl: ctx.baseUrl,
+            apiKey: credential,
+            authHeaderName:
+              authMode === "partner"
+                ? "X-Lomi-Partner-Key"
+                : "X-Lomi-Provisioning-Key",
+          },
+        );
         const latencyMs = Date.now() - t0;
         mcpLog(
           "provisioning_tool_upstream_complete",
@@ -171,7 +179,7 @@ export function registerProvisioningTools(
   };
 
   for (const tool of manifest.tools) {
-    if (ctx?.skipPartner && authModeFor(tool) === 'partner') continue;
+    if (ctx?.skipPartner && authModeFor(tool) === "partner") continue;
     registerOneProvisioningTool(server, tool, fullCtx);
   }
 }

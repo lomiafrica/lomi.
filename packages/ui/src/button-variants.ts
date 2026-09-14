@@ -16,8 +16,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          `bg-stone-800 text-stone-50 border-stone-800 ${interiorPrimaryRelief} hover:bg-stone-700 dark:border-white/10 dark:bg-[#2A2A27] dark:text-stone-100 dark:hover:bg-[#32322E]`,
+        default: `bg-stone-800 text-stone-50 border-stone-800 ${interiorPrimaryRelief} hover:bg-stone-700 dark:border-white/10 dark:bg-[#2A2A27] dark:text-stone-100 dark:hover:bg-[#32322E]`,
         destructive:
           "bg-red-600 text-white border-transparent shadow-none hover:bg-red-700 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/40",
         outline: interiorSurface,
@@ -33,12 +32,10 @@ export const buttonVariants = cva(
           "bg-green-600 text-white border-transparent shadow-none hover:bg-green-700 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/40",
         orange:
           "bg-orange-600 text-white border-transparent shadow-none hover:bg-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/40",
-        pink:
-          "bg-pink-600 text-white border-transparent shadow-none hover:bg-pink-700 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-900 dark:hover:text-pink-200",
+        pink: "bg-pink-600 text-white border-transparent shadow-none hover:bg-pink-700 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-900 dark:hover:text-pink-200",
         cancel: interiorSurface,
         settings: settingsButtonAction,
-        teal:
-          "bg-teal-600 text-white border-transparent shadow-none hover:bg-teal-700 dark:bg-teal-900/30 dark:text-teal-300 dark:hover:bg-teal-900/40",
+        teal: "bg-teal-600 text-white border-transparent shadow-none hover:bg-teal-700 dark:bg-teal-900/30 dark:text-teal-300 dark:hover:bg-teal-900/40",
         connect: interiorSurface,
         pointille:
           "border border-dashed border-stone-300 bg-white text-stone-700 shadow-none hover:bg-stone-50 dark:border-white/25 dark:bg-[#252522] dark:text-stone-200",

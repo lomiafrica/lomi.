@@ -75,11 +75,7 @@ function visibleMetaRows(rows: PdfMetaEntry[]) {
   return rows.filter((row) => row.value);
 }
 
-export function PdfSectionRule({
-  spaceAfter = 16,
-}: {
-  spaceAfter?: number;
-}) {
+export function PdfSectionRule({ spaceAfter = 16 }: { spaceAfter?: number }) {
   return (
     <View
       style={{

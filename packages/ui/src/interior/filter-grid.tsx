@@ -11,8 +11,18 @@ import {
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const MOVE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const MOVE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const EASE = [0.23, 1, 0.32, 1] as const;
 const LEAVE = { duration: 0.14, ease: [0.4, 0, 1, 1] } as const;
 const INSTANT = { duration: 0 } as const;
@@ -128,20 +138,25 @@ export function FilterGrid<T>({
   const gridId = `${uid}-grid`;
   const reduced = useReducedMotion();
 
-  const { active, activeLabel, select, visible, counts, total } = useFilterGrid({
-    items,
-    filters,
-    value,
-    defaultValue,
-    onValueChange,
-  });
+  const { active, activeLabel, select, visible, counts, total } = useFilterGrid(
+    {
+      items,
+      filters,
+      value,
+      defaultValue,
+      onValueChange,
+    },
+  );
 
   const gridRef = useRef<HTMLUListElement>(null);
   const chips = useRef<(HTMLButtonElement | null)[]>([]);
   const heldFocus = useRef(false);
 
   const cols = Math.max(1, Math.floor(columns));
-  const rows = Math.min(Math.max(1, Math.ceil(total / cols)), Math.max(1, maxRows));
+  const rows = Math.min(
+    Math.max(1, Math.ceil(total / cols)),
+    Math.max(1, maxRows),
+  );
   const box = rows * rowHeight + (rows - 1) * gap;
 
   const index = Math.max(
@@ -153,7 +168,9 @@ export function FilterGrid<T>({
     (id: string) => {
       const grid = gridRef.current;
       heldFocus.current =
-        !!grid && grid.contains(document.activeElement) && grid !== document.activeElement;
+        !!grid &&
+        grid.contains(document.activeElement) &&
+        grid !== document.activeElement;
       select(id);
     },
     [select],
@@ -235,7 +252,9 @@ export function FilterGrid<T>({
               <span
                 aria-hidden
                 className={`pointer-events-none absolute inset-0 rounded-[6px] border group-focus-visible:border-[#4568FF] dark:group-focus-visible:border-[#93B0FF] ${
-                  on ? "border-transparent" : "border-stone-200 dark:border-white/[0.16]"
+                  on
+                    ? "border-transparent"
+                    : "border-stone-200 dark:border-white/[0.16]"
                 }`}
               />
               <span className="relative col-start-1 row-start-1 inline-grid">
@@ -287,7 +306,11 @@ export function FilterGrid<T>({
             height: `${box}px`,
           }}
         >
-          <AnimatePresence initial={false} mode="popLayout" onExitComplete={settle}>
+          <AnimatePresence
+            initial={false}
+            mode="popLayout"
+            onExitComplete={settle}
+          >
             {visible.map((item) => (
               <motion.li
                 key={getKey(item)}

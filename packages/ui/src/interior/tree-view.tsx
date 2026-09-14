@@ -7,7 +7,12 @@ const EASE = [0.23, 1, 0.32, 1] as const;
 
 const LEAVE = [0.4, 0, 1, 1] as const;
 
-const SMALL = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const SMALL = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 
 const OPEN_H = { duration: 0.28, ease: EASE } as const;
 const OPEN_O = { duration: 0.18, ease: EASE } as const;
@@ -82,7 +87,9 @@ export function useTreeView({
   const openList = openControlled ? expanded : internalOpen;
   const openSet = new Set(openList);
 
-  const [internalSel, setInternalSel] = useState<string | null>(defaultSelected);
+  const [internalSel, setInternalSel] = useState<string | null>(
+    defaultSelected,
+  );
   const selControlled = selected !== undefined;
   const selectedId = selControlled ? selected : internalSel;
 
@@ -303,8 +310,11 @@ export function TreeView({
                 : "text-stone-600 hover:bg-stone-100/60 dark:text-stone-300 dark:hover:bg-white/[0.04]"
             }`}
           >
-
-            {row.branch ? <Caret open={row.open} /> : <span className="size-4 shrink-0" />}
+            {row.branch ? (
+              <Caret open={row.open} />
+            ) : (
+              <span className="size-4 shrink-0" />
+            )}
 
             <span
               className={`min-w-0 flex-1 truncate text-[12.5px] ${
@@ -362,9 +372,9 @@ export function TreeView({
         {renderNodes(nodes, 1)}
       </ul>
       <span id={hintId} className="sr-only">
-        Use the arrow keys to move. Right expands a folder, left collapses it
-        or climbs to its parent. Home and End jump to the ends, and typing a
-        letter jumps to the next name starting with it.
+        Use the arrow keys to move. Right expands a folder, left collapses it or
+        climbs to its parent. Home and End jump to the ends, and typing a letter
+        jumps to the next name starting with it.
       </span>
     </div>
   );

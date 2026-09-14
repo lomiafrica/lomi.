@@ -94,7 +94,10 @@ export function isFreeReceiptRail(
 }
 
 function paymentMethodCode(
-  transaction: Pick<ReceiptTransactionInput, "payment_method_code" | "metadata">,
+  transaction: Pick<
+    ReceiptTransactionInput,
+    "payment_method_code" | "metadata"
+  >,
 ): string | undefined {
   if (transaction.payment_method_code) {
     return transaction.payment_method_code.toUpperCase();

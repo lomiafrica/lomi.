@@ -2,13 +2,13 @@
  * Per-instance HTTP client for the lomi. SDK.
  */
 
-import type { LomiConfig } from './config.js';
-import { DEFAULT_CONFIG } from './config.js';
+import type { LomiConfig } from "./config.js";
+import { DEFAULT_CONFIG } from "./config.js";
 import type {
   LomiClientRequestOptions,
   LomiHeaders,
   LomiPathParameters,
-} from './request-options.js';
+} from "./request-options.js";
 
 export class LomiClient {
   public readonly baseUrl: string;
@@ -21,7 +21,7 @@ export class LomiClient {
   constructor(config: LomiConfig) {
     this.baseUrl =
       config.baseUrl ??
-      (config.environment === 'test'
+      (config.environment === "test"
         ? DEFAULT_CONFIG.sandboxBaseUrl
         : DEFAULT_CONFIG.baseUrl);
     this.timeout = config.timeout ?? DEFAULT_CONFIG.timeout;
@@ -51,17 +51,17 @@ export class LomiClient {
 
   buildHeaders(options?: LomiClientRequestOptions): LomiHeaders {
     const headers: LomiHeaders = {
-      'Content-Type': 'application/json',
-      'X-API-KEY': this.apiKey,
+      "Content-Type": "application/json",
+      "X-API-KEY": this.apiKey,
       ...this.defaultHeaders,
       ...options?.headers,
     };
     const account = options?.account ?? this.defaultAccount;
     if (account) {
-      headers['Lomi-Account'] = account;
+      headers["Lomi-Account"] = account;
     }
     if (options?.idempotencyKey) {
-      headers['Idempotency-Key'] = options.idempotencyKey;
+      headers["Idempotency-Key"] = options.idempotencyKey;
     }
     return headers;
   }

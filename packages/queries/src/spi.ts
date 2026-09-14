@@ -23,12 +23,20 @@ export async function fetchPayouts(
   options?: SupabaseRpcOptions<DbFunctions["fetch_payouts"]["Returns"]> | null,
 ): Promise<DbFunctions["fetch_payouts"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_payouts", args), "fetch_payouts", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_payouts", args),
+      "fetch_payouts",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_payouts", args), "fetch_payouts", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_payouts", args),
+      "fetch_payouts",
+      options,
+    );
   }
   return handleSupabaseRpc(rpc(client, "fetch_payouts", args), "fetch_payouts");
 }
@@ -45,22 +53,37 @@ export async function getPayoutDetails(
 export async function getPayoutDetails(
   client: TypedSupabaseClient,
   args: DbFunctions["get_payout_details"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["get_payout_details"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["get_payout_details"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["get_payout_details"]["Returns"] | null>;
 export async function getPayoutDetails(
   client: TypedSupabaseClient,
   args: DbFunctions["get_payout_details"]["Args"] = emptyRpcArgs<"get_payout_details">(),
-  options?: SupabaseRpcOptions<DbFunctions["get_payout_details"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["get_payout_details"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["get_payout_details"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "get_payout_details", args), "get_payout_details", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "get_payout_details", args),
+      "get_payout_details",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "get_payout_details", args), "get_payout_details", options);
+    return handleSupabaseRpc(
+      rpc(client, "get_payout_details", args),
+      "get_payout_details",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "get_payout_details", args), "get_payout_details");
+  return handleSupabaseRpc(
+    rpc(client, "get_payout_details", args),
+    "get_payout_details",
+  );
 }
 
 export async function getSpiAccountNumber(
@@ -75,22 +98,37 @@ export async function getSpiAccountNumber(
 export async function getSpiAccountNumber(
   client: TypedSupabaseClient,
   args: DbFunctions["get_spi_account_number"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["get_spi_account_number"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["get_spi_account_number"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["get_spi_account_number"]["Returns"] | null>;
 export async function getSpiAccountNumber(
   client: TypedSupabaseClient,
   args: DbFunctions["get_spi_account_number"]["Args"] = emptyRpcArgs<"get_spi_account_number">(),
-  options?: SupabaseRpcOptions<DbFunctions["get_spi_account_number"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["get_spi_account_number"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["get_spi_account_number"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "get_spi_account_number", args), "get_spi_account_number", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "get_spi_account_number", args),
+      "get_spi_account_number",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "get_spi_account_number", args), "get_spi_account_number", options);
+    return handleSupabaseRpc(
+      rpc(client, "get_spi_account_number", args),
+      "get_spi_account_number",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "get_spi_account_number", args), "get_spi_account_number");
+  return handleSupabaseRpc(
+    rpc(client, "get_spi_account_number", args),
+    "get_spi_account_number",
+  );
 }
 
 export async function initiateWithdrawal(
@@ -105,22 +143,37 @@ export async function initiateWithdrawal(
 export async function initiateWithdrawal(
   client: TypedSupabaseClient,
   args: DbFunctions["initiate_withdrawal"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["initiate_withdrawal"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["initiate_withdrawal"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["initiate_withdrawal"]["Returns"] | null>;
 export async function initiateWithdrawal(
   client: TypedSupabaseClient,
   args: DbFunctions["initiate_withdrawal"]["Args"] = emptyRpcArgs<"initiate_withdrawal">(),
-  options?: SupabaseRpcOptions<DbFunctions["initiate_withdrawal"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["initiate_withdrawal"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["initiate_withdrawal"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "initiate_withdrawal", args), "initiate_withdrawal", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "initiate_withdrawal", args),
+      "initiate_withdrawal",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "initiate_withdrawal", args), "initiate_withdrawal", options);
+    return handleSupabaseRpc(
+      rpc(client, "initiate_withdrawal", args),
+      "initiate_withdrawal",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "initiate_withdrawal", args), "initiate_withdrawal");
+  return handleSupabaseRpc(
+    rpc(client, "initiate_withdrawal", args),
+    "initiate_withdrawal",
+  );
 }
 
 export async function verifyPayoutPin(
@@ -135,20 +188,35 @@ export async function verifyPayoutPin(
 export async function verifyPayoutPin(
   client: TypedSupabaseClient,
   args: DbFunctions["verify_payout_pin"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["verify_payout_pin"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["verify_payout_pin"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["verify_payout_pin"]["Returns"] | null>;
 export async function verifyPayoutPin(
   client: TypedSupabaseClient,
   args: DbFunctions["verify_payout_pin"]["Args"] = emptyRpcArgs<"verify_payout_pin">(),
-  options?: SupabaseRpcOptions<DbFunctions["verify_payout_pin"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["verify_payout_pin"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["verify_payout_pin"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "verify_payout_pin", args), "verify_payout_pin", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "verify_payout_pin", args),
+      "verify_payout_pin",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "verify_payout_pin", args), "verify_payout_pin", options);
+    return handleSupabaseRpc(
+      rpc(client, "verify_payout_pin", args),
+      "verify_payout_pin",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "verify_payout_pin", args), "verify_payout_pin");
+  return handleSupabaseRpc(
+    rpc(client, "verify_payout_pin", args),
+    "verify_payout_pin",
+  );
 }

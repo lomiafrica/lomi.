@@ -13,20 +13,14 @@ export {
   type PayBillingCustomerDetails,
 } from "./billing-address-section";
 export { CustomCheckoutFieldsSection } from "./custom-fields-section";
-export {
-  PriceSelector,
-  type PayPriceOption,
-} from "./price-selector";
+export { PriceSelector, type PayPriceOption } from "./price-selector";
 export {
   initSpiRequestToPay,
   getSpiPaymentStatus,
   type SpiRequestToPayResult,
   type SpiPaymentStatusResult,
 } from "./spi-checkout-api";
-export {
-  initGimCheckoutPayment,
-  type GimPayResult,
-} from "./gim-checkout-api";
+export { initGimCheckoutPayment, type GimPayResult } from "./gim-checkout-api";
 export {
   postStripePaymentIntent,
   StripeCheckoutApiError,

@@ -1,8 +1,4 @@
-import {
-  isJsonObject,
-  isString,
-  type JsonValue,
-} from "@lomi./shared";
+import { isJsonObject, isString, type JsonValue } from "@lomi./shared";
 
 /**
  * Extracts a merchant secret key (`lomi_sk_*`) from a provisioning tool
@@ -13,11 +9,11 @@ import {
  * returned in full, so they cannot be promoted automatically.
  */
 function isTestSecretKey(value: string): boolean {
-  return value.startsWith('lomi_sk_test_');
+  return value.startsWith("lomi_sk_test_");
 }
 
 function isSecretKey(value: string): boolean {
-  return value.startsWith('lomi_sk_') && !value.includes('••');
+  return value.startsWith("lomi_sk_") && !value.includes("••");
 }
 
 function collectSecretKeys(value: JsonValue, found: string[]): void {

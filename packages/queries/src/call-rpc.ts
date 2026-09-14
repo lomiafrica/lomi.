@@ -5,7 +5,9 @@ import type { DbFunctions, TypedSupabaseClient } from "./types.js";
 /**
  * Empty args for Postgres RPCs whose generated Args record is all-optional.
  */
-export function emptyRpcArgs<Fn extends keyof DbFunctions>(): DbFunctions[Fn]["Args"] {
+export function emptyRpcArgs<
+  Fn extends keyof DbFunctions,
+>(): DbFunctions[Fn]["Args"] {
   // SAFETY: PG RPCs with all-optional arg records accept {}; Database Args may mark fields required syntactically.
   return {} as DbFunctions[Fn]["Args"];
 }

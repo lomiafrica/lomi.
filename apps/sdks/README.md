@@ -2,13 +2,13 @@
 
 Official SDKs mirror the **same public merchant routes** as documented: they are generated from [`apps/docs/openapi.json`](../docs/openapi.json) and the strict allowlist [`apps/docs/lib/scripts/manual-api/_expected-public-operations.json`](../docs/lib/scripts/manual-api/_expected-public-operations.json).
 
-| Language/Framework | Package | Installation | Directory |
-|-------------------|---------|--------------|-----------|
-| **TypeScript** | `@lomi./sdk` | `npm install @lomi./sdk` | [`ts/`](./ts) |
-| **Embedded Checkout** | `@lomi./embed` | `npm install @lomi./embed` | [`embed/`](./embed) |
-| **Python** | `lomi-sdk` | `pip install lomi-sdk` | [`python/`](./python) |
-| **Go** | `github.com/lomiafrica/lomi-go-sdk` | `go get github.com/lomiafrica/lomi-go-sdk` | [`go/`](./go) |
-| **PI-SPI (TypeScript)** | `pi-spi-sdk` | `npm install pi-spi-sdk` | [`pi-spi-sdk/`](./pi-spi-sdk) |
+| Language/Framework      | Package                             | Installation                               | Directory                     |
+| ----------------------- | ----------------------------------- | ------------------------------------------ | ----------------------------- |
+| **TypeScript**          | `@lomi./sdk`                        | `npm install @lomi./sdk`                   | [`ts/`](./ts)                 |
+| **Embedded Checkout**   | `@lomi./embed`                      | `npm install @lomi./embed`                 | [`embed/`](./embed)           |
+| **Python**              | `lomi-sdk`                          | `pip install lomi-sdk`                     | [`python/`](./python)         |
+| **Go**                  | `github.com/lomiafrica/lomi-go-sdk` | `go get github.com/lomiafrica/lomi-go-sdk` | [`go/`](./go)                 |
+| **PI-SPI (TypeScript)** | `pi-spi-sdk`                        | `npm install pi-spi-sdk`                   | [`pi-spi-sdk/`](./pi-spi-sdk) |
 
 ### PHP SDK
 
@@ -51,8 +51,6 @@ const session = await lomi.checkoutSessions.create({...});
 // Get transactions
 const transactions = await lomi.transactions.list();
 ```
-
-
 
 ### Python
 

@@ -61,9 +61,7 @@ export function isSymbol<Value>(value: Value): value is Value & symbol {
 }
 
 /** True when value is undefined. */
-export function isUndefined<Value>(
-  value: Value,
-): value is Value & undefined {
+export function isUndefined<Value>(value: Value): value is Value & undefined {
   return typeof value === "undefined";
 }
 
@@ -73,16 +71,12 @@ export function isNull(value: JsonValue): value is null {
 }
 
 /** True when value is a plain JSON object (not an array). */
-export function isJsonObject<Value>(
-  value: Value,
-): value is Value & JsonObject {
+export function isJsonObject<Value>(value: Value): value is Value & JsonObject {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** True when value is a JSON array. */
-export function isJsonArray<Value>(
-  value: Value,
-): value is Value & JsonValue[] {
+export function isJsonArray<Value>(value: Value): value is Value & JsonValue[] {
   return Array.isArray(value);
 }
 

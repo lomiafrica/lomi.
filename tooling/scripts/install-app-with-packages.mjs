@@ -52,7 +52,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isJsString } from "./lib/js-guards.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 const PACKAGE_INSTALL_ORDER = [
   "packages/shared",
@@ -71,7 +74,9 @@ const FILE_SPEC_TO_DIR = {
 };
 
 function run(command, args, cwd) {
-  console.log(`==> (${path.relative(ROOT, cwd) || "."}) ${command} ${args.join(" ")}`);
+  console.log(
+    `==> (${path.relative(ROOT, cwd) || "."}) ${command} ${args.join(" ")}`,
+  );
   const result = spawnSync(command, args, {
     cwd,
     stdio: "inherit",
@@ -259,7 +264,11 @@ function linkAppReactIntoUi(appRel) {
 function installSourceOnlyPackage(appRel, dir) {
   wipeCachedNodeModules(dir);
   if (useNpm(appRel)) {
-    run("npm", ["install", "--ignore-scripts", "--omit=dev", "--omit=peer"], dir);
+    run(
+      "npm",
+      ["install", "--ignore-scripts", "--omit=dev", "--omit=peer"],
+      dir,
+    );
     stripLeakedReactTypes(dir);
     return;
   }

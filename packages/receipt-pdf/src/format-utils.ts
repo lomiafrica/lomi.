@@ -76,10 +76,7 @@ const RECEIPT_DATE_TIME_FORMAT: Intl.DateTimeFormatOptions = {
   hour12: false,
 };
 
-function formatReceiptInstant(
-  date: Date,
-  includeTime: boolean,
-): string {
+function formatReceiptInstant(date: Date, includeTime: boolean): string {
   return new Intl.DateTimeFormat(
     "en-US",
     includeTime ? RECEIPT_DATE_TIME_FORMAT : RECEIPT_DATE_FORMAT,

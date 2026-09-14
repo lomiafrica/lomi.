@@ -288,7 +288,13 @@ export function useSnapCarousel({
 export type UseSnapCarouselResult = ReturnType<typeof useSnapCarousel>;
 
 const CARET_LEFT = (
-  <svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <polyline
       points="160 208 80 128 160 48"
       stroke="currentColor"
@@ -300,7 +306,13 @@ const CARET_LEFT = (
 );
 
 const CARET_RIGHT = (
-  <svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <polyline
       points="96 48 176 128 96 208"
       stroke="currentColor"
@@ -428,10 +440,20 @@ export function SnapCarousel({
           ))}
         </span>
         <span className="flex items-center gap-1.5">
-          <button type="button" onClick={car.prev} aria-label={prevLabel} className={button}>
+          <button
+            type="button"
+            onClick={car.prev}
+            aria-label={prevLabel}
+            className={button}
+          >
             {CARET_LEFT}
           </button>
-          <button type="button" onClick={car.next} aria-label={nextLabel} className={button}>
+          <button
+            type="button"
+            onClick={car.next}
+            aria-label={nextLabel}
+            className={button}
+          >
             {CARET_RIGHT}
           </button>
         </span>

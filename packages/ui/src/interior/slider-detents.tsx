@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   motion,
   useMotionTemplate,
@@ -10,7 +17,12 @@ import {
 
 const CARRIAGE = { stiffness: 520, damping: 34, mass: 0.45 } as const;
 
-const GRAB = { type: "spring", stiffness: 700, damping: 46, mass: 0.5 } as const;
+const GRAB = {
+  type: "spring",
+  stiffness: 700,
+  damping: 46,
+  mass: 0.5,
+} as const;
 const CROSSFADE = {
   type: "spring",
   stiffness: 260,
@@ -154,7 +166,8 @@ export function useSliderDetents({
     ? `${format(value)}, ${detentLabel}`
     : format(value);
 
-  const percent = range > 0 ? Math.min(1, Math.max(0, (value - min) / range)) : 0;
+  const percent =
+    range > 0 ? Math.min(1, Math.max(0, (value - min) / range)) : 0;
 
   const trackProps = {
     role: "slider" as const,
@@ -361,7 +374,6 @@ export function SliderDetents({
           className="pointer-events-none absolute inset-y-0"
           style={{ left: THUMB / 2, right: THUMB / 2 }}
         >
-
           {list.map((d) => (
             <span
               key={String(d.value)}

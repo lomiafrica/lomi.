@@ -3,7 +3,12 @@
 import { useCallback, useId, useRef, useState } from "react";
 import { Reorder, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const moveItem = <T,>(list: readonly T[], from: number, to: number): T[] => {
@@ -87,9 +92,7 @@ export function useReorderList<T>({
       const next = moveItem(live.current, from, to);
       emit.current(next);
       const item = next[to];
-      setSpoken(
-        `${getLabel(item)}, position ${to + 1} of ${next.length}.`,
-      );
+      setSpoken(`${getLabel(item)}, position ${to + 1} of ${next.length}.`);
       if (snapshot.current === null) settle.current?.(next);
     },
     [getLabel, indexOf],
@@ -118,13 +121,10 @@ export function useReorderList<T>({
     [disabled, grabbed, grab, drop, step, cancel],
   );
 
-  const onDragStart = useCallback(
-    (id: string) => {
-      snapshot.current = live.current;
-      setDragging(id);
-    },
-    [],
-  );
+  const onDragStart = useCallback((id: string) => {
+    snapshot.current = live.current;
+    setDragging(id);
+  }, []);
 
   const onDragEnd = useCallback(
     (id: string) => {
@@ -159,7 +159,13 @@ export type ReorderListProps<T> = UseReorderListOptions<T> & {
 };
 
 const GRIP = (
-  <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden>
+  <svg
+    width="10"
+    height="14"
+    viewBox="0 0 10 14"
+    fill="currentColor"
+    aria-hidden
+  >
     <circle cx="2.5" cy="2.5" r="1.2" />
     <circle cx="7.5" cy="2.5" r="1.2" />
     <circle cx="2.5" cy="7" r="1.2" />

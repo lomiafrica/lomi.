@@ -122,7 +122,8 @@ export function useLogoMarquee({
       if (loop <= 0) return;
 
       rate.current +=
-        ((movingRef.current ? 1 : 0) - rate.current) * (1 - Math.exp(-dt / RAMP));
+        ((movingRef.current ? 1 : 0) - rate.current) *
+        (1 - Math.exp(-dt / RAMP));
 
       const pull = nudge.current * (1 - Math.exp(-dt / SETTLE));
       nudge.current -= pull;
@@ -268,7 +269,6 @@ export function LogoMarquee({
     >
       <div
         ref={viewportRef}
-
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={reduced ? 0 : undefined}
         style={{ overflowX: reduced ? "auto" : "hidden" }}

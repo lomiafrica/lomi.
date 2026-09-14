@@ -1,30 +1,33 @@
-import { getLomiApiBaseUrl } from './env-config.js';
+import { getLomiApiBaseUrl } from "./env-config.js";
 
 export type OAuthIntrospectionResult = {
   active: boolean;
-  grant_type?: 'provisioning' | 'merchant';
+  grant_type?: "provisioning" | "merchant";
   provisioning_key?: string;
   provisioning_key_id?: string;
   organization_id?: string;
-  access_level?: 'read' | 'write' | 'full';
+  access_level?: "read" | "write" | "full";
   connection_key?: string;
   exp?: number;
   scope?: string;
 };
 
-const cache = new Map<string, { result: OAuthIntrospectionResult; expiresAt: number }>();
+const cache = new Map<
+  string,
+  { result: OAuthIntrospectionResult; expiresAt: number }
+>();
 
 let warnedMissingInternalKey = false;
 
 export function looksLikeOAuthAccessToken(token: string): boolean {
-  return token.trim().startsWith('lomi_oat_');
+  return token.trim().startsWith("lomi_oat_");
 }
 
 export function getOAuthIntrospectionInternalKey(): string {
   return (
     process.env.INTERNAL_API_KEY?.trim() ||
     process.env.CRON_SECRET?.trim() ||
-    ''
+    ""
   );
 }
 
@@ -32,8 +35,8 @@ export function getOAuthIntrospectionInternalKey(): string {
 export function getProtectedResourceMetadataUrl(): string {
   const resource = getMcpResourceUrl();
   const url = new URL(resource);
-  const resourcePath = url.pathname.replace(/\/$/, '');
-  const suffix = resourcePath ? resourcePath : '';
+  const resourcePath = url.pathname.replace(/\/$/, "");
+  const suffix = resourcePath ? resourcePath : "";
   return `${url.origin}/.well-known/oauth-protected-resource${suffix}`;
 }
 
@@ -51,7 +54,7 @@ export async function introspectOAuthAccessToken(
   if (!internalKey) {
     if (!warnedMissingInternalKey) {
       console.warn(
-        '[lomi-mcp] OAuth introspection skipped: set INTERNAL_API_KEY or CRON_SECRET on the MCP service to validate lomi_oat_* tokens.',
+        "[lomi-mcp] OAuth introspection skipped: set INTERNAL_API_KEY or CRON_SECRET on the MCP service to validate lomi_oat_* tokens.",
       );
       warnedMissingInternalKey = true;
     }
@@ -59,10 +62,10 @@ export async function introspectOAuthAccessToken(
   }
 
   const response = await fetch(`${baseUrl}/oauth/introspect/mcp`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'x-internal-key': internalKey,
+      "Content-Type": "application/json",
+      "x-internal-key": internalKey,
     },
     body: JSON.stringify({ token: trimmed }),
   });
@@ -85,22 +88,22 @@ export async function introspectOAuthAccessToken(
 
 export function getOAuthIssuer(): string {
   return (
-    process.env.LOMI_OAUTH_ISSUER?.trim()?.replace(/\/$/, '') ||
+    process.env.LOMI_OAUTH_ISSUER?.trim()?.replace(/\/$/, "") ||
     getLomiApiBaseUrl()
   );
 }
 
 export function getMcpResourceUrl(): string {
   const explicit = process.env.LOMI_MCP_RESOURCE_URL?.trim();
-  if (explicit) return explicit.replace(/\/$/, '');
-  const port = process.env.PORT ?? process.env.LOMI_MCP_HTTP_PORT ?? '3333';
+  if (explicit) return explicit.replace(/\/$/, "");
+  const port = process.env.PORT ?? process.env.LOMI_MCP_HTTP_PORT ?? "3333";
   const host = process.env.LOMI_MCP_PUBLIC_HOST?.trim() || `localhost:${port}`;
   const path =
     process.env.LOMI_MCP_HTTP_PATH?.trim() ||
     process.env.MCP_HTTP_PATH?.trim() ||
-    '/mcp';
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  const protocol = host.includes('localhost') ? 'http' : 'https';
+    "/mcp";
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const protocol = host.includes("localhost") ? "http" : "https";
   return `${protocol}://${host}${normalizedPath}`;
 }
 
@@ -116,11 +119,11 @@ export function buildProtectedResourceMetadata() {
     resource,
     authorization_servers: [issuer],
     scopes_supported: [
-      'provisioning.onboard',
-      'merchant.read',
-      'merchant.write',
-      'merchant.money',
+      "provisioning.onboard",
+      "merchant.read",
+      "merchant.write",
+      "merchant.money",
     ],
-    bearer_methods_supported: ['header'],
+    bearer_methods_supported: ["header"],
   };
 }

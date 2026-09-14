@@ -4,10 +4,10 @@
  * Matches TypeScript naming via sdk-public-methods parity manifest.
  */
 
-import { writeFileSync, mkdirSync, existsSync, rmSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { writeFileSync, mkdirSync, existsSync, rmSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 import {
   readSpecAndAllowlist,
   getNormalizedOperations,
@@ -16,26 +16,26 @@ import {
   tsMethodToPythonName,
   expandSdkManifestMethods,
   withoutHandwrittenServices,
-} from './public-sdk-operations.js';
+} from "./public-sdk-operations.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const sdksRoot = join(__dirname, '..');
-const outputDir = join(sdksRoot, 'python/lomi');
-const testsDir = join(sdksRoot, 'python/tests');
-const servicesDir = join(outputDir, 'services');
+const sdksRoot = join(__dirname, "..");
+const outputDir = join(sdksRoot, "python/lomi");
+const testsDir = join(sdksRoot, "python/tests");
+const servicesDir = join(outputDir, "services");
 
-console.log('🔨 Generating Python SDK from OpenAPI + allowlist…');
+console.log("🔨 Generating Python SDK from OpenAPI + allowlist…");
 
-execSync('node scripts/pre-generate.js', {
+execSync("node scripts/pre-generate.js", {
   cwd: sdksRoot,
-  stdio: 'inherit',
+  stdio: "inherit",
 });
 
 // Only the generated smoke test is owned by this script; hand-written tests
 // (tests/test_network.py) survive regeneration.
-const generatedTestPath = join(testsDir, 'test_generated_surface.py');
+const generatedTestPath = join(testsDir, "test_generated_surface.py");
 if (existsSync(servicesDir)) rmSync(servicesDir, { recursive: true });
 if (existsSync(generatedTestPath)) rmSync(generatedTestPath);
 
@@ -51,7 +51,10 @@ const byService = withoutHandwrittenServices(
 
 function escapeDocSummary(nop) {
   const t = nop.summary || nop.sdkMethodName;
-  return String(t).replace(/\r?\n/g, ' ').replace(/\\/g, '\\\\').replace(/"""/g, '\\"\\"\\"');
+  return String(t)
+    .replace(/\r?\n/g, " ")
+    .replace(/\\/g, "\\\\")
+    .replace(/"""/g, '\\"\\"\\"');
 }
 
 /**
@@ -62,14 +65,14 @@ function buildPythonMethod(nop) {
   const pyName = tsMethodToPythonName(nop.sdkMethodName);
   const tmpl = nop.pathTemplate;
   const pNames = nop.pathParamNames;
-  const hasQuery = nop.httpMethodLower === 'get' && nop.queryParams.length > 0;
+  const hasQuery = nop.httpMethodLower === "get" && nop.queryParams.length > 0;
   const hasBody = nop.wantsBody;
 
   const sigParts = [...pNames.map((n) => `${n}: str`)];
-  if (hasQuery) sigParts.push('params: Optional[Dict[str, Any]] = None');
-  if (hasBody) sigParts.push('body: Optional[Dict[str, Any]] = None');
+  if (hasQuery) sigParts.push("params: Optional[Dict[str, Any]] = None");
+  if (hasBody) sigParts.push("body: Optional[Dict[str, Any]] = None");
 
-  const sigClause = sigParts.length ? `, ${sigParts.join(', ')}` : '';
+  const sigClause = sigParts.length ? `, ${sigParts.join(", ")}` : "";
 
   const pathBody = [`path = ${JSON.stringify(tmpl)}`];
   for (const n of pNames) {
@@ -77,11 +80,11 @@ function buildPythonMethod(nop) {
   }
 
   let req = `self._request("${nop.httpMethodLower.toUpperCase()}", path`;
-  if (hasQuery) req += ', params=params';
-  if (hasBody) req += ', data=body';
-  req += ')';
+  if (hasQuery) req += ", params=params";
+  if (hasBody) req += ", data=body";
+  req += ")";
 
-  const indentedPath = pathBody.map((l) => `        ${l}`).join('\n');
+  const indentedPath = pathBody.map((l) => `        ${l}`).join("\n");
 
   return `    def ${pyName}(self${sigClause}) -> Any:
         """${escapeDocSummary(nop)}"""
@@ -91,7 +94,7 @@ ${indentedPath}
 }
 
 function escapePyStr(s) {
-  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 /** @type {Map<string,string>} serviceClass -> module stem (snake) */
@@ -108,7 +111,7 @@ for (const [serviceClassName, ops] of byService) {
       tsMethodToPythonName(b.sdkMethodName),
     ),
   );
-  const blocks = sorted.map((o) => buildPythonMethod(o)).join('\n');
+  const blocks = sorted.map((o) => buildPythonMethod(o)).join("\n");
 
   const content = `from __future__ import annotations
 
@@ -126,20 +129,20 @@ ${blocks}
   writeFileSync(join(servicesDir, `${stem}.py`), content);
 }
 
-let servicesInit = '';
+let servicesInit = "";
 for (const [serviceClassName, stem] of [...serviceModuleStem.entries()].sort(
   (a, b) => a[1].localeCompare(b[1]),
 )) {
   servicesInit += `from .${stem} import ${serviceClassName}\n`;
 }
-writeFileSync(join(servicesDir, '__init__.py'), servicesInit);
+writeFileSync(join(servicesDir, "__init__.py"), servicesInit);
 
-const modelsDir = join(outputDir, 'models');
+const modelsDir = join(outputDir, "models");
 if (existsSync(modelsDir)) rmSync(modelsDir, { recursive: true });
 mkdirSync(modelsDir, { recursive: true });
 
 writeFileSync(
-  join(modelsDir, '__init__.py'),
+  join(modelsDir, "__init__.py"),
   `"""Types are dictated by the public API OpenAPI schema; use Dict[str, Any] or narrow in your app."""
 from typing import Any, Dict
 
@@ -189,7 +192,7 @@ class ClientBase:
         )
 `;
 
-writeFileSync(join(outputDir, 'client_base.py'), clientBaseContent);
+writeFileSync(join(outputDir, "client_base.py"), clientBaseContent);
 
 const exceptionsContent = `"""lomi-sdk exceptions."""
 
@@ -213,13 +216,13 @@ class LomiNotFoundError(LomiError):
     """Resource missing."""
 `;
 
-writeFileSync(join(outputDir, 'exceptions.py'), exceptionsContent);
+writeFileSync(join(outputDir, "exceptions.py"), exceptionsContent);
 
 const sortedServicesForClient = [...byService.keys()].sort((a, b) =>
   a.localeCompare(b),
 );
 
-let clientInits = '';
+let clientInits = "";
 for (const serviceClassName of sortedServicesForClient) {
   const stem = camelSdkPropToSnake(sdkPropertyName(serviceClassName));
   const snakeAttr = stem;
@@ -345,7 +348,7 @@ ${clientInits}
 
 `;
 
-writeFileSync(join(outputDir, 'client.py'), clientPy);
+writeFileSync(join(outputDir, "client.py"), clientPy);
 
 const initContent = `"""lomi Python SDK — public merchant API surface."""
 
@@ -355,7 +358,7 @@ from .exceptions import LomiError, LomiAuthError, LomiNotFoundError
 __all__ = ["LomiClient", "LomiError", "LomiAuthError", "LomiNotFoundError"]
 `;
 
-writeFileSync(join(outputDir, '__init__.py'), initContent);
+writeFileSync(join(outputDir, "__init__.py"), initContent);
 
 const manifestSdk = {};
 for (const svc of sortedServicesForClient) {
@@ -367,12 +370,13 @@ for (const svc of sortedServicesForClient) {
 }
 
 writeFileSync(
-  join(outputDir, 'sdk_python_methods.json'),
+  join(outputDir, "sdk_python_methods.json"),
   `${JSON.stringify(
     {
       generatedAt: new Date().toISOString(),
-      language: 'python',
-      naming: 'ts_method_names_manifest_pep8_sdk_methods_are_snake_case_in_code',
+      language: "python",
+      naming:
+        "ts_method_names_manifest_pep8_sdk_methods_are_snake_case_in_code",
       sdk: manifestSdk,
       python_methods: Object.fromEntries(
         Object.entries(manifestSdk).map(([k, methods]) => [
@@ -387,7 +391,7 @@ writeFileSync(
 );
 
 writeFileSync(
-  join(testsDir, 'test_generated_surface.py'),
+  join(testsDir, "test_generated_surface.py"),
   `"""Smoke test: generated services attach to client."""
 import unittest
 
@@ -433,4 +437,6 @@ if __name__ == "__main__":
 `,
 );
 
-console.log(`✅ Python SDK generated — ${allowed.length} operations, ${byService.size} services.`);
+console.log(
+  `✅ Python SDK generated — ${allowed.length} operations, ${byService.size} services.`,
+);

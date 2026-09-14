@@ -11,12 +11,18 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const RADIUS = 11;
 const MIN_W = 160;
 const MIN_H = 88;
 
-const useIsoLayoutEffect = typeof document === "undefined" ? useEffect : useLayoutEffect;
+const useIsoLayoutEffect =
+  typeof document === "undefined" ? useEffect : useLayoutEffect;
 
 export type PopoverSide = "top" | "right" | "bottom" | "left";
 export type PopoverAlign = "start" | "center" | "end";
@@ -101,7 +107,9 @@ export function usePopover<A extends HTMLElement = HTMLElement>({
     const left = b ? Math.max(padding, b.left + padding) : padding;
     const top = b ? Math.max(padding, b.top + padding) : padding;
     const right = b ? Math.min(vw - padding, b.right - padding) : vw - padding;
-    const bottom = b ? Math.min(vh - padding, b.bottom - padding) : vh - padding;
+    const bottom = b
+      ? Math.min(vh - padding, b.bottom - padding)
+      : vh - padding;
 
     panel.style.maxWidth = `${Math.max(MIN_W, right - left)}px`;
 
@@ -114,7 +122,9 @@ export function usePopover<A extends HTMLElement = HTMLElement>({
 
     let next = side;
     const wanted =
-      next === "top" || next === "bottom" ? panel.offsetHeight : panel.offsetWidth;
+      next === "top" || next === "bottom"
+        ? panel.offsetHeight
+        : panel.offsetWidth;
     if (room[next] < wanted && room[FLIP[next]] > room[next]) next = FLIP[next];
 
     const horizontal = next === "top" || next === "bottom";
@@ -212,7 +222,15 @@ export function usePopover<A extends HTMLElement = HTMLElement>({
     };
   }, [open, update]);
 
-  return { anchorRef, floatingRef, panelRef, contentRef, arrowRef, side: resolved, update };
+  return {
+    anchorRef,
+    floatingRef,
+    panelRef,
+    contentRef,
+    arrowRef,
+    side: resolved,
+    update,
+  };
 }
 
 export type PopoverProps = {
@@ -257,16 +275,22 @@ export function Popover({
   const notify = useRef(onOpenChange);
   notify.current = onOpenChange;
 
-  const { anchorRef, floatingRef, panelRef, contentRef, arrowRef, side: at } =
-    usePopover<HTMLButtonElement>({
-      open,
-      side,
-      align,
-      offset,
-      padding,
-      arrowSize,
-      boundary,
-    });
+  const {
+    anchorRef,
+    floatingRef,
+    panelRef,
+    contentRef,
+    arrowRef,
+    side: at,
+  } = usePopover<HTMLButtonElement>({
+    open,
+    side,
+    align,
+    offset,
+    padding,
+    arrowSize,
+    boundary,
+  });
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -287,7 +311,11 @@ export function Popover({
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
       if (!target) return;
-      if (panelRef.current?.contains(target) || anchorRef.current?.contains(target)) return;
+      if (
+        panelRef.current?.contains(target) ||
+        anchorRef.current?.contains(target)
+      )
+        return;
       setOpen(false);
     };
 
@@ -328,7 +356,11 @@ export function Popover({
             onBlurCapture={(event) => {
               const next = event.relatedTarget as Node | null;
               if (!next) return;
-              if (panelRef.current?.contains(next) || anchorRef.current?.contains(next)) return;
+              if (
+                panelRef.current?.contains(next) ||
+                anchorRef.current?.contains(next)
+              )
+                return;
               setOpen(false);
             }}
           >
@@ -339,7 +371,9 @@ export function Popover({
               aria-label={label}
               tabIndex={-1}
               initial={
-                reduced ? { opacity: 0 } : { opacity: 0, scale: 0.95, ...FROM[at] }
+                reduced
+                  ? { opacity: 0 }
+                  : { opacity: 0, scale: 0.95, ...FROM[at] }
               }
               animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
               exit={
@@ -361,10 +395,17 @@ export function Popover({
               <span
                 ref={arrowRef}
                 aria-hidden
-                style={{ width: arrowSize, height: arrowSize, transform: "rotate(45deg)" }}
+                style={{
+                  width: arrowSize,
+                  height: arrowSize,
+                  transform: "rotate(45deg)",
+                }}
                 className={`absolute block bg-white dark:bg-[#1D1D1A] border-stone-200 dark:border-white/[0.16] ${ARROW_EDGE[at]}`}
               />
-              <div ref={contentRef} className="relative overflow-y-auto overscroll-contain">
+              <div
+                ref={contentRef}
+                className="relative overflow-y-auto overscroll-contain"
+              >
                 {children}
               </div>
             </motion.div>

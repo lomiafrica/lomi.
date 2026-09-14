@@ -15,28 +15,45 @@ export async function createSupportRequest(
 export async function createSupportRequest(
   client: TypedSupabaseClient,
   args: DbFunctions["create_support_request"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["create_support_request"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["create_support_request"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["create_support_request"]["Returns"] | null>;
 export async function createSupportRequest(
   client: TypedSupabaseClient,
   args: DbFunctions["create_support_request"]["Args"] = emptyRpcArgs<"create_support_request">(),
-  options?: SupabaseRpcOptions<DbFunctions["create_support_request"]["Returns"]> | null,
+  options?: SupabaseRpcOptions<
+    DbFunctions["create_support_request"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["create_support_request"]["Returns"] | null | boolean> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "create_support_request", args), "create_support_request", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "create_support_request", args),
+      "create_support_request",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "create_support_request", args), "create_support_request", options);
+    return handleSupabaseRpc(
+      rpc(client, "create_support_request", args),
+      "create_support_request",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "create_support_request", args), "create_support_request");
+  return handleSupabaseRpc(
+    rpc(client, "create_support_request", args),
+    "create_support_request",
+  );
 }
 
 export async function fetchOrganizationSupportRequests(
   client: TypedSupabaseClient,
   args?: DbFunctions["fetch_organization_support_requests"]["Args"],
-): Promise<DbFunctions["fetch_organization_support_requests"]["Returns"] | null>;
+): Promise<
+  DbFunctions["fetch_organization_support_requests"]["Returns"] | null
+>;
 export async function fetchOrganizationSupportRequests(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_support_requests"]["Args"],
@@ -45,22 +62,41 @@ export async function fetchOrganizationSupportRequests(
 export async function fetchOrganizationSupportRequests(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_support_requests"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["fetch_organization_support_requests"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_organization_support_requests"]["Returns"] | null>;
+  options: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_support_requests"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_organization_support_requests"]["Returns"] | null
+>;
 export async function fetchOrganizationSupportRequests(
   client: TypedSupabaseClient,
   args: DbFunctions["fetch_organization_support_requests"]["Args"] = emptyRpcArgs<"fetch_organization_support_requests">(),
-  options?: SupabaseRpcOptions<DbFunctions["fetch_organization_support_requests"]["Returns"]> | null,
-): Promise<DbFunctions["fetch_organization_support_requests"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["fetch_organization_support_requests"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["fetch_organization_support_requests"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_support_requests", args), "fetch_organization_support_requests", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_support_requests", args),
+      "fetch_organization_support_requests",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "fetch_organization_support_requests", args), "fetch_organization_support_requests", options);
+    return handleSupabaseRpc(
+      rpc(client, "fetch_organization_support_requests", args),
+      "fetch_organization_support_requests",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "fetch_organization_support_requests", args), "fetch_organization_support_requests");
+  return handleSupabaseRpc(
+    rpc(client, "fetch_organization_support_requests", args),
+    "fetch_organization_support_requests",
+  );
 }
 
 export async function merchantCloseSupportRequest(
@@ -75,20 +111,37 @@ export async function merchantCloseSupportRequest(
 export async function merchantCloseSupportRequest(
   client: TypedSupabaseClient,
   args: DbFunctions["merchant_close_support_request"]["Args"],
-  options: SupabaseRpcOptions<DbFunctions["merchant_close_support_request"]["Returns"]> | null,
+  options: SupabaseRpcOptions<
+    DbFunctions["merchant_close_support_request"]["Returns"]
+  > | null,
 ): Promise<DbFunctions["merchant_close_support_request"]["Returns"] | null>;
 export async function merchantCloseSupportRequest(
   client: TypedSupabaseClient,
   args: DbFunctions["merchant_close_support_request"]["Args"] = emptyRpcArgs<"merchant_close_support_request">(),
-  options?: SupabaseRpcOptions<DbFunctions["merchant_close_support_request"]["Returns"]> | null,
-): Promise<DbFunctions["merchant_close_support_request"]["Returns"] | null | boolean> {
+  options?: SupabaseRpcOptions<
+    DbFunctions["merchant_close_support_request"]["Returns"]
+  > | null,
+): Promise<
+  DbFunctions["merchant_close_support_request"]["Returns"] | null | boolean
+> {
   if (options === null) {
-    return handleSupabaseRpc(rpc(client, "merchant_close_support_request", args), "merchant_close_support_request", {
-      fallbackValue: null,
-    });
+    return handleSupabaseRpc(
+      rpc(client, "merchant_close_support_request", args),
+      "merchant_close_support_request",
+      {
+        fallbackValue: null,
+      },
+    );
   }
   if (options !== undefined) {
-    return handleSupabaseRpc(rpc(client, "merchant_close_support_request", args), "merchant_close_support_request", options);
+    return handleSupabaseRpc(
+      rpc(client, "merchant_close_support_request", args),
+      "merchant_close_support_request",
+      options,
+    );
   }
-  return handleSupabaseRpc(rpc(client, "merchant_close_support_request", args), "merchant_close_support_request");
+  return handleSupabaseRpc(
+    rpc(client, "merchant_close_support_request", args),
+    "merchant_close_support_request",
+  );
 }

@@ -12,30 +12,30 @@
  * steps for you.
  */
 
-import type { JsonObject } from '@lomi./shared';
-import type { LomiClient } from '../client.js';
-import { requestWithClient } from '../http.js';
-import type { LomiRequestOptions } from '../request-options.js';
+import type { JsonObject } from "@lomi./shared";
+import type { LomiClient } from "../client.js";
+import { requestWithClient } from "../http.js";
+import type { LomiRequestOptions } from "../request-options.js";
 
 export type TransferType =
-  | 'destination'
-  | 'separate'
-  | 'operator_fee'
-  | 'processing_fee_cover'
-  | 'fee_reversal'
-  | 'transfer_reversal'
-  | 'loss_cover';
+  | "destination"
+  | "separate"
+  | "operator_fee"
+  | "processing_fee_cover"
+  | "fee_reversal"
+  | "transfer_reversal"
+  | "loss_cover";
 
 export interface Transfer {
   id: string;
-  object: 'transfer';
+  object: "transfer";
   amount: number;
   currency_code: string;
   settled_amount: number;
   settled_currency: string;
   transfer_type: TransferType | string;
   status: string;
-  environment: 'test' | 'live' | string;
+  environment: "test" | "live" | string;
   destination: string;
   source: string | null;
   source_transaction_id: string | null;
@@ -50,7 +50,7 @@ export interface Transfer {
 }
 
 export interface TransferList {
-  object: 'list';
+  object: "list";
   data: Transfer[];
   has_more: boolean;
   next_cursor: string | null;
@@ -104,7 +104,7 @@ export function isMoneyConfirmationRequired(
   value: Transfer | MoneyConfirmationRequired,
 ): value is MoneyConfirmationRequired {
   return (
-    'requires_confirmation' in value && value.requires_confirmation === true
+    "requires_confirmation" in value && value.requires_confirmation === true
   );
 }
 
@@ -124,8 +124,8 @@ export class TransfersResource {
     return requestWithClient<Transfer | MoneyConfirmationRequired>(
       this.client,
       {
-        method: 'POST',
-        url: '/transfers',
+        method: "POST",
+        url: "/transfers",
         body: params,
         ...options,
       },
@@ -144,7 +144,9 @@ export class TransfersResource {
       options,
     );
     if (isMoneyConfirmationRequired(second)) {
-      throw new Error('lomi. API asked for confirmation twice; aborting transfer.');
+      throw new Error(
+        "lomi. API asked for confirmation twice; aborting transfer.",
+      );
     }
     return second;
   }
@@ -155,8 +157,8 @@ export class TransfersResource {
     options?: LomiRequestOptions,
   ): Promise<TransferList> {
     return requestWithClient<TransferList>(this.client, {
-      method: 'GET',
-      url: '/transfers',
+      method: "GET",
+      url: "/transfers",
       query: params,
       ...options,
     });
@@ -177,10 +179,13 @@ export class TransfersResource {
   }
 
   /** Retrieve one transfer (`GET /transfers/{id}`). */
-  public async get(id: string, options?: LomiRequestOptions): Promise<Transfer> {
+  public async get(
+    id: string,
+    options?: LomiRequestOptions,
+  ): Promise<Transfer> {
     return requestWithClient<Transfer>(this.client, {
-      method: 'GET',
-      url: '/transfers/{id}',
+      method: "GET",
+      url: "/transfers/{id}",
       path: { id },
       ...options,
     });
@@ -198,8 +203,8 @@ export class TransfersResource {
     return requestWithClient<Transfer | MoneyConfirmationRequired>(
       this.client,
       {
-        method: 'POST',
-        url: '/transfers/{id}/reversals',
+        method: "POST",
+        url: "/transfers/{id}/reversals",
         path: { id },
         body: params,
         ...options,
@@ -221,7 +226,9 @@ export class TransfersResource {
       options,
     );
     if (isMoneyConfirmationRequired(second)) {
-      throw new Error('lomi. API asked for confirmation twice; aborting reversal.');
+      throw new Error(
+        "lomi. API asked for confirmation twice; aborting reversal.",
+      );
     }
     return second;
   }

@@ -3,8 +3,18 @@
 import { useCallback, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
-const CROSSFADE = { type: "spring", stiffness: 260, damping: 34, mass: 0.8 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
+const CROSSFADE = {
+  type: "spring",
+  stiffness: 260,
+  damping: 34,
+  mass: 0.8,
+} as const;
 const INSTANT = { duration: 0 } as const;
 
 const NUMBER = /-?\d*\.?\d+/g;
@@ -33,7 +43,11 @@ export type IconMorphSemantics = "label" | "pressed" | "expanded";
 
 export const iconMorphPresets: Record<
   IconMorphPreset,
-  { mode: IconMorphMode; labels: readonly string[]; shapes: readonly MorphShape[] }
+  {
+    mode: IconMorphMode;
+    labels: readonly string[];
+    shapes: readonly MorphShape[];
+  }
 > = {
   "menu-close": {
     mode: "stroke",
@@ -45,7 +59,11 @@ export const iconMorphPresets: Record<
       },
       {
         rotate: 90,
-        d: ["M 6.5 6.5 L 17.5 17.5", "M 12 12 L 12 12", "M 6.5 17.5 L 17.5 6.5"],
+        d: [
+          "M 6.5 6.5 L 17.5 17.5",
+          "M 12 12 L 12 12",
+          "M 6.5 17.5 L 17.5 6.5",
+        ],
       },
     ],
   },

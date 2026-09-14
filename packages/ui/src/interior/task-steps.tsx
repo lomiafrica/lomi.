@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const POP = { type: "spring", stiffness: 640, damping: 22, mass: 0.7 } as const;
-const CELL = { type: "spring", stiffness: 520, damping: 34, mass: 0.45 } as const;
+const CELL = {
+  type: "spring",
+  stiffness: 520,
+  damping: 34,
+  mass: 0.45,
+} as const;
 const STILL = { duration: 0 } as const;
 
 export type TaskStep = {
@@ -24,7 +29,11 @@ export type UseTaskStepsOptions = {
   failed?: boolean;
 };
 
-export function useTaskSteps({ steps, current, failed = false }: UseTaskStepsOptions) {
+export function useTaskSteps({
+  steps,
+  current,
+  failed = false,
+}: UseTaskStepsOptions) {
   const complete = !failed && current >= steps.length;
 
   const rows = steps.map((step, i) => ({
@@ -79,7 +88,9 @@ const Arc = ({ spin }: { spin: boolean }) => (
     className="size-3"
     aria-hidden
     animate={spin ? { rotate: 360 } : { rotate: 0 }}
-    transition={spin ? { duration: 0.8, ease: "linear", repeat: Infinity } : STILL}
+    transition={
+      spin ? { duration: 0.8, ease: "linear", repeat: Infinity } : STILL
+    }
   >
     <circle
       cx="8"
@@ -147,7 +158,9 @@ export function TaskSteps({
                     <motion.span
                       key="done"
                       className="col-start-1 row-start-1 grid size-4 place-items-center rounded-[5px] bg-emerald-500/[0.14] text-emerald-600 dark:bg-emerald-400/[0.16] dark:text-emerald-400"
-                      initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.4 }}
+                      initial={
+                        reduced ? { opacity: 0 } : { opacity: 0, scale: 0.4 }
+                      }
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, transition: STILL }}
                       transition={reduced ? STILL : POP}
@@ -158,7 +171,9 @@ export function TaskSteps({
                     <motion.span
                       key="error"
                       className="col-start-1 row-start-1 grid size-4 place-items-center rounded-[5px] bg-red-500/[0.12] text-red-600 dark:bg-red-400/[0.14] dark:text-red-400"
-                      initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.4 }}
+                      initial={
+                        reduced ? { opacity: 0 } : { opacity: 0, scale: 0.4 }
+                      }
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, transition: STILL }}
                       transition={reduced ? STILL : POP}
@@ -193,7 +208,11 @@ export function TaskSteps({
                 <motion.span
                   className="min-w-0 flex-1 truncate bg-[linear-gradient(90deg,#78716c_38%,#1c1917_50%,#78716c_62%)] bg-clip-text text-[12.5px] font-medium text-transparent [background-size:220%_100%] dark:bg-[linear-gradient(90deg,#a8a29e_38%,#fafaf9_50%,#a8a29e_62%)]"
                   animate={{ backgroundPosition: ["120% 0", "-120% 0"] }}
-                  transition={{ duration: 1.6, ease: "linear", repeat: Infinity }}
+                  transition={{
+                    duration: 1.6,
+                    ease: "linear",
+                    repeat: Infinity,
+                  }}
                 >
                   {row.label}
                 </motion.span>
@@ -224,7 +243,10 @@ export function TaskSteps({
       <span role="status" className="sr-only">
         {spoken}
       </span>
-      <span className="sr-only" aria-live={complete || failed ? "polite" : "off"}>
+      <span
+        className="sr-only"
+        aria-live={complete || failed ? "polite" : "off"}
+      >
         {complete ? "Run complete" : failed ? "Run failed" : ""}
       </span>
     </div>

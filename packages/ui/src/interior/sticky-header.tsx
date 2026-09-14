@@ -69,7 +69,11 @@ export function StickyHeader({
   const short = Math.min(expandedHeight, compactHeight);
   const travel = Math.max(1, tall - short);
 
-  const { ref, progress: tracked, condensed } = useCondense<HTMLDivElement>({
+  const {
+    ref,
+    progress: tracked,
+    condensed,
+  } = useCondense<HTMLDivElement>({
     range: Math.max(64, travel * 3),
   });
   const reduced = useReducedMotion();
@@ -95,7 +99,6 @@ export function StickyHeader({
     >
       <div
         ref={ref}
-
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         role="region"

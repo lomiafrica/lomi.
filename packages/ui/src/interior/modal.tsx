@@ -16,7 +16,12 @@ const EASE = [0.23, 1, 0.32, 1] as const;
 
 const LEAVE = [0.4, 0, 1, 1] as const;
 
-const SURFACE = { type: "spring", stiffness: 420, damping: 36, mass: 0.9 } as const;
+const SURFACE = {
+  type: "spring",
+  stiffness: 420,
+  damping: 36,
+  mass: 0.9,
+} as const;
 
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -84,7 +89,9 @@ export type UseModalOptions = {
   closeOnBackdrop?: boolean;
   lockScroll?: boolean;
   /** Prefer `RefObject<HTMLElement>` (React 18) or `RefObject<HTMLElement | null>` (React 19). */
-  initialFocusRef?: React.RefObject<HTMLElement | null> | React.RefObject<HTMLElement>;
+  initialFocusRef?:
+    | React.RefObject<HTMLElement | null>
+    | React.RefObject<HTMLElement>;
   container?: HTMLElement | null;
 };
 
@@ -123,15 +130,26 @@ export function useModal({
 }: UseModalOptions): UseModalResult {
   const [target, setTarget] = useState<HTMLElement | null>(null);
 
-  const overlayRef = useMemo(() => ({ current: null as HTMLDivElement | null }), []);
-  const panelRef = useMemo(() => ({ current: null as HTMLDivElement | null }), []);
+  const overlayRef = useMemo(
+    () => ({ current: null as HTMLDivElement | null }),
+    [],
+  );
+  const panelRef = useMemo(
+    () => ({ current: null as HTMLDivElement | null }),
+    [],
+  );
   const downedOutside = useRef(false);
 
   const baseId = useId();
   const titleId = `${baseId}-title`;
   const descriptionId = `${baseId}-description`;
 
-  const latest = useRef({ onClose, closeOnEscape, closeOnBackdrop, initialFocusRef });
+  const latest = useRef({
+    onClose,
+    closeOnEscape,
+    closeOnBackdrop,
+    initialFocusRef,
+  });
   latest.current = { onClose, closeOnEscape, closeOnBackdrop, initialFocusRef };
 
   const close = useCallback(() => latest.current.onClose(), []);
@@ -207,12 +225,17 @@ export function useModal({
     if (!panel) return;
 
     const previous =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     const preferred = latest.current.initialFocusRef?.current;
-    (preferred ?? focusableWithin(panel)[0] ?? panel).focus({ preventScroll: true });
+    (preferred ?? focusableWithin(panel)[0] ?? panel).focus({
+      preventScroll: true,
+    });
 
     return () => {
-      if (previous && previous.isConnected) previous.focus({ preventScroll: true });
+      if (previous && previous.isConnected)
+        previous.focus({ preventScroll: true });
     };
   }, [open, target]);
 
@@ -277,7 +300,13 @@ export function useModal({
 }
 
 const CLOSE_ICON = (
-  <svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 256 256"
+    fill="none"
+    aria-hidden="true"
+  >
     <line
       x1="200"
       y1="56"
@@ -340,15 +369,17 @@ export function Modal({
 }: ModalProps) {
   const reduced = useReducedMotion();
 
-  const { target, titleId, descriptionId, overlayProps, panelProps } = useModal({
-    open,
-    onClose,
-    closeOnEscape,
-    closeOnBackdrop,
-    lockScroll,
-    initialFocusRef,
-    container,
-  });
+  const { target, titleId, descriptionId, overlayProps, panelProps } = useModal(
+    {
+      open,
+      onClose,
+      closeOnEscape,
+      closeOnBackdrop,
+      lockScroll,
+      initialFocusRef,
+      container,
+    },
+  );
 
   const variants = useMemo(() => {
     if (reduced) {
