@@ -94,7 +94,3 @@
 	path = apps/tools/xrpl
 	url = https://github.com/lomiafrica/xrpl.git
 	branch = main
-[submodule "apps/tools/zcash"]
-	path = apps/tools/zcash
-	url = https://github.com/lomiafrica/zcash.git
-	branch = main

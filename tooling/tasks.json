@@ -490,18 +490,6 @@
       "risk": "ops"
     },
     {
-      "id": "zcash",
-      "path": "apps/tools/zcash",
-      "kind": "tool",
-      "manager": "pnpm",
-      "workspace": false,
-      "submodule": true,
-      "required": false,
-      "capabilities": ["install", "typecheck"],
-      "owner": "tools",
-      "risk": "ops"
-    },
-    {
       "id": "doctool",
       "path": "apps/tools/doctool",
       "kind": "tool",
