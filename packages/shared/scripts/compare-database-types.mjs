@@ -9,7 +9,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const PROD_PROJECT_ID = "mdswvokxrnfggrujsfjd";
-const TEST_PROJECT_ID = "izulmkzzxokexxvyetar";
+// Replaces retired izulmkzzxokexxvyetar (gone 2026-09-09).
+// As of 2026-09-14 this project has no loaded schema; compare will fail
+// loudly until the canonical migrations are applied there.
+const TEST_PROJECT_ID = "aznvppizdjrncqhnknrc";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const prodPath = path.join(__dirname, "../src/database.ts");
