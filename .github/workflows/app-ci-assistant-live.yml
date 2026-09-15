@@ -1,0 +1,65 @@
+name: lomi · ci · assistant live
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  assistant-live:
+    if: ${{ secrets.ASSISTANT_E2E_EMAIL != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Init private submodules
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/api apps/dashboard
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: |
+            apps/api/pnpm-lock.yaml
+            apps/dashboard/pnpm-lock.yaml
+
+      - name: Install API dependencies
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
+
+      - name: Live assistant HTTP
+        working-directory: apps/api
+        env:
+          ASSISTANT_E2E_EMAIL: ${{ secrets.ASSISTANT_E2E_EMAIL }}
+          ASSISTANT_E2E_PASSWORD: ${{ secrets.ASSISTANT_E2E_PASSWORD }}
+          ASSISTANT_E2E_ORG: ${{ secrets.ASSISTANT_E2E_ORG }}
+          ASSISTANT_E2E_API_URL: ${{ secrets.ASSISTANT_E2E_API_URL }}
+          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.ASSISTANT_E2E_SUPABASE_URL }}
+          ASSISTANT_E2E_SUPABASE_ANON_KEY: ${{ secrets.ASSISTANT_E2E_SUPABASE_ANON_KEY }}
+        run: pnpm synthetics:assistant
+
+      - name: Install dashboard dependencies
+        run: node tooling/scripts/install-app-with-packages.mjs apps/dashboard
+
+      - name: Install Playwright Chromium
+        working-directory: apps/dashboard
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Playwright assistant panel
+        working-directory: apps/dashboard
+        env:
+          ASSISTANT_E2E_EMAIL: ${{ secrets.ASSISTANT_E2E_EMAIL }}
+          ASSISTANT_E2E_PASSWORD: ${{ secrets.ASSISTANT_E2E_PASSWORD }}
+          ASSISTANT_E2E_ORG: ${{ secrets.ASSISTANT_E2E_ORG }}
+          ASSISTANT_E2E_API_URL: ${{ secrets.ASSISTANT_E2E_API_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.ASSISTANT_E2E_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.ASSISTANT_E2E_SUPABASE_ANON_KEY }}
+        run: pnpm test:assistant:e2e

@@ -5,36 +5,39 @@ description: Screen incoming card and mobile-money charges with risk assessments
 
 import { Callout } from '@/components/docs/docs-callout';
 
-**lomi. Radar** evaluates **incoming** charges (card, MTN, Wave) before they complete. It is separate from [Disputes](/build/money/disputes) (card chargebacks after the fact) and from platform payout controls described in [Payouts](/build/money/payouts).
+**lomi. Radar** evaluates **incoming** charges (card, MTN, Wave) before they complete. Every charge gets a **Normal**, **Risky**, or **Blocked** label on the transaction. It is separate from [Disputes](/build/money/disputes) (card chargebacks after the fact) and from platform payout controls described in [Payouts](/build/money/payouts).
 
 <Callout type="info">
-  Radar is **opt-in** per organization. Enable it with `PATCH /organizations/radar-settings` (`enabled: true`). Default is off for existing merchants.
+  Screening is always on. Merchants choose monitor vs block. Platform rules (including unverified accounts taking USD or EUR cards) cannot be turned off.
 </Callout>
 
-## Enable Radar
+## Mode
 
 ```bash
 curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "enabled": true, "mode": "block" }'
+  -d '{ "mode": "block" }'
 ```
 
 | Field | Values | Meaning |
 | --- | --- | --- |
-| `enabled` | `true` / `false` | Turn screening on or off |
-| `mode` | `monitor` | Flag risky charges but allow them |
+| `mode` | `monitor` | Mark risky charges but allow them |
 | `mode` | `block` | Reject charges that trigger block rules |
 | `stripe_radar_passthrough` | `true` (default) | Merge card-network risk signals after card capture |
+| `enabled` | ignored for screening | Metering preference only |
 
-## Built-in rules (v1)
+Dashboard Settings → Radar shows the same mode control. Risky and blocked charges also create an in-app notification.
+
+## Built-in rules
 
 | Rule | Rails | Default action |
 | --- | --- | --- |
-| `high_value_charge` | card, MTN, Wave | Flag ≥ 500,000 XOF |
+| `high_value_charge` | card, MTN, Wave | Flag ≥ 500,000 XOF equivalent |
 | `velocity_charges_1h` | all | Block > 20 charges / customer / hour |
 | `repeat_phone_24h` | MTN, Wave | Flag same phone across customers |
 | `card_country_mismatch` | card | Flag billing country outside WAEMU |
+| `unverified_card_foreign_currency` | card | Flag USD/EUR cards on unverified accounts (platform) |
 
 ## List risk assessments
 
@@ -75,8 +78,8 @@ Payload includes `assessment_id`, `transaction_id`, `rail`, `decision`, `risk_sc
 | --- | --- | --- | --- |
 | Timing | After chargeback | Before/during charge | At withdrawal |
 | API | `GET /disputes` | `GET /risk-assessments` | None (internal) |
-| Dashboard | Settings → Support → Disputes | Transactions risk badge | Withdrawal error message |
+| Dashboard | Settings → Support → Disputes | Transaction sheet: Normal / Risky / Blocked | Withdrawal error message |
 
 ## Metering
 
-When Radar is enabled and a `radar_screen` meter is configured, each screening emits a usage event billed through [Usage billing](/build/billing/usage-billing).
+When a `radar_screen` meter is configured, each screening can emit a usage event billed through [Usage billing](/build/billing/usage-billing). Platform screening still runs without a meter.

@@ -5,36 +5,39 @@ description: Analysez les encaissements carte et mobile money avec évaluations 
 
 import { Callout } from '@/components/docs/docs-callout';
 
-**lomi. Radar** évalue les **encaissements entrants** (carte, MTN, Wave) avant leur finalisation. C'est distinct des [Litiges](/build/money/disputes) (chargebacks carte a posteriori) et des contrôles de retrait plateforme décrits dans [Payouts](/build/money/payouts).
+**lomi. Radar** évalue les **encaissements entrants** (carte, MTN, Wave) avant leur finalisation. Chaque paiement reçoit une étiquette **Normal**, **Risqué** ou **Bloqué** sur la transaction. C'est distinct des [Litiges](/build/money/disputes) (chargebacks carte a posteriori) et des contrôles de retrait plateforme décrits dans [Payouts](/build/money/payouts).
 
 <Callout type="info">
-  Radar est **opt-in** par organisation. Activez-le via `PATCH /organizations/radar-settings` (`enabled: true`). Désactivé par défaut.
+  Le filtrage est toujours actif. Les marchands choisissent surveillance ou blocage. Les règles plateforme (dont les comptes non vérifiés qui encaissent des cartes USD ou EUR) ne peuvent pas être désactivées.
 </Callout>
 
-## Activer Radar
+## Mode
 
 ```bash
 curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "enabled": true, "mode": "block" }'
+  -d '{ "mode": "block" }'
 ```
 
 | Champ | Valeurs | Effet |
 | --- | --- | --- |
-| `enabled` | `true` / `false` | Active ou désactive le screening |
 | `mode` | `monitor` | Signale sans bloquer |
 | `mode` | `block` | Refuse les encaissements selon les règles block |
 | `stripe_radar_passthrough` | `true` (défaut) | Enrichit avec les signaux réseau carte après capture |
+| `enabled` | ignoré pour le filtrage | Préférence de facturation à l'usage seulement |
 
-## Règles intégrées (v1)
+Paramètres → Radar affiche le même contrôle de mode. Les paiements risqués ou bloqués créent aussi une notification dans le tableau de bord.
+
+## Règles intégrées
 
 | Règle | Rails | Action par défaut |
 | --- | --- | --- |
-| `high_value_charge` | carte, MTN, Wave | Flag ≥ 500 000 XOF |
+| `high_value_charge` | carte, MTN, Wave | Flag ≥ 500 000 XOF (équivalent) |
 | `velocity_charges_1h` | tous | Block > 20 encaissements / client / heure |
 | `repeat_phone_24h` | MTN, Wave | Flag même téléphone sur plusieurs clients |
 | `card_country_mismatch` | carte | Flag pays hors UEMOA |
+| `unverified_card_foreign_currency` | carte | Flag cartes USD/EUR sur compte non vérifié (plateforme) |
 
 ## Lister les évaluations
 
@@ -56,8 +59,8 @@ Filtres : `decision`, `rail`, `startDate`, `endDate`.
 | --- | --- | --- | --- |
 | Moment | Après chargeback | Avant/pendant encaissement | Au retrait |
 | API | `GET /disputes` | `GET /risk-assessments` | Aucune (interne) |
-| Dashboard | Paramètres → Support → Litiges | Badge risque sur transactions | Message d'erreur retrait |
+| Dashboard | Paramètres → Support → Litiges | Fiche transaction : Normal / Risqué / Bloqué | Message d'erreur retrait |
 
 ## Facturation à l'usage
 
-Chaque screening peut émettre un événement `radar_screen` via [Facturation à l'usage](/build/billing/usage-billing).
+Un événement `radar_screen` peut être émis via [Facturation à l'usage](/build/billing/usage-billing) si un compteur est configuré. Le filtrage plateforme tourne même sans compteur.

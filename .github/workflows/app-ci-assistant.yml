@@ -4,16 +4,24 @@ on:
   pull_request:
     paths:
       - "apps/api/src/merchant-assistant/**"
+      - "apps/api/test/db/assistant.db-spec.ts"
       - "apps/dashboard/src/lib/assistant/**"
+      - "apps/dashboard/src/lib/utils/organization-context.ts"
+      - "apps/dashboard/src/lib/utils/__tests__/organization-context.test.ts"
       - "apps/dashboard/scripts/build/generate-assistant-tool-manifest.mjs"
+      - "apps/mcp/src/generated/tools-manifest.json"
       - ".github/workflows/app-ci-assistant.yml"
   push:
     branches:
       - main
     paths:
       - "apps/api/src/merchant-assistant/**"
+      - "apps/api/test/db/assistant.db-spec.ts"
       - "apps/dashboard/src/lib/assistant/**"
+      - "apps/dashboard/src/lib/utils/organization-context.ts"
+      - "apps/dashboard/src/lib/utils/__tests__/organization-context.test.ts"
       - "apps/dashboard/scripts/build/generate-assistant-tool-manifest.mjs"
+      - "apps/mcp/src/generated/tools-manifest.json"
       - ".github/workflows/app-ci-assistant.yml"
 
 jobs:
@@ -39,3 +47,70 @@ jobs:
         working-directory: apps/dashboard
         run: |
           git diff --exit-code src/lib/assistant/tool-manifest.generated.json src/lib/assistant/ui-tool-ids.generated.ts
+
+  assistant-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Init private submodules
+        working-directory: .
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/api apps/dashboard
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+
+      - name: Install API dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
+
+      - name: Merchant assistant unit tests
+        run: pnpm test -- src/merchant-assistant
+
+  assistant-dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/dashboard
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Init private submodules
+        working-directory: .
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/dashboard
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/dashboard/pnpm-lock.yaml
+
+      - name: Install dashboard dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/dashboard
+
+      - name: Assistant stream and org-id tests
+        run: |
+          node --import tsx --test \
+            src/lib/assistant/__tests__/stream-parse.test.ts \
+            src/lib/assistant/__tests__/apply-chunk.test.ts \
+            src/lib/assistant/__tests__/translate-assistant-error.test.ts \
+            src/lib/utils/__tests__/organization-context.test.ts
