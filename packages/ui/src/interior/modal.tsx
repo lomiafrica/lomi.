@@ -403,18 +403,16 @@ export function Modal({
         gone: { opacity: 0, transition: { duration: 0.15, ease: LEAVE } },
       },
       panel: {
-        closed: { opacity: 0, scale: 0.96, y: 12 },
+        closed: { opacity: 0, scale: 0.96 },
         open: {
           opacity: 1,
           scale: 1,
-          y: 0,
           transition: { ...SURFACE, opacity: { duration: 0.16, ease: EASE } },
         },
 
         gone: {
           opacity: 0,
           scale: 0.98,
-          y: 6,
           transition: { duration: 0.15, ease: LEAVE },
         },
       },

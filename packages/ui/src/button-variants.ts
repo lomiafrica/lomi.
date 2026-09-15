@@ -1,12 +1,16 @@
 import { cva } from "class-variance-authority";
-import {
-  interiorPrimaryRelief,
-  interiorSurface as interiorSurfaceBase,
-} from "./tokens";
 
-const interiorSurface = `${interiorSurfaceBase} hover:bg-stone-50 dark:hover:bg-[#2A2A27]`;
+/** Quiet hairline — auth Connect / OAuth chrome. */
+const authSurface =
+  "border border-border/40 bg-card text-foreground shadow-none hover:bg-accent hover:border-border/50 dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]";
 
-const settingsButtonAction = `relative rounded-sm font-medium transition-[border-color,box-shadow,background-color] duration-150 ${interiorSurface}`;
+/** Settings-row card — slightly stronger rim than default. */
+const settingsSurface =
+  "relative bg-card border border-border/80 shadow-sm text-foreground hover:bg-accent/50 hover:border-border hover:text-foreground dark:bg-muted dark:border-transparent dark:shadow-none dark:text-foreground/90 dark:hover:bg-[color-mix(in_hsl,hsl(var(--accent)),white_5%)]";
+
+/** Filter trigger — full border, no relief. */
+const filterSurface =
+  "border border-border bg-card text-card-foreground shadow-none hover:bg-accent dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]";
 
 const liveButton =
   "bg-brand-600 text-white border-transparent shadow-none hover:brightness-110 focus-visible:brightness-110 dark:bg-sky-900 dark:text-sky-300 dark:hover:brightness-100 dark:hover:bg-sky-800 dark:hover:text-sky-200";
@@ -16,15 +20,13 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: `bg-stone-800 text-stone-50 border-stone-800 ${interiorPrimaryRelief} hover:bg-stone-700 dark:border-white/10 dark:bg-[#2A2A27] dark:text-stone-100 dark:hover:bg-[#32322E]`,
+        default: authSurface,
         destructive:
           "bg-red-600 text-white border-transparent shadow-none hover:bg-red-700 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/40",
-        outline: interiorSurface,
-        secondary: interiorSurface,
+        outline: authSurface,
+        secondary: settingsSurface,
         ghost:
           "text-foreground shadow-none hover:bg-stone-100 hover:text-foreground dark:hover:bg-[#2A2A27] dark:hover:text-stone-200",
-        filter:
-          "rounded-sm border border-border bg-card text-card-foreground shadow-none hover:bg-accent dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27]",
         transparent: "bg-transparent border-0 shadow-none",
         link: "text-primary underline-offset-4 hover:underline",
         blue: liveButton,
@@ -33,41 +35,26 @@ export const buttonVariants = cva(
         orange:
           "bg-orange-600 text-white border-transparent shadow-none hover:bg-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/40",
         pink: "bg-pink-600 text-white border-transparent shadow-none hover:bg-pink-700 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-900 dark:hover:text-pink-200",
-        cancel: interiorSurface,
-        settings: settingsButtonAction,
+        cancel: filterSurface,
         teal: "bg-teal-600 text-white border-transparent shadow-none hover:bg-teal-700 dark:bg-teal-900/30 dark:text-teal-300 dark:hover:bg-teal-900/40",
-        connect: interiorSurface,
         pointille:
           "border border-dashed border-stone-300 bg-white text-stone-700 shadow-none hover:bg-stone-50 dark:border-white/25 dark:bg-[#252522] dark:text-stone-200",
         dashed:
           "hover:bg-stone-100 hover:text-accent-foreground dark:hover:bg-[#2A2A27]",
-        workspace: `text-[#4568FF] ${interiorSurface}`,
-        auth: interiorSurface,
         promocode:
           "bg-sky-100/10 text-sky-600 hover:bg-sky-100/20 hover:text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 dark:hover:bg-sky-900/40 dark:hover:text-sky-300",
       },
       size: {
-        default: "h-9 px-3",
-        xs: "h-7 px-2 text-xs",
-        sm: "h-8 px-3",
-        md: "h-9 px-3",
-        lg: "h-11 px-5 text-[15px]",
-        icon: "h-8 w-8",
-        "icon-xs": "h-7 w-7",
-        "icon-sm": "h-8 w-8",
-        "icon-md": "h-9 w-9",
         header: "h-8 px-3",
-        sidebarActions: "h-9 px-3 justify-start",
-        small: "h-7 w-7 p-0",
-        sidebar: "h-7 py-2 w-56",
+        icon: "h-8 w-8",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
+      size: "header",
     },
   },
 );
 
-/** Exported for calendar and other consumers that need the settings action surface. */
-export const settingsButtonActionClassName = settingsButtonAction;
+/** Calendar selected-day surface — same as Button secondary. */
+export const settingsButtonActionClassName = settingsSurface;

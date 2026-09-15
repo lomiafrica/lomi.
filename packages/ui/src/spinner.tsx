@@ -3,21 +3,28 @@ import React from "react";
 interface SpinnerProps {
   className?: string;
   inline?: boolean;
+  still?: boolean;
   style?: React.CSSProperties;
 }
 
-/** Braille page spinner. Async submit controls use `@lomi./ui/interior/loading-button`. */
-function Spinner({ className = "", inline = false, style }: SpinnerProps) {
+/** Braille spinner. Button loading and LoadingButton use this same mark. */
+function Spinner({
+  className = "",
+  inline = false,
+  still = false,
+  style,
+}: SpinnerProps) {
   const spinnerChars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
   const [currentChar, setCurrentChar] = React.useState(0);
 
   React.useEffect(() => {
+    if (still) return;
     const interval = setInterval(() => {
       setCurrentChar((prev) => (prev + 1) % spinnerChars.length);
     }, 200);
 
     return () => clearInterval(interval);
-  }, [spinnerChars.length]);
+  }, [still, spinnerChars.length]);
 
   const spinner = (
     <span

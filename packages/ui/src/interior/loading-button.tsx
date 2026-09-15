@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { cn } from "../cn";
+import { buttonVariants } from "../button-variants";
 import { interiorRadiusPx } from "../tokens";
+import { Spinner } from "../spinner";
 
 const CELL = {
   type: "spring",
@@ -108,38 +110,6 @@ export function useAsyncAction({
   };
 }
 
-function Spinner({ still }: { still: boolean }) {
-  return (
-    <motion.svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      aria-hidden="true"
-      className="shrink-0"
-      animate={still ? undefined : { rotate: 360 }}
-      transition={
-        still ? undefined : { duration: 0.85, repeat: Infinity, ease: "linear" }
-      }
-    >
-      <circle
-        cx="6"
-        cy="6"
-        r="4.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeOpacity="0.22"
-      />
-      <path
-        d="M10.5 6A4.5 4.5 0 0 0 6 1.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </motion.svg>
-  );
-}
-
 function CheckMark() {
   return (
     <svg
@@ -240,7 +210,13 @@ export function LoadingButton({
       key: "pending",
       text: pendingLabel,
       tone: "text-stone-500 dark:text-stone-400",
-      icon: <Spinner still={reduced === true || status !== "pending"} />,
+      icon: (
+        <Spinner
+          inline
+          still={reduced === true || status !== "pending"}
+          className="shrink-0"
+        />
+      ),
     },
     {
       key: "success",
@@ -274,7 +250,8 @@ export function LoadingButton({
           run();
         }}
         className={cn(
-          "relative inline-flex h-9 select-none items-center justify-center rounded-sm border border-stone-200 bg-white px-3.5 text-[13px] font-medium text-stone-700 shadow-none outline-none transition-[border-color,box-shadow,background-color] duration-150 hover:bg-stone-50 focus-visible:border-[#4568FF] focus-visible:shadow-[0_0_0_2px_rgba(69,104,255,0.28)] disabled:opacity-50 dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:hover:bg-[#2A2A27] dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_0_0_2px_rgba(147,176,255,0.35)]",
+          buttonVariants({ variant: "cancel", size: "header" }),
+          "relative select-none font-normal",
           className,
         )}
         style={{ borderRadius: interiorRadiusPx, touchAction: "manipulation" }}

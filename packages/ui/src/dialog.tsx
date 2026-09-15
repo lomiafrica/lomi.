@@ -31,11 +31,12 @@ type DialogContentVariant = "default" | "slide-up" | "fade";
 function dialogMotionClassName(variant: DialogContentVariant): string {
   switch (variant) {
     case "slide-up":
-      return "data-[state=closed]:slide-out-to-bottom-[48%] data-[state=open]:slide-in-from-bottom-[48%] data-[state=open]:duration-500 data-[state=closed]:duration-300";
+    case "default":
+      // Center zoom. Do not slide from a corner: enter `transform` would
+      // overwrite `translate(-50%, -50%)` and park the panel bottom-right.
+      return "origin-center data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95";
     case "fade":
       return "";
-    case "default":
-      return "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[52%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]";
     default: {
       const _exhaustive: never = variant;
       return _exhaustive;
@@ -78,7 +79,7 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Content
           ref={ref}
           className={cn(
-            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-3 border border-stone-200 bg-white p-6 text-stone-700 shadow-[0_16px_40px_-24px_rgba(28,25,23,0.35)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 sm:rounded-sm dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]",
+            "fixed inset-0 z-50 m-auto grid h-fit w-full max-w-lg gap-3 border border-stone-200 bg-white p-6 text-stone-700 shadow-[0_16px_40px_-24px_rgba(28,25,23,0.35)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 sm:rounded-sm dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]",
             dialogMotionClassName(variant),
             className,
           )}

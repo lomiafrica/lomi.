@@ -279,7 +279,7 @@ export function PhoneNumberInput({
                 <Button
                   onClick={handleEdit}
                   variant="transparent"
-                  size="icon-sm"
+                  size="icon"
                   className="absolute right-1 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 focus-visible:ring-0 dark:hover:text-stone-200"
                   type="button"
                   aria-label="Edit phone number"
@@ -292,7 +292,7 @@ export function PhoneNumberInput({
                   type="button"
                   onClick={() => void handleSave()}
                   variant="transparent"
-                  size="icon-sm"
+                  size="icon"
                   className="absolute right-1 top-1/2 -translate-y-1/2 text-green-500 hover:text-green-600 focus-visible:ring-0"
                   disabled={isLoading}
                   aria-label="Save phone number"

@@ -41,7 +41,7 @@ export function DocsFigureCopyButton() {
         buttonVariants({
           className:
             'hover:text-fd-accent-foreground data-checked:text-fd-accent-foreground',
-          size: 'icon-xs',
+          size: 'icon',
         }),
       )}
       onClick={(event) => {

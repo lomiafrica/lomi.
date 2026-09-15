@@ -50,7 +50,7 @@ function InstallCommand({ code }: { code: string }) {
           buttonVariants({
             className:
               'absolute top-1.5 right-2 hover:text-fd-accent-foreground data-checked:text-fd-accent-foreground',
-            size: 'icon-xs',
+            size: 'icon',
           }),
         )}
         onClick={() => {
