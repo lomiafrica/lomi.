@@ -3788,11 +3788,11 @@
                   },
                   "product_id": {
                     "type": "string",
-                    "format": "uuid"
+                    "example": "prod_2ABCDEFGHJKLMN"
                   },
                   "price_id": {
                     "type": "string",
-                    "format": "uuid"
+                    "example": "price_UPH2H4E2VUZZER"
                   },
                   "subscription_id": {
                     "type": "string",
@@ -3889,7 +3889,7 @@
                       "properties": {
                         "price_id": {
                           "type": "string",
-                          "format": "uuid"
+                          "example": "price_UPH2H4E2VUZZER"
                         },
                         "quantity": {
                           "type": "number"
@@ -3919,7 +3919,7 @@
                     "currency_code": "XOF",
                     "line_items": [
                       {
-                        "price_id": "123e4567-e89b-12d3-a456-426614174000",
+                        "price_id": "price_UPH2H4E2VUZZER",
                         "quantity": 2
                       }
                     ],
