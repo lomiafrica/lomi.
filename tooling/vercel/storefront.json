@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/storefront",
   "buildCommand": "npm --prefix apps/storefront run build",
   "devCommand": "npm --prefix apps/storefront run dev",

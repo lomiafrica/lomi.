@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/dashboard",
   "buildCommand": "npm --prefix apps/dashboard run build",
   "devCommand": "npm --prefix apps/dashboard run dev",

@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/checkout",
   "buildCommand": "npm --prefix apps/checkout run build",
   "devCommand": "npm --prefix apps/checkout run dev",

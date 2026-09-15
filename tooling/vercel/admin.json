@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/admin",
   "buildCommand": "npm --prefix apps/admin run build",
   "devCommand": "npm --prefix apps/admin run dev",

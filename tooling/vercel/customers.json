@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/customers",
   "buildCommand": "npm --prefix apps/customers run build",
   "devCommand": "npm --prefix apps/customers run dev",
