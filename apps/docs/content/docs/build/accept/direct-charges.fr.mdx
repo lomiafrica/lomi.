@@ -109,6 +109,22 @@ Lomi-Account: acct_1234567890
 
 Voir [lomi. Network](/build/platform/network).
 
+## Dépannage
+
+Utilisez `GET /providers` pour confirmer quels rails sont connectés pour l’organisation avant d’appeler les endpoints de charge directe.
+
+| Symptôme | Cause probable | Correctif |
+| --- | --- | --- |
+| Charge carte `503 service_unavailable` | Les charges carte directes ne sont pas configurées sur le déploiement API | **Ops :** les identifiants plateforme carte doivent être définis sur le service API pour l’environnement cible. **Les marchands ne configurent pas de clés processeur carte** : les charges carte directes tournent sur l’infrastructure lomi. |
+| Charge Wave `400` sur Aggregated Merchant ID manquant | Wave n’est pas entièrement connecté dans le tableau de bord | Connectez Wave dans le tableau de bord et enregistrez l’**Aggregated Merchant ID** de l’organisation. |
+| Charge Wave `400` avec une erreur Wave | Payload invalide ou rejet côté Wave | Envoyez `currency: "XOF"`, `customer.phoneNumber` imbriqué en E.164, et optionnellement `successUrl` / `errorUrl` (camelCase). Voir [Wave](/build/payment-methods/wave). |
+| Charge carte `400` sur les champs client | Champs de rapprochement manquants | Incluez `customer_id`, ou à la fois `customer_email` et `customer_name`. |
+| Le checkout hébergé fonctionne mais la charge directe échoue | Prérequis différents selon le rail | Le checkout hébergé utilise l’app checkout lomi. ; les charges directes appellent `/charge/*` et exigent la forme de payload et la connexion prestataire. |
+
+<Callout type="info">
+  Les marchands n’ont besoin que de `lomi_sk_...` (serveur) et `lomi_pk_...` (Payment Elements). Ils ne configurent jamais eux-mêmes les secrets plateforme de paiement carte.
+</Callout>
+
 ## Voir aussi
 
 - [Créer une charge Wave](/api/charge/ChargesController_createWaveCharge)

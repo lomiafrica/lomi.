@@ -446,6 +446,14 @@ Le second coupon s’applique au montant déjà réduit, pas au montant d’orig
 
 Cela évite les lignes d’usage en double lors des relances webhook, et garde le reporting exact.
 
+### Relances sûres
+
+Si le même événement prestataire est relancé :
+
+- la réservation en attente est mise à jour / liée quand c’est possible,
+- les insertions en double sont empêchées par l’unicité et la gestion des conflits,
+- le comptage d’usage reste cohérent quand la finalisation de transaction s’exécute.
+
 ### Ordre de cumul et total
 
 Les mêmes deux coupons, ordre inversé :
@@ -474,6 +482,13 @@ Après **paiement réussi**, l’usage repose sur la transaction.
 ### Tunnels gratuits ou entièrement remisés
 
 Quand la remise ramène le payable à **zéro**, la plateforme peut enregistrer un parcours **gratuit** pour garder grand livre et webhooks cohérents. Les rapports doivent toujours montrer **prix catalogue**, **remise** et **net**.
+
+### Relances côté client
+
+Votre app relance `POST /checkout-sessions` ou l’application de coupon à cause d’un réseau instable :
+
+- Utilisez la **même clé d’idempotence** ou le même id de session pour ne pas créer de sessions parallèles.
+- Côté serveur, les webhooks de finalisation en double ne doivent pas incrémenter l’usage deux fois si la complétion de transaction est idempotente ; évitez tout de même les applications **initiées par le client** en double.
 
 ### Notes d’intégration
 
