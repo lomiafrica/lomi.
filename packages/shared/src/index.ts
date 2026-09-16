@@ -258,3 +258,7 @@ export type {
   AgentRegisterPowVerifyInput,
   AgentRegisterPowVerifyResult,
 } from "./agent-register-pow.js";
+export {
+  FNE_KOMPTO_FEATURE_FLAG,
+  KOMPTO_DEFAULT_BASE_URL,
+} from "./fne/index.js";

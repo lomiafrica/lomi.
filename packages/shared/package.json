@@ -1,6 +1,6 @@
 {
   "name": "@lomi./shared",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "private": true,
   "files": [
     "dist",
@@ -63,6 +63,12 @@
       "import": "./dist/browser-session.js",
       "default": "./dist/browser-session.js",
       "react-native": "./dist/browser-session.js"
+    },
+    "./fne": {
+      "types": "./src/fne/index.ts",
+      "import": "./dist/fne/index.js",
+      "default": "./dist/fne/index.js",
+      "react-native": "./dist/fne/index.js"
     }
   },
   "scripts": {
@@ -70,7 +76,7 @@
     "watch": "tsc -p tsconfig.build.json --watch",
     "prepare": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --import tsx --test src/*.test.ts",
+    "test": "node --import tsx --test src/*.test.ts src/fne/*.test.ts",
     "types:generate": "node scripts/generate-database-types.mjs",
     "types": "pnpm run types:generate",
     "types:compare": "node scripts/compare-database-types.mjs",
