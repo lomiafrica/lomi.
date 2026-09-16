@@ -19,6 +19,16 @@ Initiates an MTN RequestToPay. With a test API key the transaction completes in 
 Utilisez cet endpoint quand vous devez exécuter `POST /charge/mtn` (Create MTN charge).
 
 
+
+
+### À savoir
+
+Les encaissements live exigent que MTN soit connecté pour l'organisation et un MSISDN valide. Les remboursements MTN live passent par l'API Disbursement via [Créer un remboursement](/api/refunds/RefundsController_create).
+
+### Voir aussi
+
+[Mobile money](/build/mobile-money) · [Direct charges](/build/accept/direct-charges) · [Create Wave charge](/api/charge/ChargesController_createWaveCharge) · [Create refund](/api/refunds/RefundsController_create) · [Transactions](/api/transactions/TransactionsController_findAll)
+
 ## Authentification
 
 Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.

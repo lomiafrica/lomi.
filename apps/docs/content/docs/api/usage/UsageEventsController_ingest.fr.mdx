@@ -19,6 +19,16 @@ Idempotent usage ingest. Events are processed asynchronously and update meter ba
 Utilisez cet endpoint quand vous devez exécuter `POST /usage/events` (Record a usage event).
 
 
+
+
+### À savoir
+
+Renvoie `202 Accepted`. Confirmez `processing_status` via les webhooks ou en interrogeant `GET /usage/events/{id}`.
+
+### Voir aussi
+
+[Usage billing guide](/build/billing/usage-billing) · [Create meter](/api/meters/MetersController_create) · [Create usage subscription](/api/usage/UsageEventsController_createUsageSubscription)
+
 ## Authentification
 
 Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.

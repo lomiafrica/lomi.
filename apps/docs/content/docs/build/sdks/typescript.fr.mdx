@@ -241,6 +241,32 @@ await lomi.charges.createCardCharge({
 });
 ```
 
+### Encaissement Switch, autorisation carte côté serveur (`POST /charge/switch`)
+
+Pour les intégrations fintech PCI qui autorisent les cartes côté serveur (pas le checkout hébergé) :
+
+```typescript
+const result = await lomi.charges.createSwitchCharge(
+  {
+    amount: 10000,
+    currency_code: 'XOF',
+    pan: '4221941234569109',
+    expiry: '06/30',
+    cvv: '123',
+    card_holder_name: 'Amadou Ba',
+  },
+  { idempotencyKey: 'switch-attempt-001' },
+);
+
+if (result.status === 'redirect_3ds') {
+  console.log('Terminez le 3DS sur :', result.three_ds_url);
+}
+```
+
+<Callout type="warning">
+  Switch exige une intégration conforme PCI-DSS. Pour la plupart des marchands, utilisez [Payment Elements](/build/sdks/typescript#payment-elements) ou [les sessions checkout](/api/checkout-sessions/CheckoutSessionsController_create) à la place.
+</Callout>
+
 ---
 
 ## Compte et organisation
@@ -296,6 +322,61 @@ interface LomiConfig {
   timeout?: number;            // Délai d’expiration des requêtes en ms (défaut : 30000)
 }
 ```
+
+### Options par requête
+
+À passer sur tout appel de type create :
+
+```typescript
+await lomi.checkoutSessions.create(body, {
+  idempotencyKey: 'checkout-001',  // en-tête Idempotency-Key
+  account: 'acct_other_…',         // surcharge Lomi-Account pour cet appel
+  signal: abortController.signal,  // AbortSignal
+});
+```
+
+---
+
+## Webhooks
+
+Vérifiez les signatures webhook sans implémenter HMAC à la main :
+
+```typescript
+const valid = lomi.webhooks.verifySignature(
+  rawBody,                          // string ou Buffer (corps brut, pas le JSON parsé)
+  req.headers['x-lomi-signature'],
+  process.env.LOMI_WEBHOOK_SECRET!,
+);
+
+if (!valid) return res.status(401).send('Invalid signature');
+```
+
+---
+
+## Auto-pagination
+
+Les endpoints de liste exposent un itérateur async via `listAll` :
+
+```typescript
+for await (const tx of lomi.transactions.listAll({ status: 'completed' })) {
+  console.log(tx.id, tx.gross_amount);
+}
+```
+
+---
+
+## Payment Elements
+
+```typescript
+import { loadLomi } from '@lomi./sdk';
+
+// Votre lomi_pk_… est validée ; Elements s’exécute sur l’infrastructure PCI lomi.
+const elements = await loadLomi('lomi_pk_test_…');
+```
+
+<Callout type="info">
+  Payment Elements s’initialise sur le compte plateforme lomi. Votre clé publishable identifie le contexte marchand ; vous ne manipulez jamais de numéros de carte bruts.
+</Callout>
 
 ---
 
