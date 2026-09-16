@@ -1225,27 +1225,83 @@ html.dark .docs-turnstile-mount {
   }
 }
 
-/* Section dropdown: smaller item descriptions (fumadocs default is 0.8125rem) */
-.flex.flex-col.gap-1.fd-scroll-container > a .text-fd-muted-foreground {
-  font-size: 0.6875rem;
-  line-height: 1.4;
+/* Desktop Start / Build / API menu: same well as the closed field and
+   the mobile section switch, compact icon + title + check rows. */
+.flex.flex-col.gap-1.fd-scroll-container {
+  position: relative;
+  width: var(--radix-popover-trigger-width) !important;
+  min-width: 0 !important;
+  gap: 0.125rem;
+  padding: 0.25rem;
+  overflow: hidden;
+  border-color: transparent;
+  border-radius: var(--docs-sidebar-radius) !important;
+  background: var(--docs-sidebar-well);
+  color: var(--foreground);
+  box-shadow: var(--docs-sidebar-float);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.flex.flex-col.gap-1.fd-scroll-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--docs-sidebar-hairline-soft);
 }
 
 .flex.flex-col.gap-1.fd-scroll-container > a {
-  border-radius: var(--docs-sidebar-radius);
+  height: 2rem;
+  min-height: 2rem;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  border-radius: calc(var(--docs-sidebar-radius) - 2px) !important;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
 }
 
-/* Fumadocs pins the icon to the top on md+ (`md:mb-auto`). Keep it
-   vertically centered on the left of the title + description. */
+.flex.flex-col.gap-1.fd-scroll-container > a .text-fd-muted-foreground {
+  display: none;
+}
+
 .flex.flex-col.gap-1.fd-scroll-container > a > div:first-child {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 1rem;
+  height: 1rem;
   margin-bottom: 0;
 }
 
-.flex.flex-col.gap-1.fd-scroll-container > a:hover {
-  background: var(--docs-sidebar-well);
+.flex.flex-col.gap-1.fd-scroll-container > a > div:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+
+.flex.flex-col.gap-1.fd-scroll-container > a > div:nth-child(2) > p:first-child {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.flex.flex-col.gap-1.fd-scroll-container > a > svg:last-child {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.flex.flex-col.gap-1.fd-scroll-container > a:has(> svg:not(.invisible)) {
+  background: color-mix(in oklab, var(--foreground) 6%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flex.flex-col.gap-1.fd-scroll-container > a:hover {
+    background: color-mix(in oklab, var(--foreground) 6%, transparent);
+    color: var(--foreground);
+  }
 }
 
 /* Sidebar-specific radius overrides (fumadocs uses fixed rounded-* classes) */

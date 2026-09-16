@@ -91,6 +91,7 @@ export {
   stripEmojis,
 } from "./format-utils";
 export { ReceiptLayout } from "./receipt-layout";
+export { HtmlFiscalQr, PdfFiscalQr } from "./fiscal-qr";
 export { ReceiptPdfDocument } from "./receipt-pdf-document";
 export { LOMI_WORDMARK_SRC } from "./wordmark";
 export type {

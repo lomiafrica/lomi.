@@ -83,9 +83,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const content: React.ReactNode[] = [];
 
     if (loading && !leftSection && !rightSection) {
-      content.push(<Spinner key="loading-left" className="mr-2 h-3.5 w-3.5" />);
+      content.push(
+        <Spinner key="loading-left" inline className="mr-2 h-3.5 w-3.5" />,
+      );
     } else if (loading && leftSection) {
-      content.push(<Spinner key="loading-left" className="mr-2 h-3.5 w-3.5" />);
+      content.push(
+        <Spinner key="loading-left" inline className="mr-2 h-3.5 w-3.5" />,
+      );
     } else if (!loading && leftSection) {
       content.push(
         <div key="left-section" className="mr-1">
@@ -124,7 +128,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     } else if (loading && rightSection) {
       content.push(
-        <Spinner key="loading-right" className="ml-2 h-3.5 w-3.5" />,
+        <Spinner key="loading-right" inline className="ml-2 h-3.5 w-3.5" />,
       );
     }
 

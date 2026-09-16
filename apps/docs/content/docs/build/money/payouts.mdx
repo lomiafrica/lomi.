@@ -12,7 +12,7 @@ Use **`POST /payouts`** for all outbound money movement.
 
 <DocsScreenshot name="build/payouts" alt="Payouts and withdrawals settings in lomi. dashboard" />
 
-- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank`, `spi`, `wave`, and `mtn` (mobile money).
+- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank`, `spi`, `wave`, and `mtn` (mobile money). Allowlisted Test orgs may use `rail: "stellar"` without a payout method. See [Stellar payouts](/build/money/stellar).
 - **`destination: "beneficiary"`**: pay a third party on **mobile rails** (`wave` or `mtn`). Requires `recipient.name` and `recipient.phone` (any E.164 mobile number; **not** tied to `payout_method_id`). Bank payouts to arbitrary accounts are not supported.
 
 <Callout type="warn">
@@ -76,7 +76,7 @@ curl -X POST "https://api.lomi.africa/payouts" \
 | Field | Type | Required |
 | --- | --- | --- |
 | `destination` | `'self'` \| `'beneficiary'` | **Yes** |
-| `rail` | `'wave'` \| `'spi'` \| `'bank'` \| `'mtn'` | **Yes** |
+| `rail` | `'wave'` \| `'spi'` \| `'bank'` \| `'mtn'` \| `'stellar'` | **Yes** |
 | `amount` | `number` | **Yes** |
 | `currency_code` | `string` | **Yes** |
 | `payout_method_id` | UUID | **Yes** for `self`; required for beneficiary `spi` |

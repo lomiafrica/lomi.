@@ -47,57 +47,16 @@ const SECTION_LABEL_KEYS = {
   Management: 'section.management',
 } as const;
 
-const SECTION_DESCRIPTION_KEYS = {
-  'Create your account, get API keys, make a test payment, and go live.':
-    'sectionDescription.start',
-  'Créer un compte, tester un paiement et passer en production.':
-    'sectionDescription.start',
-  'Choose an integration path and build checkout, subscriptions, and tools.':
-    'sectionDescription.build',
-  'Choisir une intégration et construire checkout, abonnements et outils.':
-    'sectionDescription.build',
-  'Authentication, errors, data models, and endpoint reference for the lomi. API.':
-    'sectionDescription.apiReference',
-  'Support, merchant policies, open-source material, and contributor documentation.':
-    'sectionDescription.resources',
-  'Developers use lomi. to reliably accept payments in West Africa.':
-    'sectionDescription.firstSteps',
-  'Complete reference to building with lomi. API.':
-    'sectionDescription.apiReference',
-  'Payment and commerce endpoints.': 'sectionDescription.restApi',
-  'Endpoints de paiement et de commerce.': 'sectionDescription.restApi',
-} as const;
-
 function isSectionLabelKey(
   value: string,
 ): value is keyof typeof SECTION_LABEL_KEYS {
   return Object.hasOwn(SECTION_LABEL_KEYS, value);
 }
 
-function isSectionDescriptionKey(
-  value: string,
-): value is keyof typeof SECTION_DESCRIPTION_KEYS {
-  return Object.hasOwn(SECTION_DESCRIPTION_KEYS, value);
-}
-
 function localizeTreeLabel(value: ReactNode, locale: Language): ReactNode {
   if (!isString(value)) return value;
 
   const key = isSectionLabelKey(value) ? SECTION_LABEL_KEYS[value] : undefined;
-  if (!key) return value;
-
-  return translate(key, locale);
-}
-
-function localizeTreeDescription(
-  value: ReactNode,
-  locale: Language,
-): ReactNode {
-  if (!isString(value)) return value;
-
-  const key = isSectionDescriptionKey(value)
-    ? SECTION_DESCRIPTION_KEYS[value]
-    : undefined;
   if (!key) return value;
 
   return translate(key, locale);
@@ -164,7 +123,6 @@ export default async function Layout({
     return [
       {
         title: node.name,
-        description: localizeTreeDescription(node.description, locale),
         url,
         $folder: node,
         icon: node.icon ? (

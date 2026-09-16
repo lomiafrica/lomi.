@@ -78,6 +78,8 @@ export interface ReceiptDocumentData {
   subtotal?: number;
   platformFee?: number;
   addressLocale?: string;
+  dgiReference?: string;
+  dgiQrValue?: string;
 }
 
 export interface ReceiptTransactionInput {
@@ -166,4 +168,6 @@ export interface ReceiptLayoutLabels {
   nextBilling?: string;
   free?: string;
   trial?: string;
+  dgiReference?: string;
+  dgiQr?: string;
 }

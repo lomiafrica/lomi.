@@ -50,17 +50,6 @@ const STRINGS: TranslationsByLanguage = {
     'section.implementation': 'Implementation',
     'section.community': 'Community',
     'section.management': 'Management',
-    'sectionDescription.start':
-      'Create your account, get API keys, make a test payment, and go live.',
-    'sectionDescription.build':
-      'Choose an integration path and build checkout, subscriptions, and tools.',
-    'sectionDescription.resources':
-      'Support, merchant policies, open-source material, and contributor documentation.',
-    'sectionDescription.firstSteps':
-      'Developers use lomi. to reliably accept payments in West Africa.',
-    'sectionDescription.apiReference':
-      'Complete reference to building with lomi. API.',
-    'sectionDescription.restApi': 'Payment and commerce endpoints.',
     'footer.company_disclaimer':
       '<p>This documentation describes the lomi. merchant API and related products.</p>\n\n<p>Integration behavior can change; use the generated OpenAPI reference and your dashboard for authoritative details.</p>',
     'components.business_outreach.message':
@@ -202,17 +191,6 @@ const STRINGS: TranslationsByLanguage = {
     'section.implementation': 'Mise en œuvre',
     'section.community': 'Communauté',
     'section.management': 'Gestion',
-    'sectionDescription.start':
-      'Créer un compte, tester un paiement et passer en production.',
-    'sectionDescription.build':
-      'Choisir une intégration et construire checkout, abonnements et outils.',
-    'sectionDescription.resources':
-      'Support, règles marchandes, open source et documentation contributeur.',
-    'sectionDescription.firstSteps':
-      "Les développeurs utilisent lomi. pour encaisser des paiements en toute fiabilité en Afrique de l'Ouest.",
-    'sectionDescription.apiReference':
-      "Référence complète pour intégrer l'API lomi.",
-    'sectionDescription.restApi': 'Endpoints de paiement et de commerce.',
     'footer.company_disclaimer':
       "<p>Cette documentation décrit l'API marchande lomi. et les produits associés.</p>\n\n<p>Le comportement d'intégration peut évoluer ; consultez l'OpenAPI générée et votre tableau de bord pour les détails de référence.</p>",
     'components.business_outreach.message':

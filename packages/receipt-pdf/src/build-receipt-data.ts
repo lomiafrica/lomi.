@@ -1,4 +1,9 @@
-import { displayPublicId } from "@lomi./shared";
+import {
+  displayFiscalReference,
+  displayPublicId,
+  fiscalQrPayload,
+  readFiscalReceipt,
+} from "@lomi./shared";
 import {
   formatReceiptPaymentMethod,
   isFreeReceiptRail,
@@ -10,7 +15,6 @@ import {
   isGenericReceiptItemName,
   isPlaceholderReceiptValue,
   isTrialSubscriptionStatus,
-  resolveReceiptLineDetail,
   stripEmojis,
 } from "./format-utils";
 import type {
@@ -128,11 +132,6 @@ function readMetadataLineItems(
     const title = stripEmojis(name);
     items.push({
       description: title,
-      detail: resolveReceiptLineDetail(
-        title,
-        readMetadataString(entry, "product_description"),
-        named ? readMetadataString(entry, "description") : undefined,
-      ),
       quantity,
       unitPrice,
       amount: quantity * unitPrice,
@@ -152,21 +151,6 @@ function resolveSubscriptionName(transaction: ReceiptTransactionInput): string {
     readMetadataString(metadata, "plan_name") ||
     readMetadataString(metadata, "name") ||
     "Subscription"
-  );
-}
-
-function transactionLineDetail(
-  title: string,
-  transaction: ReceiptTransactionInput,
-): string | undefined {
-  const metadata = asMetadataRecord(transaction.metadata);
-  return resolveReceiptLineDetail(
-    title,
-    transaction.product_description,
-    transaction.plan_description,
-    readMetadataString(metadata, "product_description"),
-    readMetadataString(metadata, "plan_description"),
-    readMetadataString(metadata, "description"),
   );
 }
 
@@ -245,7 +229,6 @@ export function buildReceiptLineItems(
     const title = stripEmojis(resolveProductName(transaction, namedProduct));
     items.push({
       description: title,
-      detail: transactionLineDetail(title, transaction),
       quantity,
       unitPrice,
       amount: subtotal,
@@ -261,7 +244,6 @@ export function buildReceiptLineItems(
     const title = stripEmojis(resolveSubscriptionName(transaction));
     items.push({
       description: title,
-      detail: transactionLineDetail(title, transaction),
       quantity: 1,
       unitPrice: subtotal,
       amount: subtotal,
@@ -279,7 +261,6 @@ export function buildReceiptLineItems(
     const title = stripEmojis(resolveProductName(transaction, namedProduct));
     items.push({
       description: title,
-      detail: transactionLineDetail(title, transaction),
       quantity,
       unitPrice,
       amount: subtotal,
@@ -385,6 +366,11 @@ export function buildReceiptDocumentData(
     subtotal,
     platformFee,
     addressLocale: options.addressLocale,
+    dgiReference:
+      displayFiscalReference(readFiscalReceipt(transaction.metadata)) ??
+      undefined,
+    dgiQrValue:
+      fiscalQrPayload(readFiscalReceipt(transaction.metadata)) ?? undefined,
   };
 
   if (transaction.subscription_id) {

@@ -7,6 +7,7 @@ import {
   isPlaceholderReceiptValue,
   receiptNamesMatch,
 } from "./format-utils";
+import { HtmlFiscalQr } from "./fiscal-qr";
 import {
   HtmlOrgIdentity,
   HtmlRecordCard,
@@ -15,21 +16,9 @@ import {
 } from "./html-chrome";
 import type { ReceiptDocumentData, ReceiptLayoutLabels } from "./types";
 
-const CARD_DETAIL_MAX_CHARS = 24;
-const CARD_DETAIL_MAX_WORDS = 3;
-
 function truncateId(id: string, maxLength = 20): string {
   if (id.length <= maxLength) return id;
   return `${id.slice(0, maxLength)}…`;
-}
-
-function cardLineDetail(detail: string | null | undefined): string | undefined {
-  const trimmed = detail?.trim();
-  if (!trimmed) return undefined;
-  if (trimmed.length > CARD_DETAIL_MAX_CHARS) return undefined;
-  const words = trimmed.split(/\s+/).filter(Boolean);
-  if (words.length > CARD_DETAIL_MAX_WORDS) return undefined;
-  return trimmed;
 }
 
 export function ReceiptLayout({
@@ -59,7 +48,6 @@ export function ReceiptLayout({
   );
   const isMultiItem = productItems.length > 1;
   const singleItem = productItems[0];
-  const singleItemCardDetail = cardLineDetail(singleItem?.detail);
   const planName = data.subscription?.planName;
   const hasRealPlan =
     Boolean(data.subscription) && !isPlaceholderReceiptValue(planName);
@@ -117,6 +105,23 @@ export function ReceiptLayout({
           value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
         />
       ) : null}
+      {data.dgiReference ? (
+        <HtmlRecordRow
+          label={labels.dgiReference ?? "DGI"}
+          value={<HtmlValueBadge>{data.dgiReference}</HtmlValueBadge>}
+        />
+      ) : null}
+      {data.dgiQrValue ? (
+        <HtmlRecordRow
+          label={labels.dgiQr ?? "DGI"}
+          value={
+            <HtmlFiscalQr
+              value={data.dgiQrValue}
+              label={labels.dgiQr ?? "DGI"}
+            />
+          }
+        />
+      ) : null}
       {data.isMerchantReceipt && data.to.name ? (
         <HtmlRecordRow
           label={labels.billedTo}
@@ -144,7 +149,6 @@ export function ReceiptLayout({
             <HtmlRecordRow
               key={`item-${index.toString()}`}
               label={item.description}
-              detail={cardLineDetail(item.detail)}
               value={
                 <>
                   {formatCurrencyForReceipt(item.amount, data.currency)}
@@ -161,19 +165,10 @@ export function ReceiptLayout({
       ) : singleItem ? (
         <HtmlRecordRow
           label={itemLabel}
-          value={
-            <>
-              {formatReceiptItemTitle(
-                singleItem.description,
-                singleItem.quantity,
-              )}
-              {singleItemCardDetail ? (
-                <span className="mt-0.5 block font-normal text-stone-400 dark:text-stone-500">
-                  {singleItemCardDetail}
-                </span>
-              ) : null}
-            </>
-          }
+          value={formatReceiptItemTitle(
+            singleItem.description,
+            singleItem.quantity,
+          )}
         />
       ) : hasRealPlan && planName ? (
         <HtmlRecordRow label={itemLabel} value={planName} />

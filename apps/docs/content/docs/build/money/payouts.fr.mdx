@@ -12,7 +12,7 @@ Utilisez **`POST /payouts`** pour tous les virements sortants.
 
 <DocsScreenshot name="build/payouts" alt="Paramètres de reversements dans le tableau de bord lomi." />
 
-- **`destination: "self"`**: retrait vers un **moyen de paiement enregistré** (`payout_method_id` requis). Rails : `bank`, `spi`, `wave`.
+- **`destination: "self"`**: retrait vers un **moyen de paiement enregistré** (`payout_method_id` requis). Rails : `bank`, `spi`, `wave`. Les orgs Test autorisées peuvent utiliser `rail: "stellar"` sans moyen de paiement. Voir [Virements Stellar](/build/money/stellar).
 - **`destination: "beneficiary"`**: paiement à un tiers sur **mobile money** (`wave` aujourd’hui). `recipient.name` et `recipient.phone` requis (numéro libre ; **sans** lien avec `payout_method_id`).
 
 <Callout type="warn">

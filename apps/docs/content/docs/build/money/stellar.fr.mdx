@@ -1,0 +1,56 @@
+---
+title: Virements Stellar
+description: `rail: stellar` en Test, pour une organisation autorisée. Le mémo est l’identifiant du virement.
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from '@/components/docs/docs-callout';
+
+Utilisez **`POST /payouts`** avec `rail: "stellar"` pour passer le solde marchand par USDC Circle sur Stellar. Les marchands ne détiennent pas de clés. USDC reste en trésorerie, pas une devise de `accounts`.
+
+<Callout type="warn">
+  Les virements Stellar sont en Test tant que votre organisation n’est pas autorisée et que le live n’est pas activé. Utilisez une clé **test** (`lomi_sk_test_…`) vers `https://sandbox.api.lomi.africa`. Le même `payout_id` (ou `Idempotency-Key`) ne crée qu’un seul Payment on-chain.
+</Callout>
+
+## Créer
+
+<Tabs items={["TypeScript", "cURL"]}>
+
+<Tab value="TypeScript">
+```typescript
+import { LomiSDK } from '@lomi./sdk';
+
+const lomi = new LomiSDK({
+  apiKey: process.env.LOMI_SECRET_KEY!,
+  environment: 'test',
+});
+
+const payout = await lomi.payouts.create({
+  destination: 'self',
+  rail: 'stellar',
+  amount: 10,
+  currency_code: 'USD',
+});
+```
+</Tab>
+
+<Tab value="cURL">
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/payouts" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "destination": "self",
+    "rail": "stellar",
+    "amount": 10,
+    "currency_code": "USD"
+  }'
+```
+</Tab>
+
+</Tabs>
+
+La réponse contient `stellar_transaction_id` une fois le hop confirmé. La ligne de virement du tableau de bord affiche cet identifiant (lecture seule). Le dernier kilomètre reste Wave / MTN / SPI après le Payment USDC (`memo` = `payout_id`).
+
+Voir aussi [Virements](/build/money/payouts).

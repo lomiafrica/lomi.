@@ -16,6 +16,7 @@ import {
   PDF_LINK,
   PDF_MUTED_BORDER,
   PDF_MUTED_TEXT,
+  PDF_PAGE_PADDING,
   PDF_TOTALS_WIDTH,
 } from "./tokens";
 import {
@@ -26,13 +27,14 @@ import {
   PdfSectionRule,
   PdfTopBand,
   PDF_PAGE_CHROME_STYLE,
-  pdfLineValueOffset,
 } from "./pdf-chrome";
+import { PdfFiscalQr } from "./fiscal-qr";
 import { resolveSupportEmail } from "./legal";
 import type {
   ReceiptAddress,
   ReceiptDigitalDelivery,
   ReceiptDocumentData,
+  ReceiptLineItem,
 } from "./types";
 
 registerReceiptFonts();
@@ -270,9 +272,18 @@ function PdfDigitalDelivery({
   );
 }
 
+const A4_PAGE_WIDTH = 595.28;
+const PDF_CONTENT_WIDTH = A4_PAGE_WIDTH - PDF_PAGE_PADDING * 2;
 const PDF_QTY_COL_WIDTH = 36;
 const PDF_PRICE_COL_WIDTH = 80;
 const PDF_AMOUNT_COL_WIDTH = 110;
+
+function receiptNumericColWidth(showQuantityAndPrice: boolean): number {
+  if (showQuantityAndPrice) {
+    return PDF_QTY_COL_WIDTH + PDF_PRICE_COL_WIDTH + PDF_AMOUNT_COL_WIDTH;
+  }
+  return PDF_AMOUNT_COL_WIDTH;
+}
 
 function PdfLineValue({
   width,
@@ -294,6 +305,121 @@ function PdfLineValue({
       >
         {children}
       </Text>
+    </View>
+  );
+}
+
+function PdfLineItemsTable({
+  currency,
+  items,
+  showQuantityAndPrice,
+}: {
+  currency: string;
+  items: ReceiptLineItem[];
+  showQuantityAndPrice: boolean;
+}) {
+  const numericWidth = receiptNumericColWidth(showQuantityAndPrice);
+  const descriptionWidth = PDF_CONTENT_WIDTH - numericWidth;
+  return (
+    <View>
+      <View
+        style={{
+          flexDirection: "row",
+          borderBottomWidth: 0.5,
+          borderBottomColor: PDF_BORDER_COLOR,
+          paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
+        }}
+      >
+        <Text
+          style={{
+            width: descriptionWidth,
+            fontSize: PDF_FONT_SIZE.label,
+            fontWeight: 500,
+            color: PDF_LABEL_COLOR,
+            lineHeight: 1,
+          }}
+        >
+          Description
+        </Text>
+        {showQuantityAndPrice ? (
+          <Text
+            style={{
+              width: PDF_QTY_COL_WIDTH,
+              fontSize: PDF_FONT_SIZE.label,
+              fontWeight: 500,
+              color: PDF_LABEL_COLOR,
+            }}
+          >
+            Qty
+          </Text>
+        ) : null}
+        {showQuantityAndPrice ? (
+          <Text
+            style={{
+              width: PDF_PRICE_COL_WIDTH,
+              fontSize: PDF_FONT_SIZE.label,
+              fontWeight: 500,
+              color: PDF_LABEL_COLOR,
+              textAlign: "right",
+            }}
+          >
+            Price
+          </Text>
+        ) : null}
+        <Text
+          style={{
+            width: PDF_AMOUNT_COL_WIDTH,
+            fontSize: PDF_FONT_SIZE.label,
+            fontWeight: 500,
+            color: PDF_LABEL_COLOR,
+            textAlign: "right",
+          }}
+        >
+          Amount
+        </Text>
+      </View>
+      {items.map((item, index) => (
+        <View
+          key={`line-${index.toString()}`}
+          wrap={false}
+          style={{
+            flexDirection: "row",
+            paddingTop: PDF_LINE_ROW_PADDING_TOP,
+            paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
+            borderBottomWidth: 0.5,
+            borderBottomColor: PDF_MUTED_BORDER,
+          }}
+        >
+          <View style={{ width: descriptionWidth, paddingRight: 14 }}>
+            <Text
+              style={{
+                fontSize: PDF_FONT_SIZE.body,
+                fontWeight: item.isFee ? 400 : 600,
+                lineHeight: 1,
+              }}
+            >
+              {item.description}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", width: numericWidth }}>
+            {showQuantityAndPrice ? (
+              <PdfLineValue width={PDF_QTY_COL_WIDTH}>
+                {!item.isFee ? String(item.quantity) : ""}
+              </PdfLineValue>
+            ) : null}
+            {showQuantityAndPrice ? (
+              <PdfLineValue width={PDF_PRICE_COL_WIDTH} align="right">
+                {!item.isFee
+                  ? formatCurrencyForReceipt(item.unitPrice, currency)
+                  : ""}
+              </PdfLineValue>
+            ) : null}
+            <PdfLineValue width={PDF_AMOUNT_COL_WIDTH} align="right">
+              {formatCurrencyForReceipt(item.amount, currency)}
+            </PdfLineValue>
+          </View>
+        </View>
+      ))}
     </View>
   );
 }
@@ -343,8 +469,23 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
                 value: data.paymentMethod || "—",
               },
             ],
+            data.dgiReference
+              ? [{ label: "DGI", value: data.dgiReference }]
+              : [],
           ]}
         />
+
+        {data.dgiQrValue ? (
+          <View
+            wrap={false}
+            style={{
+              marginBottom: 16,
+              alignItems: "flex-end",
+            }}
+          >
+            <PdfFiscalQr value={data.dgiQrValue} />
+          </View>
+        ) : null}
 
         <View
           style={{
@@ -373,127 +514,11 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
         <PdfSectionRule />
 
         {data.lineItems.length > 0 ? (
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                borderBottomWidth: 0.5,
-                borderBottomColor: PDF_BORDER_COLOR,
-                paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
-              }}
-            >
-              <Text
-                style={{
-                  flexGrow: 1,
-                  fontSize: PDF_FONT_SIZE.label,
-                  fontWeight: 500,
-                  color: PDF_LABEL_COLOR,
-                  lineHeight: 1,
-                }}
-              >
-                Description
-              </Text>
-              {data.showQuantityAndPrice ? (
-                <Text
-                  style={{
-                    width: PDF_QTY_COL_WIDTH,
-                    fontSize: PDF_FONT_SIZE.label,
-                    fontWeight: 500,
-                    color: PDF_LABEL_COLOR,
-                  }}
-                >
-                  Qty
-                </Text>
-              ) : null}
-              {data.showQuantityAndPrice ? (
-                <Text
-                  style={{
-                    width: PDF_PRICE_COL_WIDTH,
-                    fontSize: PDF_FONT_SIZE.label,
-                    fontWeight: 500,
-                    color: PDF_LABEL_COLOR,
-                    textAlign: "right",
-                  }}
-                >
-                  Price
-                </Text>
-              ) : null}
-              <Text
-                style={{
-                  width: PDF_AMOUNT_COL_WIDTH,
-                  fontSize: PDF_FONT_SIZE.label,
-                  fontWeight: 500,
-                  color: PDF_LABEL_COLOR,
-                  textAlign: "right",
-                }}
-              >
-                Amount
-              </Text>
-            </View>
-
-            {data.lineItems.map((item, index) => (
-              <View
-                key={`line-${index.toString()}`}
-                wrap={false}
-                style={{
-                  flexDirection: "row",
-                  paddingTop: PDF_LINE_ROW_PADDING_TOP,
-                  paddingBottom: PDF_LINE_ROW_PADDING_BOTTOM,
-                  borderBottomWidth: 0.5,
-                  borderBottomColor: PDF_MUTED_BORDER,
-                }}
-              >
-                <View style={{ flexGrow: 1, flexShrink: 1, paddingRight: 14 }}>
-                  <Text
-                    style={{
-                      fontSize: PDF_FONT_SIZE.body,
-                      fontWeight: item.isFee ? 400 : 600,
-                      lineHeight: 1,
-                      marginBottom: item.detail ? 4 : 0,
-                    }}
-                  >
-                    {item.description}
-                  </Text>
-                  {item.detail ? (
-                    <Text
-                      style={{
-                        fontSize: PDF_FONT_SIZE.body,
-                        lineHeight: 1,
-                        color: PDF_MUTED_TEXT,
-                      }}
-                    >
-                      {item.detail}
-                    </Text>
-                  ) : null}
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    paddingTop: pdfLineValueOffset(item.detail ? 1 : 0),
-                  }}
-                >
-                  {data.showQuantityAndPrice ? (
-                    <PdfLineValue width={PDF_QTY_COL_WIDTH}>
-                      {!item.isFee ? String(item.quantity) : ""}
-                    </PdfLineValue>
-                  ) : null}
-                  {data.showQuantityAndPrice ? (
-                    <PdfLineValue width={PDF_PRICE_COL_WIDTH} align="right">
-                      {!item.isFee
-                        ? formatCurrencyForReceipt(
-                            item.unitPrice,
-                            data.currency,
-                          )
-                        : ""}
-                    </PdfLineValue>
-                  ) : null}
-                  <PdfLineValue width={PDF_AMOUNT_COL_WIDTH} align="right">
-                    {formatCurrencyForReceipt(item.amount, data.currency)}
-                  </PdfLineValue>
-                </View>
-              </View>
-            ))}
-          </View>
+          <PdfLineItemsTable
+            currency={data.currency}
+            items={data.lineItems}
+            showQuantityAndPrice={data.showQuantityAndPrice}
+          />
         ) : null}
 
         <View style={{ alignItems: "flex-end", marginTop: 16 }}>

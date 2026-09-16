@@ -1,0 +1,56 @@
+---
+title: Stellar payouts
+description: Test-only `rail: stellar` for an allowlisted organization. Memo is the payout id.
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from '@/components/docs/docs-callout';
+
+Use **`POST /payouts`** with `rail: "stellar"` to hop merchant USD or XOF through Circle USDC on Stellar. Merchants never hold keys. USDC is treasury, not an `accounts` currency.
+
+<Callout type="warn">
+  Stellar payouts are Test-only until your organization is allowlisted and live is explicitly enabled. Send a **test** API key (`lomi_sk_test_…`) to `https://sandbox.api.lomi.africa`. Repeat the same `payout_id` (or `Idempotency-Key`) to get one chain Payment.
+</Callout>
+
+## Create
+
+<Tabs items={["TypeScript", "cURL"]}>
+
+<Tab value="TypeScript">
+```typescript
+import { LomiSDK } from '@lomi./sdk';
+
+const lomi = new LomiSDK({
+  apiKey: process.env.LOMI_SECRET_KEY!,
+  environment: 'test',
+});
+
+const payout = await lomi.payouts.create({
+  destination: 'self',
+  rail: 'stellar',
+  amount: 10,
+  currency_code: 'USD',
+});
+```
+</Tab>
+
+<Tab value="cURL">
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/payouts" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "destination": "self",
+    "rail": "stellar",
+    "amount": 10,
+    "currency_code": "USD"
+  }'
+```
+</Tab>
+
+</Tabs>
+
+The response includes `stellar_transaction_id` when the hop lands. The dashboard payout row shows that id (read-only). Last mile stays Wave / MTN / SPI after the USDC Payment (`memo` = first 28 of `payout_id`). Optional `last_mile_rail` (`wave` | `mtn` | `spi` | `bank`, default `wave`) records which last mile follows the hop. Stellar sits beside Airwallex (`rail: bank`); it does not intercept bank payouts.
+
+See also [Payouts](/build/money/payouts).
