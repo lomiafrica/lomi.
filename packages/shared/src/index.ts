@@ -8,6 +8,22 @@ export {
 export type { FormatCurrencyOptions } from "./format-currency.js";
 export { formatCompactNumber } from "./format-number.js";
 export { formatProvider } from "./format-provider.js";
+export {
+  BANK_BENEFICIARY_ERROR_MESSAGES,
+  bankBeneficiaryFieldLayout,
+  compactBankAccountNumber,
+  compactSwiftCode,
+  isUemoaBankCountry,
+  normalizeBankCountry,
+  transferCurrencyForBankCountry,
+  validateBankBeneficiary,
+  validateBankBeneficiaryCode,
+} from "./bank-beneficiary.js";
+export type {
+  BankBeneficiaryErrorCode,
+  BankBeneficiaryFieldLayout,
+  BankBeneficiaryInput,
+} from "./bank-beneficiary.js";
 export { stripHtml } from "./strip-html.js";
 export {
   isValidPhoneNumber,

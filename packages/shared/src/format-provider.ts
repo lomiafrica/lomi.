@@ -6,6 +6,7 @@ const FORMATTED_NAMES = {
   ORANGE: "Orange",
   SPI: "SPI",
   GIM: "GIM",
+  AIRWALLEX: "Bank",
 } as const;
 
 function isKnownProvider(
