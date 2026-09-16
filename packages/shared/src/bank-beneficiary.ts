@@ -112,7 +112,7 @@ export function bankBeneficiaryFieldLayout(
       branchCodeKind: "routing",
     };
   }
-  // Airwallex local XOF (CI, SN, and other UEMOA) uses 24-char account + SWIFT.
+  // UEMOA local bank form (CI, SN, …): 24-char account + SWIFT. Not Airwallex.
   if (UEMOA_COUNTRIES.has(code)) {
     return {
       accountNumberKind: "uemoa_account",
