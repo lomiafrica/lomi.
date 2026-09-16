@@ -52,9 +52,9 @@ export function fiscalReceiptMetadata(fields: {
     status: fields.status,
     rail: fields.rail,
   };
-  if (fields.reference) fiscal.reference = fields.reference;
-  if (fields.token) fiscal.token = fields.token;
-  if (fields.invoiceId) fiscal.invoice_id = fields.invoiceId;
+  if (fields.reference) fiscal["reference"] = fields.reference;
+  if (fields.token) fiscal["token"] = fields.token;
+  if (fields.invoiceId) fiscal["invoice_id"] = fields.invoiceId;
   return { [FISCAL_METADATA_KEY]: fiscal };
 }
 

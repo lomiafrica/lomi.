@@ -32,10 +32,14 @@ function trimOrNull(value: string | undefined): string | null {
 export function readFneConfig(
   env: Record<string, string | undefined> = {},
 ): FneConfig {
-  const enabled = flagEnabled(env.FNE_ENABLED ?? readEnvOptional("FNE_ENABLED"));
-  const apiKey = trimOrNull(env.FNE_API_KEY ?? readEnvOptional("FNE_API_KEY"));
+  const enabled = flagEnabled(
+    env["FNE_ENABLED"] ?? readEnvOptional("FNE_ENABLED"),
+  );
+  const apiKey = trimOrNull(
+    env["FNE_API_KEY"] ?? readEnvOptional("FNE_API_KEY"),
+  );
   const baseUrl =
-    trimOrNull(env.FNE_BASE_URL ?? readEnvOptional("FNE_BASE_URL")) ??
+    trimOrNull(env["FNE_BASE_URL"] ?? readEnvOptional("FNE_BASE_URL")) ??
     FNE_DEFAULT_BASE_URL;
   return { enabled, apiKey, baseUrl: baseUrl.replace(/\/$/, "") };
 }
@@ -45,19 +49,19 @@ export function readDgiPayConfig(
   env: Record<string, string | undefined> = {},
 ): DgiPayConfig {
   const enabled = flagEnabled(
-    env.DGIPAY_ENABLED ?? readEnvOptional("DGIPAY_ENABLED"),
+    env["DGIPAY_ENABLED"] ?? readEnvOptional("DGIPAY_ENABLED"),
   );
   const apiKey = trimOrNull(
-    env.DGIPAY_API_KEY ?? readEnvOptional("DGIPAY_API_KEY"),
+    env["DGIPAY_API_KEY"] ?? readEnvOptional("DGIPAY_API_KEY"),
   );
   const apiSecret = trimOrNull(
-    env.DGIPAY_API_SECRET ?? readEnvOptional("DGIPAY_API_SECRET"),
+    env["DGIPAY_API_SECRET"] ?? readEnvOptional("DGIPAY_API_SECRET"),
   );
   const aggregator = trimOrNull(
-    env.DGIPAY_AGGREGATOR ?? readEnvOptional("DGIPAY_AGGREGATOR"),
+    env["DGIPAY_AGGREGATOR"] ?? readEnvOptional("DGIPAY_AGGREGATOR"),
   );
   const baseUrl =
-    trimOrNull(env.DGIPAY_BASE_URL ?? readEnvOptional("DGIPAY_BASE_URL")) ??
+    trimOrNull(env["DGIPAY_BASE_URL"] ?? readEnvOptional("DGIPAY_BASE_URL")) ??
     DGIPAY_DEFAULT_BASE_URL;
   if (enabled && (apiKey === null || apiSecret === null || aggregator === null)) {
     throw new Error(
