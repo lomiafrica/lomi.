@@ -15,7 +15,8 @@ function base64UrlToBytes(value: string): Uint8Array {
   return bytes;
 }
 
-async function aesKey(secret: string): Promise<CryptoKey> {
+/** Infer WebCrypto key type so Node-only tsc (MCP Docker) does not need DOM libs. */
+async function aesKey(secret: string) {
   const digest = await globalThis.crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(secret),
