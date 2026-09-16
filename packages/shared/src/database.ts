@@ -418,6 +418,103 @@ export type Database = {
           },
         ]
       }
+      airwallex_transfers: {
+        Row: {
+          amount: number
+          beneficiary_id: string | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment: string
+          id: string
+          organization_id: string
+          payout_id: string
+          payout_method_id: string | null
+          quote_id: string | null
+          source_currency: string
+          status: Database["public"]["Enums"]["payout_status"]
+          transfer_currency: string
+          transfer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          beneficiary_id?: string | null
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          environment?: string
+          id?: string
+          organization_id: string
+          payout_id: string
+          payout_method_id?: string | null
+          quote_id?: string | null
+          source_currency: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          transfer_currency: string
+          transfer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          beneficiary_id?: string | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          environment?: string
+          id?: string
+          organization_id?: string
+          payout_id?: string
+          payout_method_id?: string | null
+          quote_id?: string | null
+          source_currency?: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          transfer_currency?: string
+          transfer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "airwallex_transfers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "airwallex_transfers_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: true
+            referencedRelation: "payouts"
+            referencedColumns: ["payout_id"]
+          },
+          {
+            foreignKeyName: "airwallex_transfers_payout_method_id_fkey"
+            columns: ["payout_method_id"]
+            isOneToOne: false
+            referencedRelation: "payout_methods"
+            referencedColumns: ["payout_method_id"]
+          },
+        ]
+      }
+      airwallex_webhook_events: {
+        Row: {
+          event_id: string
+          payout_id: string | null
+          processed_at: string
+          transfer_id: string | null
+        }
+        Insert: {
+          event_id: string
+          payout_id?: string | null
+          processed_at?: string
+          transfer_id?: string | null
+        }
+        Update: {
+          event_id?: string
+          payout_id?: string | null
+          processed_at?: string
+          transfer_id?: string | null
+        }
+        Relationships: []
+      }
       analytics_shares: {
         Row: {
           chart_type: string | null
@@ -11960,6 +12057,27 @@ export type Database = {
           },
         ]
       }
+      stellar_bridge_events: {
+        Row: {
+          event_id: string
+          payout_id: string | null
+          processed_at: string
+          transfer_id: string | null
+        }
+        Insert: {
+          event_id: string
+          payout_id?: string | null
+          processed_at?: string
+          transfer_id?: string | null
+        }
+        Update: {
+          event_id?: string
+          payout_id?: string | null
+          processed_at?: string
+          transfer_id?: string | null
+        }
+        Relationships: []
+      }
       stellar_settlements: {
         Row: {
           amount: number
@@ -14117,6 +14235,10 @@ export type Database = {
         Args: { p_organization_id: string; p_permission: string }
         Returns: undefined
       }
+      assert_organization_can_accept_payments: {
+        Args: { p_organization_id: string }
+        Returns: undefined
+      }
       assert_payout_pin_or_session: {
         Args: {
           p_bypass_payout_pin?: boolean
@@ -14723,6 +14845,22 @@ export type Database = {
           payment_method_code: Database["public"]["Enums"]["payment_method_code"]
           starter_fixed_amount: number
           starter_percentage: number
+        }[]
+      }
+      complete_airwallex_payout: {
+        Args: {
+          p_beneficiary_id?: string
+          p_organization_id: string
+          p_payout_id: string
+          p_quote_id?: string
+          p_status?: Database["public"]["Enums"]["payout_status"]
+          p_transfer_id?: string
+        }
+        Returns: {
+          message: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          success: boolean
         }[]
       }
       complete_api_idempotency_record: {
@@ -20555,6 +20693,7 @@ export type Database = {
           organization_name: string
           payout_id: string
           payout_method_id: string
+          provider_code: Database["public"]["Enums"]["provider_code"]
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
         }[]
@@ -24756,6 +24895,28 @@ export type Database = {
         Args: { p_organization_id: string }
         Returns: number
       }
+      initiate_airwallex_payout: {
+        Args: {
+          p_amount: number
+          p_bypass_payout_pin?: boolean
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_environment: string
+          p_merchant_id: string
+          p_organization_id: string
+          p_payout_method_id: string
+          p_payout_pin?: string
+          p_payout_pin_session?: string
+          p_source_currency: string
+          p_transfer_currency: string
+        }
+        Returns: {
+          message: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          success: boolean
+          transfer_row_id: string
+        }[]
+      }
       initiate_spi_payout: {
         Args: {
           p_amount: number
@@ -25375,6 +25536,17 @@ export type Database = {
           organization_id: string
         }[]
       }
+      list_stellar_settlements_for_reconcile: {
+        Args: { p_limit?: number }
+        Returns: {
+          bridge_transfer_id: string
+          organization_id: string
+          payout_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          stellar_tx_hash: string
+          updated_at: string
+        }[]
+      }
       list_storefront_organization_slugs: {
         Args: never
         Returns: {
@@ -25948,6 +26120,15 @@ export type Database = {
         Returns: number
       }
       normalize_marketing_locale: { Args: { p_raw: string }; Returns: string }
+      notify_merchant_radar_decision: {
+        Args: {
+          p_assessment_id: string
+          p_decision: Database["public"]["Enums"]["radar_decision"]
+          p_environment?: string
+          p_organization_id: string
+        }
+        Returns: undefined
+      }
       notify_notification_outbox_via_api: {
         Args: { p_outbox_id: string }
         Returns: undefined
@@ -26093,6 +26274,10 @@ export type Database = {
       oauth_revoke_token: { Args: { p_token: string }; Returns: boolean }
       oauth_verify_client_secret: {
         Args: { p_client_id: string; p_client_secret: string }
+        Returns: boolean
+      }
+      organization_can_accept_payments: {
+        Args: { p_organization_id: string }
         Returns: boolean
       }
       organization_has_active_test_secret_key: {
@@ -26390,6 +26575,12 @@ export type Database = {
         Args: { p_outbox_id: string }
         Returns: undefined
       }
+      record_airwallex_webhook_event: {
+        Args: { p_event_id: string; p_payout_id: string; p_transfer_id: string }
+        Returns: {
+          inserted: boolean
+        }[]
+      }
       record_api_idempotency_record: {
         Args: {
           p_endpoint_route: string
@@ -26521,6 +26712,12 @@ export type Database = {
           p_organization_id: string
         }
         Returns: undefined
+      }
+      record_stellar_bridge_event: {
+        Args: { p_event_id: string; p_payout_id: string; p_transfer_id: string }
+        Returns: {
+          inserted: boolean
+        }[]
       }
       record_stripe_checkout_failure: {
         Args: {
@@ -26804,6 +27001,7 @@ export type Database = {
         Args: { p_identifier: string }
         Returns: string
       }
+      resolve_price_id: { Args: { p_identifier: string }; Returns: string }
       resolve_product_id: { Args: { p_identifier: string }; Returns: string }
       resolve_subscription_refund_action: {
         Args: {
@@ -29056,6 +29254,7 @@ export type Database = {
         | "FREE"
         | "GIM"
         | "STELLAR"
+        | "AIRWALLEX"
       provider_payment_status:
         | "processing"
         | "cancelled"
@@ -29725,6 +29924,7 @@ export const Constants = {
         "FREE",
         "GIM",
         "STELLAR",
+        "AIRWALLEX",
       ],
       provider_payment_status: [
         "processing",
