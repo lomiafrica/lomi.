@@ -121,7 +121,8 @@ export function buildFneSignPayload(
     if (currency === "") {
       return {
         code: "b2f_currency_required",
-        message: "FNE B2F sign requires foreignCurrency and foreignCurrencyRate.",
+        message:
+          "FNE B2F sign requires foreignCurrency and foreignCurrencyRate.",
       };
     }
   }

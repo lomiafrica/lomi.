@@ -1,9 +1,5 @@
 import { isAuthStorageCookieName } from "./auth-recovery.js";
-import {
-  isJsonObject,
-  parseJson,
-  readString,
-} from "./json-value.js";
+import { isJsonObject, parseJson, readString } from "./json-value.js";
 
 const BASE64_PREFIX = "base64-";
 const DEFAULT_APEX = "lomi.africa";
@@ -71,8 +67,7 @@ export function combineAuthCookieChunks(
 function stringFromBase64Url(value: string): string {
   const padded = value.replace(/-/g, "+").replace(/_/g, "/");
   const remainder = padded.length % 4;
-  const base64 =
-    remainder === 0 ? padded : padded + "=".repeat(4 - remainder);
+  const base64 = remainder === 0 ? padded : padded + "=".repeat(4 - remainder);
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) {
@@ -236,7 +231,11 @@ export function adoptLegacyAuthCookies(
   }
 
   for (const name of cookieNamesToExpire(doc.cookie, projectRef)) {
-    for (const assignment of expireCookieAssignments(name, apexDomain, secure)) {
+    for (const assignment of expireCookieAssignments(
+      name,
+      apexDomain,
+      secure,
+    )) {
       doc.cookie = assignment;
     }
   }

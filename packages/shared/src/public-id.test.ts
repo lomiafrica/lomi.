@@ -141,7 +141,10 @@ test("hostedPaymentLinkUrl keeps custom domains and rebuilds legacy paths", () =
     publicIdFromPaymentLinkUrl(`https://shop.example.com/${PLINK_ID}`),
     PLINK_ID,
   );
-  assert.equal(publicIdFromPaymentLinkUrl("https://pay.lomi.africa/instant/x"), null);
+  assert.equal(
+    publicIdFromPaymentLinkUrl("https://pay.lomi.africa/instant/x"),
+    null,
+  );
   assert.equal(
     hostedPaymentLinkUrl(
       PLINK_ID,

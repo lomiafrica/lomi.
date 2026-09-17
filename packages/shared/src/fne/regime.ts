@@ -17,13 +17,17 @@ const CI_COUNTRY_HINTS = [
   "ivory coast",
 ];
 
-export function parseFiscalRegime(value: string | null | undefined): FiscalRegime {
+export function parseFiscalRegime(
+  value: string | null | undefined,
+): FiscalRegime {
   const normalized = value?.trim().toLowerCase() ?? "";
   if (normalized === "fne" || normalized === "rne") return normalized;
   return "off";
 }
 
-export function isFiscalHoldChannel(channel: string | null | undefined): boolean {
+export function isFiscalHoldChannel(
+  channel: string | null | undefined,
+): boolean {
   const normalized = channel?.trim().toLowerCase() ?? "";
   return (FISCAL_HOLD_CHANNELS as readonly string[]).includes(normalized);
 }

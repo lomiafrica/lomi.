@@ -1,4 +1,9 @@
-import { isJsonObject, readString, type JsonObject, type JsonValue } from "../json-value.js";
+import {
+  isJsonObject,
+  readString,
+  type JsonObject,
+  type JsonValue,
+} from "../json-value.js";
 import { isUuid } from "../public-id.js";
 
 export const FISCAL_METADATA_KEY = "fiscal";

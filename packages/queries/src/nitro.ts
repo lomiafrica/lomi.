@@ -293,9 +293,14 @@ export async function adminGetNitroSettings(
   client: TypedSupabaseClient,
   args: { p_organization_id: string },
 ): Promise<NitroSettingsRow[]> {
-  const data = await handleUntypedRpc(client, "admin_get_nitro_settings", args, {
-    fallbackValue: [],
-  });
+  const data = await handleUntypedRpc(
+    client,
+    "admin_get_nitro_settings",
+    args,
+    {
+      fallbackValue: [],
+    },
+  );
   return parseRowArray(data, parseNitroSettingsRow);
 }
 

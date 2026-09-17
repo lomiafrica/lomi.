@@ -262,7 +262,9 @@ export function isSystemRoleKey(value: string): value is SystemRoleKey {
   return Object.values(SYSTEM_ROLE_KEYS).includes(value as SystemRoleKey);
 }
 
-export function legacyMemberRoleForRoleKey(roleKey: string): "Admin" | "Member" {
+export function legacyMemberRoleForRoleKey(
+  roleKey: string,
+): "Admin" | "Member" {
   return roleKey === SYSTEM_ROLE_KEYS.orgAdmin ? "Admin" : "Member";
 }
 

@@ -140,9 +140,7 @@ export function unknownMcpTools(tools: readonly string[]): string[] {
   return tools.filter((tool) => !MCP_KNOWN_TOOL_SET.has(tool));
 }
 
-export function mcpToolsMissingFamily(
-  toolNames: readonly string[],
-): string[] {
+export function mcpToolsMissingFamily(toolNames: readonly string[]): string[] {
   return toolNames.filter((name) => !MCP_KNOWN_TOOL_SET.has(name));
 }
 

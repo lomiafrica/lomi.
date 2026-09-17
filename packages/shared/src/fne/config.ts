@@ -63,7 +63,10 @@ export function readDgiPayConfig(
   const baseUrl =
     trimOrNull(env["DGIPAY_BASE_URL"] ?? readEnvOptional("DGIPAY_BASE_URL")) ??
     DGIPAY_DEFAULT_BASE_URL;
-  if (enabled && (apiKey === null || apiSecret === null || aggregator === null)) {
+  if (
+    enabled &&
+    (apiKey === null || apiSecret === null || aggregator === null)
+  ) {
     throw new Error(
       "DGIPay requires DGIPAY_API_KEY, DGIPAY_API_SECRET, and DGIPAY_AGGREGATOR when enabled.",
     );

@@ -1281,7 +1281,10 @@ html.dark .docs-turnstile-mount {
   flex: 1;
 }
 
-.flex.flex-col.gap-1.fd-scroll-container > a > div:nth-child(2) > p:first-child {
+.flex.flex-col.gap-1.fd-scroll-container
+  > a
+  > div:nth-child(2)
+  > p:first-child {
   font-size: 13px;
   font-weight: 500;
   line-height: 1.35;

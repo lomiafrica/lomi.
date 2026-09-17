@@ -133,12 +133,9 @@ export async function listTeamJoinCodes(
   client: TypedSupabaseClient,
   args: { p_organization_id: string },
 ): Promise<TeamJoinCodeRow[]> {
-  const data = await handleUntypedRpc(
-    client,
-    "list_team_join_codes",
-    args,
-    { fallbackValue: [] },
-  );
+  const data = await handleUntypedRpc(client, "list_team_join_codes", args, {
+    fallbackValue: [],
+  });
   if (!isJsonArray(data)) return [];
   return data.flatMap((row) => {
     const parsed = parseJoinCodeRow(row);
@@ -159,7 +156,11 @@ export async function revokeTeamJoinCode(
 export async function redeemTeamJoinCode(
   client: TypedSupabaseClient,
   args: { p_code: string },
-): Promise<{ success: boolean; organization_id: string | null; already_member: boolean }> {
+): Promise<{
+  success: boolean;
+  organization_id: string | null;
+  already_member: boolean;
+}> {
   const data = await handleUntypedRpc(client, "redeem_team_join_code", args);
   if (!isJsonObject(data)) {
     return { success: false, organization_id: null, already_member: false };

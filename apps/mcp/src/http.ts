@@ -125,9 +125,7 @@ async function resolveProvisioningKeyFromRequest(
   return introspected.provisioning_key;
 }
 
-async function resolveMerchantGrantFromRequest(
-  req: Request,
-): Promise<{
+async function resolveMerchantGrantFromRequest(req: Request): Promise<{
   connectionKey: string;
   accessLevel: MerchantAccessLevel;
   allowedTools: string[] | null;

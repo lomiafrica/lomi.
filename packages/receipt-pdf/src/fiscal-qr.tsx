@@ -45,7 +45,13 @@ export function HtmlFiscalQr({
   );
 }
 
-export function PdfFiscalQr({ value, size = 72 }: { value: string; size?: number }) {
+export function PdfFiscalQr({
+  value,
+  size = 72,
+}: {
+  value: string;
+  size?: number;
+}) {
   const modules = fiscalQrModules(value);
   const dim = modules.length;
   const cell = dim > 0 ? size / dim : 0;

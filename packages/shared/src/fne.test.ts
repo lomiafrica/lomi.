@@ -140,7 +140,8 @@ test("parses DGI sign response reference, token, and invoice id", () => {
   const parsed = parseFneSignBody({
     ncc: "9606123E",
     reference: "9606123E25000000019",
-    token: "http://54.247.95.108/fr/verification/019465c1-3f61-766c-9652-706e32dfb436",
+    token:
+      "http://54.247.95.108/fr/verification/019465c1-3f61-766c-9652-706e32dfb436",
     warning: false,
     balance_sticker: 179,
     invoice: { id: "e2b2d8da-a532-4c08-9182-f5b428ca468d" },
@@ -208,10 +209,7 @@ test("disabled FNE client refuses to sign", async () => {
     baseUrl: FNE_DEFAULT_BASE_URL,
   });
   await assert.rejects(
-    () =>
-      client.sign(
-        buildFneSignPayload(sampleInvoice()) as FneSignPayload,
-      ),
+    () => client.sign(buildFneSignPayload(sampleInvoice()) as FneSignPayload),
     /disabled/,
   );
 });
@@ -392,7 +390,10 @@ test("fiscal receipt metadata round-trips public DGI fields", () => {
 });
 
 test("seals and opens a merchant FNE Bearer", async () => {
-  const sealed = await sealFneOrgApiKey("portal-bearer", "org-secret-min-32-chars!!");
+  const sealed = await sealFneOrgApiKey(
+    "portal-bearer",
+    "org-secret-min-32-chars!!",
+  );
   assert.notEqual(sealed, "portal-bearer");
   assert.equal(
     await openFneOrgApiKey(sealed, "org-secret-min-32-chars!!"),

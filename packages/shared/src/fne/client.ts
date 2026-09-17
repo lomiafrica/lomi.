@@ -8,11 +8,7 @@ import {
   type JsonValue,
 } from "../json-value.js";
 import type { FneConfig } from "./config.js";
-import type {
-  FneRefundItem,
-  FneSignPayload,
-  FneSignResult,
-} from "./types.js";
+import type { FneRefundItem, FneSignPayload, FneSignResult } from "./types.js";
 
 export const FNE_SIGN_PATH = "/external/invoices/sign";
 
@@ -28,7 +24,9 @@ export type FneHttpResponse = {
   bodyText: string;
 };
 
-export type FneTransport = (request: FneHttpRequest) => Promise<FneHttpResponse>;
+export type FneTransport = (
+  request: FneHttpRequest,
+) => Promise<FneHttpResponse>;
 
 export class FneApiError extends Error {
   readonly status: number;
@@ -68,7 +66,10 @@ function parseBodyObject(bodyText: string): JsonObject {
   return value;
 }
 
-function firstString(object: JsonObject, keys: readonly string[]): string | null {
+function firstString(
+  object: JsonObject,
+  keys: readonly string[],
+): string | null {
   for (const key of keys) {
     const value = readString(object, key);
     if (value !== undefined && value.trim() !== "") return value.trim();

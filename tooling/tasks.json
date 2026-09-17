@@ -52,12 +52,7 @@
       "workspace": true,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "typecheck",
-        "build",
-        "types:generate"
-      ],
+      "capabilities": ["install", "typecheck", "build", "types:generate"],
       "owner": "shared-packages",
       "risk": "medium"
     },
@@ -69,10 +64,7 @@
       "workspace": true,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "typecheck"
-      ],
+      "capabilities": ["install", "typecheck"],
       "owner": "shared-packages",
       "risk": "low"
     },
@@ -84,11 +76,7 @@
       "workspace": true,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "typecheck",
-        "build"
-      ],
+      "capabilities": ["install", "typecheck", "build"],
       "owner": "shared-packages",
       "risk": "medium"
     },
@@ -100,11 +88,7 @@
       "workspace": true,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "build",
-        "typecheck"
-      ],
+      "capabilities": ["install", "build", "typecheck"],
       "owner": "shared-packages",
       "risk": "low"
     },
@@ -116,10 +100,7 @@
       "workspace": false,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "typecheck"
-      ],
+      "capabilities": ["install", "typecheck"],
       "owner": "hosted-checkout",
       "risk": "medium",
       "notes": "React 19 package; excluded from pnpm-workspace.yaml."
@@ -305,13 +286,7 @@
       "workspace": false,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "lint",
-        "format",
-        "typecheck",
-        "test"
-      ],
+      "capabilities": ["install", "lint", "format", "typecheck", "test"],
       "owner": "merchant-cli",
       "risk": "medium"
     },
@@ -323,11 +298,7 @@
       "workspace": false,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "build",
-        "knip"
-      ],
+      "capabilities": ["install", "build", "knip"],
       "owner": "sdks",
       "risk": "low"
     },
@@ -339,12 +310,7 @@
       "workspace": false,
       "submodule": false,
       "required": true,
-      "capabilities": [
-        "install",
-        "build",
-        "knip",
-        "test"
-      ],
+      "capabilities": ["install", "build", "knip", "test"],
       "owner": "sdks",
       "risk": "low"
     },
@@ -356,11 +322,7 @@
       "workspace": false,
       "submodule": false,
       "required": false,
-      "capabilities": [
-        "install",
-        "build",
-        "knip"
-      ],
+      "capabilities": ["install", "build", "knip"],
       "owner": "sdks",
       "risk": "low"
     },
@@ -392,12 +354,7 @@
       "workspace": false,
       "submodule": true,
       "required": false,
-      "capabilities": [
-        "install",
-        "dev",
-        "build",
-        "knip"
-      ],
+      "capabilities": ["install", "dev", "build", "knip"],
       "owner": "plugins",
       "risk": "medium"
     },
@@ -497,13 +454,7 @@
       "workspace": false,
       "submodule": true,
       "required": false,
-      "capabilities": [
-        "install",
-        "lint",
-        "format",
-        "typecheck",
-        "test"
-      ],
+      "capabilities": ["install", "lint", "format", "typecheck", "test"],
       "owner": "tools",
       "risk": "low"
     },
@@ -515,10 +466,7 @@
       "workspace": false,
       "submodule": true,
       "required": false,
-      "capabilities": [
-        "install",
-        "typecheck"
-      ],
+      "capabilities": ["install", "typecheck"],
       "owner": "tools",
       "risk": "low"
     },

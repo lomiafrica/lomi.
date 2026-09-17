@@ -24,7 +24,10 @@ test("known tools cover every family entry", () => {
 });
 
 test("expandMcpToolFamilies drops money tools when includeMoney is false", () => {
-  const withMoney = expandMcpToolFamilies(["payouts_finance", "refunds_disputes"]);
+  const withMoney = expandMcpToolFamilies([
+    "payouts_finance",
+    "refunds_disputes",
+  ]);
   const withoutMoney = expandMcpToolFamilies(
     ["payouts_finance", "refunds_disputes"],
     { includeMoney: false },
@@ -41,7 +44,11 @@ test("normalizeMcpAllowedTools trims, dedupes, and sorts", () => {
   assert.equal(normalizeMcpAllowedTools(null), null);
   assert.equal(normalizeMcpAllowedTools([]), null);
   assert.deepEqual(
-    normalizeMcpAllowedTools([" lomi_customers ", "lomi_checkout", "lomi_customers"]),
+    normalizeMcpAllowedTools([
+      " lomi_customers ",
+      "lomi_checkout",
+      "lomi_customers",
+    ]),
     ["lomi_checkout", "lomi_customers"],
   );
 });
