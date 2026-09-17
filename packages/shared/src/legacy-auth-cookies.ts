@@ -176,14 +176,15 @@ type BrowserStorage = {
 };
 
 function browserDocument(): BrowserDocument | null {
-  if (typeof document === "undefined") return null;
-  return document;
+  const doc = (globalThis as { document?: BrowserDocument }).document;
+  return doc ?? null;
 }
 
 function browserLocalStorage(): BrowserStorage | null {
   try {
-    if (typeof localStorage === "undefined") return null;
-    return localStorage;
+    const storage = (globalThis as { localStorage?: BrowserStorage })
+      .localStorage;
+    return storage ?? null;
   } catch {
     return null;
   }
@@ -212,7 +213,8 @@ export function adoptLegacyAuthCookies(
   const apexDomain = options.apexDomain ?? DEFAULT_APEX;
   const secure =
     options.secure ??
-    (typeof location !== "undefined" && location.protocol === "https:");
+    (globalThis as { location?: { protocol?: string } }).location?.protocol ===
+      "https:";
 
   let imported = false;
   const storage = browserLocalStorage();
