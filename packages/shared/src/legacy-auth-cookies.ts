@@ -73,15 +73,12 @@ function stringFromBase64Url(value: string): string {
   const remainder = padded.length % 4;
   const base64 =
     remainder === 0 ? padded : padded + "=".repeat(4 - remainder);
-  if (typeof atob === "function") {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i += 1) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return new TextDecoder().decode(bytes);
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
   }
-  return Buffer.from(base64, "base64").toString("utf8");
+  return new TextDecoder().decode(bytes);
 }
 
 export function decodeSupabaseAuthCookieValue(value: string): string | null {
