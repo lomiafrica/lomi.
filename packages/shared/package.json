@@ -58,11 +58,11 @@
       "default": "./dist/local-storage.js",
       "react-native": "./dist/local-storage.js"
     },
-    "./browser-session": {
-      "types": "./src/browser-session.ts",
-      "import": "./dist/browser-session.js",
-      "default": "./dist/browser-session.js",
-      "react-native": "./dist/browser-session.js"
+    "./legacy-auth-cookies": {
+      "types": "./src/legacy-auth-cookies.ts",
+      "import": "./dist/legacy-auth-cookies.js",
+      "default": "./dist/legacy-auth-cookies.js",
+      "react-native": "./dist/legacy-auth-cookies.js"
     },
     "./fne": {
       "types": "./src/fne/index.ts",

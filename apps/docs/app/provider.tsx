@@ -15,7 +15,8 @@ import type { Language } from '@/lib/i18n/config';
 import { languages } from '@/lib/i18n/config';
 import { t as translate } from '@/lib/i18n/translations';
 import { DocsWorkspaceProvider } from '@/lib/docs/workspace-context';
-import { isString } from '@lomi./shared';
+import { isString, adoptLegacyAuthCookies } from '@lomi./shared';
+import { registerDocsStaleChunkRecovery } from '@/lib/runtime/stale-chunk-recovery';
 
 const SearchDialog = dynamic(() => import('@/components/ui/search'), {
   ssr: false,
@@ -29,6 +30,12 @@ export function Provider({
   initialLanguage?: Language;
 }) {
   useEffect(() => {
+    registerDocsStaleChunkRecovery();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (supabaseUrl) {
+      adoptLegacyAuthCookies({ supabaseUrl });
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const uwuParam = urlParams.get('uwu');
 

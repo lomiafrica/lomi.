@@ -19,17 +19,6 @@
       "boundary": "runtime-injection"
     },
     {
-      "id": "vite-browser-session-adapters",
-      "owner": "dashboard-admin",
-      "reason": "Admin and dashboard inject audience, Vite env, and the local Supabase browser client into createBrowserSession.",
-      "paths": [
-        "apps/dashboard/src/lib/auth/browser-session.ts",
-        "apps/admin/src/lib/auth/browser-session.ts"
-      ],
-      "permanent": true,
-      "boundary": "security-session"
-    },
-    {
       "id": "themed-lottie-adapters",
       "owner": "dashboard-admin",
       "reason": "Theme hook and Spinner stay app-local; core lives in @lomi./ui/lottie-icon.",

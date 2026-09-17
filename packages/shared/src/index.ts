@@ -273,11 +273,19 @@ export {
   removeLocalStorageItem,
 } from "./local-storage.js";
 export { Cookies, LocalStorageKeys } from "./browser-keys.js";
-export { createBrowserSession } from "./browser-session.js";
-export type {
-  BrowserSessionAudience,
-  BrowserSessionTokens,
-} from "./browser-session.js";
+export {
+  adoptLegacyAuthCookies,
+  combineAuthCookieChunks,
+  decodeSupabaseAuthCookieValue,
+  expireCookieAssignments,
+  isPersistedSupabaseSession,
+  lomiSupabaseAuthStorageKeys,
+  parseCookieHeaderKeepLast,
+  sessionJsonFromAuthCookies,
+  supabaseAuthStorageKey,
+  supabaseProjectRefFromUrl,
+} from "./legacy-auth-cookies.js";
+export type { AdoptLegacyAuthCookiesOptions } from "./legacy-auth-cookies.js";
 export { getPayButtonForeground } from "./button-contrast.js";
 export {
   DEFAULT_PAY_ORIGIN,
