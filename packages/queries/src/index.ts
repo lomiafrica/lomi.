@@ -75,5 +75,6 @@ export * from "./spi.js";
 export * from "./storefront.js";
 export * from "./support-requests.js";
 export * from "./team.js";
+export * from "./team-join.js";
 export * from "./transactions.js";
 export * from "./webhooks.js";

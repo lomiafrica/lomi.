@@ -101,6 +101,7 @@ type SessionBootstrapState = {
   provisioningApiKey: string | null;
   partnerApiKey: string | null;
   merchantAccessLevel: MerchantAccessLevel;
+  merchantAllowedTools: string[] | null;
 };
 
 const MISSING_SESSION_CREDENTIAL_MESSAGE =
@@ -126,10 +127,18 @@ async function resolveProvisioningKeyFromRequest(
 
 async function resolveMerchantGrantFromRequest(
   req: Request,
-): Promise<{ connectionKey: string; accessLevel: MerchantAccessLevel } | null> {
+): Promise<{
+  connectionKey: string;
+  accessLevel: MerchantAccessLevel;
+  allowedTools: string[] | null;
+} | null> {
   const headerMerchantKey = extractSessionMerchantApiKey(req);
   if (headerMerchantKey) {
-    return { connectionKey: headerMerchantKey, accessLevel: "full" };
+    return {
+      connectionKey: headerMerchantKey,
+      accessLevel: "full",
+      allowedTools: null,
+    };
   }
 
   const oauthToken = extractOAuthAccessToken(req);
@@ -142,9 +151,17 @@ async function resolveMerchantGrantFromRequest(
       : introspected.access_level === "write"
         ? "write"
         : "read";
+  const allowedTools =
+    Array.isArray(introspected.allowed_tools) &&
+    introspected.allowed_tools.length > 0
+      ? introspected.allowed_tools.filter(
+          (tool): tool is string => typeof tool === "string" && tool.length > 0,
+        )
+      : null;
   return {
     connectionKey: introspected.connection_key,
     accessLevel,
+    allowedTools: allowedTools && allowedTools.length > 0 ? allowedTools : null,
   };
 }
 
@@ -664,6 +681,10 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
               sessionId,
               merchantGrant.accessLevel,
             );
+            registry.updateMerchantAllowedTools(
+              sessionId,
+              merchantGrant.allowedTools,
+            );
           }
           if (sessionId && registry.has(sessionId) && resolvedProvisioningKey) {
             registry.updateProvisioningApiKey(
@@ -786,6 +807,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
               provisioningApiKey: resolvedProvisioningKey,
               partnerApiKey: resolvedPartnerKey,
               merchantAccessLevel: merchantGrant?.accessLevel ?? "full",
+              merchantAllowedTools: merchantGrant?.allowedTools ?? null,
             };
 
             transport = new StreamableHTTPServerTransport({
@@ -801,6 +823,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
                   sessionState.partnerApiKey,
                   presentedFingerprint,
                   clientIp(req),
+                  sessionState.merchantAllowedTools,
                 );
                 store.sessionId = sid;
               },
@@ -811,6 +834,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
               mode: "http",
               guest,
               merchantAccessLevel: sessionState.merchantAccessLevel,
+              merchantAllowedTools: sessionState.merchantAllowedTools,
               getApiKey: () =>
                 resolveMerchantKey(
                   registry,

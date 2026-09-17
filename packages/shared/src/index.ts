@@ -298,6 +298,7 @@ export {
   checkoutSessionPathSegment,
   displayPublicId,
   formatPublicId,
+  preferredDisplayPublicId,
   hostedPaymentLinkUrl,
   isCanonicalPaymentLinkPath,
   isCheckoutLinkIdentifier,
@@ -310,6 +311,7 @@ export {
   isUuid,
   normalizePublicId,
   paymentLinkPathSegment,
+  publicIdFromPaymentLinkUrl,
   publicIdPrefix,
   publicIdsMatch,
 } from "./public-id.js";
@@ -337,3 +339,48 @@ export type {
   AgentRegisterPowVerifyInput,
   AgentRegisterPowVerifyResult,
 } from "./agent-register-pow.js";
+export {
+  MCP_KNOWN_TOOLS,
+  MCP_KNOWN_TOOL_SET,
+  MCP_MONEY_TOOLS,
+  MCP_MONEY_TOOL_SET,
+  MCP_TOOL_FAMILIES,
+  MCP_TOOL_FAMILY_IDS,
+  expandMcpToolFamilies,
+  isKnownMcpTool,
+  isMcpToolFamilyId,
+  mcpFamilyDuplicateTools,
+  mcpToolsMissingFamily,
+  normalizeMcpAllowedTools,
+  unknownMcpTools,
+} from "./mcp-tool-families.js";
+export type {
+  McpMoneyTool,
+  McpToolFamily,
+  McpToolFamilyId,
+} from "./mcp-tool-families.js";
+export {
+  CASHIER_PERMISSIONS,
+  JUMBO_QUICK_INVITE_ROLE_KEYS,
+  LOCKED_SYSTEM_ROLE_KEYS,
+  MANAGER_DENIED_PERMISSIONS,
+  MEMBER_DENIED_PERMISSIONS,
+  PERMISSION_GROUPS,
+  PERMISSION_KEYS,
+  PERMISSION_KEY_SET,
+  RESERVED_SYSTEM_ROLE_KEYS,
+  STAFF_PERMISSIONS,
+  SYSTEM_ROLES,
+  SYSTEM_ROLE_KEYS,
+  VIEWER_PERMISSIONS,
+  getLocalizedOrganizationRoleTitle,
+  isPermissionKey,
+  isSystemRoleKey,
+  legacyMemberRoleForRoleKey,
+  parsePermissionKeysFromSqlSeed,
+} from "./team-rbac.js";
+export type {
+  PermissionKey,
+  SystemRoleDefinition,
+  SystemRoleKey,
+} from "./team-rbac.js";

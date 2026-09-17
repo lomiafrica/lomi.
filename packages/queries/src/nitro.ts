@@ -20,9 +20,11 @@ export type NitroSettingsRow = {
   max_advance_hours: number;
   fee_bps: number | null;
   min_fee_amount: number;
+  fee_percentage: number;
   risk_tier: string;
   outstanding_exposure: number;
   held_balance: number;
+  next_release_at: string | null;
 };
 
 export type NitroQuoteRow = {
@@ -31,6 +33,8 @@ export type NitroQuoteRow = {
   net_amount: number;
   available_after: number;
   reason_ineligible: string | null;
+  fee_percentage: number;
+  min_fee_amount: number;
 };
 
 export type NitroRequestRow = {
@@ -54,6 +58,7 @@ function parseNitroSettingsRow(value: JsonValue): NitroSettingsRow | null {
   const advance_limit_amount = readNumber(value, "advance_limit_amount");
   const max_advance_hours = readNumber(value, "max_advance_hours");
   const min_fee_amount = readNumber(value, "min_fee_amount");
+  const fee_percentage = readNumber(value, "fee_percentage");
   const outstanding_exposure = readNumber(value, "outstanding_exposure");
   const held_balance = readNumber(value, "held_balance");
   if (
@@ -64,6 +69,7 @@ function parseNitroSettingsRow(value: JsonValue): NitroSettingsRow | null {
     advance_limit_amount === undefined ||
     max_advance_hours === undefined ||
     min_fee_amount === undefined ||
+    fee_percentage === undefined ||
     outstanding_exposure === undefined ||
     held_balance === undefined
   ) {
@@ -77,9 +83,11 @@ function parseNitroSettingsRow(value: JsonValue): NitroSettingsRow | null {
     max_advance_hours,
     fee_bps: readNumber(value, "fee_bps") ?? null,
     min_fee_amount,
+    fee_percentage,
     risk_tier,
     outstanding_exposure,
     held_balance,
+    next_release_at: readString(value, "next_release_at") ?? null,
   };
 }
 
@@ -89,11 +97,15 @@ function parseNitroQuoteRow(value: JsonValue): NitroQuoteRow | null {
   const fee_amount = readNumber(value, "fee_amount");
   const net_amount = readNumber(value, "net_amount");
   const available_after = readNumber(value, "available_after");
+  const fee_percentage = readNumber(value, "fee_percentage");
+  const min_fee_amount = readNumber(value, "min_fee_amount");
   if (
     eligible_amount === undefined ||
     fee_amount === undefined ||
     net_amount === undefined ||
-    available_after === undefined
+    available_after === undefined ||
+    fee_percentage === undefined ||
+    min_fee_amount === undefined
   ) {
     return null;
   }
@@ -103,6 +115,8 @@ function parseNitroQuoteRow(value: JsonValue): NitroQuoteRow | null {
     net_amount,
     available_after,
     reason_ineligible: readString(value, "reason_ineligible") ?? null,
+    fee_percentage,
+    min_fee_amount,
   };
 }
 
@@ -273,6 +287,16 @@ export async function getNitroRequest(
     fallbackValue: null,
   });
   return data === false ? null : data;
+}
+
+export async function adminGetNitroSettings(
+  client: TypedSupabaseClient,
+  args: { p_organization_id: string },
+): Promise<NitroSettingsRow[]> {
+  const data = await handleUntypedRpc(client, "admin_get_nitro_settings", args, {
+    fallbackValue: [],
+  });
+  return parseRowArray(data, parseNitroSettingsRow);
 }
 
 export async function adminSetNitroSettings(

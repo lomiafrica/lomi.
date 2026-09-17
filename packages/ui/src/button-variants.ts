@@ -23,10 +23,12 @@ export const buttonVariants = cva(
         default: authSurface,
         destructive:
           "bg-red-600 text-white border-transparent shadow-none hover:bg-red-700 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/40",
-        outline: authSurface,
+        outline: filterSurface,
         secondary: settingsSurface,
         ghost:
           "text-foreground shadow-none hover:bg-stone-100 hover:text-foreground dark:hover:bg-[#2A2A27] dark:hover:text-stone-200",
+        cancel:
+          "font-normal text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground dark:hover:bg-transparent dark:hover:text-foreground",
         transparent: "bg-transparent border-0 shadow-none",
         link: "text-primary underline-offset-4 hover:underline",
         blue: liveButton,
@@ -35,14 +37,13 @@ export const buttonVariants = cva(
         orange:
           "bg-orange-600 text-white border-transparent shadow-none hover:bg-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/40",
         pink: "bg-pink-600 text-white border-transparent shadow-none hover:bg-pink-700 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-900 dark:hover:text-pink-200",
-        cancel: filterSurface,
         teal: "bg-teal-600 text-white border-transparent shadow-none hover:bg-teal-700 dark:bg-teal-900/30 dark:text-teal-300 dark:hover:bg-teal-900/40",
         pointille:
           "border border-dashed border-stone-300 bg-white text-stone-700 shadow-none hover:bg-stone-50 dark:border-white/25 dark:bg-[#252522] dark:text-stone-200",
         dashed:
           "hover:bg-stone-100 hover:text-accent-foreground dark:hover:bg-[#2A2A27]",
         promocode:
-          "bg-sky-100/10 text-sky-600 hover:bg-sky-100/20 hover:text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 dark:hover:bg-sky-900/40 dark:hover:text-sky-300",
+          "bg-sky-100 text-sky-700 hover:bg-sky-200 hover:text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 dark:hover:bg-sky-900/40 dark:hover:text-sky-300",
       },
       size: {
         header: "h-8 px-3",

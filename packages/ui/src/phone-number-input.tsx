@@ -54,7 +54,7 @@ function phoneStackWrapperClass(
     case "solo":
       return forceLight
         ? "box-border h-10 min-h-10 rounded-sm border border-gray-300 shadow-none dark:border-gray-300"
-        : "box-border h-10 min-h-10 rounded-sm border border-stone-200 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(28,25,23,0.06)] dark:border-white/[0.16] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]";
+        : "box-border h-10 min-h-10 rounded-sm border border-stone-200 shadow-none dark:border-white/[0.16] dark:shadow-none";
     default: {
       const _exhaustive: never = stackRole;
       return _exhaustive;
@@ -224,7 +224,7 @@ export function PhoneNumberInput({
                   forceLight
                     ? "bg-white"
                     : stackRole === "solo"
-                      ? "bg-transparent"
+                      ? "bg-white dark:bg-[hsl(var(--panel-detail))]"
                       : "bg-white dark:bg-secondary",
                   compact
                     ? forceLight
@@ -330,7 +330,7 @@ const PhoneField = React.forwardRef<
           : "flex h-full w-full min-w-0 px-3 py-1 text-[13px] outline-none",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-100",
         "border-0 shadow-none rounded-l-none",
-        squareJoins ? "rounded-r-none" : "rounded-r-[9px]",
+        squareJoins ? "rounded-r-none" : "rounded-r-sm",
         className,
       )}
       {...props}
@@ -377,7 +377,7 @@ function CountrySelect({
               forceLight
                 ? "border-gray-300 dark:border-gray-300"
                 : "border-stone-200 dark:border-white/[0.16]",
-              squareJoins ? "rounded-l-none" : "rounded-l-[9px]",
+              squareJoins ? "rounded-l-none" : "rounded-l-sm",
             ),
         disabled && "pointer-events-none cursor-not-allowed",
       )}

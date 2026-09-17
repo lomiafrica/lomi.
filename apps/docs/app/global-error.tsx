@@ -97,10 +97,26 @@ export default function GlobalError({
             style={{
               marginTop: 16,
               display: 'flex',
-              justifyContent: 'flex-end',
+              justifyContent: 'flex-start',
               gap: 8,
             }}
           >
+            <a
+              href="/start/overview"
+              style={{
+                cursor: 'pointer',
+                border: 0,
+                background: 'transparent',
+                color: '#78716c',
+                borderRadius: 4,
+                padding: '8px 14px',
+                fontSize: 13,
+                fontWeight: 500,
+                textDecoration: 'none',
+              }}
+            >
+              Home
+            </a>
             <button
               type="button"
               onClick={() => reset()}

@@ -27,7 +27,7 @@ const CARD_CLASS =
   'docs-support-form not-prose my-6 w-full rounded-[var(--docs-sidebar-radius)] border border-[color:var(--docs-hairline)] bg-[var(--docs-well)] p-5 shadow-none sm:p-6';
 
 const FIELD_CLASS =
-  'h-10 w-full rounded-[9px] px-3 text-[13px] outline-none disabled:cursor-not-allowed disabled:opacity-50';
+  'h-10 w-full rounded-[var(--docs-code-radius)] px-3 text-[13px] outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
 export function DocsContactForm() {
   return <DocsSupportForm kind="contact" />;

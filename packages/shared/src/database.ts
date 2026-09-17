@@ -1565,6 +1565,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string | null
           provider_code: Database["public"]["Enums"]["provider_code"] | null
+          public_id: string
           spi_bulk_instruction_id: string | null
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
@@ -1583,6 +1584,7 @@ export type Database = {
           payout_id?: string
           payout_method_id?: string | null
           provider_code?: Database["public"]["Enums"]["provider_code"] | null
+          public_id?: string
           spi_bulk_instruction_id?: string | null
           status?: Database["public"]["Enums"]["payout_status"]
           updated_at?: string
@@ -1601,6 +1603,7 @@ export type Database = {
           payout_id?: string
           payout_method_id?: string | null
           provider_code?: Database["public"]["Enums"]["provider_code"] | null
+          public_id?: string
           spi_bulk_instruction_id?: string | null
           status?: Database["public"]["Enums"]["payout_status"]
           updated_at?: string
@@ -5510,6 +5513,7 @@ export type Database = {
           category: Database["public"]["Enums"]["permission_category"] | null
           created_at: string
           invitation_email: string | null
+          invitation_phone: string | null
           invitation_token: string | null
           invited_role_id: string | null
           merchant_id: string | null
@@ -5527,6 +5531,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["permission_category"] | null
           created_at?: string
           invitation_email?: string | null
+          invitation_phone?: string | null
           invitation_token?: string | null
           invited_role_id?: string | null
           merchant_id?: string | null
@@ -5544,6 +5549,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["permission_category"] | null
           created_at?: string
           invitation_email?: string | null
+          invitation_phone?: string | null
           invitation_token?: string | null
           invited_role_id?: string | null
           merchant_id?: string | null
@@ -7264,6 +7270,38 @@ export type Database = {
           },
         ]
       }
+      nitro_platform_defaults: {
+        Row: {
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          default_advance_limit_amount: number
+          fee_bps: number
+          min_fee_amount: number
+          updated_at: string
+        }
+        Insert: {
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          default_advance_limit_amount?: number
+          fee_bps?: number
+          min_fee_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          default_advance_limit_amount?: number
+          fee_bps?: number
+          min_fee_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nitro_platform_defaults_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: true
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       nitro_requests: {
         Row: {
           created_at: string
@@ -7451,6 +7489,7 @@ export type Database = {
       }
       oauth_access_tokens: {
         Row: {
+          allowed_tools: string[] | null
           api_key: string | null
           client_id: string
           created_at: string
@@ -7466,6 +7505,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          allowed_tools?: string[] | null
           api_key?: string | null
           client_id: string
           created_at?: string
@@ -7481,6 +7521,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          allowed_tools?: string[] | null
           api_key?: string | null
           client_id?: string
           created_at?: string
@@ -7521,6 +7562,7 @@ export type Database = {
       }
       oauth_authorization_codes: {
         Row: {
+          allowed_tools: string[] | null
           api_key: string | null
           client_id: string
           code_challenge: string
@@ -7539,6 +7581,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          allowed_tools?: string[] | null
           api_key?: string | null
           client_id: string
           code_challenge: string
@@ -7557,6 +7600,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          allowed_tools?: string[] | null
           api_key?: string | null
           client_id?: string
           code_challenge?: string
@@ -8190,6 +8234,67 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fraud_rules"
             referencedColumns: ["rule_id"]
+          },
+        ]
+      }
+      organization_join_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          join_code_id: string
+          max_uses: number
+          organization_id: string
+          revoked_at: string | null
+          role_id: string
+          use_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          expires_at?: string
+          join_code_id?: string
+          max_uses?: number
+          organization_id: string
+          revoked_at?: string | null
+          role_id: string
+          use_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          join_code_id?: string
+          max_uses?: number
+          organization_id?: string
+          revoked_at?: string | null
+          role_id?: string
+          use_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_join_codes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "organization_join_codes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_join_codes_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "organization_roles"
+            referencedColumns: ["role_id"]
           },
         ]
       }
@@ -12428,6 +12533,32 @@ export type Database = {
           },
         ]
       }
+      team_join_code_attempts: {
+        Row: {
+          attempt_id: string
+          attempted_at: string
+          merchant_id: string
+        }
+        Insert: {
+          attempt_id?: string
+          attempted_at?: string
+          merchant_id: string
+        }
+        Update: {
+          attempt_id?: string
+          attempted_at?: string
+          merchant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_join_code_attempts_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+        ]
+      }
       tier_fee_structure: {
         Row: {
           created_at: string | null
@@ -12498,6 +12629,7 @@ export type Database = {
           available_at: string | null
           checkout_session_id: string | null
           created_at: string
+          created_by_merchant_id: string | null
           currency_code: Database["public"]["Enums"]["currency_code"]
           customer_id: string
           description: string | null
@@ -12553,6 +12685,7 @@ export type Database = {
           available_at?: string | null
           checkout_session_id?: string | null
           created_at?: string
+          created_by_merchant_id?: string | null
           currency_code?: Database["public"]["Enums"]["currency_code"]
           customer_id: string
           description?: string | null
@@ -12608,6 +12741,7 @@ export type Database = {
           available_at?: string | null
           checkout_session_id?: string | null
           created_at?: string
+          created_by_merchant_id?: string | null
           currency_code?: Database["public"]["Enums"]["currency_code"]
           customer_id?: string
           description?: string | null
@@ -12666,6 +12800,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "checkout_sessions"
             referencedColumns: ["checkout_session_id"]
+          },
+          {
+            foreignKeyName: "transactions_created_by_merchant_id_fkey"
+            columns: ["created_by_merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
           },
           {
             foreignKeyName: "transactions_currency_code_fkey"
@@ -13607,16 +13748,19 @@ export type Database = {
       oauth_merchant_connections: {
         Row: {
           access_level: string | null
+          allowed_tools: string[] | null
           client_id: string | null
           client_name: string | null
           created_at: string | null
           environment: string | null
           expires_at: string | null
+          grant_type: string | null
           is_active: boolean | null
           organization_id: string | null
           revoked_at: string | null
           scope: string | null
           token_id: string | null
+          user_id: string | null
         }
         Relationships: [
           {
@@ -13811,6 +13955,23 @@ export type Database = {
           p_organization_id: string
         }
         Returns: Json
+      }
+      admin_get_nitro_settings: {
+        Args: { p_organization_id: string }
+        Returns: {
+          advance_enabled: boolean
+          advance_limit_amount: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_bps: number
+          fee_percentage: number
+          held_balance: number
+          is_enabled: boolean
+          max_advance_hours: number
+          min_fee_amount: number
+          next_release_at: string
+          outstanding_exposure: number
+          risk_tier: string
+        }[]
       }
       admin_get_organizations_pricing_status: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
@@ -14208,6 +14369,14 @@ export type Database = {
       }
       assert_bnpl_merchant_eligible: {
         Args: { p_organization_id: string }
+        Returns: undefined
+      }
+      assert_can_manage_admin_role: {
+        Args: {
+          p_organization_id: string
+          p_target_merchant_id?: string
+          p_target_role_key?: string
+        }
         Returns: undefined
       }
       assert_currency_allowed_for_organization: {
@@ -14793,6 +14962,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_pending_team_invitations: { Args: never; Returns: Json }
       classify_subscription_transaction: {
         Args: { p_transaction_id: string }
         Returns: string
@@ -16449,6 +16619,22 @@ export type Database = {
         }
         Returns: undefined
       }
+      create_team_join_code: {
+        Args: {
+          p_expires_in_hours?: number
+          p_max_uses?: number
+          p_organization_id: string
+          p_role_id: string
+        }
+        Returns: {
+          code: string
+          expires_at: string
+          join_code_id: string
+          max_uses: number
+          role_id: string
+          role_key: string
+        }[]
+      }
       create_transaction: {
         Args: {
           p_amount: number
@@ -17597,6 +17783,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string
           provider_code: Database["public"]["Enums"]["provider_code"]
+          public_id: string
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
         }[]
@@ -17615,6 +17802,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string
           provider_code: Database["public"]["Enums"]["provider_code"]
+          public_id: string
           spi_bulk_instruction_id: string
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
@@ -18062,6 +18250,13 @@ export type Database = {
       }
       fetch_docs_test_secret_key: {
         Args: { p_organization_id?: string }
+        Returns: {
+          api_key: string
+          organization_id: string
+        }[]
+      }
+      fetch_docs_test_secret_key_for_user: {
+        Args: { p_organization_id?: string; p_user_id: string }
         Returns: {
           api_key: string
           organization_id: string
@@ -18877,10 +19072,12 @@ export type Database = {
           advance_limit_amount: number
           currency_code: Database["public"]["Enums"]["currency_code"]
           fee_bps: number
+          fee_percentage: number
           held_balance: number
           is_enabled: boolean
           max_advance_hours: number
           min_fee_amount: number
+          next_release_at: string
           outstanding_exposure: number
           risk_tier: string
         }[]
@@ -18907,11 +19104,13 @@ export type Database = {
         Args: { p_merchant_id: string; p_organization_id: string }
         Returns: {
           access_level: string
+          allowed_tools: string[]
           client_id: string
           client_name: string
           created_at: string
           environment: string
           expires_at: string
+          grant_type: string
           is_active: boolean
           scope: string
           token_id: string
@@ -19375,6 +19574,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string
           provider_code: Database["public"]["Enums"]["provider_code"]
+          public_id: string
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
         }[]
@@ -20537,6 +20737,7 @@ export type Database = {
         Args: { p_subscription_id: string }
         Returns: string
       }
+      generate_team_join_code: { Args: never; Returns: string }
       generate_top_up_reference_code: { Args: never; Returns: string }
       generate_webhook_secret: {
         Args: { p_merchant_id: string; p_webhook_id: string }
@@ -21636,6 +21837,7 @@ export type Database = {
           payout_id: string
           payout_method_id: string
           provider_code: Database["public"]["Enums"]["provider_code"]
+          public_id: string
           status: Database["public"]["Enums"]["payout_status"]
           updated_at: string
         }[]
@@ -22267,7 +22469,7 @@ export type Database = {
         }
         Returns: {
           fee_bps: number
-          fixed_amount: number
+          min_fee_amount: number
           percentage: number
         }[]
       }
@@ -22878,6 +23080,7 @@ export type Database = {
           provider_code: Database["public"]["Enums"]["provider_code"]
           provider_transaction_id: string
           public_account_id: string
+          public_id: string
           refunded_amount: number
           status: Database["public"]["Enums"]["transaction_status"]
           transaction_id: string
@@ -23036,6 +23239,7 @@ export type Database = {
           max_quantity_per_use: number
           max_uses: number
           product_links: Json
+          public_id: string
           scope_type: string
           updated_at: string
           usage_frequency_limit: Database["public"]["Enums"]["usage_frequency"]
@@ -24444,6 +24648,7 @@ export type Database = {
           payment_method_code: Database["public"]["Enums"]["payment_method_code"]
           product_id: string
           provider_code: Database["public"]["Enums"]["provider_code"]
+          public_id: string
           refunded_amount: number
           status: Database["public"]["Enums"]["transaction_status"]
           subscription_id: string
@@ -24906,6 +25111,7 @@ export type Database = {
           p_payout_method_id: string
           p_payout_pin?: string
           p_payout_pin_session?: string
+          p_platform_fee_amount?: number
           p_source_currency: string
           p_transfer_currency: string
         }
@@ -25002,6 +25208,7 @@ export type Database = {
           p_acting_merchant_id?: string
           p_email: string
           p_organization_id: string
+          p_phone?: string
           p_position: string
           p_role: Database["public"]["Enums"]["member_role"]
           p_role_id?: string
@@ -25574,6 +25781,21 @@ export type Database = {
           updated_at: string
         }[]
       }
+      list_team_join_codes: {
+        Args: { p_organization_id: string }
+        Returns: {
+          code: string
+          created_at: string
+          expires_at: string
+          join_code_id: string
+          max_uses: number
+          revoked_at: string
+          role_id: string
+          role_key: string
+          role_title: string
+          use_count: number
+        }[]
+      }
       list_transactions: {
         Args: {
           p_end_date?: string
@@ -25992,6 +26214,10 @@ export type Database = {
         }
         Returns: Json
       }
+      member_has_org_admin_role: {
+        Args: { p_merchant_id: string; p_organization_id: string }
+        Returns: boolean
+      }
       merchant_active_organization_count: {
         Args: { p_merchant_id: string }
         Returns: number
@@ -26112,12 +26338,57 @@ export type Database = {
           health_status: string
         }[]
       }
+      nitro_advance_allowed: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: boolean
+      }
+      nitro_effective_advance_limit: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: number
+      }
+      nitro_held_balance: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: number
+      }
+      nitro_next_release_at: {
+        Args: {
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_organization_id: string
+        }
+        Returns: string
+      }
       nitro_outstanding_exposure: {
         Args: {
           p_currency_code: Database["public"]["Enums"]["currency_code"]
           p_organization_id: string
         }
         Returns: number
+      }
+      nitro_settings_rows: {
+        Args: { p_organization_id: string }
+        Returns: {
+          advance_enabled: boolean
+          advance_limit_amount: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fee_bps: number
+          fee_percentage: number
+          held_balance: number
+          is_enabled: boolean
+          max_advance_hours: number
+          min_fee_amount: number
+          next_release_at: string
+          outstanding_exposure: number
+          risk_tier: string
+        }[]
       }
       normalize_marketing_locale: { Args: { p_raw: string }; Returns: string }
       notify_merchant_radar_decision: {
@@ -26147,6 +26418,7 @@ export type Database = {
       }
       oauth_create_authorization_code: {
         Args: {
+          p_allowed_tools?: string[]
           p_api_key?: string
           p_client_id: string
           p_code_challenge: string
@@ -26175,6 +26447,7 @@ export type Database = {
         Returns: {
           access_level: string
           access_token: string
+          allowed_tools: string[]
           connection_key: string
           expires_in: number
           grant_type: string
@@ -26203,6 +26476,7 @@ export type Database = {
         Returns: {
           access_level: string
           active: boolean
+          allowed_tools: string[]
           client_id: string
           connection_key: string
           exp: number
@@ -26233,6 +26507,7 @@ export type Database = {
         Returns: {
           access_level: string
           access_token: string
+          allowed_tools: string[]
           connection_key: string
           expires_in: number
           grant_type: string
@@ -26540,6 +26815,8 @@ export type Database = {
           available_after: number
           eligible_amount: number
           fee_amount: number
+          fee_percentage: number
+          min_fee_amount: number
           net_amount: number
           reason_ineligible: string
         }[]
@@ -26765,6 +27042,7 @@ export type Database = {
         }[]
       }
       redact_sensitive_log_context: { Args: { p_context: Json }; Returns: Json }
+      redeem_team_join_code: { Args: { p_code: string }; Returns: Json }
       refresh_all_organization_metrics: {
         Args: { p_environment?: string }
         Returns: {
@@ -27091,6 +27369,10 @@ export type Database = {
           p_organization_id: string
         }
         Returns: undefined
+      }
+      revoke_team_join_code: {
+        Args: { p_join_code_id: string; p_organization_id: string }
+        Returns: boolean
       }
       revoke_trusted_device: {
         Args: { p_device_id: string }

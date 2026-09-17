@@ -1,4 +1,12 @@
 import { describe, expect, it } from "vitest";
+import {
+  MCP_KNOWN_TOOLS,
+  mcpFamilyDuplicateTools,
+  mcpToolsMissingFamily,
+  validateJsonValue,
+} from "@lomi./shared";
+import manifestJson from "../src/generated/tools-manifest.json" with { type: "json" };
+import { parseManifest } from "../src/manifest-parse.js";
 import type { ToolsManifest } from "../src/manifest.js";
 
 function groupedTool(
@@ -116,5 +124,57 @@ describe("registerMerchantTools read-only filter", () => {
 
     expect(registered).toContain("lomi_customers");
     expect(registered).not.toContain("lomi_payouts");
+  });
+
+  it("registers only allowlisted tools and still drops money tools", async () => {
+    const { McpServer } = await import(
+      "@modelcontextprotocol/sdk/server/mcp.js"
+    );
+    const { registerMerchantTools } = await import("../src/register-tools.js");
+
+    const manifest: ToolsManifest = {
+      manifestVersion: 1,
+      apiVersion: "test",
+      apiTitle: "test",
+      toolCount: 3,
+      tools: [
+        groupedTool("lomi_customers", false),
+        groupedTool("lomi_checkout", false),
+        groupedTool("lomi_payouts", false),
+      ],
+    };
+
+    const server = new McpServer({ name: "test", version: "0" });
+    const registered: string[] = [];
+    const original = server.registerTool.bind(server);
+    // SAFETY: Test wrapper preserves registerTool's production signature while recording names.
+    server.registerTool = ((
+      name: string,
+      ...rest: Parameters<typeof original> extends [string, ...infer R]
+        ? R
+        : never
+    ) => {
+      registered.push(name);
+      return original(name, ...rest);
+    }) as typeof server.registerTool;
+
+    registerMerchantTools(server, manifest, {
+      getApiKey: () => "lomi_sk_test_example",
+      excludeMoney: true,
+      skipSearchTool: true,
+      allowedTools: new Set(["lomi_customers", "lomi_payouts"]),
+    });
+
+    expect(registered).toEqual(["lomi_customers"]);
+  });
+});
+
+describe("MCP tool family catalog", () => {
+  it("places every manifest merchant tool in exactly one family", () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const names = manifest.tools.map((tool) => tool.name);
+    expect(mcpFamilyDuplicateTools()).toEqual([]);
+    expect(mcpToolsMissingFamily(names)).toEqual([]);
+    expect([...names].sort()).toEqual([...MCP_KNOWN_TOOLS].sort());
   });
 });

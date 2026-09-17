@@ -28,16 +28,14 @@ function Spinner({
 
   const spinner = (
     <span
-      className={`inline-flex items-center justify-center text-zinc-400 ${className}`}
+      className={`inline-flex items-center justify-center leading-none text-zinc-400 ${className}`}
       style={{
         fontFamily:
           '"DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace',
-        fontSize: "0.875rem",
-        lineHeight: "1.25",
+        fontSize: "13px",
+        lineHeight: 1,
         fontWeight: "normal",
-        verticalAlign: "baseline",
-        position: "relative",
-        top: "1px",
+        width: "1ch",
         ...style,
       }}
     >

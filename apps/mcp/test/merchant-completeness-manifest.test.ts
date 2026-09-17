@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import manifestJson from "../src/generated/tools-manifest.json" with { type: "json" };
 import { parseManifest } from "../src/manifest-parse.js";
-import { validateJsonValue } from "@lomi./shared";
+import {
+  mcpFamilyDuplicateTools,
+  mcpToolsMissingFamily,
+  validateJsonValue,
+} from "@lomi./shared";
 
 describe("merchant completeness manifest", () => {
   const manifest = parseManifest(validateJsonValue(manifestJson));
@@ -28,5 +32,11 @@ describe("merchant completeness manifest", () => {
     expect(products?.actions.archive?.operationKey).toBe(
       "DELETE /products/{id}",
     );
+  });
+
+  it("places every merchant tool in exactly one OAuth family", () => {
+    const names = manifest.tools.map((tool) => tool.name);
+    expect(mcpFamilyDuplicateTools()).toEqual([]);
+    expect(mcpToolsMissingFamily(names)).toEqual([]);
   });
 });

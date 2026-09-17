@@ -11,6 +11,7 @@ export type SessionRegistryEntry = {
   provisioningApiKey: string | null;
   partnerApiKey: string | null;
   merchantAccessLevel: MerchantAccessLevel;
+  merchantAllowedTools: string[] | null;
   credentialFingerprint: string | null;
   clientIp: string | null;
 };
@@ -83,6 +84,19 @@ export class McpSessionRegistry {
 
   getMerchantAccessLevel(sessionId: string): MerchantAccessLevel {
     return this.sessions.get(sessionId)?.merchantAccessLevel ?? "full";
+  }
+
+  updateMerchantAllowedTools(
+    sessionId: string,
+    allowedTools: string[] | null,
+  ): void {
+    const e = this.sessions.get(sessionId);
+    if (!e) return;
+    e.merchantAllowedTools = allowedTools;
+  }
+
+  getMerchantAllowedTools(sessionId: string): string[] | null {
+    return this.sessions.get(sessionId)?.merchantAllowedTools ?? null;
   }
 
   updateProvisioningApiKey(sessionId: string, apiKey: string | null): void {
@@ -182,6 +196,7 @@ export class McpSessionRegistry {
     partnerApiKey: string | null = null,
     credentialFingerprint: string | null = null,
     clientIp: string | null = null,
+    merchantAllowedTools: string[] | null = null,
   ): void {
     this.sessions.set(sessionId, {
       transport,
@@ -190,6 +205,7 @@ export class McpSessionRegistry {
       provisioningApiKey,
       partnerApiKey,
       merchantAccessLevel,
+      merchantAllowedTools,
       credentialFingerprint,
       clientIp,
     });

@@ -45,12 +45,12 @@ export default function Error({
       description={translate('ui.errorDescription', locale)}
       actions={
         <>
-          <StatusPageActionButton onClick={() => reset()}>
-            {translate('ui.errorRetry', locale)}
-          </StatusPageActionButton>
           <StatusPageActionLink href="/start/overview">
             {translate('ui.errorHome', locale)}
           </StatusPageActionLink>
+          <StatusPageActionButton onClick={() => reset()}>
+            {translate('ui.errorRetry', locale)}
+          </StatusPageActionButton>
         </>
       }
     />

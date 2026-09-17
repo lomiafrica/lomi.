@@ -14,15 +14,11 @@ import {
   readString,
   validateJsonValue,
   type JsonObject,
+  MCP_MONEY_TOOL_SET,
 } from "@lomi./shared";
 import { extractMerchantSecretKey } from "./extract-secret-key.js";
 
-const MONEY_TOOLS = new Set([
-  "lomi_payouts",
-  "lomi_refunds",
-  "lomi_settlements",
-  "lomi_transfers",
-]);
+const MONEY_TOOLS = MCP_MONEY_TOOL_SET;
 
 export type ToolRegistrationContext = {
   baseUrl: string;
@@ -30,6 +26,8 @@ export type ToolRegistrationContext = {
   readOnlyOnly?: boolean;
   /** Omit payouts, refunds, instant settlement, and Network transfers (merchant.write without merchant.money). */
   excludeMoney?: boolean;
+  /** Restrict to this set of merchant tools (Custom OAuth consent). */
+  allowedTools?: ReadonlySet<string>;
   /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
   skipSearchTool?: boolean;
   /** Adopt a secret returned by lomi_organization create/use. */
@@ -213,21 +211,33 @@ export function registerMerchantTools(
   const getApiKey = ctx?.getApiKey ?? getOptionalMerchantApiKey;
   const readOnlyOnly = ctx?.readOnlyOnly ?? false;
   const excludeMoney = ctx?.excludeMoney ?? false;
+  const allowedTools = ctx?.allowedTools;
   const fullCtx: ToolRegistrationContext = {
     baseUrl,
     getApiKey,
     readOnlyOnly,
     excludeMoney,
+    allowedTools,
     onMerchantKeyDiscovered: ctx?.onMerchantKeyDiscovered,
   };
 
+  const visibleTools = manifest.tools.filter((tool) => {
+    if (readOnlyOnly && !tool.readOnly) return false;
+    if (excludeMoney && MONEY_TOOLS.has(tool.name)) return false;
+    if (allowedTools && !allowedTools.has(tool.name)) return false;
+    return true;
+  });
+  const searchManifest: ToolsManifest = {
+    ...manifest,
+    tools: visibleTools,
+    toolCount: visibleTools.length,
+  };
+
   if (!ctx?.skipSearchTool) {
-    registerSearchToolsMetaTool(server, manifest);
+    registerSearchToolsMetaTool(server, searchManifest);
   }
 
-  for (const tool of manifest.tools) {
-    if (readOnlyOnly && !tool.readOnly) continue;
-    if (excludeMoney && MONEY_TOOLS.has(tool.name)) continue;
+  for (const tool of visibleTools) {
     registerOneTool(server, tool, fullCtx);
   }
 }

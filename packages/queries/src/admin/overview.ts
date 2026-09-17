@@ -7,7 +7,11 @@ export { rpc } from "../rpc.js";
 
 export async function adminCompleteAccountTopUp(
   client: TypedSupabaseClient,
-  args: DbFunctions["admin_complete_account_top_up"]["Args"],
+  // SAFETY: generated Args lag until types:generate; complete requires statement ref + received XOF.
+  args: DbFunctions["admin_complete_account_top_up"]["Args"] & {
+    p_received_amount: number;
+    p_bank_reference: string;
+  },
   options?: SupabaseRpcOptions<
     DbFunctions["admin_complete_account_top_up"]["Returns"]
   > | null,

@@ -6,7 +6,7 @@ export {
   downloadReceiptPdf,
   renderReceiptPdfBlob,
 } from "./download-receipt-pdf";
-export { registerReceiptFonts } from "./fonts";
+export { prefetchReceiptFonts, registerReceiptFonts } from "./fonts";
 export { formatAddressLines, formatContactLines } from "./format-address";
 export {
   HtmlContactLine,

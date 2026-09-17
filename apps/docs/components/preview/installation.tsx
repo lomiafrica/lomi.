@@ -107,7 +107,7 @@ export function Installation({ name }: { name: string }) {
 
   return (
     <Tabs
-      className="docs-well not-prose my-6 overflow-hidden rounded-[9px]"
+      className="docs-well not-prose my-6 overflow-hidden rounded-[var(--docs-sidebar-radius)]"
       defaultValue="npx"
     >
       <TabsList className="flex flex-col gap-3 text-sm items-start border-0 bg-transparent p-3 pb-2 not-prose sm:flex-row">

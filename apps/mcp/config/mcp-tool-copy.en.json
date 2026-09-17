@@ -325,7 +325,7 @@
   },
   "POST /settlements/instant": {
     "title": "Request an instant settlement",
-    "description": "Nitro: record a rail fee on an existing payout, or unlock held card funds (advance) up to the org cap. Requires Idempotency-Key. Advance stays off until ops approves a limit."
+    "description": "Nitro: record a rail fee on an existing payout, or unlock held card funds (advance) up to the org cap. Fee is 2%, minimum 500 XOF / 1 EUR / 1 USD. Requires Idempotency-Key. Advance is on by default for KYB-approved organizations."
   },
   "POST /transfers": {
     "title": "Create Network transfer",

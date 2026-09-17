@@ -19,16 +19,24 @@ const Command = React.forwardRef<
 ));
 Command.displayName = CommandPrimitive.displayName;
 
+type CommandDialogProps = React.ComponentProps<typeof Dialog> & {
+  shouldFilter?: boolean;
+};
+
 const CommandDialog = ({
   children,
+  shouldFilter,
   ...props
-}: React.ComponentProps<typeof Dialog>) => (
+}: CommandDialogProps) => (
   <Dialog {...props}>
     <DialogContent
       className="overflow-hidden p-0 shadow-sm max-w-2xl w-[calc(100vw-2rem)]"
       showCloseButton={false}
     >
-      <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4">
+      <Command
+        shouldFilter={shouldFilter}
+        className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4"
+      >
         {children}
       </Command>
     </DialogContent>

@@ -8,6 +8,7 @@ export type OAuthIntrospectionResult = {
   organization_id?: string;
   access_level?: "read" | "write" | "full";
   connection_key?: string;
+  allowed_tools?: string[];
   exp?: number;
   scope?: string;
 };

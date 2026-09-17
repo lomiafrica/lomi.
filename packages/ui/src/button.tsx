@@ -83,13 +83,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const content: React.ReactNode[] = [];
 
     if (loading && !leftSection && !rightSection) {
-      content.push(
-        <Spinner key="loading-left" inline className="mr-2 h-3.5 w-3.5" />,
-      );
+      content.push(<Spinner key="loading-left" inline className="shrink-0" />);
     } else if (loading && leftSection) {
-      content.push(
-        <Spinner key="loading-left" inline className="mr-2 h-3.5 w-3.5" />,
-      );
+      content.push(<Spinner key="loading-left" inline className="shrink-0" />);
     } else if (!loading && leftSection) {
       content.push(
         <div key="left-section" className="mr-1">
@@ -127,14 +123,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         );
       }
     } else if (loading && rightSection) {
-      content.push(
-        <Spinner key="loading-right" inline className="ml-2 h-3.5 w-3.5" />,
-      );
+      content.push(<Spinner key="loading-right" inline className="shrink-0" />);
     }
 
     return (
       <MotionButton
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          loading && "gap-3",
+        )}
         disabled={isDisabled}
         ref={ref}
         whileTap={isDisabled || reduced ? undefined : { y: 1 }}

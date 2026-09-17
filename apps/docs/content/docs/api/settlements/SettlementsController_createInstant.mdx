@@ -11,7 +11,7 @@ operationId: SettlementsController_createInstant
 
 Request an instant settlement (Nitro)
 
-Rail mode records a Nitro fee on an existing payout. Advance mode unlocks held card funds up to the organization cap. Requires `Idempotency-Key`. Advance stays off until ops approves a limit.
+Rail mode records a Nitro fee (2%, minimum 500 XOF / 1 EUR / 1 USD) on an existing payout. Advance mode unlocks held card funds up to the organization cap. Requires `Idempotency-Key`. Advance is on by default when the organization KYB is approved.
 
 
 ### When to use this

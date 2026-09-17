@@ -250,7 +250,7 @@ export function LoadingButton({
           run();
         }}
         className={cn(
-          buttonVariants({ variant: "cancel", size: "header" }),
+          buttonVariants({ variant: "outline", size: "header" }),
           "relative select-none font-normal",
           className,
         )}
@@ -267,7 +267,7 @@ export function LoadingButton({
                   : { opacity: 0, y: 3, filter: "blur(3px)" }
               }
               transition={fade}
-              className={`col-start-1 row-start-1 flex items-center justify-center gap-1.5 whitespace-nowrap ${face.tone}`}
+              className={`col-start-1 row-start-1 flex items-center justify-center gap-3 whitespace-nowrap ${face.tone}`}
             >
               {face.icon}
               {face.text}

@@ -35,7 +35,7 @@ export function DocsTierCallout() {
           : 'tier.unknown';
 
   return (
-    <aside className="docs-well not-prose my-6 rounded-[11px] px-4 py-3 text-[13px] leading-relaxed">
+    <aside className="docs-well not-prose my-6 rounded-[var(--docs-callout-radius)] px-4 py-3 text-[13px] leading-relaxed">
       <p className="font-medium">{t('tier.signedIn')}</p>
       <p className="mt-1 text-fd-muted-foreground">{t(planKey)}</p>
       {pricingPlan === 'custom' ? null : (

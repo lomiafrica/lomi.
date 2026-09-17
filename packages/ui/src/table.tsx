@@ -2,8 +2,17 @@ import * as React from "react";
 
 import { cn } from "./cn";
 const dashboardTableHeadHeightClass = "h-11";
-const dashboardTableRowHoverClass =
-  "hover:bg-stone-100/70 dark:hover:bg-[#2A2A27]/70 transition-colors";
+const dashboardTableRowHoverClass = [
+  "hover:bg-stone-100/70 dark:hover:bg-[#2A2A27]/70",
+  "[&:hover>td]:bg-stone-100/70 dark:[&:hover>td]:bg-[#2A2A27]/70",
+  "[&:hover>th]:bg-stone-100/70 dark:[&:hover>th]:bg-[#2A2A27]/70",
+  "transition-colors",
+].join(" ");
+const dashboardTableRowCellBorderClass = [
+  "[&>td]:border-b [&>th]:border-b",
+  "[&>td]:border-stone-200 [&>th]:border-stone-200",
+  "dark:[&>td]:border-white/[0.12] dark:[&>th]:border-white/[0.12]",
+].join(" ");
 
 type TableProps = React.HTMLAttributes<HTMLTableElement> & {
   /** When false, skip the inner scroll wrapper (use when the parent already scrolls). */
@@ -15,7 +24,10 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     const table = (
       <table
         ref={ref}
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn(
+          "w-full caption-bottom border-separate border-spacing-0 text-sm",
+          className,
+        )}
         {...props}
       />
     );
@@ -43,7 +55,10 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn(
+      "[&_tr:last-child]:border-0 [&_tr:last-child>td]:border-b-0 [&_tr:last-child>th]:border-b-0",
+      className,
+    )}
     {...props}
   />
 ));
@@ -72,6 +87,7 @@ const TableRow = React.forwardRef<
     ref={ref}
     className={cn(
       "border-b border-stone-200 data-[state=selected]:bg-stone-100 dark:border-white/[0.12] dark:data-[state=selected]:bg-[#2A2A27]",
+      dashboardTableRowCellBorderClass,
       dashboardTableRowHoverClass,
       className,
     )}

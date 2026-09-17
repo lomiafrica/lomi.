@@ -91,9 +91,6 @@ export function formatPublicId(
   if (!prefix) return normalizePublicId(trimmed);
 
   const body = normalizePublicId(trimmed).slice(prefix.toUpperCase().length);
-  if (prefix === PUBLIC_ID_PREFIXES.transaction) {
-    return `${prefix.toUpperCase()}${body}`;
-  }
   return `${prefix}${body}`;
 }
 
@@ -105,6 +102,17 @@ export function displayPublicId(
   const trimmed = value.trim();
   if (!trimmed || isUuid(trimmed) || !isPublicId(trimmed)) return null;
   return formatPublicId(trimmed);
+}
+
+/** First value that is a merchant-facing public id. Skips UUIDs. */
+export function preferredDisplayPublicId(
+  ...values: Array<string | null | undefined>
+): string | null {
+  for (const value of values) {
+    const visible = displayPublicId(value);
+    if (visible) return visible;
+  }
+  return null;
 }
 
 export function publicIdsMatch(
@@ -191,6 +199,21 @@ export function buildPaymentLinkCheckoutUrl(
 ): string {
   const segment = paymentLinkPathSegment(id);
   return `${origin.replace(/\/$/, "")}/${encodeURIComponent(segment)}`;
+}
+
+/** Reconstruct `plink_` public id from a hosted checkout URL path. */
+export function publicIdFromPaymentLinkUrl(
+  url: string | null | undefined,
+): string | null {
+  if (!url) return null;
+  try {
+    const segment = firstPathSegment(new URL(url).pathname);
+    if (!isPaymentLinkPathSegment(segment)) return null;
+    const body = paymentLinkPathSegment(segment);
+    return formatPublicId(`${PUBLIC_ID_PREFIXES.paymentLink}${body}`);
+  } catch {
+    return null;
+  }
 }
 
 /**

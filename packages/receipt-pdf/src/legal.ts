@@ -13,7 +13,7 @@ export const PDF_PAY_LINK_LABEL = "Link";
 
 export const PDF_LEGAL_LINE_1 = `${PDF_LEGAL_ENTITY} is ${PDF_LEGAL_FORM}. Registered number: ${PDF_RCCM}. Registered office:`;
 
-export type PdfDocumentKind = "invoice" | "receipt";
+export type PdfDocumentKind = "invoice" | "receipt" | "statement";
 
 export function extractEmailFromText(
   value: string | null | undefined,
@@ -48,5 +48,16 @@ export function resolveSupportEmail(
 }
 
 export function contactLineSuffix(kind: PdfDocumentKind): string {
-  return ` with any questions regarding this ${kind}.`;
+  switch (kind) {
+    case "invoice":
+      return " with any questions regarding this invoice.";
+    case "receipt":
+      return " with any questions regarding this receipt.";
+    case "statement":
+      return " with any questions regarding this statement.";
+    default: {
+      const exhaustive: never = kind;
+      throw new Error(`Unknown PDF document kind: ${String(exhaustive)}`);
+    }
+  }
 }

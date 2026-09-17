@@ -11,7 +11,7 @@ operationId: SettlementsController_createInstant
 
 Demander un règlement instantané (Nitro)
 
-Le mode rail enregistre des frais Nitro sur un retrait existant. Le mode avance débloque les fonds carte retenus jusqu’au plafond de l’organisation. Exige `Idempotency-Key`. L’avance reste off jusqu’à ce qu’ops approuve un plafond.
+Le mode rail enregistre des frais Nitro (2 %, minimum 500 XOF / 1 EUR / 1 USD) sur un retrait existant. Le mode avance débloque les fonds carte retenus jusqu’au plafond de l’organisation. Exige `Idempotency-Key`. L’avance est activée par défaut lorsque le KYB de l’organisation est approuvé.
 
 
 ### Quand l’utiliser

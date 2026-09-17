@@ -420,6 +420,80 @@ describe("createHttpApplication", () => {
     expect(res.status).not.toBe(401);
   });
 
+  it("OAuth allowlist registers only listed tools and drops money without full", async () => {
+    process.env.INTERNAL_API_KEY = "test-internal-key";
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    delete process.env.LOMI_SECRET_KEY;
+    delete process.env.X_API_KEY;
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (input, init) => {
+        const url = String(input);
+        if (url.includes("/oauth/introspect/mcp")) {
+          return new Response(
+            JSON.stringify({
+              active: true,
+              grant_type: "merchant",
+              connection_key: "lomi_sk_test_oauth_allowlist_key",
+              access_level: "write",
+              scope: "merchant.write",
+              allowed_tools: ["lomi_customers", "lomi_payouts"],
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        return realFetch(input, init);
+      });
+
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+      Authorization: "Bearer lomi_oat_allowlist_test_token",
+    };
+
+    const initRes = await fetch(base, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "initialize",
+        id: 1,
+        params: {
+          protocolVersion: "2024-11-05",
+          capabilities: {},
+          clientInfo: { name: "allowlist-test", version: "0" },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get("mcp-session-id");
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const listRes = await fetch(base, {
+      method: "POST",
+      headers: { ...headers, "mcp-session-id": sessionId! },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "tools/list", id: 2 }),
+    });
+    expect(listRes.status).toBe(200);
+    const listed = jsonRpcTools(parseSseJsonRpc(await listRes.text())).map(
+      (tool) => String(tool.name),
+    );
+    fetchMock.mockRestore();
+
+    expect(listed).toContain("lomi_customers");
+    expect(listed).toContain("lomi_search_tools");
+    expect(listed).not.toContain("lomi_payouts");
+    expect(listed).not.toContain("lomi_checkout");
+  });
+
   it("rate limits MCP routes when LOMI_MCP_RATE_LIMIT_RPM is low", async () => {
     process.env.LOMI_MCP_RATE_LIMIT_RPM = "2";
     const manifest = parseManifest(validateJsonValue(manifestJson));

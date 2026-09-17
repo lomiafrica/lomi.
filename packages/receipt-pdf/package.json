@@ -1,6 +1,6 @@
 {
   "name": "@lomi./receipt-pdf",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "description": "Shared receipt layout and PDF generation for lomi. checkout and dashboard",
   "type": "module",

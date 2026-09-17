@@ -33,6 +33,8 @@ export type WireMcpServerOptions = {
   getPartnerKey?: () => string | null;
   /** When read, only register merchant tools marked readOnly. */
   merchantAccessLevel?: "read" | "write" | "full";
+  /** Custom OAuth consent tool allowlist. Null/undefined keeps the full catalog. */
+  merchantAllowedTools?: readonly string[] | null;
   /**
    * Invoked when a provisioning tool returns a usable merchant secret key.
    * Implementations should adopt it as the session's merchant credential so
@@ -63,6 +65,7 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     getProvisioningKey = getOptionalProvisioningKey,
     getPartnerKey = getOptionalPartnerKey,
     merchantAccessLevel = "full",
+    merchantAllowedTools = null,
     onMerchantKeyDiscovered,
     onProvisioningKeyDiscovered,
     guest = false,
@@ -93,6 +96,9 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
       getApiKey,
       readOnlyOnly: merchantAccessLevel === "read",
       excludeMoney: merchantAccessLevel === "write",
+      allowedTools: merchantAllowedTools
+        ? new Set(merchantAllowedTools)
+        : undefined,
       onMerchantKeyDiscovered,
     });
   } else {

@@ -4232,19 +4232,23 @@ export interface components {
             environment?: "live" | "test";
         };
         InviteTeamMemberDto: {
-            email: string;
+            email?: string;
+            phone?: string;
             /** @enum {string} */
             role?: "Admin" | "Member";
+            role_key?: string;
             role_id?: string;
             position?: string;
         };
         RevokeTeamInviteDto: {
-            email: string;
+            email?: string;
+            phone?: string;
         };
         UpdateTeamMemberRoleDto: {
             /** @enum {string} */
             role?: "Admin" | "Member";
             role_id?: string;
+            role_key?: string;
         };
         UpdateCheckoutSettingsDto: {
             settings?: Record<string, never>;

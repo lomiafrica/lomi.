@@ -78,6 +78,24 @@ describe("McpSessionRegistry", () => {
     expect(registry.getMerchantApiKey("s1")).toBe("key-b");
   });
 
+  it("stores custom allowed tools", () => {
+    const registry = new McpSessionRegistry(10, 60_000);
+    registry.attachSession(
+      "s1",
+      mockTransport(),
+      "key-a",
+      null,
+      "write",
+      null,
+      null,
+      null,
+      ["lomi_customers"],
+    );
+    expect(registry.getMerchantAllowedTools("s1")).toEqual(["lomi_customers"]);
+    registry.updateMerchantAllowedTools("s1", ["lomi_checkout"]);
+    expect(registry.getMerchantAllowedTools("s1")).toEqual(["lomi_checkout"]);
+  });
+
   it("rejects a new session when the per-key cap is reached", () => {
     const registry = new McpSessionRegistry(10, 60_000, 1, 20);
     registry.attachSession(

@@ -6,6 +6,7 @@ import {
   buildPaymentLinkCheckoutUrl,
   displayPublicId,
   formatPublicId,
+  preferredDisplayPublicId,
   hostedPaymentLinkUrl,
   isCanonicalPaymentLinkPath,
   isCheckoutLinkIdentifier,
@@ -16,6 +17,7 @@ import {
   isUuid,
   normalizePublicId,
   paymentLinkPathSegment,
+  publicIdFromPaymentLinkUrl,
   publicIdPrefix,
   publicIdsMatch,
 } from "./public-id.js";
@@ -55,13 +57,25 @@ test("isPublicId validates prefix, body length, and alphabet", () => {
   assert.equal(isPublicId(BODY), false);
 });
 
-test("formatPublicId keeps canonical prefixes except TXN_", () => {
+test("every public-id kind uses lowercase prefix and uppercase body", () => {
+  for (const prefix of Object.values(PUBLIC_ID_PREFIXES)) {
+    const canonical = `${prefix}${BODY}`;
+    assert.equal(formatPublicId(canonical), canonical);
+    assert.equal(formatPublicId(canonical.toUpperCase()), canonical);
+    assert.equal(formatPublicId(canonical.toLowerCase()), canonical);
+    assert.equal(displayPublicId(canonical.toUpperCase()), canonical);
+    assert.equal(displayPublicId(canonical.toLowerCase()), canonical);
+  }
+});
+
+test("formatPublicId keeps lowercase prefix and uppercase body", () => {
   assert.equal(formatPublicId(null), null);
   assert.equal(formatPublicId("   "), null);
   assert.equal(formatPublicId(UUID), UUID);
   assert.equal(formatPublicId(` ${ORG_ID.toLowerCase()} `), ORG_ID);
-  assert.equal(formatPublicId(`Txn_${BODY.toLowerCase()}`), `TXN_${BODY}`);
-  assert.equal(formatPublicId(TXN_ID), `TXN_${BODY}`);
+  assert.equal(formatPublicId(`Txn_${BODY.toLowerCase()}`), TXN_ID);
+  assert.equal(formatPublicId(TXN_ID), TXN_ID);
+  assert.equal(formatPublicId(`TXN_${BODY}`), TXN_ID);
   assert.equal(formatPublicId("orphan-id"), "ORPHANID");
 });
 
@@ -69,8 +83,16 @@ test("displayPublicId never returns a UUID", () => {
   assert.equal(displayPublicId(null), null);
   assert.equal(displayPublicId(UUID), null);
   assert.equal(displayPublicId(` ${ORG_ID.toLowerCase()} `), ORG_ID);
-  assert.equal(displayPublicId(`txn_${BODY.toLowerCase()}`), `TXN_${BODY}`);
+  assert.equal(displayPublicId(`txn_${BODY.toLowerCase()}`), TXN_ID);
+  assert.equal(displayPublicId(`TXN_${BODY}`), TXN_ID);
   assert.equal(displayPublicId("orphan-id"), null);
+});
+
+test("preferredDisplayPublicId skips UUIDs and picks the first public id", () => {
+  assert.equal(preferredDisplayPublicId(UUID, TXN_ID), TXN_ID);
+  assert.equal(preferredDisplayPublicId(TXN_ID.toUpperCase(), UUID), TXN_ID);
+  assert.equal(preferredDisplayPublicId(UUID, null, "orphan-id"), null);
+  assert.equal(preferredDisplayPublicId(), null);
 });
 
 test("publicIdsMatch compares UUIDs and public ids independently of case", () => {
@@ -111,6 +133,15 @@ test("hostedPaymentLinkUrl keeps custom domains and rebuilds legacy paths", () =
     hostedPaymentLinkUrl(PLINK_ID, `https://shop.example.com/${BODY}`),
     `https://shop.example.com/${BODY}`,
   );
+  assert.equal(
+    publicIdFromPaymentLinkUrl(`https://pay.lomi.africa/${BODY}`),
+    PLINK_ID,
+  );
+  assert.equal(
+    publicIdFromPaymentLinkUrl(`https://shop.example.com/${PLINK_ID}`),
+    PLINK_ID,
+  );
+  assert.equal(publicIdFromPaymentLinkUrl("https://pay.lomi.africa/instant/x"), null);
   assert.equal(
     hostedPaymentLinkUrl(
       PLINK_ID,

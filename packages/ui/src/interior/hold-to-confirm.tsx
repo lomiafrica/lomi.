@@ -286,7 +286,7 @@ export function HoldToConfirm({
       {...bind}
       style={{ touchAction: "manipulation", WebkitTouchCallout: "none" }}
       className={cn(
-        buttonVariants({ variant: "cancel", size: "header" }),
+        buttonVariants({ variant: "outline", size: "header" }),
         "relative isolate inline-grid place-items-center overflow-hidden font-normal",
         disabled && "cursor-not-allowed",
         className,
