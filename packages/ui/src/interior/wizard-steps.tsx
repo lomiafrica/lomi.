@@ -343,119 +343,122 @@ export function WizardSteps({
           );
         })}
       </ol>
-      <div
-        ref={viewportRef}
-        tabIndex={-1}
-        role="group"
-        aria-label={position}
-        style={{ height }}
-        className="relative overflow-hidden rounded-sm border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] outline-none transition-[border-color,box-shadow] duration-150 focus-visible:border-[#4568FF] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_1px_6px_rgba(0,0,0,0.45)] dark:focus-visible:border-[#93B0FF]"
-      >
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={complete ? "__complete" : step.id}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={panelTransition}
-            style={{ scrollbarGutter: "stable" }}
-            className="absolute inset-0 overflow-y-auto overscroll-contain p-4 text-[13.5px] leading-relaxed text-stone-700 dark:text-stone-200"
-          >
-            {complete ? (
-              <div className="flex h-full flex-col items-center justify-center gap-1.5">
-                <p className="text-[13px] font-medium text-stone-700 dark:text-stone-100">
-                  {completeLabel}
-                </p>
-                <p className="text-[12.5px] text-stone-400 dark:text-stone-500">
-                  {completeHint}
-                </p>
-              </div>
-            ) : (
-              step.content
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      <div className="mt-3 flex h-8 items-center gap-3">
-        <AnimatePresence initial={false}>
-          {isFirst ? null : (
-            <motion.button
-              key="back"
-              type="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: reduced
-                  ? { duration: 0 }
-                  : { duration: 0.12, ease: EXIT_EASE },
-              }}
-              transition={
-                reduced ? { duration: 0 } : { duration: 0.16, ease: EASE }
-              }
-              onClick={() => {
-                intent.current = "panel";
-                back();
-              }}
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "header" }),
-                "font-normal text-muted-foreground hover:text-foreground",
+      <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] transition-[border-color,box-shadow] duration-150 dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_1px_6px_rgba(0,0,0,0.45)]">
+        <div
+          ref={viewportRef}
+          tabIndex={-1}
+          role="group"
+          aria-label={position}
+          style={{ height }}
+          className="relative overflow-hidden outline-none transition-[border-color,box-shadow] duration-150 focus-visible:shadow-[inset_0_0_0_1.5px_#4568FF] dark:focus-visible:shadow-[inset_0_0_0_1.5px_#93B0FF]"
+        >
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={complete ? "__complete" : step.id}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={panelTransition}
+              style={{ scrollbarGutter: "stable" }}
+              className="absolute inset-0 overflow-y-auto overscroll-contain p-4 text-[13.5px] leading-relaxed text-stone-700 dark:text-stone-200"
+            >
+              {complete ? (
+                <div className="flex h-full flex-col items-center justify-center gap-1.5">
+                  <p className="text-[13px] font-medium text-stone-700 dark:text-stone-100">
+                    {completeLabel}
+                  </p>
+                  <p className="text-[12.5px] text-stone-400 dark:text-stone-500">
+                    {completeHint}
+                  </p>
+                </div>
+              ) : (
+                step.content
               )}
-            >
-              {backLabel}
-            </motion.button>
-          )}
-        </AnimatePresence>
-        <AnimatePresence initial={false}>
-          {complete ? null : (
-            <motion.button
-              key="advance"
-              type="button"
-              aria-label={isLast ? finishLabel : nextLabel}
-              onClick={() => {
-                if (!isLast) intent.current = "panel";
-                next();
-              }}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{
-                opacity: 0,
-                scale: 0.96,
-                transition: reduced
-                  ? { duration: 0 }
-                  : { duration: 0.14, ease: EXIT_EASE },
-              }}
-              transition={reduced ? { duration: 0 } : CROSSFADE}
-              className="ml-auto grid h-8 place-items-center rounded-sm bg-stone-800 px-3 text-[13px] font-medium text-white outline-none focus-visible:shadow-[inset_0_0_0_1.5px_#93B0FF] dark:bg-stone-100 dark:text-stone-900 dark:focus-visible:shadow-[inset_0_0_0_1.5px_#4568FF]"
-            >
-              <span aria-hidden className="invisible col-start-1 row-start-1">
-                {finishLabel.length > nextLabel.length
-                  ? finishLabel
-                  : nextLabel}
-              </span>
-              <motion.span
-                aria-hidden
-                className="col-start-1 row-start-1"
-                initial={false}
-                animate={{ opacity: isLast ? 0 : 1 }}
-                transition={reduced ? { duration: 0 } : CROSSFADE}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+        <div className="flex items-center gap-3 border-t border-border px-4 py-3">
+          <AnimatePresence initial={false}>
+            {isFirst ? null : (
+              <motion.button
+                key="back"
+                type="button"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{
+                  opacity: 0,
+                  transition: reduced
+                    ? { duration: 0 }
+                    : { duration: 0.12, ease: EXIT_EASE },
+                }}
+                transition={
+                  reduced ? { duration: 0 } : { duration: 0.16, ease: EASE }
+                }
+                onClick={() => {
+                  intent.current = "panel";
+                  back();
+                }}
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "header",
+                })}
               >
-                {nextLabel}
-              </motion.span>
-              <motion.span
-                aria-hidden
-                className="col-start-1 row-start-1"
-                initial={false}
-                animate={{ opacity: isLast ? 1 : 0 }}
+                {backLabel}
+              </motion.button>
+            )}
+          </AnimatePresence>
+          <AnimatePresence initial={false}>
+            {complete ? null : (
+              <motion.button
+                key="advance"
+                type="button"
+                aria-label={isLast ? finishLabel : nextLabel}
+                onClick={() => {
+                  if (!isLast) intent.current = "panel";
+                  next();
+                }}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.96,
+                  transition: reduced
+                    ? { duration: 0 }
+                    : { duration: 0.14, ease: EXIT_EASE },
+                }}
                 transition={reduced ? { duration: 0 } : CROSSFADE}
+                className={cn(
+                  buttonVariants({ variant: "default", size: "header" }),
+                  "relative ml-auto overflow-hidden",
+                )}
               >
-                {finishLabel}
-              </motion.span>
-            </motion.button>
-          )}
-        </AnimatePresence>
+                <span aria-hidden className="invisible">
+                  {isLast ? finishLabel : nextLabel}
+                </span>
+                <motion.span
+                  aria-hidden
+                  className="absolute inset-0 grid place-items-center"
+                  initial={false}
+                  animate={{ opacity: isLast ? 0 : 1 }}
+                  transition={reduced ? { duration: 0 } : CROSSFADE}
+                >
+                  {nextLabel}
+                </motion.span>
+                <motion.span
+                  aria-hidden
+                  className="absolute inset-0 grid place-items-center"
+                  initial={false}
+                  animate={{ opacity: isLast ? 1 : 0 }}
+                  transition={reduced ? { duration: 0 } : CROSSFADE}
+                >
+                  {finishLabel}
+                </motion.span>
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
