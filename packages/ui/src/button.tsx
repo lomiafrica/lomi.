@@ -76,7 +76,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           // SAFETY: Slot hosts the same attributes Button already accepted.
           {...(props as React.ComponentPropsWithoutRef<typeof Slot>)}
         >
-          {children}
+          {
+            // SAFETY: Slot ships React 18 children types. Docs typechecks this file with React 19.
+            children as never
+          }
         </Slot>
       );
     }
