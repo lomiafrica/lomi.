@@ -42,6 +42,9 @@ type PaymentAliasKey = keyof typeof PAYMENT_ALIASES;
 const FNE_PAYMENT_METHOD_SET: ReadonlySet<string> = new Set(
   FNE_PAYMENT_METHODS,
 );
+const PAYMENT_ALIAS_KEY_SET: ReadonlySet<string> = new Set(
+  Object.keys(PAYMENT_ALIASES),
+);
 const FNE_TAX_CODE_SET: ReadonlySet<string> = new Set(FNE_TAX_CODES);
 
 function isFnePaymentMethod(value: string): value is FnePaymentMethod {
@@ -49,7 +52,7 @@ function isFnePaymentMethod(value: string): value is FnePaymentMethod {
 }
 
 function isPaymentAliasKey(value: string): value is PaymentAliasKey {
-  return Object.hasOwn(PAYMENT_ALIASES, value);
+  return PAYMENT_ALIAS_KEY_SET.has(value);
 }
 
 /** Map a lomi. rail name onto the DGI annex paymentMethod enum. */

@@ -128,13 +128,16 @@ type DgiPayModeAlias = keyof typeof DGIPAY_MODE_ALIASES;
 const DGIPAY_PAYMENT_MODE_SET: ReadonlySet<string> = new Set(
   DGIPAY_PAYMENT_MODES,
 );
+const DGIPAY_MODE_ALIAS_SET: ReadonlySet<string> = new Set(
+  Object.keys(DGIPAY_MODE_ALIASES),
+);
 
 function isDgiPayPaymentMode(value: string): value is DgiPayPaymentMode {
   return DGIPAY_PAYMENT_MODE_SET.has(value);
 }
 
 function isDgiPayModeAlias(value: string): value is DgiPayModeAlias {
-  return Object.hasOwn(DGIPAY_MODE_ALIASES, value);
+  return DGIPAY_MODE_ALIAS_SET.has(value);
 }
 
 /** Map a lomi. rail onto a DGIPay PaymentMode. */
