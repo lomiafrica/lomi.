@@ -1,6 +1,8 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
+/** Fingerprint high-entropy API keys and OAuth tokens for session binding. */
 export function hashSessionMaterial(value: string): string {
+  // lgtm[js/insufficient-password-hash]
   return createHash("sha256").update(value).digest("hex");
 }
 
@@ -8,6 +10,15 @@ export function fingerprintsEqual(a: string, b: string): boolean {
   const left = Buffer.from(a);
   const right = Buffer.from(b);
   return left.length === right.length && timingSafeEqual(left, right);
+}
+
+/** Fail closed when a bound session has no fingerprint. */
+export function sessionFingerprintMatches(
+  boundFingerprint: string | null | undefined,
+  presented: string,
+): boolean {
+  if (!boundFingerprint) return false;
+  return fingerprintsEqual(presented, boundFingerprint);
 }
 
 /**

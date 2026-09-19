@@ -314,13 +314,17 @@ export function getLocalizedOrganizationRoleTitle(
 }
 
 export function parsePermissionKeysFromSqlSeed(sql: string): string[] {
-  const marker = sql.match(
-    /-- TEAM_RBAC_PERMISSION_SEED_START([\s\S]*?)-- TEAM_RBAC_PERMISSION_SEED_END/,
+  const startMarker = "-- TEAM_RBAC_PERMISSION_SEED_START";
+  const endMarker = "-- TEAM_RBAC_PERMISSION_SEED_END";
+  const start = sql.indexOf(startMarker);
+  const end = sql.indexOf(
+    endMarker,
+    start === -1 ? 0 : start + startMarker.length,
   );
-  if (!marker) {
+  if (start === -1 || end === -1) {
     throw new Error("TEAM_RBAC_PERMISSION_SEED markers missing from SQL");
   }
-  const seed = marker[1];
+  const seed = sql.slice(start + startMarker.length, end);
   if (!seed) {
     throw new Error("TEAM_RBAC_PERMISSION_SEED body missing from SQL");
   }

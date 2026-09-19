@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   fingerprintSessionCredential,
   fingerprintsEqual,
+  sessionFingerprintMatches,
 } from "../src/session-credential.js";
 
 describe("session credential fingerprints", () => {
@@ -61,5 +62,8 @@ describe("session credential fingerprints", () => {
     });
     expect(fingerprintsEqual(a, b)).toBe(true);
     expect(fingerprintsEqual(a, otherKey)).toBe(false);
+    expect(sessionFingerprintMatches(a, b)).toBe(true);
+    expect(sessionFingerprintMatches(null, a)).toBe(false);
+    expect(sessionFingerprintMatches(undefined, a)).toBe(false);
   });
 });

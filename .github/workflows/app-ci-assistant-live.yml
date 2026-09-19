@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   assistant-live:
-    if: ${{ secrets.ASSISTANT_E2E_EMAIL != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

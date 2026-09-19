@@ -170,6 +170,17 @@ describe("createHttpApplication", () => {
     expect(res.status).toBe(400);
   });
 
+  it("GET /mcp with an unknown session id returns 404", async () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(`http://127.0.0.1:${ctx.port}/mcp`, {
+      headers: { "mcp-session-id": "does-not-exist" },
+    });
+    expect(res.status).toBe(404);
+  });
+
   it("GET /ready returns 503 in production without transport bearer", async () => {
     process.env.NODE_ENV = "production";
     delete process.env.LOMI_MCP_BEARER_TOKEN;

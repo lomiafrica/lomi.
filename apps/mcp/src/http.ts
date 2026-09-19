@@ -49,7 +49,7 @@ import {
 } from "./session-registry.js";
 import {
   fingerprintSessionCredential,
-  fingerprintsEqual,
+  sessionFingerprintMatches,
 } from "./session-credential.js";
 import { mcpLog, mcpRequestAls } from "./mcp-request-context.js";
 import { wireMcpServer } from "./wire-mcp-server.js";
@@ -707,10 +707,9 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           if (sessionId && registry.has(sessionId)) {
             const bound = registry.get(sessionId)!;
             if (
-              bound.credentialFingerprint &&
-              !fingerprintsEqual(
-                presentedFingerprint,
+              !sessionFingerprintMatches(
                 bound.credentialFingerprint,
+                presentedFingerprint,
               )
             ) {
               registry.drop(sessionId);
@@ -879,11 +878,11 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             );
             return;
           } else {
-            res.status(400).json({
+            res.status(404).json({
               jsonrpc: "2.0",
               error: {
                 code: -32000,
-                message: "Bad Request: No valid MCP session ID provided",
+                message: "Unknown MCP session",
               },
               id: null,
             });
@@ -931,8 +930,12 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
         const sessionId = Array.isArray(sessionHeader)
           ? sessionHeader[0]
           : sessionHeader;
-        if (!sessionId || !registry.has(sessionId)) {
+        if (!sessionId) {
           res.status(400).send("Invalid or missing MCP session ID");
+          return;
+        }
+        if (!registry.has(sessionId)) {
+          res.status(404).send("Unknown MCP session");
           return;
         }
         const guest = req.path.endsWith("/guest");
@@ -949,8 +952,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
         );
         const bound = registry.get(sessionId)!;
         if (
-          bound.credentialFingerprint &&
-          !fingerprintsEqual(presented, bound.credentialFingerprint)
+          !sessionFingerprintMatches(bound.credentialFingerprint, presented)
         ) {
           registry.drop(sessionId);
           applyOauthCors(res);
@@ -996,8 +998,12 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
         const sessionId = Array.isArray(sessionHeader)
           ? sessionHeader[0]
           : sessionHeader;
-        if (!sessionId || !registry.has(sessionId)) {
+        if (!sessionId) {
           res.status(400).send("Invalid or missing MCP session ID");
+          return;
+        }
+        if (!registry.has(sessionId)) {
+          res.status(404).send("Unknown MCP session");
           return;
         }
         const guest = req.path.endsWith("/guest");
@@ -1014,8 +1020,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
         );
         const bound = registry.get(sessionId)!;
         if (
-          bound.credentialFingerprint &&
-          !fingerprintsEqual(presented, bound.credentialFingerprint)
+          !sessionFingerprintMatches(bound.credentialFingerprint, presented)
         ) {
           registry.drop(sessionId);
           applyOauthCors(res);
