@@ -80,6 +80,8 @@ export interface ReceiptDocumentData {
   addressLocale?: string;
   dgiReference?: string;
   dgiQrValue?: string;
+  payUrl?: string;
+  bankDetails?: Array<{ label: string; value: string }>;
 }
 
 export interface ReceiptTransactionInput {

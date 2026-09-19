@@ -72,7 +72,10 @@ export function pdfLineValueOffset(extraLines: number) {
 }
 
 function visibleMetaRows(rows: PdfMetaEntry[]) {
-  return rows.filter((row) => row.value);
+  return rows.filter((row) => {
+    const value = row.value.trim();
+    return value.length > 0 && value !== "—";
+  });
 }
 
 export function PdfSectionRule({ spaceAfter = 16 }: { spaceAfter?: number }) {
@@ -216,6 +219,50 @@ export function PdfPayOnlineRow({ url }: { url: string }) {
       >
         {PDF_PAY_LINK_LABEL}
       </Link>
+    </View>
+  );
+}
+
+export function PdfBankDetails({
+  rows,
+}: {
+  rows: Array<{ label: string; value: string }>;
+}) {
+  if (rows.length === 0) return null;
+  return (
+    <View style={{ marginTop: 4, gap: 4 }}>
+      {rows.map((row) => (
+        <View
+          key={row.label}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 12,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: PDF_FONT_SIZE.label,
+              color: PDF_LABEL_COLOR,
+              width: 88,
+            }}
+          >
+            {row.label}
+          </Text>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: PDF_FONT_SIZE.body,
+              fontWeight: 600,
+              textAlign: "right",
+              letterSpacing: row.label === "IBAN" ? 0.4 : 0,
+            }}
+          >
+            {row.value}
+          </Text>
+        </View>
+      ))}
     </View>
   );
 }

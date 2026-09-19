@@ -45,6 +45,7 @@ export {
   PdfLegalFooter,
   PdfMetaRow,
   PdfPayOnlineRow,
+  PdfBankDetails,
   PdfSectionLabel,
   PdfSectionRule,
   PdfTopBand,
@@ -93,6 +94,8 @@ export {
 export { ReceiptLayout } from "./receipt-layout";
 export { HtmlFiscalQr, PdfFiscalQr } from "./fiscal-qr";
 export { ReceiptPdfDocument } from "./receipt-pdf-document";
+export { parseInvoiceBankRows, formatIbanDisplay } from "./format-invoice-bank";
+export type { InvoiceBankRow } from "./format-invoice-bank";
 export { LOMI_WORDMARK_SRC } from "./wordmark";
 export type {
   ReceiptAddress,

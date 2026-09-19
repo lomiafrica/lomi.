@@ -99,12 +99,12 @@ export function ReceiptLayout({
           value={truncateId(data.providerTransactionId)}
         />
       ) : null}
-      {data.paymentMethod ? (
-        <HtmlRecordRow
-          label={labels.paymentMethod}
-          value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
-        />
-      ) : null}
+      {data.paymentMethod && data.paymentMethod !== "—" ? (
+          <HtmlRecordRow
+            label={labels.paymentMethod}
+            value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
+          />
+        ) : null}
       {data.dgiReference ? (
         <HtmlRecordRow
           label={labels.dgiReference ?? "DGI"}

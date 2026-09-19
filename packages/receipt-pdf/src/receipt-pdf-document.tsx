@@ -20,9 +20,11 @@ import {
   PDF_TOTALS_WIDTH,
 } from "./tokens";
 import {
+  PdfBankDetails,
   PdfContactLine,
   PdfDocumentHeader,
   PdfLegalFooter,
+  PdfPayOnlineRow,
   PdfSectionLabel,
   PdfSectionRule,
   PdfTopBand,
@@ -400,6 +402,18 @@ function PdfLineItemsTable({
             >
               {item.description}
             </Text>
+            {item.detail ? (
+              <Text
+                style={{
+                  fontSize: PDF_FONT_SIZE.body,
+                  lineHeight: 1.35,
+                  color: "#6B7280",
+                  marginTop: 4,
+                }}
+              >
+                {item.detail}
+              </Text>
+            ) : null}
           </View>
           <View style={{ flexDirection: "row", width: numericWidth }}>
             {showQuantityAndPrice ? (
@@ -606,9 +620,17 @@ export function ReceiptPdfDocument({ data }: { data: ReceiptDocumentData }) {
                 {data.amountHint}
               </Text>
             ) : null}
+            {data.payUrl ? <PdfPayOnlineRow url={data.payUrl} /> : null}
             <PdfContactLine email={supportEmail} kind="receipt" />
           </View>
         </View>
+
+        {data.bankDetails && data.bankDetails.length > 0 ? (
+          <View wrap={false} style={{ marginTop: 24, maxWidth: 280 }}>
+            <PdfSectionLabel>Payment details</PdfSectionLabel>
+            <PdfBankDetails rows={data.bankDetails} />
+          </View>
+        ) : null}
 
         {data.digitalDelivery ? (
           <PdfDigitalDelivery delivery={data.digitalDelivery} />
