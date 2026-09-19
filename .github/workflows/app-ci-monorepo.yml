@@ -182,6 +182,11 @@ jobs:
         working-directory: ./packages/shared
     steps:
       - uses: actions/checkout@v5
+      - name: Checkout dashboard submodule
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/dashboard
       - uses: pnpm/action-setup@v4
         with:
           version: 9
