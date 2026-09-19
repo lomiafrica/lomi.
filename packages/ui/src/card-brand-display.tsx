@@ -5,12 +5,7 @@ interface CardBrandDisplayProps {
 }
 
 type CardBrandId =
-  | "visa"
-  | "mastercard"
-  | "amex"
-  | "discover"
-  | "unionpay"
-  | "unknown";
+  "visa" | "mastercard" | "amex" | "discover" | "unionpay" | "unknown";
 
 const cardBrandMap = {
   visa: { src: "/payment_channels/checkout_visa.webp", alt: "Visa" },

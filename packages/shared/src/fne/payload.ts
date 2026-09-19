@@ -9,7 +9,7 @@ import {
   type MerchantInvoiceForFne,
 } from "./types.js";
 
-const PAYMENT_ALIASES: Record<string, FnePaymentMethod> = {
+const PAYMENT_ALIASES = {
   cash: "cash",
   espece: "cash",
   espèces: "cash",
@@ -35,7 +35,22 @@ const PAYMENT_ALIASES: Record<string, FnePaymentMethod> = {
   "bank-transfer": "transfer",
   deferred: "deferred",
   "a-terme": "deferred",
-};
+} as const;
+
+type PaymentAliasKey = keyof typeof PAYMENT_ALIASES;
+
+const FNE_PAYMENT_METHOD_SET: ReadonlySet<string> = new Set(
+  FNE_PAYMENT_METHODS,
+);
+const FNE_TAX_CODE_SET: ReadonlySet<string> = new Set(FNE_TAX_CODES);
+
+function isFnePaymentMethod(value: string): value is FnePaymentMethod {
+  return FNE_PAYMENT_METHOD_SET.has(value);
+}
+
+function isPaymentAliasKey(value: string): value is PaymentAliasKey {
+  return Object.hasOwn(PAYMENT_ALIASES, value);
+}
 
 /** Map a lomi. rail name onto the DGI annex paymentMethod enum. */
 export function mapLomiPaymentMethodToFne(
@@ -43,14 +58,13 @@ export function mapLomiPaymentMethodToFne(
 ): FnePaymentMethod | null {
   if (!method) return null;
   const normalized = method.trim().toLowerCase();
-  if ((FNE_PAYMENT_METHODS as readonly string[]).includes(normalized)) {
-    return normalized as FnePaymentMethod;
-  }
-  return PAYMENT_ALIASES[normalized] ?? null;
+  if (isFnePaymentMethod(normalized)) return normalized;
+  if (isPaymentAliasKey(normalized)) return PAYMENT_ALIASES[normalized];
+  return null;
 }
 
 function isTaxCode(value: string): value is FneTaxCode {
-  return (FNE_TAX_CODES as readonly string[]).includes(value);
+  return FNE_TAX_CODE_SET.has(value);
 }
 
 /** Build the official POST /external/invoices/sign body. */

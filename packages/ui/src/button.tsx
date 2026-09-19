@@ -25,7 +25,8 @@ const MotionButton = motion.button as React.ForwardRefExoticComponent<
 >;
 
 interface ButtonProps
-  extends Omit<
+  extends
+    Omit<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
       | "Icon"
       | "iconPlacement"
@@ -75,7 +76,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           // SAFETY: Slot hosts the same attributes Button already accepted.
           {...(props as React.ComponentPropsWithoutRef<typeof Slot>)}
         >
-          {children as React.ComponentPropsWithoutRef<typeof Slot>["children"]}
+          {children}
         </Slot>
       );
     }

@@ -66,11 +66,20 @@ export async function signDgiPay(
   return sha1HexUtf8(`${apiKey}${apiSecret}${extra.join("")}`);
 }
 
-function requireEnabled(config: DgiPayConfig): {
+type DgiPayCredentials = {
   apiKey: string;
   apiSecret: string;
   aggregator: string;
-} {
+};
+
+type DgiPayRequestHeaders = {
+  "Content-Type": string;
+  Accept: string;
+  "X-ApiKey": string;
+  "X-Signature"?: string;
+};
+
+function requireEnabled(config: DgiPayConfig): DgiPayCredentials {
   if (!config.enabled) {
     throw new Error("DGIPay client is disabled (DGIPAY_ENABLED is off).");
   }
@@ -182,7 +191,7 @@ export function createDgiPayClient(
     extraForSignature?: readonly string[];
   }): Promise<JsonObject> {
     const creds = requireEnabled(config);
-    const headers: Record<string, string> = {
+    const headers: DgiPayRequestHeaders = {
       "Content-Type": "application/json",
       Accept: "application/json",
       "X-ApiKey": creds.apiKey,

@@ -98,8 +98,12 @@ export const MCP_KNOWN_TOOLS: readonly string[] = MCP_TOOL_FAMILIES.flatMap(
 
 export const MCP_KNOWN_TOOL_SET: ReadonlySet<string> = new Set(MCP_KNOWN_TOOLS);
 
+const MCP_TOOL_FAMILY_ID_SET: ReadonlySet<string> = new Set(
+  MCP_TOOL_FAMILY_IDS,
+);
+
 export function isMcpToolFamilyId(value: string): value is McpToolFamilyId {
-  return (MCP_TOOL_FAMILY_IDS as readonly string[]).includes(value);
+  return MCP_TOOL_FAMILY_ID_SET.has(value);
 }
 
 export function isKnownMcpTool(name: string): boolean {

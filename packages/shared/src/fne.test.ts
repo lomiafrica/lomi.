@@ -24,7 +24,6 @@ import {
   sha1HexUtf8,
   signDgiPay,
   type FneHttpRequest,
-  type FneSignPayload,
   type MerchantInvoiceForFne,
 } from "./fne/index.js";
 
@@ -171,7 +170,9 @@ test("FNE client posts /external/invoices/sign with Bearer auth", async () => {
       };
     },
   );
-  const payload = buildFneSignPayload(sampleInvoice()) as FneSignPayload;
+  const payload = buildFneSignPayload(sampleInvoice());
+  assert.equal(isFnePayloadError(payload), false);
+  if (isFnePayloadError(payload)) return;
   const result = await client.sign(payload);
   assert.equal(requests[0]?.url, `${FNE_DEFAULT_BASE_URL}${FNE_SIGN_PATH}`);
   assert.equal(requests[0]?.headers.Authorization, "Bearer test-fne-key");
@@ -208,10 +209,10 @@ test("disabled FNE client refuses to sign", async () => {
     apiKey: null,
     baseUrl: FNE_DEFAULT_BASE_URL,
   });
-  await assert.rejects(
-    () => client.sign(buildFneSignPayload(sampleInvoice()) as FneSignPayload),
-    /disabled/,
-  );
+  const payload = buildFneSignPayload(sampleInvoice());
+  assert.equal(isFnePayloadError(payload), false);
+  if (isFnePayloadError(payload)) return;
+  await assert.rejects(() => client.sign(payload), /disabled/);
 });
 
 test("DGIPay config redacts secrets and signs SHA-1 as documented", async () => {

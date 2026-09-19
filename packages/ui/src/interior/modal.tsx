@@ -90,8 +90,7 @@ export type UseModalOptions = {
   lockScroll?: boolean;
   /** Prefer `RefObject<HTMLElement>` (React 18) or `RefObject<HTMLElement | null>` (React 19). */
   initialFocusRef?:
-    | React.RefObject<HTMLElement | null>
-    | React.RefObject<HTMLElement>;
+    React.RefObject<HTMLElement | null> | React.RefObject<HTMLElement>;
   container?: HTMLElement | null;
 };
 
@@ -341,8 +340,7 @@ export type ModalProps = {
   closeOnBackdrop?: boolean;
   lockScroll?: boolean;
   initialFocusRef?:
-    | React.RefObject<HTMLElement | null>
-    | React.RefObject<HTMLElement>;
+    React.RefObject<HTMLElement | null> | React.RefObject<HTMLElement>;
   container?: HTMLElement | null;
   maxWidth?: number;
   maxHeight?: string;

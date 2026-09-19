@@ -42,8 +42,7 @@ export type AgentRegisterPowVerifyInput = {
 };
 
 export type AgentRegisterPowVerifyResult =
-  | { ok: true; challengeInnerId: string }
-  | { ok: false; reason: string };
+  { ok: true; challengeInnerId: string } | { ok: false; reason: string };
 
 type ChallengePayload = {
   v: 1;

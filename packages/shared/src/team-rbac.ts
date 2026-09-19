@@ -154,8 +154,19 @@ export const PERMISSION_GROUPS = [
   },
 ] as const;
 
-const NETWORK_KEYS = PERMISSION_GROUPS.find((group) => group.id === "network")
-  ?.keys as readonly PermissionKey[];
+function isNetworkPermissionGroup(
+  group: (typeof PERMISSION_GROUPS)[number],
+): group is Extract<(typeof PERMISSION_GROUPS)[number], { id: "network" }> {
+  return group.id === "network";
+}
+
+const NETWORK_PERMISSION_GROUP = PERMISSION_GROUPS.find(
+  isNetworkPermissionGroup,
+);
+if (!NETWORK_PERMISSION_GROUP) {
+  throw new Error("network permission group is required");
+}
+const NETWORK_KEYS = NETWORK_PERMISSION_GROUP.keys;
 
 export const MANAGER_DENIED_PERMISSIONS = [
   "payout.create",
@@ -166,6 +177,10 @@ export const MANAGER_DENIED_PERMISSIONS = [
   "insurance.manage",
   ...NETWORK_KEYS,
 ] as const satisfies readonly PermissionKey[];
+
+const MANAGER_DENIED_PERMISSION_SET: ReadonlySet<string> = new Set(
+  MANAGER_DENIED_PERMISSIONS,
+);
 
 export const MEMBER_DENIED_PERMISSIONS = [
   "payout.create",
@@ -178,6 +193,10 @@ export const MEMBER_DENIED_PERMISSIONS = [
   "team.remove",
   ...NETWORK_KEYS,
 ] as const satisfies readonly PermissionKey[];
+
+const MEMBER_DENIED_PERMISSION_SET: ReadonlySet<string> = new Set(
+  MEMBER_DENIED_PERMISSIONS,
+);
 
 export const CASHIER_PERMISSIONS = [
   "payment.charge",
@@ -221,20 +240,14 @@ export const SYSTEM_ROLES: readonly SystemRoleDefinition[] = [
     key: SYSTEM_ROLE_KEYS.manager,
     title: "Manager",
     permissions: PERMISSION_KEYS.filter(
-      (key) =>
-        !MANAGER_DENIED_PERMISSIONS.includes(
-          key as (typeof MANAGER_DENIED_PERMISSIONS)[number],
-        ),
+      (key) => !MANAGER_DENIED_PERMISSION_SET.has(key),
     ),
   },
   {
     key: SYSTEM_ROLE_KEYS.orgMember,
     title: "Member",
     permissions: PERMISSION_KEYS.filter(
-      (key) =>
-        !MEMBER_DENIED_PERMISSIONS.includes(
-          key as (typeof MEMBER_DENIED_PERMISSIONS)[number],
-        ),
+      (key) => !MEMBER_DENIED_PERMISSION_SET.has(key),
     ),
   },
   {
@@ -254,12 +267,16 @@ export const SYSTEM_ROLES: readonly SystemRoleDefinition[] = [
   },
 ];
 
+const SYSTEM_ROLE_KEY_SET: ReadonlySet<string> = new Set(
+  Object.values(SYSTEM_ROLE_KEYS),
+);
+
 export function isPermissionKey(value: string): value is PermissionKey {
   return PERMISSION_KEY_SET.has(value);
 }
 
 export function isSystemRoleKey(value: string): value is SystemRoleKey {
-  return Object.values(SYSTEM_ROLE_KEYS).includes(value as SystemRoleKey);
+  return SYSTEM_ROLE_KEY_SET.has(value);
 }
 
 export function legacyMemberRoleForRoleKey(

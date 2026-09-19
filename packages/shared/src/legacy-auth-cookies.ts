@@ -30,9 +30,7 @@ export function supabaseProjectRefFromUrl(supabaseUrl: string): string {
  * Browsers list older Domain=.apex cookies before later host-only ones;
  * RFC 6265 last-wins is the cookie we wrote most recently.
  */
-export function parseCookieHeaderKeepLast(
-  header: string,
-): Record<string, string> {
+export function parseCookieHeaderKeepLast(header: string) {
   const out: Record<string, string> = {};
   for (const part of header.split(";")) {
     const trimmed = part.trim();
@@ -170,16 +168,24 @@ type BrowserStorage = {
   setItem(key: string, value: string): void;
 };
 
+type BrowserGlobal = {
+  document?: BrowserDocument;
+  localStorage?: BrowserStorage;
+  location?: { protocol?: string };
+};
+
+function browserGlobal(): BrowserGlobal {
+  // SAFETY: document, localStorage, and location live on the browser host; optional chaining is the boundary.
+  return globalThis as BrowserGlobal;
+}
+
 function browserDocument(): BrowserDocument | null {
-  const doc = (globalThis as { document?: BrowserDocument }).document;
-  return doc ?? null;
+  return browserGlobal().document ?? null;
 }
 
 function browserLocalStorage(): BrowserStorage | null {
   try {
-    const storage = (globalThis as { localStorage?: BrowserStorage })
-      .localStorage;
-    return storage ?? null;
+    return browserGlobal().localStorage ?? null;
   } catch {
     return null;
   }
@@ -207,9 +213,7 @@ export function adoptLegacyAuthCookies(
 
   const apexDomain = options.apexDomain ?? DEFAULT_APEX;
   const secure =
-    options.secure ??
-    (globalThis as { location?: { protocol?: string } }).location?.protocol ===
-      "https:";
+    options.secure ?? browserGlobal().location?.protocol === "https:";
 
   let imported = false;
   const storage = browserLocalStorage();

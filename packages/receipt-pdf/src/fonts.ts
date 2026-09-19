@@ -9,6 +9,12 @@ const INTER_FONT_SOURCES = [
 let fontsRegistered = false;
 let fontsPrefetched = false;
 
+function isAvailableFetch(
+  value: typeof fetch | undefined,
+): value is typeof fetch {
+  return typeof value === "function";
+}
+
 export function registerReceiptFonts() {
   if (fontsRegistered) return;
   fontsRegistered = true;
@@ -30,9 +36,10 @@ export function prefetchReceiptFonts() {
   registerReceiptFonts();
   if (fontsPrefetched) return;
   fontsPrefetched = true;
-  if (typeof fetch === "undefined") return;
+  const fetchImpl = globalThis.fetch;
+  if (!isAvailableFetch(fetchImpl)) return;
 
   for (const href of INTER_FONT_SOURCES) {
-    void fetch(href, { mode: "cors", cache: "force-cache" });
+    void fetchImpl(href, { mode: "cors", cache: "force-cache" });
   }
 }

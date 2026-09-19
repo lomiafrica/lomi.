@@ -1,3 +1,5 @@
+import { isString } from '@lomi./shared';
+
 const RELOAD_FLAG_KEY = 'docs:chunk-reload';
 
 function isStaleChunkMessage(message: string): boolean {
@@ -44,11 +46,7 @@ export function registerDocsStaleChunkRecovery(): void {
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
     const message =
-      reason instanceof Error
-        ? reason.message
-        : typeof reason === 'string'
-          ? reason
-          : '';
+      reason instanceof Error ? reason.message : isString(reason) ? reason : '';
     if (message && isStaleChunkMessage(message) && reloadOnce(message)) {
       event.preventDefault();
     }

@@ -1,4 +1,5 @@
 import {
+  isBoolean,
   isJsonObject,
   parseJson,
   parseJsonObject,
@@ -86,7 +87,7 @@ export function parseFneSignBody(raw: JsonObject): FneSignResult {
     ncc: firstString(raw, ["ncc"]),
     reference: firstString(raw, ["reference"]),
     token: firstString(raw, ["token"]),
-    warning: typeof warningValue === "boolean" ? warningValue : null,
+    warning: isBoolean(warningValue) ? warningValue : null,
     balanceSticker: readNumber(raw, "balance_sticker") ?? null,
     invoiceId: invoice ? firstString(invoice, ["id"]) : null,
   };
@@ -101,14 +102,14 @@ function errorFromResponse(
   let code: string | null = null;
   try {
     const body = parseBodyObject(bodyText);
-    const bodyMessage = body["message"];
-    const bodyError = body["error"];
-    if (typeof bodyMessage === "string" && bodyMessage.trim() !== "") {
+    const bodyMessage = readString(body, "message");
+    const bodyError = readString(body, "error");
+    if (bodyMessage !== undefined && bodyMessage.trim() !== "") {
       message = bodyMessage;
-    } else if (typeof bodyError === "string" && bodyError.trim() !== "") {
+    } else if (bodyError !== undefined && bodyError.trim() !== "") {
       message = bodyError;
     }
-    if (typeof bodyError === "string" && bodyError.trim() !== "") {
+    if (bodyError !== undefined && bodyError.trim() !== "") {
       code = bodyError;
     }
   } catch {

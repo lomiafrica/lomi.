@@ -1,3 +1,5 @@
+import { DGIPAY_PAYMENT_MODES, type DgiPayPaymentMode } from "./types.js";
+
 /** Org fiscal regime and certification routing. One DGI rail per sale. */
 
 export const FISCAL_REGIMES = ["off", "fne", "rne"] as const;
@@ -7,6 +9,10 @@ export const FISCAL_JOB_KINDS = ["sign", "sticker", "refund"] as const;
 export type FiscalJobKind = (typeof FISCAL_JOB_KINDS)[number];
 
 export const FISCAL_HOLD_CHANNELS = ["terminal", "card_present"] as const;
+
+const FISCAL_HOLD_CHANNEL_SET: ReadonlySet<string> = new Set(
+  FISCAL_HOLD_CHANNELS,
+);
 
 const CI_COUNTRY_HINTS = [
   "ci",
@@ -29,7 +35,7 @@ export function isFiscalHoldChannel(
   channel: string | null | undefined,
 ): boolean {
   const normalized = channel?.trim().toLowerCase() ?? "";
-  return (FISCAL_HOLD_CHANNELS as readonly string[]).includes(normalized);
+  return FISCAL_HOLD_CHANNEL_SET.has(normalized);
 }
 
 export function isFiscalCoteDIvoireCountry(
@@ -102,7 +108,7 @@ export function planFiscalCertification(args: {
   return { action: "sticker" };
 }
 
-const DGIPAY_MODE_ALIASES: Record<string, string> = {
+const DGIPAY_MODE_ALIASES = {
   cash: "ESPECE",
   espece: "ESPECE",
   card: "CARTE",
@@ -115,16 +121,29 @@ const DGIPAY_MODE_ALIASES: Record<string, string> = {
   transfer: "VIREMENT",
   spi: "VIREMENT",
   bank_transfer: "VIREMENT",
-};
+} as const;
+
+type DgiPayModeAlias = keyof typeof DGIPAY_MODE_ALIASES;
+
+const DGIPAY_PAYMENT_MODE_SET: ReadonlySet<string> = new Set(
+  DGIPAY_PAYMENT_MODES,
+);
+
+function isDgiPayPaymentMode(value: string): value is DgiPayPaymentMode {
+  return DGIPAY_PAYMENT_MODE_SET.has(value);
+}
+
+function isDgiPayModeAlias(value: string): value is DgiPayModeAlias {
+  return Object.hasOwn(DGIPAY_MODE_ALIASES, value);
+}
 
 /** Map a lomi. rail onto a DGIPay PaymentMode. */
 export function mapLomiPaymentMethodToDgiPay(
   method: string | null | undefined,
 ): string | null {
   if (!method) return null;
+  if (isDgiPayPaymentMode(method)) return method;
   const normalized = method.trim().toLowerCase();
-  if (["ESPECE", "CARTE", "MOBILE", "CHEQUE", "VIREMENT"].includes(method)) {
-    return method;
-  }
-  return DGIPAY_MODE_ALIASES[normalized] ?? null;
+  if (isDgiPayModeAlias(normalized)) return DGIPAY_MODE_ALIASES[normalized];
+  return null;
 }
