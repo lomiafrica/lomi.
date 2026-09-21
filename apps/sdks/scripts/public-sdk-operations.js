@@ -87,6 +87,7 @@ export const METHOD_NAME_BY_OP = {
   "POST /payment-links": "create",
   "POST /payment-requests": "create",
   "POST /products": "create",
+  "POST /products/prices/batch": "updatePricesBatch",
   "POST /products/{id}/prices": "addPrice",
   "POST /products/{id}/prices/{priceId}/default": "setDefaultPrice",
   "POST /refunds": "create",

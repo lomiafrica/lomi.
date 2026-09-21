@@ -2590,7 +2590,7 @@
     {
       "name": "lomi_products",
       "title": "Products",
-      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). No extra required fields.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: id.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: id.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). No extra required fields.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: id.\n- `batch_prices` — Batch update prices (POST /products/prices/batch). No extra required fields.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: id.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Products"
       ],
@@ -2609,11 +2609,12 @@
               "get",
               "create",
               "add_price",
+              "batch_prices",
               "set_default_price",
               "update",
               "archive"
             ],
-            "description": "Which REST operation to run. One of: list, get, create, add_price, set_default_price, update, archive."
+            "description": "Which REST operation to run. One of: list, get, create, add_price, batch_prices, set_default_price, update, archive."
           },
           "cursor": {
             "type": "string",
@@ -2650,7 +2651,7 @@
       "readOnly": false,
       "destructive": true,
       "alwaysLoad": true,
-      "searchHint": "add_price archive create default delete get list patch post prices products set_default_price update",
+      "searchHint": "add_price archive batch batch_prices create default delete get list patch post prices products set_default_price update",
       "actions": {
         "list": {
           "operationKey": "GET /products",
@@ -2727,6 +2728,22 @@
           "requiredInput": [
             "id"
           ]
+        },
+        "batch_prices": {
+          "operationKey": "POST /products/prices/batch",
+          "method": "post",
+          "pathTemplate": "/products/prices/batch",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "ProductsController_updatePricesBatch",
+          "write": true,
+          "wantsBody": false,
+          "title": "Batch update prices",
+          "description": "Update several product prices in one request. Pass updates: [{ price_id or product_id, amount, currency_code }].",
+          "tags": [
+            "Products"
+          ],
+          "requiredInput": []
         },
         "set_default_price": {
           "operationKey": "POST /products/{id}/prices/{priceId}/default",

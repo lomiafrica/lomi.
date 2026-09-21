@@ -49,6 +49,7 @@
         "get": "GET /products/{id}",
         "create": "POST /products",
         "add_price": "POST /products/{id}/prices",
+        "batch_prices": "POST /products/prices/batch",
         "set_default_price": "POST /products/{id}/prices/{priceId}/default",
         "update": "PATCH /products/{id}",
         "archive": "DELETE /products/{id}"

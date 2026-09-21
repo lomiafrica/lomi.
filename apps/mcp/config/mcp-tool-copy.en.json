@@ -311,6 +311,10 @@
     "title": "Create product",
     "description": "Add a product to your catalog, optionally with an initial price. Do this before creating checkouts or subscriptions that reference it."
   },
+  "POST /products/prices/batch": {
+    "title": "Batch update prices",
+    "description": "Update several product prices in one request. Pass updates: [{ price_id or product_id, amount, currency_code }]."
+  },
   "POST /products/{id}/prices": {
     "title": "Add price to product",
     "description": "Add a new price (amount, currency, interval) to an existing product. A product can hold several prices."
