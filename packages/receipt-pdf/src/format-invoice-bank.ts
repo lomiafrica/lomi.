@@ -18,13 +18,13 @@ export type InvoiceBankRow = {
   value: string;
 };
 
-const LABELS: Record<InvoiceBankKey, string> = {
+const LABELS = {
   account_name: "Account name",
   iban: "IBAN",
   bic: "BIC",
   account_number: "Account number",
   routing: "Routing",
-};
+} as const satisfies Record<InvoiceBankKey, string>;
 
 const CONTENT_LABELS: Array<{ match: RegExp; key: InvoiceBankKey }> = [
   { match: /^account name\s*:/i, key: "account_name" },

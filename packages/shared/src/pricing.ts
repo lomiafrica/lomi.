@@ -72,6 +72,23 @@ export const ADD_ON_INTERNATIONAL_CARDS_PERCENT = 2;
 export const ADD_ON_SUBSCRIPTION_PERCENT = 0.5;
 export const CHARGEBACK_INTL_FIXED = 15;
 
+/** Hide Stripe cards and Tap to Pay below this ledger amount. Wave and MTN stay available. */
+export const CARD_RAIL_MIN_XOF = 1000;
+export const CARD_RAIL_MIN_EUR_USD = 0.5;
+
+export function meetsCardRailMinimum(
+  amountMajor: number,
+  currency: string,
+): boolean {
+  if (!Number.isFinite(amountMajor) || amountMajor <= 0) return false;
+  const code = currency.toUpperCase();
+  if (code === "XOF") return amountMajor >= CARD_RAIL_MIN_XOF;
+  if (code === "EUR" || code === "USD") {
+    return amountMajor >= CARD_RAIL_MIN_EUR_USD;
+  }
+  return amountMajor > 0;
+}
+
 export function formatFee(parts: FeeParts, locale: "en" | "fr" = "en"): string {
   const percent = `${parts.percent}%`;
   if (parts.currency === "XOF") {

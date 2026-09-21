@@ -144,6 +144,9 @@ export {
   CHARGEBACK_INTL_FIXED,
   formatFee,
   calculateFee,
+  CARD_RAIL_MIN_XOF,
+  CARD_RAIL_MIN_EUR_USD,
+  meetsCardRailMinimum,
 } from "./pricing.js";
 export type { PricingTier, FeeParts, VolumeTierBounds } from "./pricing.js";
 export {
