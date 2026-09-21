@@ -986,8 +986,9 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "UUID de la transaction",
+            "description": "Transaction UUID or txn_ public id",
             "schema": {
+              "example": "txn_23456789ABCDEF",
               "type": "string"
             }
           },
@@ -1027,15 +1028,16 @@
     },
     "/transactions/{id}": {
       "get": {
-        "description": "Renvoie une transaction. Réponse 404 si elle n'existe pas ou n'est pas accessible avec cette clé API.",
+        "description": "Renvoie une transaction. Accepte l'UUID interne ou l'identifiant public txn_…. Réponse 404 si elle n'existe pas ou n'est pas accessible avec cette clé API.",
         "operationId": "TransactionsController_findOne",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "UUID de la transaction",
+            "description": "Transaction UUID or txn_ public id",
             "schema": {
+              "example": "txn_23456789ABCDEF",
               "type": "string"
             }
           },
@@ -5041,7 +5043,7 @@
     },
     "/settlements/instant": {
       "post": {
-        "description": "Rail mode records a Nitro fee (2%, minimum 500 XOF / 1 EUR / 1 USD) on an existing payout. Advance mode unlocks held card funds up to the org cap. Requires Idempotency-Key. First call without confirmation_token returns a preview. Second call with that token executes. Advance is on by default for KYB-approved organizations.",
+        "description": "Rail mode records a Nitro fee on an existing payout. Advance mode unlocks held card funds up to the org cap. Requires Idempotency-Key. First call without confirmation_token returns a preview. Second call with that token executes.",
         "operationId": "SettlementsController_createInstant",
         "parameters": [
           {
@@ -7877,7 +7879,7 @@
     },
     "/team/invitations": {
       "post": {
-        "description": "Envoie une invitation. L’humain accepte dans le navigateur. role Admin/Member ou role_id.",
+        "description": "Invite by email or phone. Use role_key (staff, cashier, manager) or role_id. Legacy role Admin/Member still works.",
         "operationId": "TeamController_invite",
         "parameters": [
           {
@@ -7917,7 +7919,7 @@
         ]
       },
       "delete": {
-        "description": "Annule une invitation en attente par email.",
+        "description": "Cancels a pending invitation by email or phone.",
         "operationId": "TeamController_revokeInvite",
         "parameters": [
           {
@@ -7959,7 +7961,7 @@
     },
     "/team/members/{memberId}": {
       "patch": {
-        "description": "Admin/Member via role, ou rôle custom via role_id.",
+        "description": "Admin/Member via role, or a named role via role_id / role_key.",
         "operationId": "TeamController_updateRole",
         "parameters": [
           {
@@ -8804,7 +8806,12 @@
           "transaction_id": {
             "type": "string",
             "example": "123e4567-e89b-12d3-a456-426614174000",
-            "description": "Unique transaction identifier"
+            "description": "Unique transaction identifier (internal UUID)"
+          },
+          "public_id": {
+            "type": "string",
+            "example": "txn_23456789ABCDEF",
+            "description": "Merchant-facing public id (txn_…)"
           },
           "organization_id": {
             "type": "string",
@@ -8984,6 +8991,7 @@
         },
         "required": [
           "transaction_id",
+          "public_id",
           "organization_id",
           "customer_id",
           "product_id",
@@ -12075,6 +12083,10 @@
           "email": {
             "type": "string"
           },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone when inviting staff without email"
+          },
           "role": {
             "type": "string",
             "enum": [
@@ -12082,27 +12094,28 @@
               "Member"
             ]
           },
+          "role_key": {
+            "type": "string",
+            "description": "RBAC role key such as staff, cashier, or manager"
+          },
           "role_id": {
             "type": "string"
           },
           "position": {
             "type": "string"
           }
-        },
-        "required": [
-          "email"
-        ]
+        }
       },
       "RevokeTeamInviteDto": {
         "type": "object",
         "properties": {
           "email": {
             "type": "string"
+          },
+          "phone": {
+            "type": "string"
           }
-        },
-        "required": [
-          "email"
-        ]
+        }
       },
       "UpdateTeamMemberRoleDto": {
         "type": "object",
@@ -12115,6 +12128,9 @@
             ]
           },
           "role_id": {
+            "type": "string"
+          },
+          "role_key": {
             "type": "string"
           }
         }

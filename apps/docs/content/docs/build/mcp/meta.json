@@ -2,5 +2,5 @@
   "title": "MCP",
   "description": "Connect AI clients like Cursor and Claude Desktop to the lomi. merchant API.",
   "icon": "Bot",
-  "pages": ["index"]
+  "pages": ["index", "connect-in-seconds"]
 }

@@ -3894,8 +3894,9 @@
             "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
           },
           "id": {
+            "example": "txn_23456789ABCDEF",
             "type": "string",
-            "description": "UUID de la transaction"
+            "description": "Transaction UUID or txn_ public id"
           },
           "isPos": {
             "example": false,
