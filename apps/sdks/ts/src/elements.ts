@@ -39,7 +39,11 @@ export type LomiConfirmPaymentData = ConfirmPaymentData;
 export type LomiPaymentElement = StripePaymentElement;
 export type LomiPaymentElementCreateOptions = StripePaymentElementOptions;
 export type LomiPaymentElementTheme =
-  "light" | "dark" | "flat" | "stripe" | "night";
+  | "light"
+  | "dark"
+  | "flat"
+  | "stripe"
+  | "night";
 export type LomiBillingAddressCollection = "auto" | "never";
 
 export interface CreateLomiElementsOptions {

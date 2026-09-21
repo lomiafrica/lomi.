@@ -3,7 +3,10 @@ export type JsonPrimitive = string | number | boolean | null;
 
 /** JSON-shaped input from clients that may omit object properties. */
 export type JsonInput =
-  JsonPrimitive | JsonInputObject | JsonInput[] | undefined;
+  | JsonPrimitive
+  | JsonInputObject
+  | JsonInput[]
+  | undefined;
 
 /** JSON input object before omitted properties are normalized. */
 export type JsonInputObject = { [key: string]: JsonInput };

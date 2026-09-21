@@ -36,8 +36,10 @@ const SKIP_FORMAT_WALK = new Set([
   ".next",
   "coverage",
   "vendor",
+  "eas-vendor",
   "target",
   ".expo",
+  ".scf",
 ]);
 
 const SKIP_FORMAT_REL = new Set([

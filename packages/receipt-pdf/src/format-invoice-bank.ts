@@ -100,7 +100,10 @@ export function parseInvoiceBankRows(
   const structured = [
     rowFromValue("account_name", readString(details, "account_name")),
     rowFromValue("iban", readString(details, "iban")),
-    rowFromValue("bic", readString(details, "bic") ?? readString(details, "swift")),
+    rowFromValue(
+      "bic",
+      readString(details, "bic") ?? readString(details, "swift"),
+    ),
     rowFromValue("account_number", readString(details, "account_number")),
     rowFromValue(
       "routing",

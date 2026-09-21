@@ -2,7 +2,8 @@ import * as React from "react";
 import { cn } from "./cn";
 import { interiorField } from "./tokens";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   variant?: "default" | "filled";
 }

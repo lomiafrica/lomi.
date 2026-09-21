@@ -31,7 +31,11 @@ export interface CheckoutBooking {
 }
 
 export type CheckoutBookingStatus =
-  "pending_payment" | "confirmed" | "cancelled" | "completed" | "no_show";
+  | "pending_payment"
+  | "confirmed"
+  | "cancelled"
+  | "completed"
+  | "no_show";
 
 const BOOKING_STATUSES: readonly CheckoutBookingStatus[] = [
   "pending_payment",
