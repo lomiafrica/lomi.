@@ -2755,6 +2755,38 @@
         ]
       }
     },
+    "/products/prices/batch": {
+      "post": {
+        "description": "Set amounts on existing prices in one request. Use price_id or product_id (default active price). Prices with checkout history stay locked.",
+        "operationId": "ProductsController_updatePricesBatch",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated prices"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Update several product prices",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
     "/products/{id}": {
       "get": {
         "description": "Renvoie un produit avec ses prix et frais. Réponse 404 s'il n'existe pas ou n'est pas accessible avec cette clé API.",
