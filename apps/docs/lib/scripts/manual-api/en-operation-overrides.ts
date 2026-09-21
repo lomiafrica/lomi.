@@ -311,6 +311,13 @@ export const EN_OPERATION_COPY = {
     whenToUse:
       'Use before checkout composition or when validating a stored product ID.',
   },
+  ProductsController_updatePricesBatch: {
+    summary: 'Update several product prices',
+    body: 'Sets amounts on existing prices in one request. Pass price_id or product_id (the default active price). Prices with checkout history stay locked.',
+    whenToUse:
+      'Use when a catalog import or a price review needs to change several amounts without creating new price rows.',
+    related: '[Retrieve product](/api/products/ProductsController_findOne)',
+  },
   ProductsController_setDefaultPrice: {
     summary: 'Set default price',
     body: 'Marks which price lomi. uses when a flow does not specify an explicit price ID.',

@@ -5,6 +5,7 @@
     "ProductsController_create",
     "ProductsController_findAll",
     "ProductsController_findOne",
-    "ProductsController_setDefaultPrice"
+    "ProductsController_setDefaultPrice",
+    "ProductsController_updatePricesBatch"
   ]
 }

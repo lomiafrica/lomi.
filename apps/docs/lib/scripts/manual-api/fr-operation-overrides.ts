@@ -149,6 +149,11 @@ export const FR_OPERATION_COPY = {
     related:
       '[Lister les produits](/api/products/ProductsController_findAll) · [Liens de paiement](/api/payment-links/PaymentLinksController_create)',
   },
+  ProductsController_updatePricesBatch: {
+    whenToUse:
+      'Utilisez lors d’un import catalogue ou d’une revue de prix, sans créer de nouvelles lignes de prix.',
+    related: '[Récupérer un produit](/api/products/ProductsController_findOne)',
+  },
   ProductsController_setDefaultPrice: {
     whenToUse:
       'Utilisez après avoir ajouté plusieurs prix pour définir le repli checkout et liens.',

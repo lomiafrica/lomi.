@@ -127,6 +127,7 @@
   "POST /payout-methods",
   "POST /payouts",
   "POST /products",
+  "POST /products/prices/batch",
   "POST /products/{id}/prices",
   "POST /products/{id}/prices/{priceId}/default",
   "POST /refunds",

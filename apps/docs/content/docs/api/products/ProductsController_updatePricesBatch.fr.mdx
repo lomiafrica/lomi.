@@ -1,0 +1,82 @@
+---
+title: "Mettre à jour plusieurs prix"
+description: "Modifie les montants de prix existants en une requête."
+full: true
+method: post
+path: /products/prices/batch
+operationId: ProductsController_updatePricesBatch
+---
+
+## Aperçu
+
+Mettre à jour plusieurs prix
+
+Modifie les montants de prix existants en une requête. Indiquez `price_id` ou `product_id` (le prix actif par défaut). Un prix qui a déjà servi à un checkout reste verrouillé.
+
+### Quand l’utiliser
+
+Utilisez lors d’un import catalogue ou d’une revue de prix, sans créer de nouvelles lignes de prix.
+
+### Voir aussi
+
+[Récupérer un produit](/api/products/ProductsController_findOne)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /products/prices/batch`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Aucun paramètre d’URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### Corps de la requête
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `updates` | Oui | tableau | Prix à modifier. Chaque entrée a `amount` plus `price_id` ou `product_id`. |
+| `idempotency_key` | Non | chaîne | Clé pour rejouer le même lot sans le doubler. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Prix mis à jour |
+| `400` | Entrée invalide ou paramètre manquant |
+| `401` | Clé API invalide ou manquante |
+| `404` | Prix ou produit introuvable |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : prix ou produit introuvable pour cette organisation. Un prix déjà utilisé en checkout est refusé. Envoyez `idempotency_key` pour rejouer le même lot.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/products/prices/batch" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"updates":[{"price_id":"price_example","amount":7500,"currency_code":"XOF"}]}'
+```
+
+## OpenAPI
+
+- **operationId**: `ProductsController_updatePricesBatch`
+- **Operation**: `POST /products/prices/batch`
+
+Schémas complets et **Try it** : [référence API](/api).

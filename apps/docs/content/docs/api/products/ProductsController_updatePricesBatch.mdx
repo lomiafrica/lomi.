@@ -1,0 +1,82 @@
+---
+title: "Update several product prices"
+description: "Set amounts on existing prices in one request."
+full: true
+method: post
+path: /products/prices/batch
+operationId: ProductsController_updatePricesBatch
+---
+
+## Overview
+
+Update several product prices
+
+Sets amounts on existing prices in one request. Pass `price_id` or `product_id` (the default active price). Prices that already have checkout history stay locked.
+
+### When to use this
+
+Use when a catalog import or a price review needs to change several amounts without creating new price rows.
+
+### See also
+
+[Retrieve product](/api/products/ProductsController_findOne)
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /products/prices/batch`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters._
+
+### Query parameters
+
+_No query parameters._
+
+### Request body
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `updates` | Yes | array | Prices to update. Each item needs `amount` plus `price_id` or `product_id`. |
+| `idempotency_key` | No | string | Safe retry key for the same batch. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Updated prices |
+| `400` | Bad request, invalid or missing parameters |
+| `401` | Invalid or missing API key |
+| `404` | Resource not found |
+
+## Errors
+
+Errors follow the standard JSON error format. **401** indicates a missing or invalid key. **404** means a price or product is missing for this organization. Locked prices (checkout history) are rejected. Send `idempotency_key` to retry the same batch safely.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/products/prices/batch" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"updates":[{"price_id":"price_example","amount":7500,"currency_code":"XOF"}]}'
+```
+
+## OpenAPI
+
+- **operationId**: `ProductsController_updatePricesBatch`
+- **Operation**: `POST /products/prices/batch`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.
