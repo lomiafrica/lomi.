@@ -9,7 +9,7 @@
   ],
   "project": ["src/**/*.ts", "test/**/*.ts", "eslint.config.mjs"],
   "ignore": ["src/generated/**"],
-  "ignoreDependencies": ["@eslint/js"],
+  "ignoreDependencies": ["@eslint/js", "@lomi./shared"],
   "ignoreBinaries": ["lomi-mcp", "lomi-mcp-http"],
   "ignoreExportsUsedInFile": true
 }

@@ -18,13 +18,13 @@ export type InvoiceBankRow = {
   value: string;
 };
 
-const LABELS: Record<InvoiceBankKey, string> = {
+const LABELS = {
   account_name: "Account name",
   iban: "IBAN",
   bic: "BIC",
   account_number: "Account number",
   routing: "Routing",
-};
+} as const satisfies Record<InvoiceBankKey, string>;
 
 const CONTENT_LABELS: Array<{ match: RegExp; key: InvoiceBankKey }> = [
   { match: /^account name\s*:/i, key: "account_name" },
@@ -100,7 +100,10 @@ export function parseInvoiceBankRows(
   const structured = [
     rowFromValue("account_name", readString(details, "account_name")),
     rowFromValue("iban", readString(details, "iban")),
-    rowFromValue("bic", readString(details, "bic") ?? readString(details, "swift")),
+    rowFromValue(
+      "bic",
+      readString(details, "bic") ?? readString(details, "swift"),
+    ),
     rowFromValue("account_number", readString(details, "account_number")),
     rowFromValue(
       "routing",

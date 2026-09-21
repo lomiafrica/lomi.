@@ -28,7 +28,10 @@ export type MorphShape = {
 export type IconMorphMode = "stroke" | "fill";
 
 export type IconMorphPreset =
-  "menu-close" | "play-pause" | "plus-minus" | "check-close";
+  | "menu-close"
+  | "play-pause"
+  | "plus-minus"
+  | "check-close";
 
 export type IconMorphSlot = {
   key: number;

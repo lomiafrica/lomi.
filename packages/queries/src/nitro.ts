@@ -25,6 +25,8 @@ export type NitroSettingsRow = {
   outstanding_exposure: number;
   held_balance: number;
   next_release_at: string | null;
+  can_fulfill: boolean;
+  fulfill_reason: string | null;
 };
 
 export type NitroQuoteRow = {
@@ -88,6 +90,8 @@ function parseNitroSettingsRow(value: JsonValue): NitroSettingsRow | null {
     outstanding_exposure,
     held_balance,
     next_release_at: readString(value, "next_release_at") ?? null,
+    can_fulfill: readBoolean(value, "can_fulfill") ?? true,
+    fulfill_reason: readString(value, "fulfill_reason") ?? null,
   };
 }
 
@@ -322,6 +326,20 @@ export async function reverseNitroAdvance(
   };
   if (args.p_reason !== undefined) payload["p_reason"] = args.p_reason;
   await handleUntypedRpc(client, "reverse_nitro_advance", payload, {
+    expectReturnValue: false,
+  });
+}
+
+export async function upsertPlatformNitroFulfillment(
+  client: TypedSupabaseClient,
+  args: {
+    p_rail: string;
+    p_currency_code: string;
+    p_amount: number;
+    p_fetched_at: string;
+  },
+): Promise<void> {
+  await handleUntypedRpc(client, "upsert_platform_nitro_fulfillment", args, {
     expectReturnValue: false,
   });
 }

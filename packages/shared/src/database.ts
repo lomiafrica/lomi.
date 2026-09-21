@@ -1306,6 +1306,88 @@ export type Database = {
           },
         ]
       }
+      assistant_run_metrics: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          environment: string
+          error_class: string
+          gate_hit: string | null
+          input_tokens: number
+          iteration_count: number
+          latency_ms: number | null
+          merchant_id: string
+          metric_id: string
+          model_used: string | null
+          organization_id: string
+          output_tokens: number
+          status: string
+          time_to_first_tool_ms: number | null
+          tool_stats: Json
+          ttft_ms: number | null
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          environment?: string
+          error_class?: string
+          gate_hit?: string | null
+          input_tokens?: number
+          iteration_count?: number
+          latency_ms?: number | null
+          merchant_id: string
+          metric_id?: string
+          model_used?: string | null
+          organization_id: string
+          output_tokens?: number
+          status?: string
+          time_to_first_tool_ms?: number | null
+          tool_stats?: Json
+          ttft_ms?: number | null
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          environment?: string
+          error_class?: string
+          gate_hit?: string | null
+          input_tokens?: number
+          iteration_count?: number
+          latency_ms?: number | null
+          merchant_id?: string
+          metric_id?: string
+          model_used?: string | null
+          organization_id?: string
+          output_tokens?: number
+          status?: string
+          time_to_first_tool_ms?: number | null
+          tool_stats?: Json
+          ttft_ms?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assistant_run_metrics_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "assistant_conversations"
+            referencedColumns: ["conversation_id"]
+          },
+          {
+            foreignKeyName: "assistant_run_metrics_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "assistant_run_metrics_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+        ]
+      }
       assistant_runs: {
         Row: {
           conversation_id: string
@@ -2222,6 +2304,120 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      catalog_ingest_drafts: {
+        Row: {
+          amount: number | null
+          cluster_key: string | null
+          confidence: number | null
+          created_at: string
+          currency_code: Database["public"]["Enums"]["currency_code"] | null
+          description: string | null
+          draft_id: string
+          image_urls: string[]
+          job_id: string
+          name: string
+          product_id: string | null
+          sort_index: number
+          suggested_sku: string | null
+        }
+        Insert: {
+          amount?: number | null
+          cluster_key?: string | null
+          confidence?: number | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"] | null
+          description?: string | null
+          draft_id?: string
+          image_urls?: string[]
+          job_id: string
+          name: string
+          product_id?: string | null
+          sort_index?: number
+          suggested_sku?: string | null
+        }
+        Update: {
+          amount?: number | null
+          cluster_key?: string | null
+          confidence?: number | null
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["currency_code"] | null
+          description?: string | null
+          draft_id?: string
+          image_urls?: string[]
+          job_id?: string
+          name?: string
+          product_id?: string | null
+          sort_index?: number
+          suggested_sku?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_ingest_drafts_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_ingest_jobs"
+            referencedColumns: ["job_id"]
+          },
+          {
+            foreignKeyName: "catalog_ingest_drafts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      catalog_ingest_jobs: {
+        Row: {
+          created_at: string
+          environment: string
+          error_text: string | null
+          job_id: string
+          merchant_id: string
+          organization_id: string
+          source_image_urls: string[]
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          environment?: string
+          error_text?: string | null
+          job_id?: string
+          merchant_id: string
+          organization_id: string
+          source_image_urls?: string[]
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          error_text?: string | null
+          job_id?: string
+          merchant_id?: string
+          organization_id?: string
+          source_image_urls?: string[]
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_ingest_jobs_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["merchant_id"]
+          },
+          {
+            foreignKeyName: "catalog_ingest_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+        ]
       }
       checkout_session_line_items: {
         Row: {
@@ -10432,6 +10628,38 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_nitro_fulfillment: {
+        Row: {
+          amount: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fetched_at: string
+          rail: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          currency_code: Database["public"]["Enums"]["currency_code"]
+          fetched_at: string
+          rail: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          currency_code?: Database["public"]["Enums"]["currency_code"]
+          fetched_at?: string
+          rail?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_nitro_fulfillment_currency_code_fkey"
+            columns: ["currency_code"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       platform_partners: {
         Row: {
           allowed_environments: string[]
@@ -10691,6 +10919,35 @@ export type Database = {
           },
           {
             foreignKeyName: "pos_devices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+        ]
+      }
+      price_batch_idempotency: {
+        Row: {
+          created_at: string
+          idempotency_key: string
+          organization_id: string
+          result: Json
+        }
+        Insert: {
+          created_at?: string
+          idempotency_key: string
+          organization_id: string
+          result: Json
+        }
+        Update: {
+          created_at?: string
+          idempotency_key?: string
+          organization_id?: string
+          result?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_batch_idempotency_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -13956,14 +14213,17 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_get_assistant_metrics_24h: { Args: never; Returns: Json }
       admin_get_nitro_settings: {
         Args: { p_organization_id: string }
         Returns: {
           advance_enabled: boolean
           advance_limit_amount: number
+          can_fulfill: boolean
           currency_code: Database["public"]["Enums"]["currency_code"]
           fee_bps: number
           fee_percentage: number
+          fulfill_reason: string
           held_balance: number
           is_enabled: boolean
           max_advance_hours: number
@@ -14377,6 +14637,10 @@ export type Database = {
           p_target_merchant_id?: string
           p_target_role_key?: string
         }
+        Returns: undefined
+      }
+      assert_catalog_write_access: {
+        Args: { p_merchant_id: string; p_organization_id: string }
         Returns: undefined
       }
       assert_currency_allowed_for_organization: {
@@ -14849,6 +15113,7 @@ export type Database = {
         Args: { p_actor_merchant_id?: string; p_enrollment_session_id: string }
         Returns: boolean
       }
+      catalog_ingest_job_payload: { Args: { p_job_id: string }; Returns: Json }
       check_assistant_usage_allowance: {
         Args: { p_merchant_id: string; p_organization_id: string }
         Returns: Json
@@ -15326,6 +15591,15 @@ export type Database = {
         }
         Returns: Json
       }
+      confirm_catalog_ingest_job: {
+        Args: {
+          p_drafts?: Json
+          p_job_id: string
+          p_merchant_id: string
+          p_organization_id: string
+        }
+        Returns: Json
+      }
       connect_default_providers: {
         Args: { p_organization_id: string }
         Returns: undefined
@@ -15617,6 +15891,16 @@ export type Database = {
           p_price?: number
         }
         Returns: string
+      }
+      create_catalog_ingest_job: {
+        Args: {
+          p_drafts: Json
+          p_environment: string
+          p_merchant_id: string
+          p_organization_id: string
+          p_source_image_urls: string[]
+        }
+        Returns: Json
       }
       create_checkout_session: {
         Args: {
@@ -19070,9 +19354,11 @@ export type Database = {
         Returns: {
           advance_enabled: boolean
           advance_limit_amount: number
+          can_fulfill: boolean
           currency_code: Database["public"]["Enums"]["currency_code"]
           fee_bps: number
           fee_percentage: number
+          fulfill_reason: string
           held_balance: number
           is_enabled: boolean
           max_advance_hours: number
@@ -21960,6 +22246,14 @@ export type Database = {
           pending_amount: number
           total_amount: number
         }[]
+      }
+      get_catalog_ingest_job: {
+        Args: {
+          p_job_id: string
+          p_merchant_id: string
+          p_organization_id: string
+        }
+        Returns: Json
       }
       get_channel_balance_adjustments: {
         Args: {
@@ -26373,14 +26667,24 @@ export type Database = {
         }
         Returns: number
       }
+      nitro_platform_can_fulfill: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+        }
+        Returns: boolean
+      }
+      nitro_platform_outstanding_xof: { Args: never; Returns: number }
       nitro_settings_rows: {
         Args: { p_organization_id: string }
         Returns: {
           advance_enabled: boolean
           advance_limit_amount: number
+          can_fulfill: boolean
           currency_code: Database["public"]["Enums"]["currency_code"]
           fee_bps: number
           fee_percentage: number
+          fulfill_reason: string
           held_balance: number
           is_enabled: boolean
           max_advance_hours: number
@@ -26868,6 +27172,26 @@ export type Database = {
           p_response_payload: Json
         }
         Returns: undefined
+      }
+      record_assistant_run_metrics: {
+        Args: {
+          p_conversation_id: string
+          p_environment: string
+          p_error_class: string
+          p_gate_hit: string
+          p_input_tokens: number
+          p_iteration_count: number
+          p_latency_ms: number
+          p_merchant_id: string
+          p_model_used: string
+          p_organization_id: string
+          p_output_tokens: number
+          p_status: string
+          p_time_to_first_tool_ms: number
+          p_tool_stats: Json
+          p_ttft_ms: number
+        }
+        Returns: string
       }
       record_download_access: { Args: { p_token: string }; Returns: Json }
       record_free_transaction: {
@@ -28578,6 +28902,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      update_prices_batch: {
+        Args: {
+          p_environment?: string
+          p_idempotency_key?: string
+          p_merchant_id: string
+          p_organization_id: string
+          p_updates: Json
+        }
+        Returns: Json
+      }
       update_product: {
         Args: {
           p_continue_selling_when_out_of_stock?: boolean
@@ -28930,6 +29264,15 @@ export type Database = {
           p_title: string
         }
         Returns: string
+      }
+      upsert_platform_nitro_fulfillment: {
+        Args: {
+          p_amount: number
+          p_currency_code: Database["public"]["Enums"]["currency_code"]
+          p_fetched_at: string
+          p_rail: string
+        }
+        Returns: undefined
       }
       upsert_price_tier: {
         Args: {

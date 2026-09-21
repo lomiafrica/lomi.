@@ -87,7 +87,11 @@ export type FneRefundItem = {
 };
 
 export type FneCertificationStatus =
-  "not_requested" | "sign_pending" | "certified" | "failed" | "voided";
+  | "not_requested"
+  | "sign_pending"
+  | "certified"
+  | "failed"
+  | "voided";
 
 export type FneSignResult = {
   ncc: string | null;

@@ -47,9 +47,8 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-interface TooltipProps extends React.ComponentPropsWithoutRef<
-  typeof TooltipPrimitive.Root
-> {
+interface TooltipProps
+  extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root> {
   children: React.ReactNode;
   content?: React.ReactNode;
   side?: "top" | "right" | "bottom" | "left";

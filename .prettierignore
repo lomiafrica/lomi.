@@ -3,6 +3,8 @@
 **/.next
 **/coverage
 **/vendor
+**/eas-vendor
+**/.scf
 **/.expo
 **/target
 **/pnpm-lock.yaml

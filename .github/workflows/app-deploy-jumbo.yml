@@ -1,0 +1,91 @@
+name: lomi · deploy · jumbo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/jumbo"
+      - "apps/jumbo/**"
+      - "packages/shared/**"
+      - "packages/queries/**"
+      - "tooling/scripts/install-app-with-packages.mjs"
+      - ".github/workflows/app-deploy-jumbo.yml"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options:
+          - preview
+          - store
+        default: preview
+      platform:
+        description: Platform
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+        default: android
+      submit:
+        description: Upload after build (Play internal or TestFlight only)
+        type: boolean
+        default: false
+
+concurrency:
+  group: lomi-deploy-jumbo-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  eas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/jumbo
+    env:
+      PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'preview' }}
+      PLATFORM: ${{ github.event_name == 'workflow_dispatch' && inputs.platform || 'android' }}
+      SUBMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.submit || false }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Checkout jumbo submodule
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/jumbo
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Vendor shared packages for EAS
+        run: node scripts/eas-vendor-packages.mjs
+
+      - name: Assert store profile
+        if: env.PROFILE == 'store'
+        run: node scripts/assert-store-env.mjs
+
+      - name: Gate store upload
+        run: |
+          if [ "${SUBMIT}" != "true" ]; then
+            exit 0
+          fi
+          if [ "${PROFILE}" != "store" ]; then
+            echo "submit is only allowed with the store profile (Play internal / TestFlight)."
+            exit 1
+          fi
+          echo "Submit profile is store. eas.json android track stays internal."
+
+      - name: Queue EAS build
+        run: |
+          extra=()
+          if [ "${SUBMIT}" = "true" ]; then
+            extra+=(--auto-submit --auto-submit-with-profile store)
+          fi
+          eas build --profile "${PROFILE}" --platform "${PLATFORM}" --non-interactive --no-wait "${extra[@]}"

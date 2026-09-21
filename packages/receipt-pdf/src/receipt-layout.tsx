@@ -100,11 +100,11 @@ export function ReceiptLayout({
         />
       ) : null}
       {data.paymentMethod && data.paymentMethod !== "—" ? (
-          <HtmlRecordRow
-            label={labels.paymentMethod}
-            value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
-          />
-        ) : null}
+        <HtmlRecordRow
+          label={labels.paymentMethod}
+          value={<HtmlValueBadge>{data.paymentMethod}</HtmlValueBadge>}
+        />
+      ) : null}
       {data.dgiReference ? (
         <HtmlRecordRow
           label={labels.dgiReference ?? "DGI"}
