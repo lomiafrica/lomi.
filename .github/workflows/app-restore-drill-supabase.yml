@@ -14,7 +14,7 @@ on:
         required: false
         default: ""
   schedule:
-    # Monthly, first Monday-ish (day 1) at 03:40 UTC, after the 6-hourly backup.
+    # Monthly, first Monday-ish (day 1) at 03:40 UTC, after the 03:17 backup.
     - cron: "40 3 1 * *"
 
 concurrency:

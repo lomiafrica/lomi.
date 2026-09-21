@@ -3,9 +3,9 @@ name: lomi · backup · supabase · db
 on:
   workflow_dispatch:
   schedule:
-    # Off-platform encrypted DB copy every 6 hours. This is the disaster-recovery
+    # Off-platform encrypted DB copy every 3 hours. This is the disaster-recovery
     # copy in our own S3; Supabase's own backups/PITR cover lower-RPO needs.
-    - cron: "17 */6 * * *"
+    - cron: "17 */3 * * *"
 
 concurrency:
   group: lomi-backup-supabase-db
