@@ -32,6 +32,45 @@ describe("merchant completeness manifest", () => {
     expect(products?.actions.archive?.operationKey).toBe(
       "DELETE /products/{id}",
     );
+    expect(products?.inputSchema.properties).toMatchObject({
+      body: {
+        type: "object",
+        additionalProperties: true,
+      },
+    });
+    expect(products?.actions.create?.wantsBody).toBe(true);
+    expect(products?.actions.create?.requiredInput).toContain("body");
+    expect(products?.actions.update?.wantsBody).toBe(true);
+    expect(products?.actions.add_price?.wantsBody).toBe(true);
+    expect(products?.actions.batch_prices?.wantsBody).toBe(true);
+  });
+
+  it("declares a body for write actions that send JSON", () => {
+    const expected = [
+      ["lomi_coupons", "create"],
+      ["lomi_disputes", "submit_evidence"],
+      ["lomi_exports", "create"],
+      ["lomi_invoices", "create"],
+      ["lomi_invoices", "update"],
+      ["lomi_meters", "create"],
+      ["lomi_meters", "update"],
+      ["lomi_payout_methods", "create"],
+      ["lomi_payouts", "create"],
+      ["lomi_subscriptions", "update"],
+      ["lomi_usage", "set_entitlement"],
+      ["lomi_usage", "credits"],
+      ["lomi_usage", "create_subscription"],
+      ["lomi_webhooks", "create"],
+    ] as const;
+
+    for (const [toolName, action] of expected) {
+      const tool = manifest.tools.find((entry) => entry.name === toolName);
+      expect(tool?.actions[action]?.wantsBody).toBe(true);
+      expect(tool?.actions[action]?.requiredInput).toContain("body");
+      expect(tool?.inputSchema.properties).toMatchObject({
+        body: { type: "object", additionalProperties: true },
+      });
+    }
   });
 
   it("places every merchant tool in exactly one OAuth family", () => {

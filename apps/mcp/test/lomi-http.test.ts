@@ -82,4 +82,59 @@ describe("callLomiRest", () => {
     expect(headers["X-Request-Id"]).toBe("rid");
     expect(headers.Evil).toBeUndefined();
   });
+
+  it("sends an explicit product body and top-level create fields", async () => {
+    const spec: RestCallSpec = {
+      method: "post",
+      pathTemplate: "/products",
+      pathParamNames: [],
+      queryParamNames: [],
+      wantsBody: true,
+      inputSchema: {
+        type: "object",
+        properties: {
+          body: { type: "object", additionalProperties: true },
+          idempotency_key: { type: "string" },
+        },
+      },
+    };
+
+    await callLomiRest(
+      spec,
+      {
+        action: "create",
+        body: {
+          name: "Door ticket",
+          product_type: "one_time",
+          prices: [{ amount: 5000, currency_code: "XOF" }],
+        },
+      },
+      { baseUrl: "https://api.example.test", apiKey: "k" },
+    );
+
+    const explicit = vi.mocked(fetch).mock.calls[0]![1] as RequestInit;
+    expect(JSON.parse(String(explicit.body))).toEqual({
+      name: "Door ticket",
+      product_type: "one_time",
+      prices: [{ amount: 5000, currency_code: "XOF" }],
+    });
+
+    await callLomiRest(
+      spec,
+      {
+        action: "create",
+        name: "Door ticket",
+        product_type: "one_time",
+        prices: [{ amount: 5000, currency_code: "XOF" }],
+      },
+      { baseUrl: "https://api.example.test", apiKey: "k" },
+    );
+
+    const flattened = vi.mocked(fetch).mock.calls[1]![1] as RequestInit;
+    expect(JSON.parse(String(flattened.body))).toEqual({
+      name: "Door ticket",
+      product_type: "one_time",
+      prices: [{ amount: 5000, currency_code: "XOF" }],
+    });
+  });
 });

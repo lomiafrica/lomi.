@@ -39,6 +39,39 @@ function declaredHeaderInputKeys(inputSchema: JsonObject): Set<string> {
   return new Set(Object.keys(props).filter((k) => k.startsWith("header_")));
 }
 
+const BODY_METHODS = new Set(["post", "put", "patch"]);
+
+function reservedArgKeys(spec: RestCallSpec): Set<string> {
+  const keys = new Set<string>([
+    "action",
+    "idempotency_key",
+    "body",
+    ...spec.pathParamNames,
+    ...spec.queryParamNames,
+  ]);
+  for (const key of declaredHeaderInputKeys(spec.inputSchema)) {
+    keys.add(key);
+  }
+  return keys;
+}
+
+function writePayload(
+  spec: RestCallSpec,
+  args: JsonObject,
+): JsonValue | undefined {
+  if (!BODY_METHODS.has(spec.method.toLowerCase()) || !spec.wantsBody) {
+    return undefined;
+  }
+  if (args.body !== undefined && args.body !== null) return args.body;
+  const reserved = reservedArgKeys(spec);
+  const leftover: JsonObject = {};
+  for (const [key, value] of Object.entries(args)) {
+    if (reserved.has(key) || value === undefined) continue;
+    leftover[key] = value;
+  }
+  return Object.keys(leftover).length > 0 ? leftover : undefined;
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -101,12 +134,12 @@ export async function callLomiRest(
 
   let body: string | undefined;
   if (spec.wantsBody) {
-    const b = args.body;
-    if (b === undefined || b === null) {
+    const payload = writePayload(spec, args);
+    if (payload === undefined) {
       throw new Error('Missing required "body" object for this operation.');
     }
     headers["Content-Type"] = "application/json";
-    body = JSON.stringify(b);
+    body = JSON.stringify(payload);
   }
 
   const root = baseUrl.replace(/\/$/, "");

@@ -1335,6 +1335,80 @@
         ]
       }
     },
+    "/customers/top": {
+      "get": {
+        "description": "Classe les clients par volume de paiements terminés, converti dans la devise de l'organisation. Les encaissements carte en EUR et USD sont inclus.",
+        "operationId": "CustomersController_topBySpend",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Nombre de clients à renvoyer (maximum 50)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clients ordonnés par volume converti. currency_code est la devise de l'organisation pour chaque total_spend.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "example": "list"
+                    },
+                    "currency_code": {
+                      "type": "string",
+                      "example": "XOF"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TopCustomerSpendDto"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Clients par volume",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
     "/customers/{id}": {
       "get": {
         "description": "Renvoie un client. Réponse 404 si le client n'existe pas ou n'est pas accessible avec cette clé API.",
@@ -1695,92 +1769,6 @@
           }
         ],
         "summary": "Transactions du client",
-        "tags": [
-          "Customers"
-        ]
-      }
-    },
-    "/customers/top": {
-      "get": {
-        "description": "Classe les clients par volume de paiements terminés, converti dans la devise de l'organisation. Les encaissements carte en EUR et USD sont inclus.",
-        "operationId": "CustomersController_topBySpend",
-        "parameters": [
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Nombre de clients à renvoyer (maximum 50)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "Lomi-Account",
-            "in": "header",
-            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "acct_1234567890"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Clients ordonnés par volume converti. currency_code est la devise de l'organisation pour chaque total_spend.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "example": "list"
-                    },
-                    "currency_code": {
-                      "type": "string",
-                      "example": "XOF"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "public_id": { "type": "string", "nullable": true, "example": "cus_23456789ABCDEF" },
-                          "name": { "type": "string", "example": "Baptiste Gueguen" },
-                          "email": { "type": "string", "nullable": true },
-                          "phone_number": { "type": "string", "nullable": true },
-                          "total_spend": { "type": "number", "example": 655957 },
-                          "transaction_count": { "type": "number", "example": 1 },
-                          "currency_code": { "type": "string", "example": "XOF" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Clé API invalide ou manquante"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ],
-        "summary": "Clients par volume",
         "tags": [
           "Customers"
         ]
@@ -2812,6 +2800,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Produit créé avec succès",
@@ -2857,6 +2855,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchUpdatePricesDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Updated prices"
@@ -2950,6 +2958,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -3037,6 +3055,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPriceDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Prix ajouté avec succès",
@@ -3329,6 +3357,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubscriptionDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Abonnement mis à jour",
@@ -3621,6 +3659,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDiscountCouponDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Coupon créé avec succès",
@@ -4643,6 +4691,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Virement initié",
@@ -4870,6 +4928,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitDisputeEvidenceDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Evidence recorded"
@@ -5698,6 +5766,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookBodyDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Webhook créé"
@@ -6358,6 +6436,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvoiceDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
@@ -6568,6 +6656,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInvoiceDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -6806,6 +6904,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExportDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
@@ -7174,6 +7282,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutMethodDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
@@ -7206,6 +7324,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMeterDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
@@ -7304,6 +7432,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeterDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -7597,6 +7735,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsageSubscriptionDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
@@ -7731,6 +7879,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditWalletDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
@@ -7762,6 +7920,31 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "feature_key",
+                  "name"
+                ],
+                "properties": {
+                  "feature_key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
@@ -9034,7 +9217,7 @@
           "gross_amount_xof": {
             "type": "number",
             "example": 655957,
-            "description": "gross_amount converted to XOF. A 1000 EUR card checkout is included here. Sum this field for volume."
+            "description": "gross_amount converted to XOF, including EUR and USD card checkouts. Sum this field for volume. Do not add gross_amount across currencies."
           },
           "provider_code": {
             "type": "string",
@@ -9131,6 +9314,7 @@
           "net_amount",
           "refunded_amount",
           "currency_code",
+          "gross_amount_xof",
           "provider_code",
           "payment_method_code",
           "spi_tx_id",
@@ -9286,6 +9470,52 @@
           "environment",
           "created_at",
           "updated_at"
+        ]
+      },
+      "TopCustomerSpendDto": {
+        "type": "object",
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "example": "cus_23456789ABCDEF",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "example": "Baptiste Gueguen"
+          },
+          "email": {
+            "type": "string",
+            "example": "baptiste@afyadistribution.com",
+            "nullable": true
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "+33643647913",
+            "nullable": true
+          },
+          "total_spend": {
+            "type": "number",
+            "example": 655957,
+            "description": "Completed payment volume in currency_code. Foreign checkouts (EUR, USD) are already converted."
+          },
+          "transaction_count": {
+            "type": "number",
+            "example": 1
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF"
+          }
+        },
+        "required": [
+          "public_id",
+          "name",
+          "email",
+          "phone_number",
+          "total_spend",
+          "transaction_count",
+          "currency_code"
         ]
       },
       "PortalLaunchSessionResponseDto": {
@@ -10200,6 +10430,402 @@
           "updated_at"
         ]
       },
+      "BatchPriceUpdateItemDto": {
+        "type": "object",
+        "properties": {
+          "price_id": {
+            "type": "string",
+            "description": "Price UUID or public id (price_...)"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Product UUID or public id; updates the default active price"
+          },
+          "amount": {
+            "type": "number",
+            "example": 7500,
+            "description": "New amount in the currency minor units"
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR"
+            ]
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      },
+      "BatchUpdatePricesDto": {
+        "type": "object",
+        "properties": {
+          "updates": {
+            "description": "Prices to update in one request",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BatchPriceUpdateItemDto"
+            }
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Idempotency key for safe retries of the same batch"
+          }
+        },
+        "required": [
+          "updates"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "display_on_storefront": {
+            "type": "boolean"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sku": {
+            "type": "string"
+          },
+          "inventory_quantity": {
+            "type": "number"
+          },
+          "track_inventory": {
+            "type": "boolean"
+          },
+          "continue_selling_when_out_of_stock": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "fee_type_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreatePriceDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 10000,
+            "description": "Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted)."
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "description": "Currency code",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR"
+            ]
+          },
+          "billing_interval": {
+            "type": "string",
+            "example": "month",
+            "description": "Billing interval (required for recurring products)",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
+          },
+          "pricing_model": {
+            "type": "string",
+            "example": "standard",
+            "description": "Pricing model",
+            "enum": [
+              "standard",
+              "pay_what_you_want",
+              "tiered"
+            ],
+            "default": "standard"
+          },
+          "minimum_amount": {
+            "type": "number",
+            "example": 5000,
+            "description": "Lowest unit price the customer may pay. Required when pricing_model is pay_what_you_want."
+          },
+          "maximum_amount": {
+            "type": "number",
+            "example": 50000,
+            "description": "Optional upper bound on unit price when pricing_model is pay_what_you_want."
+          },
+          "is_default": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether this is the default price",
+            "default": false
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "notes": "Early bird pricing"
+            },
+            "description": "Additional metadata"
+          }
+        },
+        "required": [
+          "amount",
+          "currency_code"
+        ]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Premium Subscription",
+            "description": "Product name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Access to all premium features",
+            "description": "Product description"
+          },
+          "product_type": {
+            "type": "string",
+            "example": "recurring",
+            "description": "Product type",
+            "enum": [
+              "one_time",
+              "recurring",
+              "usage_based"
+            ],
+            "default": "one_time"
+          },
+          "images": {
+            "example": [
+              "https://example.com/image.png"
+            ],
+            "description": "Product images URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the product is active",
+            "default": true
+          },
+          "display_on_storefront": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether to display on storefront",
+            "default": true
+          },
+          "prices": {
+            "description": "Product prices (at least one required)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreatePriceDto"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "category": "subscription"
+            },
+            "description": "Additional metadata"
+          },
+          "fee_type_ids": {
+            "example": [
+              "123e4567-e89b-12d3-a456-426614174000"
+            ],
+            "description": "Fee type IDs to apply",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "failed_payment_action": {
+            "type": "string",
+            "example": "pause",
+            "description": "Action to take on failed payment (recurring products only)",
+            "enum": [
+              "pause",
+              "cancel",
+              "continue"
+            ]
+          },
+          "charge_day": {
+            "type": "number",
+            "example": 1,
+            "description": "Day of month to charge (1-31, recurring products only)"
+          },
+          "first_payment_type": {
+            "type": "string",
+            "example": "initial",
+            "description": "When to charge first payment (recurring products only)",
+            "enum": [
+              "initial",
+              "non_initial",
+              "prorated"
+            ],
+            "default": "initial"
+          },
+          "trial_enabled": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether to enable trial period",
+            "default": false
+          },
+          "trial_period_days": {
+            "type": "number",
+            "example": 14,
+            "description": "Trial period in days (required if trial_enabled is true)"
+          },
+          "usage_aggregation": {
+            "type": "string",
+            "example": "sum",
+            "description": "Usage aggregation method (usage_based products only)",
+            "enum": [
+              "sum",
+              "max",
+              "last_during_period",
+              "last_ever"
+            ]
+          },
+          "usage_unit": {
+            "type": "string",
+            "example": "api_calls",
+            "description": "Unit of usage measurement (usage_based products only)"
+          },
+          "meter_code": {
+            "type": "string",
+            "example": "api_calls",
+            "description": "Billable metric code for usage events (usage_based products only). Defaults to slugified product name."
+          }
+        },
+        "required": [
+          "name",
+          "product_type",
+          "prices"
+        ]
+      },
+      "AddPriceDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 10000,
+            "description": "Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted)."
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "description": "Currency code",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR"
+            ]
+          },
+          "billing_interval": {
+            "type": "string",
+            "example": "month",
+            "description": "Billing interval (must match product type)",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
+          },
+          "pricing_model": {
+            "type": "string",
+            "example": "standard",
+            "description": "Pricing model",
+            "enum": [
+              "standard",
+              "pay_what_you_want",
+              "tiered"
+            ],
+            "default": "standard"
+          },
+          "minimum_amount": {
+            "type": "number",
+            "example": 5000,
+            "description": "Lowest unit price the customer may pay. Required when pricing_model is pay_what_you_want."
+          },
+          "maximum_amount": {
+            "type": "number",
+            "example": 50000,
+            "description": "Optional upper bound on unit price when pricing_model is pay_what_you_want."
+          },
+          "is_default": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether to set as default price",
+            "default": false
+          },
+          "metadata": {
+            "type": "object",
+            "example": {
+              "notes": "Holiday special pricing"
+            },
+            "description": "Additional metadata"
+          }
+        },
+        "required": [
+          "amount",
+          "currency_code"
+        ]
+      },
+      "UpdateSubscriptionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "paused",
+            "enum": [
+              "pending",
+              "active",
+              "paused",
+              "cancelled",
+              "expired",
+              "past_due",
+              "trial"
+            ]
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "next_billing_date": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
       "DiscountCouponResponseDto": {
         "type": "object",
         "properties": {
@@ -10369,6 +10995,119 @@
           "environment",
           "created_at",
           "updated_at"
+        ]
+      },
+      "CreateDiscountCouponDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "SAVE20",
+            "description": "Unique coupon code (will be uppercased)"
+          },
+          "discount_type": {
+            "type": "string",
+            "example": "percentage",
+            "description": "Type of discount",
+            "enum": [
+              "percentage",
+              "fixed"
+            ],
+            "default": "percentage"
+          },
+          "discount_percentage": {
+            "type": "number",
+            "example": 20,
+            "description": "Discount percentage (required if discount_type is percentage, must be between 0 and 100)"
+          },
+          "discount_fixed_amount": {
+            "type": "number",
+            "example": 1000,
+            "description": "Fixed discount amount (required if discount_type is fixed, must be positive)"
+          },
+          "customer_type": {
+            "type": "string",
+            "example": "all",
+            "description": "Customer type this coupon applies to",
+            "enum": [
+              "all",
+              "new",
+              "existing"
+            ],
+            "default": "all"
+          },
+          "usage_frequency_limit": {
+            "type": "string",
+            "example": "total",
+            "description": "Usage frequency limit type",
+            "enum": [
+              "total",
+              "per_customer",
+              "per_customer_per_product"
+            ],
+            "default": "total"
+          },
+          "usage_limit_value": {
+            "type": "number",
+            "example": 1,
+            "description": "Usage limit value (required if usage_frequency_limit is not \"total\")"
+          },
+          "description": {
+            "type": "string",
+            "example": "20% off all products",
+            "description": "Coupon description"
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the coupon is active",
+            "default": true
+          },
+          "max_uses": {
+            "type": "number",
+            "example": 100,
+            "description": "Maximum number of times this coupon can be used"
+          },
+          "max_quantity_per_use": {
+            "type": "number",
+            "example": 5,
+            "description": "Maximum quantity allowed per use"
+          },
+          "valid_from": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00Z",
+            "description": "When the coupon becomes valid"
+          },
+          "expires_at": {
+            "type": "string",
+            "example": "2024-12-31T23:59:59Z",
+            "description": "When the coupon expires"
+          },
+          "scope_type": {
+            "type": "string",
+            "example": "organization_wide",
+            "description": "Scope of the coupon",
+            "enum": [
+              "organization_wide",
+              "specific_products",
+              "specific_prices"
+            ],
+            "default": "organization_wide"
+          },
+          "product_ids": {
+            "example": [
+              "123e4567-e89b-12d3-a456-426614174000"
+            ],
+            "description": "Product IDs this coupon applies to (only used if scope_type is specific_products or specific_prices)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "discount_type"
         ]
       },
       "CheckoutSessionResponseDto": {
@@ -10544,6 +11283,7 @@
           "allow_coupon_code",
           "allow_quantity",
           "amount",
+          "amount_xof",
           "cancel_url",
           "checkout_session_id",
           "checkout_url",
@@ -10766,6 +11506,86 @@
           }
         }
       },
+      "PayoutRecipientDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+221771234567"
+          }
+        },
+        "required": [
+          "name",
+          "phone"
+        ]
+      },
+      "CreatePayoutDto": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "self",
+              "beneficiary"
+            ]
+          },
+          "rail": {
+            "type": "string",
+            "enum": [
+              "wave",
+              "spi",
+              "bank",
+              "mtn",
+              "stellar"
+            ]
+          },
+          "last_mile_rail": {
+            "type": "string",
+            "enum": [
+              "wave",
+              "mtn",
+              "spi",
+              "bank"
+            ],
+            "description": "Last-mile rail after the Stellar USDC hop. Ignored unless rail is stellar. Defaults to wave."
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF"
+          },
+          "payout_method_id": {
+            "type": "string",
+            "description": "Required for self payouts and beneficiary SPI"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/PayoutRecipientDto"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "confirmation_token": {
+            "type": "string",
+            "description": "Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute."
+          }
+        },
+        "required": [
+          "destination",
+          "rail",
+          "amount",
+          "currency_code"
+        ]
+      },
       "CreatePayoutResponseDto": {
         "type": "object",
         "properties": {
@@ -10802,6 +11622,20 @@
         "required": [
           "success"
         ]
+      },
+      "SubmitDisputeEvidenceDto": {
+        "type": "object",
+        "properties": {
+          "customer_name": {
+            "type": "string"
+          },
+          "uncategorized_text": {
+            "type": "string"
+          },
+          "files": {
+            "type": "object"
+          }
+        }
       },
       "CreateSupportRequestDto": {
         "type": "object",
@@ -11153,6 +11987,49 @@
           "limit",
           "has_more",
           "next_cursor"
+        ]
+      },
+      "CreateWebhookBodyDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://example.com/webhooks/lomi"
+          },
+          "events": {
+            "example": [
+              "PAYMENT_SUCCEEDED",
+              "PAYMENT_FAILED",
+              "DISPUTE_CREATED",
+              "PAYMENT_RISK_FLAGGED"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "authorized_events": {
+            "example": [
+              "PAYMENT_SUCCEEDED"
+            ],
+            "deprecated": true,
+            "description": "Alias of `events`. Prefer `events`.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "example": "Webhook for payment events"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "url",
+          "events"
         ]
       },
       "WebhookResponseDto": {
@@ -11878,6 +12755,136 @@
           "data"
         ]
       },
+      "InvoiceLineItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Monthly service"
+          },
+          "description": {
+            "type": "string",
+            "example": "Monthly service"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1,
+            "default": 1
+          },
+          "price": {
+            "type": "number",
+            "example": 5000
+          },
+          "unit_price": {
+            "type": "number",
+            "example": 5000
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000
+          },
+          "product_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "price_id": {
+            "type": "string",
+            "example": "321e4567-e89b-12d3-a456-426614174000"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "CreateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "amount": {
+            "type": "number",
+            "example": 10000
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "XOF",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR"
+            ],
+            "default": "XOF"
+          },
+          "due_date": {
+            "type": "string",
+            "example": "2026-06-30"
+          },
+          "origin": {
+            "type": "string",
+            "example": "manual",
+            "enum": [
+              "manual",
+              "one_time_product",
+              "recurring_subscription",
+              "usage_billing",
+              "failed_renewal"
+            ]
+          },
+          "invoice_number": {
+            "type": "string",
+            "example": "INV-2026-0001"
+          },
+          "description": {
+            "type": "string",
+            "example": "Consulting services"
+          },
+          "product_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "price_id": {
+            "type": "string",
+            "example": "321e4567-e89b-12d3-a456-426614174000"
+          },
+          "subscription_id": {
+            "type": "string",
+            "example": "654e7890-e89b-12d3-a456-426614174000"
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineItemDto"
+            }
+          },
+          "customer_details": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "payment_details": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "template": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "customer_id",
+          "amount",
+          "currency_code"
+        ]
+      },
       "InvoiceResponseDto": {
         "type": "object",
         "properties": {
@@ -11960,6 +12967,89 @@
           "line_items"
         ]
       },
+      "UpdateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "due_date": {
+            "type": "string",
+            "example": "2026-06-30"
+          },
+          "status": {
+            "type": "string",
+            "example": "sent",
+            "enum": [
+              "draft",
+              "sent",
+              "paid",
+              "overdue",
+              "cancelled"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "example": "Updated invoice note"
+          },
+          "amount": {
+            "type": "number",
+            "example": 10000
+          },
+          "amount_due": {
+            "type": "number",
+            "example": 10000
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineItemDto"
+            }
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "product_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "price_id": {
+            "type": "string",
+            "example": "321e4567-e89b-12d3-a456-426614174000"
+          },
+          "subscription_id": {
+            "type": "string",
+            "example": "654e7890-e89b-12d3-a456-426614174000"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "CreateExportDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "transactions_csv",
+              "transactions_pdf",
+              "customers_csv",
+              "customers_pdf",
+              "statement_pdf",
+              "journal_csv",
+              "logs_csv",
+              "webhook_deliveries_csv",
+              "account_export"
+            ]
+          },
+          "filters": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
       "ExportResponseDto": {
         "type": "object",
         "properties": {
@@ -11994,6 +13084,84 @@
             "type": "string"
           }
         }
+      },
+      "CreatePayoutMethodDto": {
+        "type": "object",
+        "properties": {
+          "account_name": {
+            "type": "string",
+            "example": "Wave"
+          },
+          "account_number": {
+            "type": "string",
+            "example": "+221771234567"
+          },
+          "bank_name": {
+            "type": "string",
+            "example": "wave"
+          },
+          "country": {
+            "type": "string",
+            "example": "SN"
+          },
+          "bank_code": {
+            "type": "string",
+            "example": "BNPAFRPP"
+          },
+          "branch_code": {
+            "type": "string",
+            "example": "021000021"
+          },
+          "payout_method_type": {
+            "type": "string",
+            "enum": [
+              "spi",
+              "bank",
+              "mobile_money"
+            ]
+          },
+          "is_default": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_name",
+          "account_number"
+        ]
+      },
+      "CreateMeterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "api_calls",
+            "description": "Unique meter code (slug) per organization"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Optional usage_based product this meter bills against"
+          },
+          "filter": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "code": "api_calls"
+            },
+            "description": "Event matching filter"
+          },
+          "aggregation": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "type": "sum",
+              "property": "quantity"
+            },
+            "description": "Aggregation config: sum, count, max, last_during_period, last_ever"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "MeterResponseDto": {
         "type": "object",
@@ -12039,6 +13207,22 @@
           "created_at",
           "updated_at"
         ]
+      },
+      "UpdateMeterDto": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "aggregation": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
       },
       "MeterBalanceResponseDto": {
         "type": "object",
@@ -12167,6 +13351,31 @@
           "status"
         ]
       },
+      "CreateUsageSubscriptionDto": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Customer to enroll"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "usage_based product id"
+          },
+          "price_id": {
+            "type": "string",
+            "description": "Price id (defaults to product default price)"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "customer_id",
+          "product_id"
+        ]
+      },
       "UsageSubscriptionResponseDto": {
         "type": "object",
         "properties": {
@@ -12176,6 +13385,29 @@
         },
         "required": [
           "subscription_id"
+        ]
+      },
+      "CreditWalletDto": {
+        "type": "object",
+        "properties": {
+          "meter_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "units": {
+            "type": "number",
+            "example": 100
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "meter_id",
+          "customer_id",
+          "units"
         ]
       },
       "CreateApiKeyDto": {

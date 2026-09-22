@@ -365,7 +365,7 @@
     {
       "name": "lomi_coupons",
       "title": "Coupons",
-      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). No extra required fields.\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n- `delete` — Delete coupon (DELETE /coupons/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). Required: body.\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n- `delete` — Delete coupon (DELETE /coupons/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Coupons"
       ],
@@ -387,6 +387,11 @@
               "delete"
             ],
             "description": "Which REST operation to run. One of: list, get, create, performance, delete."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -452,13 +457,15 @@
           "queryParamNames": [],
           "operationId": "DiscountCouponsController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create discount coupon",
           "description": "Create a fixed or percentage discount coupon with optional limits. Use to run a promotion; the code is applied at checkout.",
           "tags": [
             "Coupons"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "performance": {
           "operationKey": "GET /coupons/{id}/performance",
@@ -817,7 +824,7 @@
     {
       "name": "lomi_disputes",
       "title": "Disputes",
-      "description": "Disputes. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List disputes (GET /disputes). No extra required fields.\n- `get` — Get dispute (GET /disputes/{id}). Required: id.\n- `submit_evidence` — Submit dispute evidence (POST /disputes/{id}/evidence). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Disputes. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List disputes (GET /disputes). No extra required fields.\n- `get` — Get dispute (GET /disputes/{id}). Required: id.\n- `submit_evidence` — Submit dispute evidence (POST /disputes/{id}/evidence). Required: body, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Litiges"
       ],
@@ -837,6 +844,11 @@
               "submit_evidence"
             ],
             "description": "Which REST operation to run. One of: list, get, submit_evidence."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "cursor": {
             "type": "string",
@@ -929,13 +941,14 @@
           "queryParamNames": [],
           "operationId": "DisputesController_submitEvidence",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Submit dispute evidence",
           "description": "Attach written evidence to a card dispute. Confirm facts with the merchant before submitting.",
           "tags": [
             "Litiges"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         }
@@ -944,7 +957,7 @@
     {
       "name": "lomi_exports",
       "title": "Exports",
-      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). No extra required fields.\n- `list` — List exports (GET /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). Required: body.\n- `list` — List exports (GET /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Exports"
       ],
@@ -964,6 +977,11 @@
               "get"
             ],
             "description": "Which REST operation to run. One of: create, list, get."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -993,13 +1011,15 @@
           "queryParamNames": [],
           "operationId": "MerchantExportsController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create export",
           "description": "Start a CSV or PDF export: transactions_csv, transactions_pdf, customers_csv, customers_pdf, statement_pdf, journal_csv, logs_csv (filters.type), webhook_deliveries_csv, or account_export. Poll list or get until download_url is set.",
           "tags": [
             "Exports"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "list": {
           "operationKey": "GET /exports",
@@ -1156,7 +1176,7 @@
     {
       "name": "lomi_invoices",
       "title": "Invoices",
-      "description": "Invoices. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List invoices (GET /invoices). No extra required fields.\n- `get` — Get invoice (GET /invoices/{id}). Required: id.\n- `create` — Create invoice (POST /invoices). No extra required fields.\n- `update` — Update invoice (PATCH /invoices/{id}). Required: id.\n- `pdf` — Download invoice PDF (GET /invoices/{id}/pdf). Required: id.\n- `checkout_session` — Invoice checkout session (POST /invoices/{id}/checkout-session). Required: id.\n- `finalize` — Finalize invoice (POST /invoices/{id}/finalize). Required: id.\n- `send` — Send invoice (POST /invoices/{id}/send). Required: id.\n- `remind` — Remind invoice (POST /invoices/{id}/remind). Required: id.\n- `void` — Void invoice (POST /invoices/{id}/void). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Invoices. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List invoices (GET /invoices). No extra required fields.\n- `get` — Get invoice (GET /invoices/{id}). Required: id.\n- `create` — Create invoice (POST /invoices). Required: body.\n- `update` — Update invoice (PATCH /invoices/{id}). Required: body, id.\n- `pdf` — Download invoice PDF (GET /invoices/{id}/pdf). Required: id.\n- `checkout_session` — Invoice checkout session (POST /invoices/{id}/checkout-session). Required: id.\n- `finalize` — Finalize invoice (POST /invoices/{id}/finalize). Required: id.\n- `send` — Send invoice (POST /invoices/{id}/send). Required: id.\n- `remind` — Remind invoice (POST /invoices/{id}/remind). Required: id.\n- `void` — Void invoice (POST /invoices/{id}/void). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Invoices"
       ],
@@ -1183,6 +1203,11 @@
               "void"
             ],
             "description": "Which REST operation to run. One of: list, get, create, update, pdf, checkout_session, finalize, send, remind, void."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "cursor": {
             "type": "string",
@@ -1271,13 +1296,15 @@
           "queryParamNames": [],
           "operationId": "InvoicesController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create invoice",
           "description": "Create a customer invoice. Omit password-style fields; send the hosted_url to the human. Poll status until paid.",
           "tags": [
             "Invoices"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "update": {
           "operationKey": "PATCH /invoices/{id}",
@@ -1289,13 +1316,14 @@
           "queryParamNames": [],
           "operationId": "InvoicesController_update",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Update invoice",
           "description": "Update a draft invoice (amounts, due date, line items). Paid invoices cannot be rewritten.",
           "tags": [
             "Invoices"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         },
@@ -1709,7 +1737,7 @@
     {
       "name": "lomi_meters",
       "title": "Meters",
-      "description": "Meters. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List meters (GET /meters). No extra required fields.\n- `get` — Get meter (GET /meters/{id}). Required: id.\n- `create` — Create meter (POST /meters). No extra required fields.\n- `update` — Update meter (PATCH /meters/{id}). Required: id.\n- `balance` — Get a customer's meter balance (GET /meters/{id}/balances/{customerId}). Required: customerId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Meters. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List meters (GET /meters). No extra required fields.\n- `get` — Get meter (GET /meters/{id}). Required: id.\n- `create` — Create meter (POST /meters). Required: body.\n- `update` — Update meter (PATCH /meters/{id}). Required: body, id.\n- `balance` — Get a customer's meter balance (GET /meters/{id}/balances/{customerId}). Required: customerId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Meters"
       ],
@@ -1731,6 +1759,11 @@
               "balance"
             ],
             "description": "Which REST operation to run. One of: list, get, create, update, balance."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "customerId": {
             "type": "string",
@@ -1809,13 +1842,15 @@
           "queryParamNames": [],
           "operationId": "MetersController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create meter",
           "description": "Define a billable metric for usage-based products. Usage events with the matching code update this meter's balances.",
           "tags": [
             "Meters"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "update": {
           "operationKey": "PATCH /meters/{id}",
@@ -1827,13 +1862,14 @@
           "queryParamNames": [],
           "operationId": "MetersController_update",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Update meter",
           "description": "Update a usage meter's configuration (name, aggregation). Pass the id and changed fields.",
           "tags": [
             "Meters"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         },
@@ -2407,7 +2443,7 @@
     {
       "name": "lomi_payout_methods",
       "title": "Payout methods",
-      "description": "Payout methods. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payout methods (GET /payout-methods). No extra required fields.\n- `create` — Add payout method (POST /payout-methods). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payout methods. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payout methods (GET /payout-methods). No extra required fields.\n- `create` — Add payout method (POST /payout-methods). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Payout methods"
       ],
@@ -2426,6 +2462,11 @@
               "create"
             ],
             "description": "Which REST operation to run. One of: list, create."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -2467,20 +2508,22 @@
           "queryParamNames": [],
           "operationId": "PayoutMethodsController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Add payout method",
           "description": "Register a bank, SPI, or mobile money destination for payouts.",
           "tags": [
             "Payout methods"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         }
       }
     },
     {
       "name": "lomi_payouts",
       "title": "Payouts",
-      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nPayout amounts stay in their own currency. Do not add them across currency_code.",
+      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: body, header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nPayout amounts stay in their own currency. Do not add them across currency_code.",
       "tags": [
         "Payouts"
       ],
@@ -2500,6 +2543,11 @@
               "create"
             ],
             "description": "Which REST operation to run. One of: list, get, create."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "cursor": {
             "type": "string",
@@ -2594,13 +2642,14 @@
           "queryParamNames": [],
           "operationId": "PayoutsUnifiedController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create payout",
           "description": "Move available funds out to your configured bank/mobile account. Money-out action: set amount and currency, and check the balance first.",
           "tags": [
             "Payouts"
           ],
           "requiredInput": [
+            "body",
             "header_Idempotency-Key"
           ]
         }
@@ -2609,7 +2658,7 @@
     {
       "name": "lomi_products",
       "title": "Products",
-      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). No extra required fields.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: id.\n- `batch_prices` — Batch update prices (POST /products/prices/batch). No extra required fields.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: id.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). Required: body.\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: body, id.\n- `batch_prices` — Batch update prices (POST /products/prices/batch). Required: body.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: body, id.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Products"
       ],
@@ -2634,6 +2683,11 @@
               "archive"
             ],
             "description": "Which REST operation to run. One of: list, get, create, add_price, batch_prices, set_default_price, update, archive."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "cursor": {
             "type": "string",
@@ -2720,13 +2774,15 @@
           "queryParamNames": [],
           "operationId": "ProductsController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create product",
           "description": "Add a product to your catalog, optionally with an initial price. Do this before creating checkouts or subscriptions that reference it.",
           "tags": [
             "Products"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "add_price": {
           "operationKey": "POST /products/{id}/prices",
@@ -2738,13 +2794,14 @@
           "queryParamNames": [],
           "operationId": "ProductsController_addPrice",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Add price to product",
           "description": "Add a new price (amount, currency, interval) to an existing product. A product can hold several prices.",
           "tags": [
             "Products"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         },
@@ -2756,13 +2813,15 @@
           "queryParamNames": [],
           "operationId": "ProductsController_updatePricesBatch",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Batch update prices",
           "description": "Update several product prices in one request. Pass updates: [{ price_id or product_id, amount, currency_code }].",
           "tags": [
             "Products"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "set_default_price": {
           "operationKey": "POST /products/{id}/prices/{priceId}/default",
@@ -2796,13 +2855,14 @@
           "queryParamNames": [],
           "operationId": "ProductsController_update",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Update product",
           "description": "Update name, description, visibility, images, SKU, or inventory. Product type cannot change after creation.",
           "tags": [
             "Products"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         },
@@ -3508,7 +3568,7 @@
     {
       "name": "lomi_subscriptions",
       "title": "Subscriptions",
-      "description": "Subscriptions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List subscriptions (GET /subscriptions). No extra required fields.\n- `get` — Get subscription (GET /subscriptions/{id}). Required: id.\n- `update` — Update subscription (PATCH /subscriptions/{id}). Required: id.\n- `cancel` — Cancel subscription (POST /subscriptions/{id}/cancel). Required: body, id.\n- `resume` — Resume subscription (POST /subscriptions/{id}/resume). Required: id.\n- `change_plan` — Change subscription plan (POST /subscriptions/{id}/change-plan). Required: body, id.\n- `usage` — Get subscription usage (GET /subscriptions/{id}/usage). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Subscriptions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List subscriptions (GET /subscriptions). No extra required fields.\n- `get` — Get subscription (GET /subscriptions/{id}). Required: id.\n- `update` — Update subscription (PATCH /subscriptions/{id}). Required: body, id.\n- `cancel` — Cancel subscription (POST /subscriptions/{id}/cancel). Required: body, id.\n- `resume` — Resume subscription (POST /subscriptions/{id}/resume). Required: id.\n- `change_plan` — Change subscription plan (POST /subscriptions/{id}/change-plan). Required: body, id.\n- `usage` — Get subscription usage (GET /subscriptions/{id}/usage). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Subscriptions"
       ],
@@ -3626,13 +3686,14 @@
           "queryParamNames": [],
           "operationId": "SubscriptionsController_update",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Update subscription",
           "description": "Update a subscription's mutable fields (metadata, quantity). To switch plans use change-plan; to end it use cancel.",
           "tags": [
             "Subscriptions"
           ],
           "requiredInput": [
+            "body",
             "id"
           ]
         },
@@ -4211,7 +4272,7 @@
     {
       "name": "lomi_usage",
       "title": "Usage billing",
-      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). No extra required fields.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `credits` — Grant usage credits (POST /usage/credits). No extra required fields.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). Required: body.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `credits` — Grant usage credits (POST /usage/credits). Required: body.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Usage"
       ],
@@ -4236,6 +4297,11 @@
               "create_subscription"
             ],
             "description": "Which REST operation to run. One of: check_entitlement, set_entitlement, periods, revenue, credits, events, get_event, create_subscription."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
           },
           "code": {
             "description": "Code"
@@ -4321,13 +4387,15 @@
           "queryParamNames": [],
           "operationId": "UsageBillingController_createEntitlement",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Set plan entitlement",
           "description": "Create or update a feature entitlement (limit/quota) on a plan. Use to define what usage-based plans include.",
           "tags": [
             "Usage"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "periods": {
           "operationKey": "GET /usage/periods",
@@ -4379,13 +4447,15 @@
           "queryParamNames": [],
           "operationId": "UsageBillingController_creditWallet",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Grant usage credits",
           "description": "Grant prepaid credits to a customer that offset future usage-based charges. Use for trials, goodwill, or top-ups.",
           "tags": [
             "Usage"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "events": {
           "operationKey": "GET /usage/events",
@@ -4437,20 +4507,22 @@
           "queryParamNames": [],
           "operationId": "UsageEventsController_createUsageSubscription",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create usage subscription",
           "description": "Enroll a customer on a usage-based product with no upfront charge. Required before metered usage can be billed.",
           "tags": [
             "Usage"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         }
       }
     },
     {
       "name": "lomi_webhooks",
       "title": "Webhooks",
-      "description": "Webhooks. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List webhook endpoints (GET /webhooks). No extra required fields.\n- `get` — Get webhook endpoint (GET /webhooks/{id}). Required: id.\n- `create` — Create webhook endpoint (POST /webhooks). No extra required fields.\n- `update` — Update webhook endpoint (PATCH /webhooks/{id}). Required: body, id.\n- `delete` — Delete webhook endpoint (DELETE /webhooks/{id}). Required: id.\n- `test` — Send test webhook (POST /webhooks/{id}/test). Required: id.\n- `deliveries` — List webhook deliveries (GET /webhooks/deliveries). Required: webhookId.\n- `delivery` — Get webhook delivery (GET /webhooks/deliveries/{id}). Required: id.\n- `retry` — Retry webhook delivery (POST /webhooks/{id}/deliveries/{deliveryId}/retry). Required: deliveryId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Webhooks. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List webhook endpoints (GET /webhooks). No extra required fields.\n- `get` — Get webhook endpoint (GET /webhooks/{id}). Required: id.\n- `create` — Create webhook endpoint (POST /webhooks). Required: body.\n- `update` — Update webhook endpoint (PATCH /webhooks/{id}). Required: body, id.\n- `delete` — Delete webhook endpoint (DELETE /webhooks/{id}). Required: id.\n- `test` — Send test webhook (POST /webhooks/{id}/test). Required: id.\n- `deliveries` — List webhook deliveries (GET /webhooks/deliveries). Required: webhookId.\n- `delivery` — Get webhook delivery (GET /webhooks/deliveries/{id}). Required: id.\n- `retry` — Retry webhook delivery (POST /webhooks/{id}/deliveries/{deliveryId}/retry). Required: deliveryId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Webhooks"
       ],
@@ -4573,13 +4645,15 @@
           "queryParamNames": [],
           "operationId": "WebhooksController_create",
           "write": true,
-          "wantsBody": false,
+          "wantsBody": true,
           "title": "Create webhook endpoint",
           "description": "Register a URL to receive event notifications (payments, subscriptions, disputes). Specify the URL and events to subscribe to; returns a signing secret.",
           "tags": [
             "Webhooks"
           ],
-          "requiredInput": []
+          "requiredInput": [
+            "body"
+          ]
         },
         "update": {
           "operationKey": "PATCH /webhooks/{id}",
