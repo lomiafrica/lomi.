@@ -114,6 +114,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "account_balance_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "account_balance_history_payment_request_id_fkey"
             columns: ["payment_request_id"]
             isOneToOne: false
@@ -224,6 +231,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "account_top_ups_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       accounts: {
@@ -299,6 +313,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "merchant_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       agent_event_subscriptions: {
@@ -332,6 +353,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "agent_event_subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -375,6 +403,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "agent_handoffs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       agent_workflow_runs: {
@@ -414,6 +449,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "agent_workflow_runs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -476,6 +518,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "airwallex_transfers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -596,6 +645,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "api_error_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       api_idempotency_records: {
@@ -656,8 +712,29 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "api_idempotency_records_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "api_idempotency_records_organization_id_fkey"
             columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "api_idempotency_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "api_idempotency_records_target_organization_id_fkey"
+            columns: ["target_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
@@ -666,7 +743,7 @@ export type Database = {
             foreignKeyName: "api_idempotency_records_target_organization_id_fkey"
             columns: ["target_organization_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -746,6 +823,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "api_interactions_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "api_interactions_api_key_fkey"
             columns: ["api_key"]
             isOneToOne: false
@@ -760,10 +844,24 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "api_interactions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "api_interactions_target_organization_id_fkey"
             columns: ["target_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "api_interactions_target_organization_id_fkey"
+            columns: ["target_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -840,6 +938,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "api_keys_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       api_rate_limit_policies: {
@@ -900,6 +1005,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "api_rate_limit_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       api_rate_limits: {
@@ -943,6 +1055,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "api_rate_limits_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -996,6 +1115,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "api_request_events_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "api_request_events_organization_id_api_key_fkey"
             columns: ["organization_id", "api_key"]
             isOneToOne: false
@@ -1010,10 +1136,24 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "api_request_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "api_request_events_target_organization_id_fkey"
             columns: ["target_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "api_request_events_target_organization_id_fkey"
+            columns: ["target_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -1099,6 +1239,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "api_usage_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       app_config: {
@@ -1172,6 +1319,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "assistant_conversations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -1298,6 +1452,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "assistant_org_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "assistant_org_settings_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
@@ -1386,6 +1547,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "assistant_run_metrics_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       assistant_runs: {
@@ -1453,6 +1621,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "assistant_runs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       assistant_tool_audit: {
@@ -1518,6 +1693,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "assistant_tool_audit_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "assistant_tool_audit_run_id_fkey"
             columns: ["run_id"]
             isOneToOne: false
@@ -1551,6 +1733,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "assistant_usage_counters_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -1590,6 +1779,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "assistant_user_preferences_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -1727,6 +1923,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "beneficiary_payouts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "beneficiary_payouts_payout_method_id_fkey"
             columns: ["payout_method_id"]
             isOneToOne: false
@@ -1858,6 +2061,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "billing_periods_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "billing_periods_price_id_fkey"
             columns: ["price_id"]
             isOneToOne: false
@@ -1950,6 +2160,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "bnpl_configurations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       bnpl_fee_tracking: {
@@ -2031,6 +2248,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "bnpl_fee_tracking_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -2134,6 +2358,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "bookable_services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       bookings: {
@@ -2200,6 +2431,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "bookings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -2415,6 +2653,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "catalog_ingest_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -2678,6 +2923,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "checkout_sessions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "checkout_sessions_payment_link_id_fkey"
             columns: ["payment_link_id"]
             isOneToOne: false
@@ -2780,6 +3032,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "checkout_upsells_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "checkout_upsells_source_product_id_fkey"
             columns: ["source_product_id"]
             isOneToOne: false
@@ -2839,6 +3098,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "cli_device_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -2956,6 +3222,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "coupon_usage_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "coupon_usage_transaction_id_fkey"
             columns: ["transaction_id"]
             isOneToOne: false
@@ -3041,6 +3314,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "currency_conversion_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -3287,6 +3567,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "customer_invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "customer_invoices_payment_request_id_fkey"
             columns: ["payment_request_id"]
             isOneToOne: false
@@ -3453,6 +3740,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "customer_portal_access_challenges_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       customer_portal_audit_events: {
@@ -3557,6 +3851,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "customer_portal_launch_sessions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       customer_portal_rate_limit_buckets: {
@@ -3624,6 +3925,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "customer_portal_sessions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -3720,6 +4028,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "customers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "fk_customers_spi_alias_shid"
             columns: ["spi_alias_shid"]
             isOneToOne: false
@@ -3813,6 +4128,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "discount_coupons_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -3964,6 +4286,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "entitlements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       events: {
@@ -4073,6 +4402,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "fk_events_organization_id"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       export_jobs: {
@@ -4142,6 +4478,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "export_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       feedback: {
@@ -4187,6 +4530,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "feedback_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       fraud_alerts: {
@@ -4229,6 +4579,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "fraud_alerts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -4379,6 +4736,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "gim_payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -4574,6 +4938,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "installment_plans_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "installment_plans_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -4682,6 +5053,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "insurance_claims_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "insurance_claims_policy_id_fkey"
             columns: ["policy_id"]
             isOneToOne: false
@@ -4762,6 +5140,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "insurance_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "insurance_policies_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -4838,6 +5223,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "insurance_premium_charges_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -4968,6 +5360,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "insurance_quote_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "insurance_quote_requests_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -5010,6 +5409,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "integrations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -5082,6 +5488,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "invoice_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "invoice_items_price_id_fkey"
             columns: ["price_id"]
             isOneToOne: false
@@ -5126,6 +5539,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "invoice_number_counters_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -5249,6 +5669,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "invoice_recurrence_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       invoice_templates: {
@@ -5294,6 +5721,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "invoice_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -5474,6 +5908,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "kyc_ai_reviews_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       live_activation_requests: {
@@ -5542,6 +5983,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "live_activation_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -5652,6 +6100,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "marketing_email_sends_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       mcp_device_requests: {
@@ -5698,6 +6153,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "mcp_device_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -5779,6 +6241,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "merchant_organization_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       merchant_preferences: {
@@ -5815,6 +6284,13 @@ export type Database = {
             columns: ["last_visited_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "merchant_preferences_last_visited_organization_id_fkey"
+            columns: ["last_visited_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -5955,6 +6431,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "meter_balances_billable_organization_id_fkey"
+            columns: ["billable_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "meter_balances_last_event_id_fkey"
             columns: ["last_event_id"]
             isOneToOne: false
@@ -6006,6 +6489,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "fk_meters_organization_id"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -6066,6 +6556,13 @@ export type Database = {
             columns: ["member_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_account_documents_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -6133,6 +6630,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_account_sessions_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_account_sessions_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6151,6 +6655,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_account_sessions_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6225,6 +6736,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "network_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       network_audit_events: {
@@ -6283,6 +6801,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_audit_events_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_audit_events_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6301,6 +6826,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_audit_events_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6462,6 +6994,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_data_sharing_consents_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_data_sharing_consents_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6480,6 +7019,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_data_sharing_consents_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6581,6 +7127,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_enrollment_sessions_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_enrollment_sessions_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6592,6 +7145,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_enrollment_sessions_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6655,6 +7215,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_external_identifiers_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_external_identifiers_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6673,6 +7240,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_external_identifiers_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6775,6 +7349,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_memberships_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_memberships_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -6793,6 +7374,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_memberships_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -6881,6 +7469,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_operator_fee_entries_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_operator_fee_entries_network_membership_id_fkey"
             columns: ["network_membership_id"]
             isOneToOne: false
@@ -6899,6 +7494,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_operator_fee_entries_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -6976,6 +7578,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_operator_fee_rules_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -7076,6 +7685,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_operator_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -7186,6 +7802,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_transaction_contexts_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_transaction_contexts_network_account_id_fkey"
             columns: ["network_account_id"]
             isOneToOne: false
@@ -7211,6 +7834,13 @@ export type Database = {
             columns: ["operator_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transaction_contexts_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -7346,10 +7976,24 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_transfers_from_organization_id_fkey"
+            columns: ["from_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_transfers_member_organization_id_fkey"
             columns: ["member_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_member_organization_id_fkey"
+            columns: ["member_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -7388,6 +8032,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "network_transfers_operator_organization_id_fkey"
+            columns: ["operator_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "network_transfers_refund_id_fkey"
             columns: ["refund_id"]
             isOneToOne: false
@@ -7420,6 +8071,13 @@ export type Database = {
             columns: ["to_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "network_transfers_to_organization_id_fkey"
+            columns: ["to_organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -7576,6 +8234,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "nitro_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "nitro_requests_payout_id_fkey"
             columns: ["payout_id"]
             isOneToOne: false
@@ -7681,6 +8346,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       oauth_access_tokens: {
@@ -7745,6 +8417,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "oauth_access_tokens_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -7827,6 +8506,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "oauth_authorization_codes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -7977,6 +8663,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_addresses_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_checkout_settings: {
@@ -8075,6 +8768,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_checkout_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_customer_portal_policies: {
@@ -8146,6 +8846,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_customer_portal_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_domains: {
@@ -8196,6 +8903,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_domains_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_fee_links: {
@@ -8236,6 +8950,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_fee_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -8327,6 +9048,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "organization_fee_structure_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "organization_fee_structure_provider_code_fkey"
             columns: ["provider_code"]
             isOneToOne: false
@@ -8383,6 +9111,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_fees_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_fraud_settings: {
@@ -8422,6 +9157,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_fraud_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -8483,6 +9225,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_join_codes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -8586,6 +9335,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_kyc_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -8756,6 +9512,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_nitro_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_payment_method_settings: {
@@ -8798,6 +9561,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_payment_method_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_payment_settings: {
@@ -8834,6 +9604,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_payment_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -8929,6 +9706,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "organization_providers_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "organization_providers_settings_provider_code_fkey"
             columns: ["provider_code"]
             isOneToOne: false
@@ -8977,6 +9761,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "organization_radar_rule_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "organization_radar_rule_settings_rule_id_fkey"
             columns: ["rule_id"]
             isOneToOne: false
@@ -9019,6 +9810,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_radar_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -9083,6 +9881,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: true
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_revenue_cache_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -9159,6 +9964,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "organization_roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       organization_test_balances: {
@@ -9199,6 +10011,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_test_balances_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -9246,6 +10065,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_workflows_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -9589,6 +10415,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "payment_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "payment_links_price_id_fkey"
             columns: ["price_id"]
             isOneToOne: false
@@ -9837,6 +10670,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "payment_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       payout_methods: {
@@ -9948,6 +10788,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "payout_methods_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "payout_methods_spi_alias_shid_fkey"
             columns: ["spi_alias_shid"]
             isOneToOne: false
@@ -9993,6 +10840,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "payout_pin_attempts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       payout_pin_sessions: {
@@ -10030,6 +10884,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "payout_pin_sessions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -10126,6 +10987,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "payouts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -10566,6 +11434,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "platform_invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       platform_main_account: {
@@ -10764,6 +11639,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "platform_provisioning_audit_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "platform_provisioning_audit_log_provisioning_key_id_fkey"
             columns: ["provisioning_key_id"]
             isOneToOne: false
@@ -10924,6 +11806,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "pos_devices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       price_batch_idempotency: {
@@ -10951,6 +11840,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "price_batch_idempotency_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -10995,6 +11891,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "price_tiers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11080,6 +11983,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "prices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11182,6 +12092,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "product_files_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11308,6 +12225,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "merchant_products_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11455,6 +12379,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "providers_transactions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "providers_transactions_provider_code_fkey"
             columns: ["provider_code"]
             isOneToOne: false
@@ -11508,6 +12439,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "provisioning_merchant_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11569,6 +12507,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "purchase_entitlements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11638,6 +12583,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "purchase_license_entitlements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -11855,6 +12807,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "risk_assessments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "risk_assessments_transaction_id_fkey"
             columns: ["transaction_id"]
             isOneToOne: false
@@ -11899,6 +12858,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "service_availability_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       service_closed_dates: {
@@ -11929,6 +12895,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "service_closed_dates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -12121,6 +13094,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "shopify_stores_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       shopify_webhooks: {
@@ -12204,6 +13184,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "spi_account_aliases_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -12294,6 +13281,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "spi_payment_cancellation_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -12404,6 +13398,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "spi_qr_codes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "spi_qr_codes_payment_request_id_fkey"
             columns: ["payment_request_id"]
             isOneToOne: false
@@ -12507,6 +13508,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "stellar_settlements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "stellar_settlements_payout_id_fkey"
             columns: ["payout_id"]
             isOneToOne: true
@@ -12573,6 +13581,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "storefronts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       subscription_charges: {
@@ -12613,6 +13628,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "subscription_charges_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -12692,6 +13714,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "merchant_subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -12779,6 +13808,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "support_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -13094,6 +14130,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "transactions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "transactions_payment_method_code_provider_code_fkey"
             columns: ["payment_method_code", "provider_code"]
             isOneToOne: false
@@ -13187,6 +14230,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "usage_dunning_tracker_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -13379,6 +14429,13 @@ export type Database = {
             referencedColumns: ["organization_id"]
           },
           {
+            foreignKeyName: "webhook_delivery_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
+          {
             foreignKeyName: "webhook_delivery_logs_webhook_id_fkey"
             columns: ["webhook_id"]
             isOneToOne: false
@@ -13430,6 +14487,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "webhook_events_outbox_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -13516,6 +14580,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "webhooks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       whatsapp_business_connections: {
@@ -13575,6 +14646,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "whatsapp_business_connections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       whatsapp_catalog_items: {
@@ -13629,6 +14707,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "whatsapp_catalog_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -13732,6 +14817,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "whatsapp_orders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
           {
@@ -13888,6 +14980,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "wide_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       withdrawal_notifications: {
@@ -13918,6 +15017,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "merchant_withdrawal_notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
             referencedColumns: ["organization_id"]
           },
         ]
@@ -14000,6 +15106,13 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "merchant_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
       }
       oauth_merchant_connections: {
@@ -14034,7 +15147,38 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["organization_id"]
           },
+          {
+            foreignKeyName: "oauth_access_tokens_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "storefront_public_profiles"
+            referencedColumns: ["organization_id"]
+          },
         ]
+      }
+      storefront_public_profiles: {
+        Row: {
+          logo_url: string | null
+          name: string | null
+          organization_id: string | null
+          public_id: string | null
+          slug: string | null
+        }
+        Insert: {
+          logo_url?: string | null
+          name?: string | null
+          organization_id?: string | null
+          public_id?: string | null
+          slug?: string | null
+        }
+        Update: {
+          logo_url?: string | null
+          name?: string | null
+          organization_id?: string | null
+          public_id?: string | null
+          slug?: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
@@ -21330,13 +22474,17 @@ export type Database = {
           authorized_signatory_name: string
           business_registration_url: string
           date_submitted: string
+          is_starter_business: boolean
           kyc_status: Database["public"]["Enums"]["kyc_status"]
+          legal_city: string
           legal_representative_id_url: string
+          legal_street: string
           org_verification_status: Database["public"]["Enums"]["organization_verification_status"]
           organization_email: string
           organization_id: string
           organization_name: string
           proof_of_business_url: string
+          tax_number: string
         }[]
       }
       get_admin_live_activation_requests: {
@@ -23960,6 +25108,7 @@ export type Database = {
       get_platform_channel_balances: {
         Args: { p_environment?: string }
         Returns: {
+          completed_inflow: number
           currency_code: Database["public"]["Enums"]["currency_code"]
           current_balance: number
           funding_shortfall: number
@@ -28613,17 +29762,30 @@ export type Database = {
         }
         Returns: Json
       }
-      update_organization_details: {
-        Args: {
-          p_default_currency: string
-          p_email: string
-          p_name: string
-          p_organization_id: string
-          p_verification_status: string
-          p_website_url: string
-        }
-        Returns: undefined
-      }
+      update_organization_details:
+        | {
+            Args: {
+              p_default_currency: string
+              p_email: string
+              p_name: string
+              p_organization_id: string
+              p_verification_status: string
+              p_website_url: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_default_currency: string
+              p_email: string
+              p_name: string
+              p_organization_id: string
+              p_phone_number?: string
+              p_verification_status: string
+              p_website_url: string
+            }
+            Returns: undefined
+          }
       update_organization_email: {
         Args: { p_email: string; p_organization_id: string }
         Returns: boolean

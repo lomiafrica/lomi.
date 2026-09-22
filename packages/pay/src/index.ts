@@ -13,6 +13,7 @@ export {
   type PayBillingCustomerDetails,
 } from "./billing-address-section";
 export { CustomCheckoutFieldsSection } from "./custom-fields-section";
+export { CheckoutFloatField } from "./checkout-float-field";
 export { PriceSelector, type PayPriceOption } from "./price-selector";
 export {
   initSpiRequestToPay,

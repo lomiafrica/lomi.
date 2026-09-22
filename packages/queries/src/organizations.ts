@@ -32,6 +32,8 @@ export type OrganizationDetails = {
   email: string;
   logo_url: string | null;
   website_url: string | null;
+  phone_number?: string | null;
+  is_starter_business?: boolean;
   verification_status: OrganizationVerificationStatus;
   default_currency: CurrencyCode;
   country: string | null;
@@ -137,6 +139,8 @@ function parseOrganizationDetailsRow(
     email,
     logo_url: readString(value, "logo_url") ?? null,
     website_url: readString(value, "website_url") ?? null,
+    phone_number: readString(value, "phone_number") ?? null,
+    is_starter_business: readBoolean(value, "is_starter_business") === true,
     verification_status: verificationStatus,
     default_currency: defaultCurrency,
     country: readString(value, "country") ?? null,

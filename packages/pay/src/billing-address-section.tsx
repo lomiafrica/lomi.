@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Input } from "@lomi./ui/input";
+import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { getBillingCountriesWithDetectedFirst } from "@lomi./shared";
+import { CheckoutFloatField } from "./checkout-float-field";
 import type { TranslateFn } from "./types";
 
 export interface PayBillingCustomerDetails {
@@ -17,9 +17,7 @@ interface BillingAddressSectionProps {
   t: TranslateFn;
   customerDetails: PayBillingCustomerDetails;
   handleCustomerInputChange: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   countrySelectRef: React.Ref<HTMLSelectElement>;
   cityInputRef: React.Ref<HTMLInputElement>;
@@ -28,7 +26,15 @@ interface BillingAddressSectionProps {
   onDetectedCountry?: (country: string) => void;
 }
 
-const MIN_TEXTAREA_HEIGHT = "40px";
+/** Street lines stay one saved address. The second line is the text after the first break. */
+const splitAddress = (address: string) => {
+  const breakAt = address.indexOf("\n");
+  if (breakAt === -1) return [address, ""] as const;
+  return [address.slice(0, breakAt), address.slice(breakAt + 1)] as const;
+};
+
+const joinAddress = (line1: string, line2: string) =>
+  line2.length > 0 ? `${line1}\n${line2}` : line1;
 
 export function BillingAddressSection({
   t,
@@ -39,100 +45,34 @@ export function BillingAddressSection({
   detectedCountry,
   onDetectedCountry,
 }: BillingAddressSectionProps) {
-  const addressTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const postalCodeInputRef = useRef<HTMLInputElement>(null);
   const [countryListReady, setCountryListReady] = useState(false);
 
   useEffect(() => {
     setCountryListReady(true);
   }, []);
 
-  // Node and the browser disagree on some Intl country display names
-  // (e.g. Falkland Islands). Rendering the list only after mount keeps
-  // SSR HTML identical to the first client paint so checkout clicks work.
+  // Country display names differ between Node and the browser. The option
+  // list is filled after mount so the first paint matches the server and
+  // checkout clicks stay attached.
   const effectiveDetectedCountry = countryListReady
     ? detectedCountry
     : undefined;
-  const COUNTRIES = countryListReady
+  const countries = countryListReady
     ? getBillingCountriesWithDetectedFirst(effectiveDetectedCountry)
     : [];
+  const selectedCountry =
+    customerDetails.country || effectiveDetectedCountry || "";
+  const [addressLine1, addressLine2] = splitAddress(customerDetails.address);
 
-  useEffect(() => {
-    const textarea = addressTextareaRef.current;
-    const postalInput = postalCodeInputRef.current;
-
-    if (textarea) {
-      textarea.style.height = "auto";
-      void textarea.offsetHeight;
-
-      const currentScrollHeight = textarea.scrollHeight;
-      const minHeightValue = parseInt(MIN_TEXTAREA_HEIGHT);
-      const value = textarea.value;
-
-      if (!value.trim() || currentScrollHeight <= minHeightValue) {
-        textarea.style.height = MIN_TEXTAREA_HEIGHT;
-      } else {
-        textarea.style.height = `${currentScrollHeight}px`;
-      }
-
-      if (postalInput) {
-        postalInput.style.height = textarea.style.height;
-      }
-
-      textarea.style.backgroundColor = "#ffffff";
-      textarea.style.setProperty("background-color", "#ffffff", "important");
-      textarea.style.setProperty(
-        "-webkit-box-shadow",
-        "0 0 0px 1000px #ffffff inset",
-        "important",
-      );
-    }
-  }, [customerDetails.address]);
-
-  useEffect(() => {
-    const textarea = addressTextareaRef.current;
-    if (!textarea) return;
-
-    const forceWhiteBackground = (): void => {
-      textarea.style.backgroundColor = "#ffffff";
-      textarea.style.setProperty("background-color", "#ffffff", "important");
-      textarea.style.setProperty(
-        "-webkit-box-shadow",
-        "0 0 0px 1000px #ffffff inset",
-        "important",
-      );
-    };
-
-    textarea.addEventListener("input", forceWhiteBackground);
-    textarea.addEventListener("focus", forceWhiteBackground);
-    textarea.addEventListener("blur", forceWhiteBackground);
-    textarea.addEventListener("change", forceWhiteBackground);
-    forceWhiteBackground();
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "style"
-        ) {
-          setTimeout(forceWhiteBackground, 0);
-        }
-      });
-    });
-
-    observer.observe(textarea, {
-      attributes: true,
-      attributeFilter: ["style"],
-    });
-
-    return () => {
-      textarea.removeEventListener("input", forceWhiteBackground);
-      textarea.removeEventListener("focus", forceWhiteBackground);
-      textarea.removeEventListener("blur", forceWhiteBackground);
-      textarea.removeEventListener("change", forceWhiteBackground);
-      observer.disconnect();
-    };
-  }, []);
+  const writeAddress = (line1: string, line2: string) => {
+    const value = joinAddress(line1, line2);
+    // SAFETY: The address handler only reads name and value from this synthetic change.
+    const event = {
+      target: { name: "address", value },
+      currentTarget: { name: "address", value },
+    } as React.ChangeEvent<HTMLInputElement>;
+    handleCustomerInputChange(event);
+  };
 
   useEffect(() => {
     if (detectedCountry && !customerDetails.country) {
@@ -140,40 +80,8 @@ export function BillingAddressSection({
     }
   }, [detectedCountry, customerDetails.country, onDetectedCountry]);
 
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleCustomerInputChange(e);
-
-    const textarea = e.target;
-    const postalInput = postalCodeInputRef.current;
-    const value = e.target.value;
-
-    textarea.style.backgroundColor = "#ffffff";
-    textarea.style.setProperty("background-color", "#ffffff", "important");
-    textarea.style.setProperty(
-      "-webkit-box-shadow",
-      "0 0 0px 1000px #ffffff inset",
-      "important",
-    );
-
-    textarea.style.height = "auto";
-    void textarea.offsetHeight;
-
-    const currentScrollHeight = textarea.scrollHeight;
-    const minHeightValue = parseInt(MIN_TEXTAREA_HEIGHT);
-
-    if (!value.trim() || currentScrollHeight <= minHeightValue) {
-      textarea.style.height = MIN_TEXTAREA_HEIGHT;
-    } else {
-      textarea.style.height = `${currentScrollHeight}px`;
-    }
-
-    if (postalInput) {
-      postalInput.style.height = textarea.style.height;
-    }
-  };
-
   return (
-    <div className="checkout-form-section space-y-2.5 billing-address-section">
+    <div className="checkout-form-section billing-address-section space-y-2.5">
       <label className="checkout-form-title block text-sm font-normal text-gray-700 select-none">
         {t("checkout.billing_address.title")}
       </label>
@@ -181,22 +89,21 @@ export function BillingAddressSection({
         <div className="relative">
           <select
             name="country"
-            value={
-              customerDetails.country ||
-              (effectiveDetectedCountry ? effectiveDetectedCountry : "")
-            }
+            value={selectedCountry}
             onChange={handleCustomerInputChange}
-            className="flex h-10 w-full border border-gray-300 bg-white px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 rounded-b-none appearance-none text-gray-900"
+            className="h-10 w-full appearance-none rounded-tl rounded-tr rounded-b-none border border-gray-300 bg-white px-3 pr-8 text-[13px] text-gray-900 focus:border-gray-300 focus:outline-none"
             required
             ref={countrySelectRef}
-            autoComplete="country-name"
+            autoComplete="country"
           >
-            {!effectiveDetectedCountry && (
-              <option value="" className="text-gray-400">
-                {t("checkout.billing_address.country")}
-              </option>
-            )}
-            {COUNTRIES.map((country) => (
+            {!selectedCountry ? (
+              <option value="">{t("checkout.billing_address.country")}</option>
+            ) : null}
+            {selectedCountry &&
+            !countries.some((country) => country.code === selectedCountry) ? (
+              <option value={selectedCountry}>{selectedCountry}</option>
+            ) : null}
+            {countries.map((country) => (
               <option key={country.code} value={country.code}>
                 {country.name}
               </option>
@@ -205,45 +112,52 @@ export function BillingAddressSection({
           <ChevronDown
             size={16}
             strokeWidth={2}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
             aria-hidden="true"
           />
         </div>
-        <div className="flex -mt-px">
-          <div className="relative w-full">
-            <Input
+        <div className="-mt-px">
+          <CheckoutFloatField
+            name="address"
+            label={t("checkout.billing_address.address")}
+            value={addressLine1}
+            onChange={(event) => writeAddress(event.target.value, addressLine2)}
+            autoComplete="address-line1"
+            roundingClass="rounded-none border-gray-300"
+          />
+        </div>
+        <div className="-mt-px">
+          <CheckoutFloatField
+            name="addressLine2"
+            label={t("checkout.billing_address.address_line_2")}
+            value={addressLine2}
+            onChange={(event) => writeAddress(addressLine1, event.target.value)}
+            autoComplete="address-line2"
+            roundingClass="rounded-none border-gray-300"
+          />
+        </div>
+        <div className="-mt-px flex">
+          <div className="min-w-0 flex-1">
+            <CheckoutFloatField
               name="city"
+              label={t("checkout.billing_address.city")}
               value={customerDetails.city}
               onChange={handleCustomerInputChange}
-              placeholder={t("checkout.billing_address.city")}
-              className="rounded-none w-full border-x bg-white text-gray-900 border-gray-300 placeholder:text-base md:placeholder:text-sm text-base md:text-sm h-10"
-              ref={cityInputRef}
+              inputRef={cityInputRef}
               autoComplete="address-level2"
+              roundingClass="rounded-bl rounded-br-none rounded-t-none border-gray-300"
             />
           </div>
-        </div>
-        <div className="flex -mt-px items-stretch">
-          <textarea
-            ref={addressTextareaRef}
-            name="address"
-            value={customerDetails.address}
-            onChange={handleTextareaChange}
-            placeholder={t("checkout.billing_address.address")}
-            className="box-border h-10 min-h-10 rounded-none rounded-bl w-[70%] bg-white text-gray-900 border border-gray-300 border-r-0 placeholder:text-base md:placeholder:text-sm text-base md:text-sm px-3 py-2 resize-vertical overflow-y-auto focus:ring-0 focus:outline-none focus:border-gray-300"
-            rows={1}
-            style={{ minHeight: MIN_TEXTAREA_HEIGHT }}
-            autoComplete="street-address"
-          />
-          <Input
-            ref={postalCodeInputRef}
-            name="postalCode"
-            value={customerDetails.postalCode}
-            onChange={handleCustomerInputChange}
-            placeholder={t("checkout.billing_address.postal_code")}
-            className="box-border min-h-10 self-stretch rounded-none rounded-br w-[30%] bg-white text-gray-900 border border-gray-300 border-l-0 placeholder:text-base md:placeholder:text-sm text-base md:text-sm px-3 py-2 focus:ring-0 focus:outline-none focus:border-gray-300"
-            style={{ minHeight: MIN_TEXTAREA_HEIGHT }}
-            autoComplete="postal-code"
-          />
+          <div className="w-[7.5rem] shrink-0">
+            <CheckoutFloatField
+              name="postalCode"
+              label={t("checkout.billing_address.postal_code")}
+              value={customerDetails.postalCode}
+              onChange={handleCustomerInputChange}
+              autoComplete="postal-code"
+              roundingClass="rounded-br rounded-bl-none rounded-t-none border-l-0 border-gray-300"
+            />
+          </div>
         </div>
       </div>
     </div>

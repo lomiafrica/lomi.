@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -13,11 +14,40 @@ import * as RPNInput from "react-phone-number-input";
 import * as flagIcons from "react-phone-number-input/flags";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { CheckIcon, ChevronDown, PencilIcon, Phone } from "lucide-react";
+import {
+  classifyAssistedPhoneField,
+  type AssistedDialCountry,
+} from "@lomi./shared/phone";
 import { cn } from "./cn";
 import { Button } from "./button";
 
 const PhoneInputCompactContext = createContext(false);
 const PhoneInputForceLightContext = createContext(false);
+const PhoneLiveCountryContext = createContext<RPNInput.Country>("CI");
+const AssistedPhoneReplaceContext = createContext<(value: string) => void>(
+  () => {},
+);
+
+const ASSISTED_COUNTRIES: AssistedDialCountry[] = RPNInput.getCountries().map(
+  (country) => ({
+    id: country,
+    dial: RPNInput.getCountryCallingCode(country),
+  }),
+);
+
+function longestAssistedCountry(
+  value: string,
+  countries: readonly AssistedDialCountry[],
+): AssistedDialCountry | undefined {
+  return countries.reduce<AssistedDialCountry | undefined>((best, country) => {
+    if (!value.startsWith(`+${country.dial}`)) return best;
+    if (!best || country.dial.length > best.dial.length) return country;
+    return best;
+  }, undefined);
+}
+
+const AssistedCountriesContext =
+  createContext<readonly AssistedDialCountry[]>(ASSISTED_COUNTRIES);
 
 type PhoneStackRole = "solo" | "first" | "middle" | "last";
 
@@ -136,14 +166,40 @@ export function PhoneNumberInput({
   const hasTouchedRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const resolvedDefault =
-    countriesProp && countriesProp.length > 0
-      ? countriesProp[0]
-      : defaultCountry;
+  const fallbackCountry = defaultCountry ?? "CI";
+  const resolvedDefault = countriesProp?.[0] ?? fallbackCountry;
+  const [liveCountry, setLiveCountry] =
+    useState<RPNInput.Country>(resolvedDefault);
+  const assistedCountries = useMemo(() => {
+    if (!countriesProp || countriesProp.length === 0) return ASSISTED_COUNTRIES;
+    return ASSISTED_COUNTRIES.filter((country) =>
+      countriesProp.some((allowed) => allowed === country.id),
+    );
+  }, [countriesProp]);
 
   const markTouched = useCallback(() => {
     hasTouchedRef.current = true;
   }, []);
+
+  const handleAssistedReplace = useCallback(
+    (next: string) => {
+      const matched = longestAssistedCountry(next, assistedCountries);
+      if (matched && isPhoneCountry(matched.id)) {
+        setLiveCountry(matched.id);
+      }
+      markTouched();
+      onChange(next);
+    },
+    [assistedCountries, markTouched, onChange],
+  );
+
+  useEffect(() => {
+    if (!value?.startsWith("+")) return;
+    const matched = longestAssistedCountry(value, assistedCountries);
+    if (!matched || !isPhoneCountry(matched.id)) return;
+    const countryId = matched.id;
+    setLiveCountry((current) => (current === countryId ? current : countryId));
+  }, [assistedCountries, value]);
 
   const validatePhoneNumber = useCallback(
     (phoneValue: string) => {
@@ -236,39 +292,52 @@ export function PhoneNumberInput({
                 )}
                 style={forceLight ? { borderColor: "#d1d5db" } : undefined}
               >
-                <RPNInput.default
-                  className={cn(
-                    "flex PhoneInput w-full",
-                    compact
-                      ? "h-7 min-h-0 items-stretch"
-                      : "h-full min-h-0 items-stretch",
-                  )}
-                  international
-                  defaultCountry={resolvedDefault}
-                  {...(countriesProp &&
-                    countriesProp.length > 0 && { countries: countriesProp })}
-                  flagComponent={FlagComponent}
-                  countrySelectComponent={CountrySelect}
-                  inputComponent={PhoneField}
-                  placeholder={placeholder}
-                  value={value}
-                  onChange={(next) => {
-                    markTouched();
-                    onChange(next);
-                  }}
-                  onCountryChange={(countryCode) => {
-                    markTouched();
-                    onCountryChange?.(countryCode);
-                  }}
-                  smartCaret={true}
-                  countryCallingCodeEditable={true}
-                  disabled={fieldDisabled}
-                  onKeyDown={handleKeyDown}
-                  onBlur={() => {
-                    markTouched();
-                    validatePhoneNumber(value);
-                  }}
-                />
+                <PhoneLiveCountryContext.Provider value={liveCountry}>
+                  <AssistedCountriesContext.Provider value={assistedCountries}>
+                    <AssistedPhoneReplaceContext.Provider
+                      value={handleAssistedReplace}
+                    >
+                      <RPNInput.default
+                        className={cn(
+                          "flex PhoneInput w-full",
+                          compact
+                            ? "h-7 min-h-0 items-stretch"
+                            : "h-full min-h-0 items-stretch",
+                        )}
+                        international
+                        defaultCountry={resolvedDefault}
+                        {...(countriesProp &&
+                          countriesProp.length > 0 && {
+                            countries: countriesProp,
+                          })}
+                        flagComponent={FlagComponent}
+                        countrySelectComponent={CountrySelect}
+                        inputComponent={PhoneField}
+                        placeholder={placeholder}
+                        value={value}
+                        onChange={(next) => {
+                          markTouched();
+                          onChange(next);
+                        }}
+                        onCountryChange={(countryCode) => {
+                          markTouched();
+                          if (countryCode && isPhoneCountry(countryCode)) {
+                            setLiveCountry(countryCode);
+                          }
+                          onCountryChange?.(countryCode);
+                        }}
+                        smartCaret={true}
+                        countryCallingCodeEditable={false}
+                        disabled={fieldDisabled}
+                        onKeyDown={handleKeyDown}
+                        onBlur={() => {
+                          markTouched();
+                          validatePhoneNumber(value);
+                        }}
+                      />
+                    </AssistedPhoneReplaceContext.Provider>
+                  </AssistedCountriesContext.Provider>
+                </PhoneLiveCountryContext.Provider>
               </div>
               {requiredMark ? (
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-red-500 dark:text-[#56A5F9]">
@@ -311,10 +380,13 @@ export function PhoneNumberInput({
 const PhoneField = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
->(({ className, ...props }, ref) => {
+>(({ className, onChange, value, ...props }, ref) => {
   const compact = useContext(PhoneInputCompactContext);
   const forceLight = useContext(PhoneInputForceLightContext);
   const stackRole = useContext(PhoneInputStackContext);
+  const liveCountry = useContext(PhoneLiveCountryContext);
+  const assistedCountries = useContext(AssistedCountriesContext);
+  const replaceAssistedPhone = useContext(AssistedPhoneReplaceContext);
   const squareJoins = !compact && stackRole !== "solo";
 
   return (
@@ -334,6 +406,26 @@ const PhoneField = React.forwardRef<
         className,
       )}
       {...props}
+      value={value}
+      onChange={(event) => {
+        const selected = {
+          id: liveCountry,
+          dial: RPNInput.getCountryCallingCode(liveCountry),
+        };
+        const action = classifyAssistedPhoneField(
+          event.currentTarget.value,
+          selected,
+          assistedCountries,
+        );
+        if (action.kind === "replace") {
+          replaceAssistedPhone(action.value);
+          return;
+        }
+        if (action.value !== event.currentTarget.value) {
+          event.currentTarget.value = action.value;
+        }
+        onChange?.(event);
+      }}
       autoComplete="tel"
       data-lpignore="true"
       data-form-type="other"

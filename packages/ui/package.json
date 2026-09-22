@@ -140,6 +140,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
+    "@lomi./shared": "file:../shared",
     "lottie-react": "^2.4.1",
     "react-day-picker": "^8.10.1",
     "sileo": "^0.1.5",

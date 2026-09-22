@@ -7,7 +7,11 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn(interiorSurface, className)} {...props} />
+  <div
+    ref={ref}
+    className={cn("lomi-card", interiorSurface, className)}
+    {...props}
+  />
 ));
 Card.displayName = "Card";
 

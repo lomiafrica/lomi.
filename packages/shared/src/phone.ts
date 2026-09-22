@@ -145,3 +145,150 @@ export function normalizePhoneForStripe(
 
   return undefined;
 }
+
+export type AssistedDialCountry = {
+  id: string;
+  /** Country calling code digits, without "+". */
+  dial: string;
+};
+
+export type AssistedPhoneSelection<T extends AssistedDialCountry> = {
+  country: T;
+  /** National digits only. The country indicator stays outside this string. */
+  national: string;
+};
+
+const NATIONAL_DIGITS_WITH_DIAL = 6;
+
+function compactAssistedPhone(value: string): string {
+  return value.replace(/[\s().-]/g, "");
+}
+
+function matchAssistedDial<T extends AssistedDialCountry>(
+  digits: string,
+  countries: readonly T[],
+  prefer: T,
+): { country: T; rest: string } | null {
+  let best: { country: T; rest: string } | null = null;
+  for (const country of countries) {
+    if (!country.dial || !digits.startsWith(country.dial)) continue;
+    const rest = digits.slice(country.dial.length);
+    if (!best || country.dial.length > best.country.dial.length) {
+      best = { country, rest };
+      continue;
+    }
+    if (
+      country.dial.length === best.country.dial.length &&
+      country.id === prefer.id
+    ) {
+      best = { country, rest };
+    }
+  }
+  return best;
+}
+
+/**
+ * Apply an assisted fill, paste, or edit without dropping the country.
+ * No calling code keeps the selected country. A calling code for that country
+ * is stripped once. A calling code for another country switches the selection.
+ * Short edits stay on the selected country so national digits can still be deleted.
+ */
+export function applyAssistedPhone<T extends AssistedDialCountry>(
+  raw: string,
+  selected: T,
+  countries: readonly T[],
+): AssistedPhoneSelection<T> {
+  const compact = compactAssistedPhone(raw.trim());
+  if (!compact || compact === "+" || compact === "00") {
+    return { country: selected, national: "" };
+  }
+
+  const explicit = compact.startsWith("+")
+    ? compact.slice(1)
+    : compact.startsWith("00")
+      ? compact.slice(2)
+      : null;
+  const digits = (explicit ?? compact).replace(/\D/g, "");
+  const matched = matchAssistedDial(digits, countries, selected);
+  if (!matched) {
+    return { country: selected, national: digits };
+  }
+
+  const sameCountry = matched.country.id === selected.id;
+  const fullEnough = matched.rest.length >= NATIONAL_DIGITS_WITH_DIAL;
+
+  if (explicit !== null) {
+    if (sameCountry || fullEnough) {
+      return { country: matched.country, national: matched.rest };
+    }
+    return { country: selected, national: digits };
+  }
+
+  if (sameCountry && fullEnough) {
+    return { country: selected, national: matched.rest };
+  }
+
+  // Local numbers often start with 0, and a 1-digit calling code (7, 1)
+  // collides with those digits. Only a full prefill with a real calling code
+  // may replace the selected country when "+" / "00" was omitted.
+  if (
+    fullEnough &&
+    matched.country.dial.length >= 2 &&
+    !digits.startsWith("0") &&
+    matched.country.id !== selected.id
+  ) {
+    return { country: matched.country, national: matched.rest };
+  }
+
+  return { country: selected, national: digits };
+}
+
+export type AssistedFieldAction =
+  | { kind: "library"; value: string }
+  | { kind: "replace"; value: string };
+
+/**
+ * Decide what an international phone field should do with the next keystroke
+ * or assisted fill. National edits stay with the library so the calling code
+ * can be locked. A full number for another country is returned as E.164 so
+ * the field can switch country without the library erasing the indicator.
+ */
+export function classifyAssistedPhoneField<T extends AssistedDialCountry>(
+  raw: string,
+  selected: T,
+  countries: readonly T[],
+): AssistedFieldAction {
+  const compact = compactAssistedPhone(raw);
+  const prefix = `+${selected.dial}`;
+  if (
+    compact.startsWith(prefix) ||
+    compact === "" ||
+    compact === "+" ||
+    compact === "00"
+  ) {
+    return { kind: "library", value: raw };
+  }
+
+  if (!compact.startsWith("+") && !compact.startsWith("00")) {
+    const digits = compact.replace(/\D/g, "");
+    if (
+      digits.startsWith(selected.dial) &&
+      digits.length >= selected.dial.length + NATIONAL_DIGITS_WITH_DIAL
+    ) {
+      return { kind: "library", value: digits.slice(selected.dial.length) };
+    }
+  }
+
+  const applied = applyAssistedPhone(raw, selected, countries);
+  if (
+    applied.country.id !== selected.id &&
+    applied.national.length >= NATIONAL_DIGITS_WITH_DIAL
+  ) {
+    return {
+      kind: "replace",
+      value: `+${applied.country.dial}${applied.national}`,
+    };
+  }
+
+  return { kind: "library", value: raw };
+}

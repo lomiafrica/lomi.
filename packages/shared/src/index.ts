@@ -26,13 +26,20 @@ export type {
 } from "./bank-beneficiary.js";
 export { stripHtml } from "./strip-html.js";
 export {
+  applyAssistedPhone,
+  classifyAssistedPhoneField,
   isValidPhoneNumber,
   formatPhoneNumber,
   stripLegacyCountryPhonePrefix,
   normalizePhoneForStripe,
   toCountryCode,
 } from "./phone.js";
-export type { CountryCode } from "./phone.js";
+export type {
+  AssistedDialCountry,
+  AssistedFieldAction,
+  AssistedPhoneSelection,
+  CountryCode,
+} from "./phone.js";
 export {
   normalizeCountryName,
   isCoteDIvoire,
@@ -387,3 +394,8 @@ export type {
   SystemRoleDefinition,
   SystemRoleKey,
 } from "./team-rbac.js";
+export {
+  WHATSAPP_CONNECT_MIN_MONTHLY_REVENUE_XOF,
+  WHATSAPP_CONNECT_REVENUE_ERROR,
+  monthlyRevenueQualifiesForWhatsAppConnect,
+} from "./whatsapp-connect.js";

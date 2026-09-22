@@ -10,6 +10,13 @@ import {
 } from "react";
 import { Input } from "@lomi./ui/input";
 
+const floatLabelClass = (raised: boolean) =>
+  `checkout-field-placeholder pointer-events-none absolute left-3 z-10 origin-left select-none transition-[top,transform,font-size] duration-150 ${
+    raised
+      ? "top-1.5 text-[10px] leading-none"
+      : "top-1/2 -translate-y-1/2 text-sm leading-none"
+  }`;
+
 export function CheckoutFloatField({
   id,
   name,
@@ -51,14 +58,7 @@ export function CheckoutFloatField({
 
   return (
     <div className="relative">
-      <label
-        htmlFor={fieldId}
-        className={`checkout-field-placeholder pointer-events-none absolute left-3 z-10 origin-left select-none transition-[top,transform,font-size] duration-150 ${
-          raised
-            ? "top-1.5 text-[11px] leading-none"
-            : "top-1/2 -translate-y-1/2 text-[13px]"
-        }`}
-      >
+      <label htmlFor={fieldId} className={floatLabelClass(raised)}>
         {label}
       </label>
       <Input
@@ -76,7 +76,7 @@ export function CheckoutFloatField({
         pattern={pattern}
         inputMode={inputMode}
         enterKeyHint={enterKeyHint}
-        className={`${roundingClass} h-11 w-full bg-white pt-3.5 text-base text-gray-900 md:text-sm focus:border-gray-300 focus-visible:border-gray-300 focus-visible:shadow-none ${
+        className={`${roundingClass} h-10 w-full bg-white pt-3.5 text-[13px] text-gray-900 focus:border-gray-300 focus-visible:border-gray-300 focus-visible:shadow-none ${
           raised ? "" : "caret-transparent"
         }`}
       />
