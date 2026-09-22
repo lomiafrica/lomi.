@@ -399,3 +399,13 @@ export {
   WHATSAPP_CONNECT_REVENUE_ERROR,
   monthlyRevenueQualifiesForWhatsAppConnect,
 } from "./whatsapp-connect.js";
+export {
+  splitAssistantRichBlocks,
+  splitAssistantTables,
+} from "./assistant-rich-blocks.js";
+export type {
+  AssistantChart,
+  AssistantChartPoint,
+  AssistantRichBlock,
+  AssistantTable,
+} from "./assistant-rich-blocks.js";
