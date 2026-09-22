@@ -884,12 +884,15 @@ export type Database = {
         Row: {
           access_level: string
           api_key: string
+          api_key_hash: string | null
           created_at: string
           created_by: string | null
           deleted_at: string | null
           environment: string
           expiration_date: string | null
           is_active: boolean
+          key_last4: string | null
+          key_prefix: string | null
           key_type: string
           name: string
           organization_id: string
@@ -898,12 +901,15 @@ export type Database = {
         Insert: {
           access_level?: string
           api_key: string
+          api_key_hash?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
           environment?: string
           expiration_date?: string | null
           is_active?: boolean
+          key_last4?: string | null
+          key_prefix?: string | null
           key_type?: string
           name: string
           organization_id: string
@@ -912,12 +918,15 @@ export type Database = {
         Update: {
           access_level?: string
           api_key?: string
+          api_key_hash?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
           environment?: string
           expiration_date?: string | null
           is_active?: boolean
+          key_last4?: string | null
+          key_prefix?: string | null
           key_type?: string
           name?: string
           organization_id?: string
@@ -1486,6 +1495,7 @@ export type Database = {
           time_to_first_tool_ms: number | null
           tool_stats: Json
           ttft_ms: number | null
+          ungrounded_money_count: number
         }
         Insert: {
           conversation_id?: string | null
@@ -1505,6 +1515,7 @@ export type Database = {
           time_to_first_tool_ms?: number | null
           tool_stats?: Json
           ttft_ms?: number | null
+          ungrounded_money_count?: number
         }
         Update: {
           conversation_id?: string | null
@@ -1524,6 +1535,7 @@ export type Database = {
           time_to_first_tool_ms?: number | null
           tool_stats?: Json
           ttft_ms?: number | null
+          ungrounded_money_count?: number
         }
         Relationships: [
           {
@@ -2671,7 +2683,7 @@ export type Database = {
           currency_code: Database["public"]["Enums"]["currency_code"]
           line_item_id: string
           metadata: Json | null
-          price_id: string
+          price_id: string | null
           product_id: string
           quantity: number
           unit_amount: number
@@ -2682,7 +2694,7 @@ export type Database = {
           currency_code: Database["public"]["Enums"]["currency_code"]
           line_item_id?: string
           metadata?: Json | null
-          price_id: string
+          price_id?: string | null
           product_id: string
           quantity?: number
           unit_amount: number
@@ -2693,7 +2705,7 @@ export type Database = {
           currency_code?: Database["public"]["Enums"]["currency_code"]
           line_item_id?: string
           metadata?: Json | null
-          price_id?: string
+          price_id?: string | null
           product_id?: string
           quantity?: number
           unit_amount?: number
@@ -3399,7 +3411,7 @@ export type Database = {
           customer_invoice_id: string
           date: string | null
           description: string | null
-          due_date: string
+          due_date: string | null
           environment: string
           file_path: string[] | null
           from_details: Json | null
@@ -3448,7 +3460,7 @@ export type Database = {
           customer_invoice_id?: string
           date?: string | null
           description?: string | null
-          due_date: string
+          due_date?: string | null
           environment?: string
           file_path?: string[] | null
           from_details?: Json | null
@@ -3497,7 +3509,7 @@ export type Database = {
           customer_invoice_id?: string
           date?: string | null
           description?: string | null
-          due_date?: string
+          due_date?: string | null
           environment?: string
           file_path?: string[] | null
           from_details?: Json | null
@@ -11687,7 +11699,10 @@ export type Database = {
           environment: string
           external_user_ref: string | null
           is_active: boolean
+          key_hash: string | null
           key_kind: Database["public"]["Enums"]["provisioning_key_kind"]
+          key_last4: string | null
+          key_prefix: string | null
           name: string
           partner_id: string | null
           partner_name: string
@@ -11702,7 +11717,10 @@ export type Database = {
           environment?: string
           external_user_ref?: string | null
           is_active?: boolean
+          key_hash?: string | null
           key_kind?: Database["public"]["Enums"]["provisioning_key_kind"]
+          key_last4?: string | null
+          key_prefix?: string | null
           name: string
           partner_id?: string | null
           partner_name: string
@@ -11717,7 +11735,10 @@ export type Database = {
           environment?: string
           external_user_ref?: string | null
           is_active?: boolean
+          key_hash?: string | null
           key_kind?: Database["public"]["Enums"]["provisioning_key_kind"]
+          key_last4?: string | null
+          key_prefix?: string | null
           name?: string
           partner_id?: string | null
           partner_name?: string
@@ -15295,14 +15316,24 @@ export type Database = {
           payout_method_id: string
         }[]
       }
-      admin_complete_account_top_up: {
-        Args: {
-          p_bank_reference?: string
-          p_notes?: string
-          p_top_up_id: string
-        }
-        Returns: undefined
-      }
+      admin_complete_account_top_up:
+        | {
+            Args: {
+              p_bank_reference?: string
+              p_notes?: string
+              p_top_up_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_bank_reference: string
+              p_notes?: string
+              p_received_amount: number
+              p_top_up_id: string
+            }
+            Returns: undefined
+          }
       admin_create_partner: {
         Args: {
           p_allowed_environments?: string[]
@@ -15614,6 +15645,15 @@ export type Database = {
       allocate_public_id: {
         Args: { p_prefix: string; p_table: string }
         Returns: string
+      }
+      amount_in_reporting_currency: {
+        Args: {
+          p_amount: number
+          p_credited_xof?: number
+          p_from_currency: Database["public"]["Enums"]["currency_code"]
+          p_to_currency: Database["public"]["Enums"]["currency_code"]
+        }
+        Returns: number
       }
       api_internal_base_url: { Args: never; Returns: string }
       api_internal_http_headers_jsonb: { Args: never; Returns: Json }
@@ -16263,7 +16303,11 @@ export type Database = {
         Returns: Json
       }
       check_entitlement: {
-        Args: { p_customer_id: string; p_feature_key: string }
+        Args: {
+          p_customer_id: string
+          p_feature_key: string
+          p_organization_id: string
+        }
         Returns: Json
       }
       check_merchant_available_balance: {
@@ -16762,6 +16806,21 @@ export type Database = {
           return_url: string
         }[]
       }
+      convert_account_balance: {
+        Args: {
+          p_amount: number
+          p_from_currency: Database["public"]["Enums"]["currency_code"]
+          p_merchant_id: string
+          p_organization_id: string
+          p_to_currency: Database["public"]["Enums"]["currency_code"]
+        }
+        Returns: {
+          converted_amount: number
+          fee_amount: number
+          rate: number
+          source_amount: number
+        }[]
+      }
       convert_amount_for_stripe: {
         Args: {
           p_amount_xof: number
@@ -16908,13 +16967,13 @@ export type Database = {
       create_assistant_run: {
         Args: {
           p_conversation_id: string
-          p_environment: string
+          p_environment?: string
           p_merchant_id: string
           p_messages_snapshot: Json
           p_mode: string
           p_organization_id: string
           p_pending_gate: Json
-          p_session_approved_tools?: string[]
+          p_session_approved_tools: string[]
         }
         Returns: string
       }
@@ -18188,6 +18247,10 @@ export type Database = {
         }
         Returns: Json
       }
+      credited_amount_xof: {
+        Args: { p_key: string; p_metadata: Json }
+        Returns: number
+      }
       current_session_can_access_organization: {
         Args: { p_organization_id: string }
         Returns: boolean
@@ -19382,6 +19445,7 @@ export type Database = {
           name: string
           phone_number: string
           postal_code: string
+          public_id: string
           whatsapp_number: string
         }[]
       }
@@ -21199,6 +21263,7 @@ export type Database = {
           product_price: number
           provider_code: Database["public"]["Enums"]["provider_code"]
           provider_transaction_id: string
+          public_id: string
           quantity: number
           status: Database["public"]["Enums"]["transaction_status"]
           stripe_amount_cents: number
@@ -21511,7 +21576,7 @@ export type Database = {
         Returns: {
           description: string
           display_on_storefront: boolean
-          image_url: string
+          images: string[]
           is_active: boolean
           name: string
           prices: Json
@@ -21523,7 +21588,7 @@ export type Database = {
         Returns: {
           description: string
           display_on_storefront: boolean
-          image_url: string
+          images: string[]
           is_active: boolean
           name: string
           prices: Json
@@ -21675,6 +21740,8 @@ export type Database = {
           customer_id: string
           email: string
           name: string
+          phone_number: string
+          public_id: string
           total_spend: number
           transaction_count: number
         }[]
@@ -23205,26 +23272,7 @@ export type Database = {
       }
       get_assistant_pending_run: {
         Args: { p_conversation_id: string; p_merchant_id: string }
-        Returns: {
-          conversation_id: string
-          created_at: string
-          environment: string
-          merchant_id: string
-          messages_snapshot: Json
-          mode: string
-          organization_id: string
-          pending_gate: Json | null
-          run_id: string
-          session_approved_tools: string[]
-          status: string
-          updated_at: string
-        }[]
-        SetofOptions: {
-          from: "*"
-          to: "assistant_runs"
-          isOneToOne: false
-          isSetofReturn: true
-        }
+        Returns: Json
       }
       get_assistant_run: {
         Args: { p_merchant_id: string; p_run_id: string }
@@ -23766,9 +23814,11 @@ export type Database = {
           organization_id: string
           payment_details: Json
           payment_request_id: string
+          payment_url: string
           pdf_url: string
           status: Database["public"]["Enums"]["invoice_status"]
           template: Json
+          token: string
           updated_at: string
         }[]
       }
@@ -24423,6 +24473,8 @@ export type Database = {
       get_mtn_transaction_by_external_id: {
         Args: { p_external_id: string }
         Returns: {
+          country_code: string
+          environment: string
           merchant_id: string
           organization_id: string
           transaction_id: string
@@ -24431,6 +24483,8 @@ export type Database = {
       get_mtn_transaction_by_reference_id: {
         Args: { p_reference_id: string }
         Returns: {
+          country_code: string
+          environment: string
           merchant_id: string
           organization_id: string
           transaction_id: string
@@ -27916,6 +27970,7 @@ export type Database = {
         Returns: {
           client_id: string
           client_name: string
+          created_at: string
           grant_types: string[]
           is_active: boolean
           redirect_uris: string[]
@@ -28339,6 +28394,7 @@ export type Database = {
           p_time_to_first_tool_ms: number
           p_tool_stats: Json
           p_ttft_ms: number
+          p_ungrounded_money_count?: number
         }
         Returns: string
       }
@@ -29521,7 +29577,7 @@ export type Database = {
           customer_invoice_id: string
           date: string | null
           description: string | null
-          due_date: string
+          due_date: string | null
           environment: string
           file_path: string[] | null
           from_details: Json | null

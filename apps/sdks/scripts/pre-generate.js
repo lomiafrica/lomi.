@@ -5,7 +5,7 @@
  * This script copies the API types from the API module and validates them for SDK generation
  */
 
-import { readFileSync, writeFileSync, copyFileSync } from "fs";
+import { readFileSync, copyFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 

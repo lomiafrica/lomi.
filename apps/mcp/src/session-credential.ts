@@ -1,8 +1,12 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
-/** Fingerprint high-entropy API keys and OAuth tokens for session binding. */
+/**
+ * Fingerprint high-entropy API keys and OAuth tokens for session binding.
+ * These are not user-chosen passwords, so a fast hash is the right tool.
+ * A slow password KDF on every MCP request would be a CPU exhaustion vector.
+ */
 export function hashSessionMaterial(value: string): string {
-  // lgtm[js/insufficient-password-hash]
+  // codeql[js/insufficient-password-hash]
   return createHash("sha256").update(value).digest("hex");
 }
 

@@ -92,19 +92,6 @@ export function parseApiConfig() {
 export function parseSchema() {
   const content = readFileSync(apiTypesPath, "utf-8");
 
-  // Extract Enums
-  const enums = {};
-  const enumBlocks = content.matchAll(/export enum APIEnums \{([\s\S]*?)\}/g);
-  // Actually api-types.ts likely doesn't use "export enum", it might use a type definition if it's from Supabase
-  // Let's check how api-types.ts defines enums.
-  // Looking at the previous view_file of api-types.ts, it seems I cannot see the Enums definition at the bottom or top.
-  // It says "Generated from database.types.ts - only includes: Exposed enums".
-  // I need to look at api-types.ts closely.
-  // Wait, the view_file output showed "columns: ["currency_code"]; references APIEnums["currency_code"]".
-  // I probably missed where APIEnums is defined. It is likely at the end of the file or I missed it.
-  // Let's assume there is a `export type APIEnums = { ... }` or similar.
-
-  // Let's try to extract tables strictly.
   const tables = {};
   const tableMatches = content.matchAll(
     /(\w+): \{\s*Row: \{([\s\S]*?)\};\s*Insert: \{([\s\S]*?)\};\s*Update: \{([\s\S]*?)\};/g,

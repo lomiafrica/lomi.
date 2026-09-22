@@ -1,9 +1,4 @@
-import {
-  isJsonObject,
-  isNumber,
-  parseJson,
-  readString,
-} from "./json-value.js";
+import { isJsonObject, isNumber, parseJson, readString } from "./json-value.js";
 
 const CHART_OPEN = "```lomi-chart";
 const MAX_CHART_POINTS = 8;
@@ -71,8 +66,49 @@ const splitCells = (line: string): string[] =>
 
 const isTableLine = (line: string): boolean => /^\s*\|.+\|\s*$/.test(line);
 
-const isSeparatorLine = (line: string): boolean =>
-  /^\s*\|?[\s:-]+(\|[\s:-]+)+\|?\s*$/.test(line);
+const isAsciiSpace = (ch: string): boolean =>
+  ch === " " ||
+  ch === "\t" ||
+  ch === "\n" ||
+  ch === "\r" ||
+  ch === "\f" ||
+  ch === "\v" ||
+  ch === "\u00a0" ||
+  ch === "\u1680" ||
+  ch === "\u2028" ||
+  ch === "\u2029" ||
+  ch === "\u202f" ||
+  ch === "\u205f" ||
+  ch === "\u3000" ||
+  ch === "\ufeff" ||
+  (ch >= "\u2000" && ch <= "\u200a");
+
+const isSeparatorBodyChar = (ch: string): boolean =>
+  isAsciiSpace(ch) || ch === ":" || ch === "-";
+
+/** Markdown table divider, scanned left to right so the check stays linear. */
+const isSeparatorLine = (line: string): boolean => {
+  let i = 0;
+  const n = line.length;
+  while (i < n && isAsciiSpace(line[i] ?? "")) i += 1;
+  if (line[i] === "|") i += 1;
+  const prefix = i;
+  while (i < n && isSeparatorBodyChar(line[i] ?? "")) i += 1;
+  if (i === prefix) return false;
+  let groups = 0;
+  while (line[i] === "|") {
+    const afterPipe = i + 1;
+    let j = afterPipe;
+    while (j < n && isSeparatorBodyChar(line[j] ?? "")) j += 1;
+    if (j === afterPipe) break;
+    i = j;
+    groups += 1;
+  }
+  if (groups < 1) return false;
+  if (line[i] === "|") i += 1;
+  while (i < n && isAsciiSpace(line[i] ?? "")) i += 1;
+  return i === n;
+};
 
 const parseTable = (lines: string[]): AssistantTable | undefined => {
   const contentLines = lines.filter((line) => !isSeparatorLine(line));

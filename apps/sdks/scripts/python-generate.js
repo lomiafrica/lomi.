@@ -93,10 +93,6 @@ ${indentedPath}
 `;
 }
 
-function escapePyStr(s) {
-  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
-
 /** @type {Map<string,string>} serviceClass -> module stem (snake) */
 const serviceModuleStem = new Map();
 

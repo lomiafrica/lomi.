@@ -217,7 +217,6 @@ function hyphenSegmentsToPascal(seg) {
 export function serviceClassForPath(pathTpl) {
   const segs = pathTpl.split("/").filter(Boolean);
   const a = segs[0];
-  const b = segs[1];
   if (a === "charge") return "ChargesService";
   if (a === "payouts") return "PayoutsService";
   return `${hyphenSegmentsToPascal(a)}Service`;

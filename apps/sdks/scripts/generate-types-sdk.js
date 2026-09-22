@@ -26,7 +26,6 @@ import {
   wantsBody,
   readSpecAndAllowlist,
   getNormalizedOperations,
-  resolveRef,
   LIST_METHOD_NAMES,
   expandSdkManifestMethods,
   withoutHandwrittenServices,
@@ -359,10 +358,9 @@ ${apiTypesContent}
 }
 
 /**
- * @param {any} spec
  * @param {ReturnType<typeof getNormalizedOperations>['flat']} flatOps
  */
-function generateSchemaTypeAliases(spec, flatOps) {
+function generateSchemaTypeAliases(flatOps) {
   /** @type {Set<string>} */
   const schemaNames = new Set();
 
@@ -372,7 +370,6 @@ function generateSchemaTypeAliases(spec, flatOps) {
 
     const collectRef = (ref) => {
       if (!ref || ref.constructor !== String) return;
-      const resolved = resolveRef(ref, spec);
       if (ref.includes("/components/schemas/")) {
         const name = ref.split("/").pop();
         if (name) schemaNames.add(name);
@@ -387,7 +384,6 @@ function generateSchemaTypeAliases(spec, flatOps) {
   }
 
   const lines = [...schemaNames].sort().map((name) => {
-    const alias = name.replace(/Dto$/, "").replace(/^Create/, "Create");
     const exportName = name.replace(/Dto$/, "");
     return `export type ${exportName} = components['schemas']['${name}'];`;
   });
@@ -465,18 +461,17 @@ function main() {
   }
 
   const schemaPath = join(outputDir, "schema.d.ts");
-  const preservedSchema = existsSync(schemaPath)
-    ? readFileSync(schemaPath, "utf-8")
-    : null;
+  let preservedSchema = null;
+  try {
+    preservedSchema = readFileSync(schemaPath, "utf-8");
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
 
-  if (existsSync(outputDir)) {
-    for (const entry of readdirSync(outputDir)) {
-      if (entry === "schema.d.ts") continue;
-      const full = join(outputDir, entry);
-      rmSync(full, { recursive: true, force: true });
-    }
-  } else {
-    mkdirSync(outputDir, { recursive: true });
+  mkdirSync(outputDir, { recursive: true });
+  for (const entry of readdirSync(outputDir)) {
+    if (entry === "schema.d.ts") continue;
+    rmSync(join(outputDir, entry), { recursive: true, force: true });
   }
 
   mkdirSync(join(outputDir, "services"), { recursive: true });
@@ -491,7 +486,7 @@ function main() {
   );
   writeFileSync(
     join(outputDir, "type-aliases.ts"),
-    generateSchemaTypeAliases(spec, operations),
+    generateSchemaTypeAliases(operations),
   );
 
   const manifest = {};

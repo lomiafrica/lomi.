@@ -2,6 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { splitAssistantRichBlocks } from "./assistant-rich-blocks.js";
 
+test("parses alignment separators without treating them as rows", () => {
+  const blocks = splitAssistantRichBlocks(
+    "| Name | Spend |\n| :--- | ---: |\n| Baptiste | 655957 |",
+  );
+  assert.equal(blocks[0]?.type, "table");
+  if (blocks[0]?.type !== "table") return;
+  assert.deepEqual(blocks[0].table.headers, ["Name", "Spend"]);
+  assert.deepEqual(blocks[0].table.rows, [["Baptiste", "655957"]]);
+});
+
 test("keeps prose and parses a markdown table", () => {
   const blocks = splitAssistantRichBlocks(
     "Top customers\n\n| Name | Spend |\n| --- | --- |\n| Baptiste | 655957 |",

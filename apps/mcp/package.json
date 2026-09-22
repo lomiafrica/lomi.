@@ -57,12 +57,13 @@
     "@lomi./shared": "file:../../packages/shared",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/express": "^5.0.6",
     "@types/node": "^22.20.1",
-    "@eslint/js": "^9.39.5",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",

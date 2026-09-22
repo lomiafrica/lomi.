@@ -7,6 +7,7 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   hostHeaderValidation,
@@ -73,8 +74,6 @@ import {
 } from "./discovery.js";
 import { isJsonObject, isString, type JsonValue } from "@lomi./shared";
 import type { McpRequestStore } from "./mcp-request-context.js";
-
-type TransportEntry = StreamableHTTPServerTransport;
 
 type JsonRpcId = JsonValue;
 
@@ -186,8 +185,46 @@ function applyOauthCors(res: Response): void {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
 }
 
-/** Rolling 60s window per IP for MCP routes */
-type RateBucket = { count: number; windowStart: number };
+function sendJsonRpcCredentialMismatch(res: Response, id: JsonRpcId): void {
+  applyOauthCors(res);
+  res.setHeader(
+    "WWW-Authenticate",
+    oauthUnauthorizedChallenge("invalid_token"),
+  );
+  res.status(401).json({
+    jsonrpc: "2.0",
+    error: {
+      code: -32001,
+      message: "MCP session credential mismatch",
+    },
+    id,
+  });
+}
+
+function sendJsonRpcMissingCredential(
+  res: Response,
+  id: JsonRpcId,
+  staleToken: boolean,
+): void {
+  applyOauthCors(res);
+  res.setHeader(
+    "WWW-Authenticate",
+    oauthUnauthorizedChallenge(staleToken ? "invalid_token" : undefined),
+  );
+  res.status(401).json({
+    jsonrpc: "2.0",
+    error: {
+      code: -32002,
+      message: MISSING_SESSION_CREDENTIAL_MESSAGE,
+    },
+    id,
+  });
+}
+
+function sendPlainCredentialMismatch(res: Response): void {
+  applyOauthCors(res);
+  res.status(401).send("MCP session credential mismatch");
+}
 
 function normalizeClientIp(raw: string): string | null {
   const trimmed = raw.trim();
@@ -236,43 +273,6 @@ function bearerTokenMatches(presented: string, tokens: string[]): boolean {
     }
   }
   return false;
-}
-
-function checkMcpRateLimit(
-  buckets: Map<string, RateBucket>,
-  ip: string,
-):
-  | { ok: true; limit: number; remaining: number; resetAt: number }
-  | {
-      ok: false;
-      limit: number;
-      remaining: 0;
-      resetAt: number;
-      retryAfterSec: number;
-    } {
-  const rpm = mcpRateLimitRpm();
-  const now = Date.now();
-  const windowMs = 60_000;
-  if (rpm <= 0) {
-    return { ok: true, limit: 0, remaining: 0, resetAt: now + windowMs };
-  }
-  let b = buckets.get(ip);
-  if (!b || now - b.windowStart >= windowMs) {
-    b = { count: 0, windowStart: now };
-    buckets.set(ip, b);
-  }
-  b.count += 1;
-  const resetAt = b.windowStart + windowMs;
-  if (b.count > rpm) {
-    const retryAfterSec = Math.max(1, Math.ceil((resetAt - now) / 1000));
-    return { ok: false, limit: rpm, remaining: 0, resetAt, retryAfterSec };
-  }
-  return {
-    ok: true,
-    limit: rpm,
-    remaining: Math.max(0, rpm - b.count),
-    resetAt,
-  };
 }
 
 function createLomiMcpExpressApp(
@@ -334,7 +334,7 @@ async function resolveTransportCredential(req: Request): Promise<boolean> {
   const introspected = await introspectOAuthAccessToken(oauthToken);
   return Boolean(
     introspected.active &&
-      (introspected.connection_key || introspected.provisioning_key),
+    (introspected.connection_key || introspected.provisioning_key),
   );
 }
 
@@ -475,39 +475,38 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     mcpMaxSessionsPerIp(),
   );
   registry.startPeriodicPrune();
-  const rateBuckets = new Map<string, RateBucket>();
-
-  function rateLimitMiddleware(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): void {
-    const ip = clientIp(req);
-    const rl = checkMcpRateLimit(rateBuckets, ip);
-    if (rl.limit > 0) {
-      const resetDelaySec = Math.max(
-        0,
-        Math.ceil((rl.resetAt - Date.now()) / 1000),
+  const rateLimitMiddleware = rateLimit({
+    windowMs: 60_000,
+    limit: () => {
+      const rpm = mcpRateLimitRpm();
+      return rpm > 0 ? rpm : 1;
+    },
+    skip: () => mcpRateLimitRpm() <= 0,
+    standardHeaders: true,
+    legacyHeaders: true,
+    keyGenerator: (req) => {
+      // SAFETY: express-rate-limit calls this with the Express request registered on the route.
+      return ipKeyGenerator(clientIp(req as Request));
+    },
+    validate: { keyGeneratorIpFallback: false },
+    handler: (req, res) => {
+      // SAFETY: express-rate-limit sets rateLimit.resetTime to a Date before calling this handler.
+      const resetTime = (req as Request & { rateLimit?: { resetTime?: Date } })
+        .rateLimit?.resetTime;
+      const resetMs = resetTime?.getTime() ?? Date.now() + 60_000;
+      const retryAfterSec = Math.max(
+        1,
+        Math.ceil((resetMs - Date.now()) / 1000),
       );
-      res.setHeader("X-RateLimit-Limit", String(rl.limit));
-      res.setHeader("X-RateLimit-Remaining", String(rl.remaining));
-      res.setHeader("X-RateLimit-Reset", String(Math.floor(rl.resetAt / 1000)));
-      res.setHeader("RateLimit-Limit", String(rl.limit));
-      res.setHeader("RateLimit-Remaining", String(rl.remaining));
-      res.setHeader("RateLimit-Reset", String(resetDelaySec));
-    }
-    if (rl.ok) {
-      next();
-      return;
-    }
-    res.setHeader("Retry-After", String(rl.retryAfterSec));
-    res.status(429).json({
-      error: "Too Many Requests",
-      error_code: "rate_limited",
-      message: `MCP request rate limit exceeded (${mcpRateLimitRpm()} req/min per client).`,
-      retry_after_sec: rl.retryAfterSec,
-    });
-  }
+      res.setHeader("Retry-After", String(retryAfterSec));
+      res.status(429).json({
+        error: "Too Many Requests",
+        error_code: "rate_limited",
+        message: `MCP request rate limit exceeded (${mcpRateLimitRpm()} req/min per client).`,
+        retry_after_sec: retryAfterSec,
+      });
+    },
+  });
 
   const protectedResourceMetadataPattern =
     /^\/\.well-known\/oauth-protected-resource(\/.*)?$/;
@@ -530,20 +529,28 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     sendDiscoveryJson(res, buildProtectedResourceMetadata());
   }
 
-  app.options(protectedResourceMetadataPattern, (_req, res) => {
-    applyOauthCors(res);
-    res.status(204).end();
-  });
+  app.options(
+    protectedResourceMetadataPattern,
+    rateLimitMiddleware,
+    (_req, res) => {
+      applyOauthCors(res);
+      res.status(204).end();
+    },
+  );
   app.get(
     protectedResourceMetadataPattern,
     rateLimitMiddleware,
     serveProtectedResourceMetadata,
   );
 
-  app.options("/.well-known/oauth-authorization-server", (_req, res) => {
-    applyOauthCors(res);
-    res.status(204).end();
-  });
+  app.options(
+    "/.well-known/oauth-authorization-server",
+    rateLimitMiddleware,
+    (_req, res) => {
+      applyOauthCors(res);
+      res.status(204).end();
+    },
+  );
   app.get(
     "/.well-known/oauth-authorization-server",
     rateLimitMiddleware,
@@ -668,32 +675,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
               headerProvisioningKey,
             )) ?? headerProvisioningKey;
           const resolvedPartnerKey = headerPartnerKey;
-          // Presented merchant key binds the session (fingerprint). Do not write
-          // it over a key adopted by lomi_organization create/use or provisioning.
-          if (
-            sessionId &&
-            registry.has(sessionId) &&
-            merchantGrant?.accessLevel
-          ) {
-            registry.updateMerchantAccessLevel(
-              sessionId,
-              merchantGrant.accessLevel,
-            );
-            registry.updateMerchantAllowedTools(
-              sessionId,
-              merchantGrant.allowedTools,
-            );
-          }
-          if (sessionId && registry.has(sessionId) && resolvedProvisioningKey) {
-            registry.updateProvisioningApiKey(
-              sessionId,
-              resolvedProvisioningKey,
-            );
-          }
-          if (sessionId && registry.has(sessionId) && resolvedPartnerKey) {
-            registry.updatePartnerApiKey(sessionId, resolvedPartnerKey);
-          }
-
+          const presentedAccessToken = extractOAuthAccessToken(req);
           const presentedFingerprint = sessionFingerprintFor(
             req,
             guest,
@@ -702,182 +684,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             resolvedPartnerKey,
           );
 
-          let transport: TransportEntry | undefined;
-
-          if (sessionId && registry.has(sessionId)) {
-            const bound = registry.get(sessionId)!;
-            if (
-              !sessionFingerprintMatches(
-                bound.credentialFingerprint,
-                presentedFingerprint,
-              )
-            ) {
-              registry.drop(sessionId);
-              applyOauthCors(res);
-              res.setHeader(
-                "WWW-Authenticate",
-                oauthUnauthorizedChallenge("invalid_token"),
-              );
-              res.status(401).json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32001,
-                  message: "MCP session credential mismatch",
-                },
-                id: jsonRpcIdFromBody(req.body),
-              });
-              return;
-            }
-            transport = bound.transport;
-            registry.touch(sessionId);
-            store.sessionId = sessionId;
-          } else if (!sessionId) {
-            // New session: require credentials first, then an MCP initialize body.
-            if (
-              !guest &&
-              !hasResolvedSessionCredential(
-                resolvedMerchantKey,
-                resolvedProvisioningKey,
-                Boolean(merchantGrant?.connectionKey),
-                resolvedPartnerKey,
-              )
-            ) {
-              const staleOAuth = Boolean(extractOAuthAccessToken(req));
-              applyOauthCors(res);
-              res.setHeader(
-                "WWW-Authenticate",
-                oauthUnauthorizedChallenge(
-                  staleOAuth ? "invalid_token" : undefined,
-                ),
-              );
-              res.status(401).json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32002,
-                  message: MISSING_SESSION_CREDENTIAL_MESSAGE,
-                },
-                id: jsonRpcIdFromBody(req.body),
-              });
-              return;
-            }
-
-            if (!isInitializeRequest(req.body)) {
-              res.status(400).json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32000,
-                  message: "Bad Request: No valid MCP session ID provided",
-                },
-                id: null,
-              });
-              return;
-            }
-
-            const accept = registry.canAcceptSessionFor(
-              presentedFingerprint,
-              clientIp(req),
-            );
-            if (!accept.ok) {
-              mcpLog(
-                "mcp_session_rejected",
-                {
-                  reason: accept.reason,
-                  activeSessions: registry.size,
-                  maxSessions: mcpMaxSessions(),
-                },
-                "warn",
-              );
-              res.status(503).json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32000,
-                  message: `MCP server at session capacity (${accept.reason}). Try again later.`,
-                },
-                id: null,
-              });
-              return;
-            }
-
-            const sessionState: SessionBootstrapState = {
-              sessionId: null,
-              merchantApiKey: resolvedMerchantKey,
-              provisioningApiKey: resolvedProvisioningKey,
-              partnerApiKey: resolvedPartnerKey,
-              merchantAccessLevel: merchantGrant?.accessLevel ?? "full",
-              merchantAllowedTools: merchantGrant?.allowedTools ?? null,
-            };
-
-            transport = new StreamableHTTPServerTransport({
-              sessionIdGenerator: () => randomUUID(),
-              onsessioninitialized: (sid) => {
-                sessionState.sessionId = sid;
-                registry.attachSession(
-                  sid,
-                  transport!,
-                  sessionState.merchantApiKey,
-                  sessionState.provisioningApiKey,
-                  sessionState.merchantAccessLevel,
-                  sessionState.partnerApiKey,
-                  presentedFingerprint,
-                  clientIp(req),
-                  sessionState.merchantAllowedTools,
-                );
-                store.sessionId = sid;
-              },
-            });
-
-            const server = wireMcpServer({
-              manifest,
-              mode: "http",
-              guest,
-              merchantAccessLevel: sessionState.merchantAccessLevel,
-              merchantAllowedTools: sessionState.merchantAllowedTools,
-              getApiKey: () =>
-                resolveMerchantKey(
-                  registry,
-                  sessionState.sessionId ?? undefined,
-                  sessionState.merchantApiKey,
-                ),
-              getProvisioningKey: () =>
-                resolveProvisioningKey(
-                  registry,
-                  sessionState.sessionId ?? undefined,
-                  sessionState.provisioningApiKey,
-                ),
-              getPartnerKey: () =>
-                resolvePartnerKey(
-                  registry,
-                  sessionState.sessionId ?? undefined,
-                  sessionState.partnerApiKey,
-                ),
-              onMerchantKeyDiscovered: (secretKey) => {
-                sessionState.merchantApiKey = secretKey;
-                if (sessionState.sessionId) {
-                  registry.updateMerchantApiKey(
-                    sessionState.sessionId,
-                    secretKey,
-                  );
-                }
-              },
-              onProvisioningKeyDiscovered: (key) => {
-                sessionState.provisioningApiKey = key;
-                if (sessionState.sessionId) {
-                  registry.updateProvisioningApiKey(
-                    sessionState.sessionId,
-                    key,
-                  );
-                }
-              },
-            });
-            await server.connect(transport);
-            // SAFETY: Express Request/Response implement Node IncomingMessage/ServerResponse for the MCP transport.
-            await transport.handleRequest(
-              req as IncomingMessage,
-              res as ServerResponse,
-              req.body,
-            );
-            return;
-          } else {
+          if (sessionId && !registry.has(sessionId)) {
             res.status(404).json({
               jsonrpc: "2.0",
               error: {
@@ -889,12 +696,181 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             return;
           }
 
+          if (sessionId && registry.has(sessionId)) {
+            const bound = registry.get(sessionId)!;
+            if (
+              !sessionFingerprintMatches(
+                bound.credentialFingerprint,
+                presentedFingerprint,
+              )
+            ) {
+              registry.drop(sessionId);
+              sendJsonRpcCredentialMismatch(res, jsonRpcIdFromBody(req.body));
+              return;
+            }
+            // Presented merchant key binds the session (fingerprint). Do not write
+            // it over a key adopted by lomi_organization create/use or provisioning.
+            if (merchantGrant?.accessLevel) {
+              registry.updateMerchantAccessLevel(
+                sessionId,
+                merchantGrant.accessLevel,
+              );
+              registry.updateMerchantAllowedTools(
+                sessionId,
+                merchantGrant.allowedTools,
+              );
+            }
+            if (resolvedProvisioningKey) {
+              registry.updateProvisioningApiKey(
+                sessionId,
+                resolvedProvisioningKey,
+              );
+            }
+            if (resolvedPartnerKey) {
+              registry.updatePartnerApiKey(sessionId, resolvedPartnerKey);
+            }
+            registry.touch(sessionId);
+            store.sessionId = sessionId;
+            // SAFETY: Express Request/Response implement Node IncomingMessage/ServerResponse for the MCP transport.
+            await bound.transport.handleRequest(
+              req as IncomingMessage,
+              res as ServerResponse,
+              req.body,
+            );
+            return;
+          }
+
+          // New session: require credentials first, then an MCP initialize body.
+          if (
+            !guest &&
+            !hasResolvedSessionCredential(
+              resolvedMerchantKey,
+              resolvedProvisioningKey,
+              Boolean(merchantGrant?.connectionKey),
+              resolvedPartnerKey,
+            )
+          ) {
+            sendJsonRpcMissingCredential(
+              res,
+              jsonRpcIdFromBody(req.body),
+              Boolean(presentedAccessToken),
+            );
+            return;
+          }
+
+          if (!isInitializeRequest(req.body)) {
+            res.status(400).json({
+              jsonrpc: "2.0",
+              error: {
+                code: -32000,
+                message: "Bad Request: No valid MCP session ID provided",
+              },
+              id: null,
+            });
+            return;
+          }
+
+          const accept = registry.canAcceptSessionFor(
+            presentedFingerprint,
+            clientIp(req),
+          );
+          if (!accept.ok) {
+            mcpLog(
+              "mcp_session_rejected",
+              {
+                reason: accept.reason,
+                activeSessions: registry.size,
+                maxSessions: mcpMaxSessions(),
+              },
+              "warn",
+            );
+            res.status(503).json({
+              jsonrpc: "2.0",
+              error: {
+                code: -32000,
+                message: `MCP server at session capacity (${accept.reason}). Try again later.`,
+              },
+              id: null,
+            });
+            return;
+          }
+
+          const sessionState: SessionBootstrapState = {
+            sessionId: null,
+            merchantApiKey: resolvedMerchantKey,
+            provisioningApiKey: resolvedProvisioningKey,
+            partnerApiKey: resolvedPartnerKey,
+            merchantAccessLevel: merchantGrant?.accessLevel ?? "full",
+            merchantAllowedTools: merchantGrant?.allowedTools ?? null,
+          };
+
+          const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            onsessioninitialized: (sid) => {
+              sessionState.sessionId = sid;
+              registry.attachSession(
+                sid,
+                transport,
+                sessionState.merchantApiKey,
+                sessionState.provisioningApiKey,
+                sessionState.merchantAccessLevel,
+                sessionState.partnerApiKey,
+                presentedFingerprint,
+                clientIp(req),
+                sessionState.merchantAllowedTools,
+              );
+              store.sessionId = sid;
+            },
+          });
+
+          const server = wireMcpServer({
+            manifest,
+            mode: "http",
+            guest,
+            merchantAccessLevel: sessionState.merchantAccessLevel,
+            merchantAllowedTools: sessionState.merchantAllowedTools,
+            getApiKey: () =>
+              resolveMerchantKey(
+                registry,
+                sessionState.sessionId ?? undefined,
+                sessionState.merchantApiKey,
+              ),
+            getProvisioningKey: () =>
+              resolveProvisioningKey(
+                registry,
+                sessionState.sessionId ?? undefined,
+                sessionState.provisioningApiKey,
+              ),
+            getPartnerKey: () =>
+              resolvePartnerKey(
+                registry,
+                sessionState.sessionId ?? undefined,
+                sessionState.partnerApiKey,
+              ),
+            onMerchantKeyDiscovered: (secretKey) => {
+              sessionState.merchantApiKey = secretKey;
+              if (sessionState.sessionId) {
+                registry.updateMerchantApiKey(
+                  sessionState.sessionId,
+                  secretKey,
+                );
+              }
+            },
+            onProvisioningKeyDiscovered: (key) => {
+              sessionState.provisioningApiKey = key;
+              if (sessionState.sessionId) {
+                registry.updateProvisioningApiKey(sessionState.sessionId, key);
+              }
+            },
+          });
+          await server.connect(transport);
           // SAFETY: Express Request/Response implement Node IncomingMessage/ServerResponse for the MCP transport.
-          await transport!.handleRequest(
+          await transport.handleRequest(
             req as IncomingMessage,
             res as ServerResponse,
             req.body,
           );
+          return;
         } catch (error) {
           mcpLog(
             "mcp_post_error",
@@ -931,12 +907,10 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           ? sessionHeader[0]
           : sessionHeader;
         if (!sessionId) {
-          res.status(400).send("Invalid or missing MCP session ID");
-          return;
+          return void res.status(400).send("Invalid or missing MCP session ID");
         }
         if (!registry.has(sessionId)) {
-          res.status(404).send("Unknown MCP session");
-          return;
+          return void res.status(404).send("Unknown MCP session");
         }
         const guest = req.path.endsWith("/guest");
         const headerMerchantKey = extractSessionMerchantApiKey(req);
@@ -955,8 +929,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           !sessionFingerprintMatches(bound.credentialFingerprint, presented)
         ) {
           registry.drop(sessionId);
-          applyOauthCors(res);
-          res.status(401).send("MCP session credential mismatch");
+          sendPlainCredentialMismatch(res);
           return;
         }
         store.sessionId = sessionId;
@@ -999,12 +972,10 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           ? sessionHeader[0]
           : sessionHeader;
         if (!sessionId) {
-          res.status(400).send("Invalid or missing MCP session ID");
-          return;
+          return void res.status(400).send("Invalid or missing MCP session ID");
         }
         if (!registry.has(sessionId)) {
-          res.status(404).send("Unknown MCP session");
-          return;
+          return void res.status(404).send("Unknown MCP session");
         }
         const guest = req.path.endsWith("/guest");
         const headerMerchantKey = extractSessionMerchantApiKey(req);
@@ -1023,8 +994,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           !sessionFingerprintMatches(bound.credentialFingerprint, presented)
         ) {
           registry.drop(sessionId);
-          applyOauthCors(res);
-          res.status(401).send("MCP session credential mismatch");
+          sendPlainCredentialMismatch(res);
           return;
         }
         store.sessionId = sessionId;
@@ -1054,7 +1024,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     res.status(204).end();
   }
 
-  app.options(basePath, oauthCorsPreflight);
+  app.options(basePath, rateLimitMiddleware, oauthCorsPreflight);
   app.post(
     basePath,
     rateLimitMiddleware,
@@ -1069,7 +1039,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     mcpDeleteHandler,
   );
 
-  app.options(`${basePath}/guest`, oauthCorsPreflight);
+  app.options(`${basePath}/guest`, rateLimitMiddleware, oauthCorsPreflight);
   app.post(`${basePath}/guest`, rateLimitMiddleware, mcpPostHandler(true));
   app.get(`${basePath}/guest`, rateLimitMiddleware, mcpGetHandler);
   app.delete(`${basePath}/guest`, rateLimitMiddleware, mcpDeleteHandler);
