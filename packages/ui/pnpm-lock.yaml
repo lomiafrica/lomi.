@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@lomi./shared':
+        specifier: file:../shared
+        version: file:../shared
       '@radix-ui/react-checkbox':
         specifier: ^1.0.4
         version: 1.3.11(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -113,6 +116,9 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@lomi./shared@file:../shared':
+    resolution: {directory: ../shared, type: directory}
 
   '@radix-ui/number@1.1.3':
     resolution: {integrity: sha512-Road2bidD0uu/1BGDOWNdPI06g0lIRy6IF9GZcIrDK2KGItfor8IQwQa+yM2ERgHM1MmHxaxpTzk0/Jp42lNfA==}
@@ -776,6 +782,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@lomi./shared@file:../shared':
+    dependencies:
+      libphonenumber-js: 1.13.12
 
   '@radix-ui/number@1.1.3': {}
 

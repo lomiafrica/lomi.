@@ -59,6 +59,23 @@ jobs:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
         run: bash .github/scripts/init-submodules.sh apps/jumbo
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: |
+            apps/jumbo/pnpm-lock.yaml
+            packages/shared/package.json
+            packages/queries/package.json
+
+      - name: Install Jumbo + shared packages
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/jumbo
+
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest

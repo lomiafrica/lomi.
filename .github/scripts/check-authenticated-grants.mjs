@@ -106,6 +106,28 @@ actual AS (
   FROM information_schema.role_table_grants
   WHERE table_schema = 'public'
     AND grantee = 'authenticated'
+  UNION
+  SELECT cols.table_name, 'SELECT'
+  FROM information_schema.columns cols
+  WHERE cols.table_schema = 'public'
+    AND cols.column_name <> 'pin_code_hash'
+    AND NOT EXISTS (
+      SELECT 1
+      FROM information_schema.columns missing
+      WHERE missing.table_schema = 'public'
+        AND missing.table_name = cols.table_name
+        AND missing.column_name <> 'pin_code_hash'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM information_schema.column_privileges granted
+          WHERE granted.table_schema = 'public'
+            AND granted.table_name = missing.table_name
+            AND granted.column_name = missing.column_name
+            AND granted.grantee = 'authenticated'
+            AND granted.privilege_type = 'SELECT'
+        )
+    )
+  GROUP BY cols.table_name
 )
 SELECT e.table_name, e.privilege_type AS missing_privilege
 FROM expected e
@@ -148,6 +170,28 @@ actual AS (
   FROM information_schema.role_table_grants
   WHERE table_schema = 'public'
     AND grantee = 'authenticated'
+  UNION
+  SELECT cols.table_name, 'SELECT'
+  FROM information_schema.columns cols
+  WHERE cols.table_schema = 'public'
+    AND cols.column_name <> 'pin_code_hash'
+    AND NOT EXISTS (
+      SELECT 1
+      FROM information_schema.columns missing
+      WHERE missing.table_schema = 'public'
+        AND missing.table_name = cols.table_name
+        AND missing.column_name <> 'pin_code_hash'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM information_schema.column_privileges granted
+          WHERE granted.table_schema = 'public'
+            AND granted.table_name = missing.table_name
+            AND granted.column_name = missing.column_name
+            AND granted.grantee = 'authenticated'
+            AND granted.privilege_type = 'SELECT'
+        )
+    )
+  GROUP BY cols.table_name
 ),
 missing AS (
   SELECT e.table_name, e.privilege_type AS missing_privilege
