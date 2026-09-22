@@ -9,11 +9,11 @@
   },
   "GET /accounts/balance": {
     "title": "Get account balance",
-    "description": "Return your current available and pending balances per currency. Use to see how much can be paid out right now."
+    "description": "Return available and pending balances per currency. Each row is one currency. Do not add XOF and EUR balances into one total."
   },
   "GET /accounts/balance/breakdown": {
     "title": "Get balance breakdown",
-    "description": "Break the balance into available, pending, and reserved components per currency. Use for reconciliation and cash-flow reporting."
+    "description": "Break the balance into available, pending, and reserved components per currency. Do not add components across different currencies."
   },
   "GET /accounts/balance/{currency}": {
     "title": "Check balance for a currency",
@@ -21,15 +21,19 @@
   },
   "GET /checkout-sessions": {
     "title": "List checkout sessions",
-    "description": "List hosted checkout sessions with status (open, completed, expired). Filter to find a session or audit conversion."
+    "description": "List hosted checkout sessions with status (open, completed, expired). amount is in currency_code. amount_xof is that amount in F CFA, so a 1000 EUR card checkout is included. Never add amount across currencies. For customer spend, use lomi_customers action top."
   },
   "GET /checkout-sessions/{id}": {
     "title": "Get checkout session",
-    "description": "Retrieve one checkout session by id, including status, amount, and resulting transaction. Use to verify whether a customer completed payment."
+    "description": "Retrieve one checkout session by id, including status, amount, currency_code, and amount_xof. amount_xof is the F CFA equivalent, so a 1000 EUR card checkout is included. Do not treat amount as XOF when currency_code is EUR or USD."
   },
   "GET /customers": {
     "title": "List customers",
-    "description": "List customers with pagination and search. Use to find a customer before charging, refunding, or inspecting their history."
+    "description": "List customers with pagination and search. Use to find a customer before charging, refunding, or inspecting their history. This list has no spend. For who spent the most, use action top."
+  },
+  "GET /customers/top": {
+    "title": "Top customers by spend",
+    "description": "Rank customers by completed payment volume already converted into the organization currency. EUR and USD card checkouts are included (1000 EUR is not omitted and is not left as 1000). Use this for top customers. Do not sum transaction or checkout amounts yourself, and do not filter currency to XOF."
   },
   "GET /customers/{id}": {
     "title": "Get customer",
@@ -41,7 +45,7 @@
   },
   "GET /customers/{id}/transactions": {
     "title": "List a customer's transactions",
-    "description": "List every payment made by one customer. Use to review payment history or investigate a disputed charge."
+    "description": "List every payment made by one customer, in every currency. gross_amount is in currency_code. gross_amount_xof is the F CFA equivalent, so a EUR or USD card checkout is included. Sum gross_amount_xof for that customer's volume. Do not skip rows because currency_code is not XOF."
   },
   "GET /coupons": {
     "title": "List discount coupons",
@@ -113,7 +117,7 @@
   },
   "GET /organizations/metrics": {
     "title": "Get organization metrics",
-    "description": "Return aggregate business metrics (volume, revenue, customers) for your organization. Use for dashboards and reporting."
+    "description": "Return aggregate business metrics already converted into the organization currency, including EUR and USD card checkouts. This is one org total, not a customer ranking. For top customers use lomi_customers action top."
   },
   "GET /payment-links": {
     "title": "List payment links",
@@ -133,7 +137,7 @@
   },
   "GET /payouts": {
     "title": "List payouts",
-    "description": "List payouts (funds moved out to your bank/mobile account) with status and amount."
+    "description": "List payouts with status and amount. Amount stays in its own currency. Do not add payout amounts across currency_code."
   },
   "GET /payouts/{id}": {
     "title": "Get payout",
@@ -153,7 +157,7 @@
   },
   "GET /refunds": {
     "title": "List refunds",
-    "description": "List refunds issued against your payments, with status and amount."
+    "description": "List refunds with status and amount. Amount stays in its own currency. Do not add refund amounts across currency_code."
   },
   "GET /refunds/{id}": {
     "title": "Get refund",
@@ -169,7 +173,7 @@
   },
   "GET /settlements": {
     "title": "List settlement periods",
-    "description": "List settlement periods: completed payment totals grouped by availability date and currency. Each settlement_id is {currency}:{YYYY-MM-DD} (UTC)."
+    "description": "List settlement periods grouped by availability date and currency. Each settlement_id is {currency}:{YYYY-MM-DD} (UTC). Do not add settlements across currencies."
   },
   "GET /settlements/{id}/transactions": {
     "title": "List transactions in a settlement",
@@ -193,11 +197,11 @@
   },
   "GET /transactions": {
     "title": "List transactions",
-    "description": "List payments across all channels (Wave, MTN, Orange, card). Filter by status, customer, date, or currency to reconcile revenue or find a charge."
+    "description": "List payments across all channels (Wave, MTN, Orange, card), including EUR and USD checkouts. gross_amount is in currency_code. gross_amount_xof is the F CFA equivalent. Sum gross_amount_xof for volume. Do not pass currency=XOF when the question is total spend, or foreign-currency checkouts disappear. For top customers use lomi_customers action top."
   },
   "GET /transactions/{id}": {
     "title": "Get transaction",
-    "description": "Retrieve one payment by id, including status, amount, channel, customer, and fees."
+    "description": "Retrieve one payment by id, including status, gross_amount, currency_code, channel, customer, and fees. gross_amount_xof is the F CFA equivalent. A completed 1000 EUR card checkout is included there, not omitted and not reported as 1000 XOF."
   },
   "GET /transfers": {
     "title": "List Network transfers",
@@ -269,7 +273,7 @@
   },
   "POST /checkout-sessions": {
     "title": "Create checkout session",
-    "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount/currency or a product, then share the returned link."
+    "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount and currency_code (XOF, EUR, or USD) or a product, then share the returned link. Amount is minor units: 1000.00 EUR is 100000. Completed EUR or USD checkouts still count in customer spend once paid; report that with lomi_customers action top, which converts them."
   },
   "POST /customers": {
     "title": "Create customer",
@@ -517,19 +521,19 @@
   },
   "GET /finance/summary": {
     "title": "Finance summary",
-    "description": "Cash position, receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure."
+    "description": "Cash position is per currency. Receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure are totals already converted to XOF. Do not add cash_position rows together."
   },
   "GET /finance/cashflow": {
     "title": "Cashflow",
-    "description": "Daily inflow and outflow over a date range."
+    "description": "Daily inflow and outflow over a date range. Amounts are already converted to XOF, including foreign-currency payments."
   },
   "GET /finance/aging": {
     "title": "Receivables aging",
-    "description": "Open invoice amounts bucketed by days past due."
+    "description": "Open invoice amounts bucketed by days past due. Bucket totals are already converted to XOF."
   },
   "GET /finance/reconcile": {
     "title": "Reconcile",
-    "description": "Difference between completed transaction net and completed payouts."
+    "description": "Difference between completed transaction net and completed payouts. Both sides are already converted to XOF."
   },
   "GET /payout-methods": {
     "title": "List payout methods",

@@ -30,6 +30,7 @@ export const METHOD_NAME_BY_OP = {
   "GET /checkout-sessions": "list",
   "GET /checkout-sessions/{id}": "get",
   "GET /customers": "list",
+  "GET /customers/top": "topBySpend",
   "GET /customers/{id}": "get",
   "GET /customers/{id}/transactions": "getTransactions",
   "GET /customers/{id}/subscriptions": "getSubscriptions",

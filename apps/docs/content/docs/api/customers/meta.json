@@ -9,6 +9,7 @@
     "CustomersController_getSubscriptions",
     "CustomersController_getTransactions",
     "CustomersController_remove",
+    "CustomersController_topBySpend",
     "CustomersController_update"
   ]
 }

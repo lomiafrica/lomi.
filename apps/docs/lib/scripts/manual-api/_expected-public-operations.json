@@ -18,6 +18,7 @@
   "GET /coupons/{id}",
   "GET /coupons/{id}/performance",
   "GET /customers",
+  "GET /customers/top",
   "GET /customers/{id}",
   "GET /customers/{id}/portal-audit",
   "GET /customers/{id}/subscriptions",

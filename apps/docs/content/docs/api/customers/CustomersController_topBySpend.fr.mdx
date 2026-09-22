@@ -1,0 +1,82 @@
+---
+title: "Clients par volume"
+description: "Clients par volume"
+full: true
+method: get
+path: /customers/top
+operationId: CustomersController_topBySpend
+---
+
+## Aperçu
+
+Clients par volume
+
+Classe les clients par volume de paiements terminés, converti dans la devise de l'organisation. Les encaissements carte en EUR et USD sont inclus.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint pour savoir qui a le plus dépensé. N'additionnez pas les montants de transactions ou de checkout de devises différentes.
+
+### Voir aussi
+
+[Lister les transactions](/api/transactions/TransactionsController_findAll)
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /customers/top`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `limit` | query | Non | number | Nombre de clients à renvoyer (maximum 50) |
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Account` | header | Non | - | Identifiant de compte lomi. Network (`acct_...`), optionnel. |
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Clients ordonnés par volume converti |
+| `401` | Clé API invalide ou manquante |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide.
+
+## Exemple
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/customers/top?limit=10" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `CustomersController_topBySpend`
+- **Operation**: `GET /customers/top`
+
+Schémas complets et **Try it** : [référence API](/api).

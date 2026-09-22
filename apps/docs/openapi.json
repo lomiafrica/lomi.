@@ -1700,6 +1700,92 @@
         ]
       }
     },
+    "/customers/top": {
+      "get": {
+        "description": "Classe les clients par volume de paiements terminés, converti dans la devise de l'organisation. Les encaissements carte en EUR et USD sont inclus.",
+        "operationId": "CustomersController_topBySpend",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Nombre de clients à renvoyer (maximum 50)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clients ordonnés par volume converti. currency_code est la devise de l'organisation pour chaque total_spend.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "example": "list"
+                    },
+                    "currency_code": {
+                      "type": "string",
+                      "example": "XOF"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "public_id": { "type": "string", "nullable": true, "example": "cus_23456789ABCDEF" },
+                          "name": { "type": "string", "example": "Baptiste Gueguen" },
+                          "email": { "type": "string", "nullable": true },
+                          "phone_number": { "type": "string", "nullable": true },
+                          "total_spend": { "type": "number", "example": 655957 },
+                          "transaction_count": { "type": "number", "example": 1 },
+                          "currency_code": { "type": "string", "example": "XOF" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé API invalide ou manquante"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Clients par volume",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
     "/customers/{id}/subscriptions": {
       "get": {
         "description": "Renvoie les abonnements d'un client. Réponse 404 si le client n'existe pas ou n'est pas accessible avec cette clé API.",
@@ -8943,7 +9029,12 @@
           "currency_code": {
             "type": "string",
             "example": "XOF",
-            "description": "Currency code"
+            "description": "Currency of gross_amount"
+          },
+          "gross_amount_xof": {
+            "type": "number",
+            "example": 655957,
+            "description": "gross_amount converted to XOF. A 1000 EUR card checkout is included here. Sum this field for volume."
           },
           "provider_code": {
             "type": "string",
@@ -10294,6 +10385,11 @@
           "amount": {
             "type": "number",
             "example": 123
+          },
+          "amount_xof": {
+            "type": "number",
+            "example": 655957,
+            "description": "amount converted to XOF. A 1000 EUR checkout is included here. Do not add amount across currencies."
           },
           "cancel_url": {
             "type": "string",

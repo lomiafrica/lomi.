@@ -77,6 +77,12 @@ export const FR_OPERATION_COPY = {
     related:
       '[Lister les clients](/api/customers/CustomersController_findAll) · [Mettre à jour un client](/api/customers/CustomersController_update)',
   },
+  CustomersController_topBySpend: {
+    whenToUse:
+      'Utilisez pour savoir qui a le plus dépensé. Le volume est déjà converti dans la devise de l’organisation, y compris les paiements carte en EUR et USD.',
+    related:
+      '[Lister les transactions](/api/transactions/TransactionsController_findAll)',
+  },
   CustomersController_findOne: {
     whenToUse:
       'Utilisez pour afficher un profil client ou valider un ID avant checkout ou abonnement.',

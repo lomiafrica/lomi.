@@ -105,6 +105,14 @@ export const EN_OPERATION_COPY = {
     whenToUse:
       'Use for CRM-style search, back-office lists, and exporting buyer records.',
   },
+  CustomersController_topBySpend: {
+    summary: 'Top customers by spend',
+    body: 'Ranks customers by completed payment volume already converted into the organization currency. Card checkouts in EUR or USD are included.',
+    whenToUse:
+      'Use when you need who spent the most. Do not add transaction or checkout amounts across currencies.',
+    related:
+      '[List transactions](/api/transactions/TransactionsController_findAll)',
+  },
   CustomersController_findOne: {
     summary: 'Retrieve a customer',
     body: 'Returns one customer by ID. Responds with **404** if the record is unknown or not visible to this API key.',

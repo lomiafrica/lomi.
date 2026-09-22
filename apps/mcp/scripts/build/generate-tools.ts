@@ -37,6 +37,19 @@ import {
 } from "@lomi./sdk-scripts/public-sdk-operations";
 import { isJsonObject, isString, parseJson } from "@lomi./shared";
 
+const CURRENCY_NOTES: { [name: string]: string } = {
+  lomi_balance:
+    "Each balance row is one currency. Do not add XOF and EUR balances into one total.",
+  lomi_payouts:
+    "Payout amounts stay in their own currency. Do not add them across currency_code.",
+  lomi_refunds:
+    "Refund amounts stay in their own currency. Do not add them across currency_code.",
+  lomi_settlements:
+    "Settlement totals stay in their own currency. Do not add settlements across currencies.",
+  lomi_finance:
+    "Totals other than cash_position are already in XOF. cash_position stays per currency. Do not add those rows together.",
+};
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const mcpRoot = join(__dirname, "../..");
 const openapiPath = join(mcpRoot, "../docs/openapi.json");
@@ -199,17 +212,22 @@ function main(): void {
 
     const title =
       group.title ?? group.name.replace(/^lomi_/, "").replace(/_/g, " ");
-    const description = buildGroupDescription({
-      title,
-      actions: builtActions.map((built) => ({
-        name: built.name,
-        title: built.action.title,
-        operationKey: built.action.operationKey,
-        required: built.action.requiredInput.filter(
-          (field) => field !== "idempotency_key",
-        ),
-      })),
-    });
+    const description = [
+      buildGroupDescription({
+        title,
+        actions: builtActions.map((built) => ({
+          name: built.name,
+          title: built.action.title,
+          operationKey: built.action.operationKey,
+          required: built.action.requiredInput.filter(
+            (field) => field !== "idempotency_key",
+          ),
+        })),
+      }),
+      CURRENCY_NOTES[group.name],
+    ]
+      .filter(Boolean)
+      .join("\n\n");
 
     const allTags = [
       ...new Set(builtActions.flatMap((built) => built.action.tags)),

@@ -112,7 +112,7 @@
     {
       "name": "lomi_balance",
       "title": "Account balance",
-      "description": "Account balance. Pass required `action` to choose the REST call.\n\nActions:\n- `get` — Get account balance (GET /accounts/balance). No extra required fields.\n- `breakdown` — Get balance breakdown (GET /accounts/balance/breakdown). No extra required fields.\n- `check` — Check balance for a currency (GET /accounts/balance/{currency}). Required: currency.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Account balance. Pass required `action` to choose the REST call.\n\nActions:\n- `get` — Get account balance (GET /accounts/balance). No extra required fields.\n- `breakdown` — Get balance breakdown (GET /accounts/balance/breakdown). No extra required fields.\n- `check` — Check balance for a currency (GET /accounts/balance/{currency}). Required: currency.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nEach balance row is one currency. Do not add XOF and EUR balances into one total.",
       "tags": [
         "Balances"
       ],
@@ -180,7 +180,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get account balance",
-          "description": "Return your current available and pending balances per currency. Use to see how much can be paid out right now.",
+          "description": "Return available and pending balances per currency. Each row is one currency. Do not add XOF and EUR balances into one total.",
           "tags": [
             "Balances"
           ],
@@ -198,7 +198,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get balance breakdown",
-          "description": "Break the balance into available, pending, and reserved components per currency. Use for reconciliation and cash-flow reporting.",
+          "description": "Break the balance into available, pending, and reserved components per currency. Do not add components across different currencies.",
           "tags": [
             "Balances"
           ],
@@ -316,7 +316,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List checkout sessions",
-          "description": "List hosted checkout sessions with status (open, completed, expired). Filter to find a session or audit conversion.",
+          "description": "List hosted checkout sessions with status (open, completed, expired). amount is in currency_code. amount_xof is that amount in F CFA, so a 1000 EUR card checkout is included. Never add amount across currencies. For customer spend, use lomi_customers action top.",
           "tags": [
             "Checkout Sessions"
           ],
@@ -334,7 +334,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get checkout session",
-          "description": "Retrieve one checkout session by id, including status, amount, and resulting transaction. Use to verify whether a customer completed payment.",
+          "description": "Retrieve one checkout session by id, including status, amount, currency_code, and amount_xof. amount_xof is the F CFA equivalent, so a 1000 EUR card checkout is included. Do not treat amount as XOF when currency_code is EUR or USD.",
           "tags": [
             "Checkout Sessions"
           ],
@@ -352,7 +352,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create checkout session",
-          "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount/currency or a product, then share the returned link.",
+          "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount and currency_code (XOF, EUR, or USD) or a product, then share the returned link. Amount is minor units: 1000.00 EUR is 100000. Completed EUR or USD checkouts still count in customer spend once paid; report that with lomi_customers action top, which converts them.",
           "tags": [
             "Checkout Sessions"
           ],
@@ -505,7 +505,7 @@
     {
       "name": "lomi_customers",
       "title": "Customers",
-      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `top` — Top customers by spend (GET /customers/top). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Customers"
       ],
@@ -521,6 +521,7 @@
             "type": "string",
             "enum": [
               "list",
+              "top",
               "get",
               "create",
               "update",
@@ -530,7 +531,7 @@
               "portal_audit",
               "subscriptions"
             ],
-            "description": "Which REST operation to run. One of: list, get, create, update, delete, transactions, portal, portal_audit, subscriptions."
+            "description": "Which REST operation to run. One of: list, top, get, create, update, delete, transactions, portal, portal_audit, subscriptions."
           },
           "body": {
             "type": "object",
@@ -605,7 +606,7 @@
       "readOnly": false,
       "destructive": true,
       "alwaysLoad": true,
-      "searchHint": "audit create customers delete get list patch portal portal_audit post subscriptions transactions update",
+      "searchHint": "audit create customers delete get list patch portal portal_audit post subscriptions top transactions update",
       "actions": {
         "list": {
           "operationKey": "GET /customers",
@@ -623,7 +624,25 @@
           "write": false,
           "wantsBody": false,
           "title": "List customers",
-          "description": "List customers with pagination and search. Use to find a customer before charging, refunding, or inspecting their history.",
+          "description": "List customers with pagination and search. Use to find a customer before charging, refunding, or inspecting their history. This list has no spend. For who spent the most, use action top.",
+          "tags": [
+            "Customers"
+          ],
+          "requiredInput": []
+        },
+        "top": {
+          "operationKey": "GET /customers/top",
+          "method": "get",
+          "pathTemplate": "/customers/top",
+          "pathParamNames": [],
+          "queryParamNames": [
+            "limit"
+          ],
+          "operationId": "CustomersController_topBySpend",
+          "write": false,
+          "wantsBody": false,
+          "title": "Top customers by spend",
+          "description": "Rank customers by completed payment volume already converted into the organization currency. EUR and USD card checkouts are included (1000 EUR is not omitted and is not left as 1000). Use this for top customers. Do not sum transaction or checkout amounts yourself, and do not filter currency to XOF.",
           "tags": [
             "Customers"
           ],
@@ -720,7 +739,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List a customer's transactions",
-          "description": "List every payment made by one customer. Use to review payment history or investigate a disputed charge.",
+          "description": "List every payment made by one customer, in every currency. gross_amount is in currency_code. gross_amount_xof is the F CFA equivalent, so a EUR or USD card checkout is included. Sum gross_amount_xof for that customer's volume. Do not skip rows because currency_code is not XOF.",
           "tags": [
             "Customers"
           ],
@@ -1023,7 +1042,7 @@
     {
       "name": "lomi_finance",
       "title": "Finance",
-      "description": "Finance. Pass required `action` to choose the REST call.\n\nActions:\n- `summary` — Finance summary (GET /finance/summary). No extra required fields.\n- `cashflow` — Cashflow (GET /finance/cashflow). No extra required fields.\n- `aging` — Receivables aging (GET /finance/aging). No extra required fields.\n- `reconcile` — Reconcile (GET /finance/reconcile). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Finance. Pass required `action` to choose the REST call.\n\nActions:\n- `summary` — Finance summary (GET /finance/summary). No extra required fields.\n- `cashflow` — Cashflow (GET /finance/cashflow). No extra required fields.\n- `aging` — Receivables aging (GET /finance/aging). No extra required fields.\n- `reconcile` — Reconcile (GET /finance/reconcile). No extra required fields.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nTotals other than cash_position are already in XOF. cash_position stays per currency. Do not add those rows together.",
       "tags": [
         "Finance"
       ],
@@ -1075,7 +1094,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Finance summary",
-          "description": "Cash position, receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure.",
+          "description": "Cash position is per currency. Receivables, overdue invoices, upcoming payouts, refunds, and dispute exposure are totals already converted to XOF. Do not add cash_position rows together.",
           "tags": [
             "Finance"
           ],
@@ -1094,7 +1113,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Cashflow",
-          "description": "Daily inflow and outflow over a date range.",
+          "description": "Daily inflow and outflow over a date range. Amounts are already converted to XOF, including foreign-currency payments.",
           "tags": [
             "Finance"
           ],
@@ -1110,7 +1129,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Receivables aging",
-          "description": "Open invoice amounts bucketed by days past due.",
+          "description": "Open invoice amounts bucketed by days past due. Bucket totals are already converted to XOF.",
           "tags": [
             "Finance"
           ],
@@ -1126,7 +1145,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Reconcile",
-          "description": "Difference between completed transaction net and completed payouts.",
+          "description": "Difference between completed transaction net and completed payouts. Both sides are already converted to XOF.",
           "tags": [
             "Finance"
           ],
@@ -2026,7 +2045,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get organization metrics",
-          "description": "Return aggregate business metrics (volume, revenue, customers) for your organization. Use for dashboards and reporting.",
+          "description": "Return aggregate business metrics already converted into the organization currency, including EUR and USD card checkouts. This is one org total, not a customer ranking. For top customers use lomi_customers action top.",
           "tags": [
             "Organisations"
           ],
@@ -2461,7 +2480,7 @@
     {
       "name": "lomi_payouts",
       "title": "Payouts",
-      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nPayout amounts stay in their own currency. Do not add them across currency_code.",
       "tags": [
         "Payouts"
       ],
@@ -2541,7 +2560,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List payouts",
-          "description": "List payouts (funds moved out to your bank/mobile account) with status and amount.",
+          "description": "List payouts with status and amount. Amount stays in its own currency. Do not add payout amounts across currency_code.",
           "tags": [
             "Payouts"
           ],
@@ -2956,7 +2975,7 @@
     {
       "name": "lomi_refunds",
       "title": "Refunds",
-      "description": "Refunds. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List refunds (GET /refunds). No extra required fields.\n- `get` — Get refund (GET /refunds/{id}). Required: id.\n- `create` — Create refund (POST /refunds). Required: body, header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Refunds. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List refunds (GET /refunds). No extra required fields.\n- `get` — Get refund (GET /refunds/{id}). Required: id.\n- `create` — Create refund (POST /refunds). Required: body, header_Idempotency-Key.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nRefund amounts stay in their own currency. Do not add them across currency_code.",
       "tags": [
         "Refunds"
       ],
@@ -3046,7 +3065,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List refunds",
-          "description": "List refunds issued against your payments, with status and amount.",
+          "description": "List refunds with status and amount. Amount stays in its own currency. Do not add refund amounts across currency_code.",
           "tags": [
             "Refunds"
           ],
@@ -3329,7 +3348,7 @@
     {
       "name": "lomi_settlements",
       "title": "Settlements",
-      "description": "Settlements. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List settlement periods (GET /settlements). No extra required fields.\n- `transactions` — List transactions in a settlement (GET /settlements/{id}/transactions). Required: id.\n- `create_instant` — Request an instant settlement (POST /settlements/instant). Required: body, header_Idempotency-Key.\n- `get_instant` — Get an instant settlement (GET /settlements/instant/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Settlements. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List settlement periods (GET /settlements). No extra required fields.\n- `transactions` — List transactions in a settlement (GET /settlements/{id}/transactions). Required: id.\n- `create_instant` — Request an instant settlement (POST /settlements/instant). Required: body, header_Idempotency-Key.\n- `get_instant` — Get an instant settlement (GET /settlements/instant/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nSettlement totals stay in their own currency. Do not add settlements across currencies.",
       "tags": [
         "Settlements"
       ],
@@ -3416,7 +3435,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List settlement periods",
-          "description": "List settlement periods: completed payment totals grouped by availability date and currency. Each settlement_id is {currency}:{YYYY-MM-DD} (UTC).",
+          "description": "List settlement periods grouped by availability date and currency. Each settlement_id is {currency}:{YYYY-MM-DD} (UTC). Do not add settlements across currencies.",
           "tags": [
             "Settlements"
           ],
@@ -3978,7 +3997,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List transactions",
-          "description": "List payments across all channels (Wave, MTN, Orange, card). Filter by status, customer, date, or currency to reconcile revenue or find a charge.",
+          "description": "List payments across all channels (Wave, MTN, Orange, card), including EUR and USD checkouts. gross_amount is in currency_code. gross_amount_xof is the F CFA equivalent. Sum gross_amount_xof for volume. Do not pass currency=XOF when the question is total spend, or foreign-currency checkouts disappear. For top customers use lomi_customers action top.",
           "tags": [
             "Transactions"
           ],
@@ -3996,7 +4015,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get transaction",
-          "description": "Retrieve one payment by id, including status, amount, channel, customer, and fees.",
+          "description": "Retrieve one payment by id, including status, gross_amount, currency_code, channel, customer, and fees. gross_amount_xof is the F CFA equivalent. A completed 1000 EUR card checkout is included there, not omitted and not reported as 1000 XOF.",
           "tags": [
             "Transactions"
           ],

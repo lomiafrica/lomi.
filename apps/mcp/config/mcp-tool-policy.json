@@ -31,6 +31,7 @@
       "title": "Customers",
       "actions": {
         "list": "GET /customers",
+        "top": "GET /customers/top",
         "get": "GET /customers/{id}",
         "create": "POST /customers",
         "update": "PATCH /customers/{id}",
