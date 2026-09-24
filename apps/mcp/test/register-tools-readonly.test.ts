@@ -49,9 +49,8 @@ function groupedTool(
 
 describe("registerMerchantTools read-only filter", () => {
   it("skips write tools when readOnlyOnly is true", async () => {
-    const { McpServer } = await import(
-      "@modelcontextprotocol/sdk/server/mcp.js"
-    );
+    const { McpServer } =
+      await import("@modelcontextprotocol/sdk/server/mcp.js");
     const { registerMerchantTools } = await import("../src/register-tools.js");
 
     const manifest: ToolsManifest = {
@@ -86,9 +85,8 @@ describe("registerMerchantTools read-only filter", () => {
   });
 
   it("skips money tools when excludeMoney is true", async () => {
-    const { McpServer } = await import(
-      "@modelcontextprotocol/sdk/server/mcp.js"
-    );
+    const { McpServer } =
+      await import("@modelcontextprotocol/sdk/server/mcp.js");
     const { registerMerchantTools } = await import("../src/register-tools.js");
 
     const manifest: ToolsManifest = {
@@ -127,9 +125,8 @@ describe("registerMerchantTools read-only filter", () => {
   });
 
   it("registers only allowlisted tools and still drops money tools", async () => {
-    const { McpServer } = await import(
-      "@modelcontextprotocol/sdk/server/mcp.js"
-    );
+    const { McpServer } =
+      await import("@modelcontextprotocol/sdk/server/mcp.js");
     const { registerMerchantTools } = await import("../src/register-tools.js");
 
     const manifest: ToolsManifest = {

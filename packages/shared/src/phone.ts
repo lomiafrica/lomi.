@@ -244,8 +244,7 @@ export function applyAssistedPhone<T extends AssistedDialCountry>(
 }
 
 export type AssistedFieldAction =
-  | { kind: "library"; value: string }
-  | { kind: "replace"; value: string };
+  { kind: "library"; value: string } | { kind: "replace"; value: string };
 
 /**
  * Decide what an international phone field should do with the next keystroke

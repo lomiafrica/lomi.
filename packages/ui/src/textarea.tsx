@@ -3,8 +3,7 @@ import * as React from "react";
 import { cn } from "./cn";
 import { interiorField } from "./tokens";
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean;
 }
 

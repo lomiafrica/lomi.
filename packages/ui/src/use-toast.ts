@@ -2,12 +2,7 @@ import { sileo } from "sileo";
 import type { ReactNode } from "react";
 
 type ToastVariant =
-  | "default"
-  | "destructive"
-  | "info"
-  | "success"
-  | "locked"
-  | "notice";
+  "default" | "destructive" | "info" | "success" | "locked" | "notice";
 
 type ToastAction = {
   label: string;

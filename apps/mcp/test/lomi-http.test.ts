@@ -1,7 +1,12 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
+import { isString } from "@lomi./shared";
 import { callLomiRest } from "../src/lomi-http.ts";
 import type { RestCallSpec } from "../src/manifest.ts";
+
+function fetchInitBody(init: RequestInit | undefined): string {
+  return isString(init?.body) ? init.body : "";
+}
 
 describe("callLomiRest", () => {
   beforeEach(() => {
@@ -112,8 +117,8 @@ describe("callLomiRest", () => {
       { baseUrl: "https://api.example.test", apiKey: "k" },
     );
 
-    const explicit = vi.mocked(fetch).mock.calls[0]![1] as RequestInit;
-    expect(JSON.parse(String(explicit.body))).toEqual({
+    const explicit = fetchInitBody(vi.mocked(fetch).mock.calls[0]?.[1]);
+    expect(JSON.parse(explicit)).toEqual({
       name: "Door ticket",
       product_type: "one_time",
       prices: [{ amount: 5000, currency_code: "XOF" }],
@@ -130,8 +135,8 @@ describe("callLomiRest", () => {
       { baseUrl: "https://api.example.test", apiKey: "k" },
     );
 
-    const flattened = vi.mocked(fetch).mock.calls[1]![1] as RequestInit;
-    expect(JSON.parse(String(flattened.body))).toEqual({
+    const flattened = fetchInitBody(vi.mocked(fetch).mock.calls[1]?.[1]);
+    expect(JSON.parse(flattened)).toEqual({
       name: "Door ticket",
       product_type: "one_time",
       prices: [{ amount: 5000, currency_code: "XOF" }],

@@ -37,7 +37,7 @@ import {
 } from "@lomi./sdk-scripts/public-sdk-operations";
 import { isJsonObject, isString, parseJson } from "@lomi./shared";
 
-const CURRENCY_NOTES: { [name: string]: string } = {
+const CURRENCY_NOTES = {
   lomi_balance:
     "Each balance row is one currency. Do not add XOF and EUR balances into one total.",
   lomi_payouts:
@@ -224,7 +224,7 @@ function main(): void {
           ),
         })),
       }),
-      CURRENCY_NOTES[group.name],
+      Object.entries(CURRENCY_NOTES).find(([name]) => name === group.name)?.[1],
     ]
       .filter(Boolean)
       .join("\n\n");

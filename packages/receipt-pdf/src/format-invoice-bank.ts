@@ -6,11 +6,7 @@ import {
 } from "@lomi./shared";
 
 export type InvoiceBankKey =
-  | "account_name"
-  | "iban"
-  | "bic"
-  | "account_number"
-  | "routing";
+  "account_name" | "iban" | "bic" | "account_number" | "routing";
 
 export type InvoiceBankRow = {
   key: InvoiceBankKey;

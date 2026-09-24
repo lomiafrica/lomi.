@@ -20010,6 +20010,7 @@ export type Database = {
       }
       fetch_meters_dashboard: {
         Args: {
+          p_environment?: string
           p_is_active?: boolean
           p_merchant_id: string
           p_organization_id: string
@@ -24168,7 +24169,7 @@ export type Database = {
         Returns: Json
       }
       get_invoice_summary: {
-        Args: { p_organization_id: string }
+        Args: { p_environment?: string; p_organization_id: string }
         Returns: Json
       }
       get_job_application_conversion_funnel: {

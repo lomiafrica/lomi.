@@ -25,7 +25,8 @@ const MotionButton = motion.button as React.ForwardRefExoticComponent<
 >;
 
 interface ButtonProps
-  extends Omit<
+  extends
+    Omit<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
       | "Icon"
       | "iconPlacement"
