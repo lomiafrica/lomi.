@@ -32,7 +32,6 @@ Same columns on each rail page. Empty cells (`-`) mean we do not publish a numbe
 | Channel | Status |
 | --- | --- |
 | Orange Money | Not a lomi. rail |
-| Apple Pay | Not a lomi. rail |
 | Djamo | Coming for Côte d'Ivoire and Senegal |
 
 <Callout type="info">
@@ -41,15 +40,23 @@ Same columns on each rail page. Empty cells (`-`) mean we do not publish a numbe
 
 ## Markets and currencies
 
-| Region / focus | Primary currencies | Mobile money | Cards |
-| --- | --- | --- | --- |
-| UEMOA (Wave-first) | `XOF` | Wave | Yes |
-| MTN countries (see table below) | `XOF`, `XAF`, `GHS`, `UGX`, `ZMW`, `NGN`, `ZAR`, … | MTN | Yes (where enabled) |
-| International cards | `USD`, `EUR` (product-dependent) | - | Yes |
+Cards, Apple Pay, Google Pay, and π-SPI across UEMOA. Wave in Côte d'Ivoire.
 
-## MTN: supported countries [#mtn-momo-supported-countries]
+| Country | Currency | Live methods |
+| --- | --- | --- |
+| Côte d'Ivoire | `XOF` | Wave, cards, Apple Pay, Google Pay, and π-SPI |
+| Benin | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Burkina Faso | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Guinea-Bissau | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Mali | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Niger | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Senegal | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| Togo | `XOF` | Cards, Apple Pay, Google Pay, and π-SPI |
+| International cards | `USD`, `EUR` (product-dependent) | Cards, Apple Pay, and Google Pay |
 
-Hosted checkout and `POST /charge/mtn` support these MTN target environments:
+## MTN: target environments [#mtn-momo-supported-countries]
+
+Hosted checkout and `POST /charge/mtn` can target these MTN environments:
 
 | Country | Dial prefix | MTN target environment |
 | --- | --- | --- |
@@ -70,13 +77,13 @@ Pass `countryCode` (ISO 3166-1 alpha-2) on direct MTN charges when the payer is 
 
 ## Wave
 
-Wave direct charges require **XOF**. The customer completes payment in the Wave app via `wave_launch_url` or `checkout_url` in the API response.
+Wave is in **Côte d'Ivoire**. Direct charges require **XOF**. The customer completes payment in the Wave app via `wave_launch_url` or `checkout_url` in the API response.
 
 In **test** mode, the ledger may credit your test balance when the session is created. In **live** mode, wait for webhooks or poll `GET /transactions/{id}` before fulfilling the order.
 
 ## Cards
 
-Sandbox test numbers and 3D Secure scenarios are listed in [Sandbox payments](/start/sandbox-payments). Use test keys only with test card numbers.
+Hosted card checkout includes Visa, Mastercard, Amex, Apple Pay, and Google Pay. Sandbox test numbers and 3D Secure scenarios are listed in [Sandbox payments](/start/sandbox-payments). Use test keys only with test card numbers.
 
 ## Test vs live
 
