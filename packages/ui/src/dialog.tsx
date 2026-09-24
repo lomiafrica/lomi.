@@ -17,6 +17,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
+    data-lomi-dialog-overlay=""
     className={cn(
       "fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className,
@@ -78,6 +79,7 @@ const DialogContent = React.forwardRef<
         {showOverlay && <DialogOverlay className={overlayClassName} />}
         <DialogPrimitive.Content
           ref={ref}
+          data-lomi-dialog=""
           className={cn(
             "fixed inset-0 z-50 m-auto grid h-fit w-full max-w-lg gap-3 border border-stone-200 bg-white p-6 text-stone-700 shadow-[0_16px_40px_-24px_rgba(28,25,23,0.35)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 sm:rounded-sm dark:border-white/[0.16] dark:bg-[#252522] dark:text-stone-200 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]",
             dialogMotionClassName(variant),
@@ -116,6 +118,7 @@ const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
+    data-lomi-dialog-header=""
     className={cn(
       "flex flex-col space-y-1.5 text-center sm:text-left",
       className,
@@ -130,6 +133,7 @@ const DialogFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
+    data-lomi-dialog-footer=""
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
       className,

@@ -1,12 +1,20 @@
 import {
   isJsonObject,
   isString,
+  readBoolean,
   readString,
   type JsonValue,
 } from "@lomi./shared";
 
 export type InvoiceBankKey =
-  "account_name" | "iban" | "bic" | "account_number" | "routing";
+  | "account_name"
+  | "bank_name"
+  | "provider"
+  | "phone"
+  | "iban"
+  | "bic"
+  | "account_number"
+  | "routing";
 
 export type InvoiceBankRow = {
   key: InvoiceBankKey;
@@ -16,6 +24,9 @@ export type InvoiceBankRow = {
 
 const LABELS = {
   account_name: "Account name",
+  bank_name: "Bank",
+  provider: "Mobile money",
+  phone: "Number",
   iban: "IBAN",
   bic: "BIC",
   account_number: "Account number",
@@ -95,6 +106,9 @@ export function parseInvoiceBankRows(
 
   const structured = [
     rowFromValue("account_name", readString(details, "account_name")),
+    rowFromValue("bank_name", readString(details, "bank_name")),
+    rowFromValue("provider", readString(details, "provider")),
+    rowFromValue("phone", readString(details, "phone")),
     rowFromValue("iban", readString(details, "iban")),
     rowFromValue(
       "bic",
@@ -113,4 +127,21 @@ export function parseInvoiceBankRows(
 
   const content = readString(details, "content");
   return content ? parseContentRows(content) : [];
+}
+
+/** True when the merchant asked for a pay link on this invoice. */
+export function invoiceIncludesPayLink(
+  details: JsonValue | null | undefined,
+): boolean {
+  return isJsonObject(details) && readBoolean(details, "include_pay_link") === true;
+}
+
+/** Bank or mobile-money rows copied from the linked payout account. */
+export function linkedInvoicePaymentRows(
+  details: JsonValue | null | undefined,
+): InvoiceBankRow[] {
+  if (!isJsonObject(details) || !readString(details, "payout_method_id")) {
+    return [];
+  }
+  return parseInvoiceBankRows(details);
 }

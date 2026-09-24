@@ -10695,6 +10695,7 @@ export type Database = {
         Row: {
           account_name: string
           account_number: string
+          auto_withdrawal_cadence: string | null
           auto_withdrawal_day: number | null
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string | null
@@ -10728,6 +10729,7 @@ export type Database = {
         Insert: {
           account_name: string
           account_number: string
+          auto_withdrawal_cadence?: string | null
           auto_withdrawal_day?: number | null
           auto_withdrawal_enabled?: boolean
           auto_withdrawal_last_run?: string | null
@@ -10761,6 +10763,7 @@ export type Database = {
         Update: {
           account_name?: string
           account_number?: string
+          auto_withdrawal_cadence?: string | null
           auto_withdrawal_day?: number | null
           auto_withdrawal_enabled?: boolean
           auto_withdrawal_last_run?: string | null
@@ -20973,6 +20976,7 @@ export type Database = {
         Returns: {
           account_name: string
           account_number: string
+          auto_withdrawal_cadence: string
           auto_withdrawal_day: number
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string
@@ -21003,6 +21007,7 @@ export type Database = {
         Returns: {
           account_name: string
           account_number: string
+          auto_withdrawal_cadence: string
           auto_withdrawal_day: number
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string
@@ -29459,6 +29464,7 @@ export type Database = {
       }
       update_auto_withdrawal_settings: {
         Args: {
+          p_cadence?: string
           p_day: number
           p_enabled: boolean
           p_method?: string
