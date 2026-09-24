@@ -17,10 +17,10 @@ export const VOLUME_TIER_XOF = {
 
 export const DYNAMIC_FEES_XOF = {
   mobileMoney: {
-    starter: { percent: 3.2, fixed: 200, currency: "XOF" },
-    growth: { percent: 2.5, fixed: 150, currency: "XOF" },
-    professional: { percent: 2, fixed: 150, currency: "XOF" },
-    enterprise: { percent: 1.5, fixed: 100, currency: "XOF" },
+    starter: { percent: 2, fixed: 0, currency: "XOF" },
+    growth: { percent: 1.8, fixed: 0, currency: "XOF" },
+    professional: { percent: 1.5, fixed: 0, currency: "XOF" },
+    enterprise: { percent: 1.2, fixed: 0, currency: "XOF" },
   },
   cards: {
     starter: { percent: 5, fixed: 250, currency: "XOF" },
@@ -38,7 +38,7 @@ export const DYNAMIC_FEES_XOF = {
     starter: { percent: 2, fixed: 0, currency: "XOF" },
     growth: { percent: 1.5, fixed: 0, currency: "XOF" },
     professional: { percent: 1, fixed: 0, currency: "XOF" },
-    enterprise: { percent: 0, fixed: 0, currency: "XOF" },
+    enterprise: { percent: 1.2, fixed: 0, currency: "XOF" },
   },
   beneficiaryPayoutMm: {
     starter: { percent: 2, fixed: 0, currency: "XOF" },
@@ -49,10 +49,10 @@ export const DYNAMIC_FEES_XOF = {
 } as const satisfies Record<string, Record<PricingTier, FeeParts>>;
 
 export const FIXED_FEES_XOF = {
-  mobileMoney: { percent: 2.9, fixed: 200, currency: "XOF" },
+  mobileMoney: { percent: 2.5, fixed: 200, currency: "XOF" },
   cards: { percent: 4.5, fixed: 250, currency: "XOF" },
   tapToPay: { percent: 4.5, fixed: 250, currency: "XOF" },
-  posMobileMoney: { percent: 1.5, fixed: 0, currency: "XOF" },
+  posMobileMoney: { percent: 2, fixed: 0, currency: "XOF" },
   localBankPayout: { percent: 0, fixed: 1500, currency: "XOF" },
   internationalBankPayout: { percent: 1, fixed: 3500, currency: "XOF" },
   beneficiaryBankPayout: { percent: 2, fixed: 0, currency: "XOF" },
