@@ -81,14 +81,30 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Publish preview OTA
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.PROFILE == 'preview' && env.SUBMIT != 'true')
+        run: |
+          msg=$(printf '%s' "${{ github.event.head_commit.message || github.sha }}" | head -n1 | cut -c1-80)
+          eas update --channel preview --environment preview --non-interactive --message "$msg"
+          echo "OTA preview: https://expo.dev/accounts/lomiafrica/projects/lomi/updates" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Vendor shared packages for EAS
+        if: github.event_name == 'workflow_dispatch'
         run: node scripts/eas-vendor-packages.mjs
 
       - name: Assert store profile
-        if: env.PROFILE == 'store'
+        if: github.event_name == 'workflow_dispatch' && env.PROFILE == 'store'
         run: node scripts/assert-store-env.mjs
 
+      - name: Write store submit secrets
+        if: github.event_name == 'workflow_dispatch' && env.SUBMIT == 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          EXPO_ASC_API_KEY: ${{ secrets.EXPO_ASC_API_KEY }}
+        run: node scripts/write-store-submit-secrets.mjs
+
       - name: Gate store upload
+        if: github.event_name == 'workflow_dispatch'
         run: |
           if [ "${SUBMIT}" != "true" ]; then
             exit 0
@@ -100,9 +116,12 @@ jobs:
           echo "Submit profile is store. eas.json android track stays internal."
 
       - name: Queue EAS build
+        if: github.event_name == 'workflow_dispatch'
         run: |
           extra=()
           if [ "${SUBMIT}" = "true" ]; then
             extra+=(--auto-submit-with-profile store)
           fi
-          eas build --profile "${PROFILE}" --platform "${PLATFORM}" --non-interactive --no-wait "${extra[@]}"
+          eas build --profile "${PROFILE}" --platform "${PLATFORM}" --non-interactive --no-wait --json "${extra[@]}" | tee /tmp/eas-build.json
+          echo "Build dashboard: https://expo.dev/accounts/lomiafrica/projects/lomi/builds" >> "$GITHUB_STEP_SUMMARY"
+          echo "Starter (~USD 20) meters iOS and Android binaries. Failed builds under 3 minutes are waived (10/month). Do not re-run this job to debug JS." >> "$GITHUB_STEP_SUMMARY"

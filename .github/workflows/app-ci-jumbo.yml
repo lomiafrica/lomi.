@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   check:
@@ -67,3 +68,61 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - uses: expo/expo-github-action@v8
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Publish PR preview OTA
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        id: ota
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          msg=$(printf 'PR #%s %s' "${{ github.event.number }}" "${{ github.event.pull_request.title }}" | cut -c1-80)
+          eas update --branch "pr-${{ github.event.number }}" --environment preview --non-interactive --json --message "$msg" | tee /tmp/eas-update.json
+          echo "published=true" >> "$GITHUB_OUTPUT"
+
+      - name: Comment EAS links
+        if: github.event_name == 'pull_request' && steps.ota.outputs.published == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- jumbo-eas-preview -->';
+            const n = context.payload.pull_request.number;
+            const body = [
+              marker,
+              '### Jumbo preview',
+              '',
+              'JS/copy/UI from this PR is on EAS Update branch `pr-' + n + '`.',
+              'Install the latest preview binary, then this update applies on next launch.',
+              '',
+              '- [EAS updates](https://expo.dev/accounts/lomiafrica/projects/lomi/updates)',
+              '- [EAS builds](https://expo.dev/accounts/lomiafrica/projects/lomi/builds)',
+              '',
+              'Native changes (permissions, new native modules, SDK bumps) still need a new binary: Actions → lomi · deploy · jumbo → `preview`.',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: n,
+            });
+            const existing = comments.find((comment) => comment.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: n,
+              body,
+            });
+

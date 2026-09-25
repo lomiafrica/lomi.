@@ -1,0 +1,81 @@
+name: lomi · e2e · jumbo
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk_path:
+        description: Path to a local APK already on the runner (leave empty to download latest preview)
+        required: false
+        default: ''
+
+concurrency:
+  group: lomi-e2e-jumbo-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  maestro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: apps/jumbo
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Checkout jumbo submodule
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages apps/jumbo
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+          cache-dependency-path: |
+            apps/jumbo/pnpm-lock.yaml
+            packages/shared/package.json
+            packages/queries/package.json
+
+      - name: Install Jumbo + shared packages
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/jumbo
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Download latest preview APK
+        if: inputs.apk_path == ''
+        run: node scripts/eas-download-latest-preview-apk.mjs jumbo-preview.apk
+
+      - name: Install Maestro
+        working-directory: .
+        run: |
+          curl -Ls "https://get.maestro.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run Maestro on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            APK="${{ inputs.apk_path }}"
+            if [ -z "$APK" ]; then
+              APK="apps/jumbo/jumbo-preview.apk"
+            fi
+            adb install -r "$APK"
+            cd apps/jumbo
+            maestro test .maestro/auth-launch.yaml .maestro/charge-critical-path.yaml
