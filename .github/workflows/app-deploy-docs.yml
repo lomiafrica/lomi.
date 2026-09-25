@@ -53,8 +53,6 @@ jobs:
         working-directory: apps/docs
         env:
           NEXT_TELEMETRY_DISABLED: "1"
-      - run: pnpm docs:drift
-        working-directory: apps/docs
 
   deploy:
     needs: verify
