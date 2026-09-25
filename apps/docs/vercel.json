@@ -6,11 +6,6 @@
     "autoJobCancelation": true
   },
   "ignoreCommand": "exit 0",
-  "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 60
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
