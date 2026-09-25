@@ -41,6 +41,11 @@ export type {
   CountryCode,
 } from "./phone.js";
 export {
+  PHONE_AUTH_COUNTRIES,
+  isPhoneAuthCountry,
+  phoneAuthDial,
+} from "./phone-auth-countries.js";
+export {
   normalizeCountryName,
   isCoteDIvoire,
   countryCodeToName,
