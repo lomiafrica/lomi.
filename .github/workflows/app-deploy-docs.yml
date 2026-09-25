@@ -29,6 +29,9 @@ permissions:
   contents: read
 
 jobs:
+  require-check:
+    uses: ./.github/workflows/app-require-check.yml
+
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -55,7 +58,7 @@ jobs:
           NEXT_TELEMETRY_DISABLED: "1"
 
   deploy:
-    needs: verify
+    needs: [verify, require-check]
     if: |
       github.event.client_payload.target == 'production' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
@@ -101,3 +104,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_DOCS }}
         run: node .github/scripts/wait-vercel-deployment.mjs
+      - name: Record production URL
+        env:
+          APP: docs
+        run: node .github/scripts/publish-production-url.mjs

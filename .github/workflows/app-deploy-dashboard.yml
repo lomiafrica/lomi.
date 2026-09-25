@@ -40,7 +40,11 @@ permissions:
   contents: read
 
 jobs:
+  require-check:
+    uses: ./.github/workflows/app-require-check.yml
+
   deploy:
+    needs: require-check
     uses: ./.github/workflows/app-deploy-vercel.yml
     with:
       app: dashboard

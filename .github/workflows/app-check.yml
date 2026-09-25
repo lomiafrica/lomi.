@@ -1,0 +1,42 @@
+name: lomi · check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: lomi · check
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout submodules
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: |
+          set -euo pipefail
+          mapfile -t paths < <(git ls-tree HEAD | awk '$1 == "160000" { print $4 }')
+          bash .github/scripts/init-submodules.sh "${paths[@]}"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install
+        run: pnpm install:apps
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Format
+        run: pnpm format
+      - name: Anti-slop
+        run: pnpm anti-slop
