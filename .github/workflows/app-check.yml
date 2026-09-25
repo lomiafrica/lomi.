@@ -21,8 +21,16 @@ jobs:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
         run: |
           set -euo pipefail
-          mapfile -t paths < <(git ls-tree HEAD | awk '$1 == "160000" { print $4 }')
-          bash .github/scripts/init-submodules.sh "${paths[@]}"
+          bash .github/scripts/init-submodules.sh \
+            packages \
+            apps/dashboard \
+            apps/admin \
+            apps/website \
+            apps/checkout \
+            apps/storefront \
+            apps/customers \
+            apps/api \
+            apps/jumbo
       - uses: pnpm/action-setup@v4
         with:
           version: 9
