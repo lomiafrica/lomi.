@@ -57,7 +57,7 @@ jobs:
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/jumbo
+        run: bash .github/scripts/init-submodules.sh packages apps/jumbo
 
       - uses: pnpm/action-setup@v4
         with:
@@ -103,6 +103,6 @@ jobs:
         run: |
           extra=()
           if [ "${SUBMIT}" = "true" ]; then
-            extra+=(--auto-submit --auto-submit-with-profile store)
+            extra+=(--auto-submit-with-profile store)
           fi
           eas build --profile "${PROFILE}" --platform "${PLATFORM}" --non-interactive --no-wait "${extra[@]}"
