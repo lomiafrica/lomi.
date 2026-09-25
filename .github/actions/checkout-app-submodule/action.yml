@@ -95,3 +95,10 @@ runs:
         ref: ${{ steps.app-ref.outputs.ref }}
         token: ${{ inputs.token }}
         path: ${{ inputs.submodule-path }}
+
+    - name: Checkout workspace packages submodule
+      if: inputs.with-umbrella == 'true'
+      shell: bash
+      env:
+        REPO_CHECKOUT_PAT: ${{ inputs.token }}
+      run: bash .github/scripts/init-submodules.sh packages

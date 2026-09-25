@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Initialize Bubble plugin submodule
-        run: bash .github/scripts/init-submodules.sh apps/plugins/bubble
+        run: bash .github/scripts/init-submodules.sh packages apps/plugins/bubble
 
       - name: Run plugin parity checks
         run: apps/plugins/scripts/verify-lomi-plugins.sh

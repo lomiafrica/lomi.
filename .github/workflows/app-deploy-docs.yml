@@ -1,0 +1,105 @@
+name: lomi · deploy · docs
+
+on:
+  repository_dispatch:
+    types: [lomi-deploy-docs]
+  push:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - "packages/**"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+      - "tooling/scripts/install-app-with-packages.mjs"
+      - "tooling/vercel/docs.json"
+      - ".github/workflows/app-deploy-docs.yml"
+      - ".github/scripts/init-submodules.sh"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch to deploy
+        type: string
+        default: main
+
+concurrency:
+  group: lomi-deploy-docs-${{ github.event.client_payload.pr_number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.client_payload.sha || inputs.ref || github.sha }}
+      - name: Checkout workspace packages
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/docs/pnpm-lock.yaml
+      - name: Install docs with workspace packages
+        run: node tooling/scripts/install-app-with-packages.mjs apps/docs
+      - run: pnpm lint
+        working-directory: apps/docs
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      - run: pnpm docs:drift
+        working-directory: apps/docs
+
+  deploy:
+    needs: verify
+    if: |
+      github.event.client_payload.target == 'production' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.client_payload.sha || inputs.ref || github.sha }}
+      - name: Checkout workspace packages
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages
+      - name: Point umbrella Vercel deploy at docs
+        run: |
+          set -euo pipefail
+          test -f tooling/vercel/docs.json
+          test -f tooling/vercel/umbrella-package.json
+          cp tooling/vercel/docs.json vercel.json
+          git add -f vercel.json
+          cp tooling/vercel/umbrella-package.json package.json
+          git add -f package.json
+      - name: Cancel superseded Vercel builds
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_DOCS }}
+          VERCEL_TARGET: production
+        run: node .github/scripts/cancel-superseded-vercel-deployments.mjs
+      - name: Deploy to Vercel
+        continue-on-error: true
+        uses: amondnet/vercel-action@v42.2.0
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_DOCS }}
+          working-directory: ${{ github.workspace }}
+          target: production
+      - name: Confirm Vercel production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_DOCS }}
+        run: node .github/scripts/wait-vercel-deployment.mjs
