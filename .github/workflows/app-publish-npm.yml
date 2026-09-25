@@ -35,6 +35,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Checkout workspace packages
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -50,10 +55,11 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Install and build
-        working-directory: apps/sdks/ts
         run: |
-          pnpm install --ignore-workspace --frozen-lockfile
-          pnpm run build
+          pnpm --dir packages/shared install --ignore-workspace --frozen-lockfile
+          pnpm --dir packages/shared run build
+          pnpm --dir apps/sdks/ts install --ignore-workspace --frozen-lockfile
+          pnpm --dir apps/sdks/ts run build
 
       - name: Publish if version is new
         run: bash .github/scripts/npm-publish-if-new.sh apps/sdks/ts
