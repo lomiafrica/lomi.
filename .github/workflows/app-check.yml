@@ -38,12 +38,22 @@ jobs:
         with:
           node-version: 22
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install each app
+      - name: Lint, typecheck, and format each app
         run: |
           set -euo pipefail
-          while IFS= read -r dir; do
-            [ -f "$dir/package.json" ] || continue
+          fail=0
+          check_dir() {
+            local dir="$1"
+            [ -f "$dir/package.json" ] || return 0
             node tooling/scripts/install-app-with-packages.mjs "$dir"
+            for script in lint typecheck format; do
+              node --input-type=module -e "import {readFileSync} from 'node:fs'; const s=JSON.parse(readFileSync('$dir/package.json','utf8')).scripts||{}; process.exit(s['$script']?0:1)" || continue
+              echo "==> $dir ($script)"
+              pnpm --dir "$dir" --ignore-workspace run "$script" || fail=1
+            done
+          }
+          while IFS= read -r dir; do
+            check_dir "$dir"
           done <<'EOF'
           apps/dashboard
           apps/admin
@@ -58,14 +68,15 @@ jobs:
           apps/sdks/ts
           apps/sdks/embed
           EOF
-          pnpm --dir packages/pay install --ignore-workspace --no-frozen-lockfile
-          pnpm --dir packages/receipt-pdf install --ignore-workspace --no-frozen-lockfile
-      - name: Lint
-        run: node tooling/scripts/workspace.mjs lint
-      - name: Typecheck
-        run: node tooling/scripts/workspace.mjs typecheck
-      - name: Format
-        run: node tooling/scripts/workspace.mjs format
+          for dir in packages/pay packages/receipt-pdf; do
+            pnpm --dir "$dir" install --ignore-workspace --no-frozen-lockfile
+            for script in lint typecheck format; do
+              node --input-type=module -e "import {readFileSync} from 'node:fs'; const s=JSON.parse(readFileSync('$dir/package.json','utf8')).scripts||{}; process.exit(s['$script']?0:1)" || continue
+              echo "==> $dir ($script)"
+              pnpm --dir "$dir" --ignore-workspace run "$script" || fail=1
+            done
+          done
+          [ "$fail" = 0 ]
       - name: Anti-slop
         run: |
           npm install --prefix "$RUNNER_TEMP/oxlint" oxlint@1.78.0 @oxlint/plugins@1.78.0
