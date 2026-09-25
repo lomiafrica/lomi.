@@ -116,7 +116,9 @@ function rewritePnpmScriptsForNpm(appDir) {
   let changed = false;
   for (const [name, script] of Object.entries(pkg.scripts)) {
     if (!isJsString(script) || !/\bpnpm\s/.test(script)) continue;
-    pkg.scripts[name] = script.replace(/\bpnpm\s+/g, "npm run ");
+    pkg.scripts[name] = script
+      .replace(/\bpnpm exec\s+/g, "npx ")
+      .replace(/\bpnpm\s+/g, "npm run ");
     changed = true;
   }
   if (!changed) return;
