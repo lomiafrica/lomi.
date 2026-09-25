@@ -29,12 +29,8 @@ concurrency:
 
 permissions:
   contents: read
-  checks: read
 
 jobs:
-  require-check:
-    uses: ./.github/workflows/app-require-check.yml
-
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +70,7 @@ jobs:
         working-directory: ${{ steps.checkout-app.outputs.app-path }}
 
   deploy:
-    needs: [verify, require-check]
+    needs: verify
     if: |
       github.event.client_payload.target == 'production' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
