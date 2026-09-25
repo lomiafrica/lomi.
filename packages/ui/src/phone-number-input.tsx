@@ -399,7 +399,7 @@ const PhoneField = React.forwardRef<
           : "dark:text-stone-200 dark:placeholder:text-stone-500",
         compact
           ? "flex h-full w-full min-w-0 px-2 py-0 text-xs outline-none"
-          : "flex h-full w-full min-w-0 px-3 py-1 text-[13px] outline-none",
+          : "flex h-full w-full min-w-0 px-3 py-1 text-base md:text-[13px] outline-none",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-100",
         "border-0 shadow-none rounded-l-none",
         squareJoins ? "rounded-r-none" : "rounded-r-sm",

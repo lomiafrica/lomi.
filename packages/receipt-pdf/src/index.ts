@@ -94,7 +94,12 @@ export {
 export { ReceiptLayout } from "./receipt-layout";
 export { HtmlFiscalQr, PdfFiscalQr } from "./fiscal-qr";
 export { ReceiptPdfDocument } from "./receipt-pdf-document";
-export { parseInvoiceBankRows, formatIbanDisplay, invoiceIncludesPayLink, linkedInvoicePaymentRows } from "./format-invoice-bank";
+export {
+  parseInvoiceBankRows,
+  formatIbanDisplay,
+  invoiceIncludesPayLink,
+  linkedInvoicePaymentRows,
+} from "./format-invoice-bank";
 export type { InvoiceBankRow } from "./format-invoice-bank";
 export { LOMI_WORDMARK_SRC } from "./wordmark";
 export type {

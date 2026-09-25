@@ -28,14 +28,34 @@ const MACHINE_EXACT_PATHS = new Set([
 ]);
 
 const MACHINE_PATH_PREFIXES = [
-  '/api/',
   '/_next/',
   '/og/',
   '/llms.mdx/',
   '/static.json',
   '/agents/',
   '/.well-known/',
+  '/tryit/',
 ] as const;
+
+/**
+ * Next.js route handlers under `app/api`. Docs pages also live at `/api/...`,
+ * so a blanket `/api/` prefix would skip the locale rewrite and 404 them.
+ * Match the route or its children only — `/api/support` must not swallow
+ * `/api/support-requests`.
+ */
+const DOCS_APP_API_ROUTES = [
+  '/api/search',
+  '/api/proxy',
+  '/api/tryit-context',
+  '/api/tryit-prefs',
+  '/api/support',
+] as const;
+
+function isDocsAppApiRoute(pathname: string): boolean {
+  return DOCS_APP_API_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
 
 export function normalizeDocsPath(path: string): string {
   if (!path || path === '/') {
@@ -52,10 +72,14 @@ export function buildDocsMarkdownUrl(pageUrl: string): string {
 }
 
 export function isDocsMachinePath(pathname: string): boolean {
-  if (MACHINE_EXACT_PATHS.has(pathname)) {
+  const path = normalizeDocsPath(pathname);
+  if (MACHINE_EXACT_PATHS.has(path)) {
     return true;
   }
-  return MACHINE_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  if (isDocsAppApiRoute(path)) {
+    return true;
+  }
+  return MACHINE_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
 /**

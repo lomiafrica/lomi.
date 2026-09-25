@@ -6320,7 +6320,7 @@ export type Database = {
           country: string | null
           created_at: string
           deleted_at: string | null
-          email: string
+          email: string | null
           is_deleted: boolean
           merchant_id: string
           metadata: Json | null
@@ -6342,7 +6342,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deleted_at?: string | null
-          email: string
+          email?: string | null
           is_deleted?: boolean
           merchant_id?: string
           metadata?: Json | null
@@ -6364,7 +6364,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deleted_at?: string | null
-          email?: string
+          email?: string | null
           is_deleted?: boolean
           merchant_id?: string
           metadata?: Json | null
@@ -10695,7 +10695,6 @@ export type Database = {
         Row: {
           account_name: string
           account_number: string
-          auto_withdrawal_cadence: string | null
           auto_withdrawal_day: number | null
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string | null
@@ -10729,7 +10728,6 @@ export type Database = {
         Insert: {
           account_name: string
           account_number: string
-          auto_withdrawal_cadence?: string | null
           auto_withdrawal_day?: number | null
           auto_withdrawal_enabled?: boolean
           auto_withdrawal_last_run?: string | null
@@ -10763,7 +10761,6 @@ export type Database = {
         Update: {
           account_name?: string
           account_number?: string
-          auto_withdrawal_cadence?: string | null
           auto_withdrawal_day?: number | null
           auto_withdrawal_enabled?: boolean
           auto_withdrawal_last_run?: string | null
@@ -20976,7 +20973,6 @@ export type Database = {
         Returns: {
           account_name: string
           account_number: string
-          auto_withdrawal_cadence: string
           auto_withdrawal_day: number
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string
@@ -21007,7 +21003,6 @@ export type Database = {
         Returns: {
           account_name: string
           account_number: string
-          auto_withdrawal_cadence: string
           auto_withdrawal_day: number
           auto_withdrawal_enabled: boolean
           auto_withdrawal_last_run: string
@@ -29462,17 +29457,28 @@ export type Database = {
         }
         Returns: undefined
       }
-      update_auto_withdrawal_settings: {
-        Args: {
-          p_cadence?: string
-          p_day: number
-          p_enabled: boolean
-          p_method?: string
-          p_mobile_money_provider?: Database["public"]["Enums"]["provider_code"]
-          p_payout_method_id: string
-        }
-        Returns: undefined
-      }
+      update_auto_withdrawal_settings:
+        | {
+            Args: {
+              p_day: number
+              p_enabled: boolean
+              p_method?: string
+              p_mobile_money_provider?: Database["public"]["Enums"]["provider_code"]
+              p_payout_method_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_cadence?: string
+              p_day: number
+              p_enabled: boolean
+              p_method?: string
+              p_mobile_money_provider?: Database["public"]["Enums"]["provider_code"]
+              p_payout_method_id: string
+            }
+            Returns: undefined
+          }
       update_balances_for_transaction: {
         Args: { p_transaction_id: string }
         Returns: boolean

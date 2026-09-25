@@ -133,7 +133,9 @@ export function parseInvoiceBankRows(
 export function invoiceIncludesPayLink(
   details: JsonValue | null | undefined,
 ): boolean {
-  return isJsonObject(details) && readBoolean(details, "include_pay_link") === true;
+  return (
+    isJsonObject(details) && readBoolean(details, "include_pay_link") === true
+  );
 }
 
 /** Bank or mobile-money rows copied from the linked payout account. */

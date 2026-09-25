@@ -39,6 +39,36 @@ test('docs pages use unprefixed self-canonical URLs for all languages', () => {
   });
 });
 
+test('API reference pages are rewritten; app API routes stay machine paths', async () => {
+  const { isDocsMachinePath, docsMarkdownAcceptRewritePath } =
+    await import('../utils/docs-routing.ts');
+
+  assert.equal(
+    isDocsMachinePath('/api/payment-links/PaymentLinksController_findAll'),
+    false,
+  );
+  assert.equal(isDocsMachinePath('/api/authentication'), false);
+  assert.equal(isDocsMachinePath('/api/support-requests'), false);
+  assert.equal(
+    isDocsMachinePath(
+      '/api/support-requests/SupportRequestsController_findAll',
+    ),
+    false,
+  );
+  assert.equal(isDocsMachinePath('/api/search'), true);
+  assert.equal(isDocsMachinePath('/api/proxy'), true);
+  assert.equal(isDocsMachinePath('/api/support/contact'), true);
+  assert.equal(isDocsMachinePath('/api/tryit-context'), true);
+  assert.equal(isDocsMachinePath('/api/tryit-prefs'), true);
+  assert.equal(isDocsMachinePath('/tryit/handoff'), true);
+  assert.equal(
+    docsMarkdownAcceptRewritePath(
+      '/api/payment-links/PaymentLinksController_findAll',
+    ),
+    '/llms.mdx/api/payment-links/PaymentLinksController_findAll',
+  );
+});
+
 test('markdown Accept rewrites docs pages to the llms.mdx mirror', async () => {
   const { docsMarkdownAcceptRewritePath } =
     await import('../utils/docs-routing.ts');
