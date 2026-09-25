@@ -5,12 +5,7 @@
   "github": {
     "autoJobCancelation": true
   },
-  "ignoreCommand": "[ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ] || exit 0; git diff HEAD^ HEAD --quiet -- . ../../packages/ui ../../packages/shared",
-  "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 60
-    }
-  },
+  "ignoreCommand": "exit 0",
   "headers": [
     {
       "source": "/(.*)",
@@ -87,8 +82,8 @@
       "destination": "/api/$1"
     }
   ],
-  "installCommand": "if [ -f lib/scripts/vercel-install.mjs ]; then node lib/scripts/vercel-install.mjs; else node apps/docs/lib/scripts/vercel-install.mjs; fi",
-  "buildCommand": "if [ -f apps/docs/package.json ]; then pnpm --dir apps/docs build; else pnpm build; fi",
+  "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/docs",
+  "buildCommand": "pnpm --dir apps/docs build",
   "devCommand": "next dev",
   "framework": "nextjs",
   "outputDirectory": ".next",
