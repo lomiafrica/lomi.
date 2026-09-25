@@ -78,7 +78,7 @@ jobs:
           fi
 
       - name: Point umbrella Vercel deploys at the app
-        if: ${{ inputs.working-directory-mode == 'umbrella' && (inputs.app == 'admin' || inputs.app == 'website' || inputs.app == 'dashboard' || inputs.app == 'checkout' || inputs.app == 'storefront' || inputs.app == 'customers') }}
+          if: ${{ inputs.working-directory-mode == 'umbrella' && (inputs.app == 'admin' || inputs.app == 'website' || inputs.app == 'dashboard' || inputs.app == 'checkout' || inputs.app == 'storefront' || inputs.app == 'customers' || inputs.app == 'docs') }}
         run: |
           set -euo pipefail
           test -f "tooling/vercel/${{ inputs.app }}.json"
