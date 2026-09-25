@@ -9,16 +9,17 @@ WORKDIR /app
 # file: dependencies live outside apps/mcp and dist/ is gitignored.
 # packages/shared is a private submodule. Railway clones the public umbrella
 # without initializing it, so do not COPY that path — it is absent and fails
-# the build. Clone lomiafrica/packages with a BuildKit secret (preferred) or
-# Railway ARG. The key is read from a script so it does not land in the RUN
+# the build. Clone lomiafrica/packages with LOMI_PACKAGES_SSH_KEY (Railway
+# ARG). The key is read from a script so it does not land in the RUN
 # instruction or image history command.
 COPY apps/sdks/scripts ./apps/sdks/scripts
 COPY apps/mcp/package.json apps/mcp/pnpm-lock.yaml ./apps/mcp/
 COPY apps/mcp/scripts/build/clone-packages-shared.sh /tmp/clone-packages-shared.sh
 
+# Railway's Metal builder only accepts --mount=type=cache. Read the deploy
+# key from ARG via the script so the value never appears in this RUN line.
 ARG LOMI_PACKAGES_SSH_KEY
-RUN --mount=type=secret,id=LOMI_PACKAGES_SSH_KEY \
-    sh /tmp/clone-packages-shared.sh \
+RUN sh /tmp/clone-packages-shared.sh \
     && rm -f /tmp/clone-packages-shared.sh
 
 RUN corepack enable \

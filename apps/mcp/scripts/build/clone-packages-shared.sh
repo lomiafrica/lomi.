@@ -1,8 +1,8 @@
 #!/bin/sh
 # Fetch packages/shared from private lomiafrica/packages during the MCP image
-# build. Prefers the BuildKit secret; falls back to LOMI_PACKAGES_SSH_KEY in
-# the environment (Railway ARG) so the key never appears in the Dockerfile
-# RUN line or image history command.
+# build. Railway injects LOMI_PACKAGES_SSH_KEY as an ARG/env for this RUN.
+# The Dockerfile RUN line only invokes this script so the key never appears
+# in image history. /run/secrets is used when a builder mounts it.
 set -eu
 
 keyfile="$(mktemp)"
