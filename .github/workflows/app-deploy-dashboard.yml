@@ -38,6 +38,7 @@ concurrency:
 
 permissions:
   contents: read
+  checks: read
 
 jobs:
   require-check:
