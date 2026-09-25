@@ -57,9 +57,9 @@ jobs:
           apps/jumbo
           apps/sdks/ts
           apps/sdks/embed
-          packages/pay
-          packages/receipt-pdf
           EOF
+          pnpm --dir packages/pay install --ignore-workspace --no-frozen-lockfile
+          pnpm --dir packages/receipt-pdf install --ignore-workspace --no-frozen-lockfile
       - name: Lint
         run: node tooling/scripts/workspace.mjs lint
       - name: Typecheck
