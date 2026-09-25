@@ -199,7 +199,9 @@ function wipeCachedLomiPackages(dir) {
 
 function installDeps(appRel, dir, { frozen }) {
   if (useNpm(appRel)) {
-    run("npm", ["install", "--ignore-scripts", "--include=dev"], dir);
+    const args = ["install", "--ignore-scripts", "--include=dev"];
+    if (appRel === "apps/docs") args.push("--legacy-peer-deps");
+    run("npm", args, dir);
     return;
   }
   const args = ["install", "--ignore-workspace"];
