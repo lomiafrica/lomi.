@@ -94,3 +94,7 @@
 	path = apps/tools/xrpl
 	url = https://github.com/lomiafrica/xrpl.git
 	branch = main
+[submodule "packages"]
+	path = packages
+	url = https://github.com/lomiafrica/packages.git
+	branch = main

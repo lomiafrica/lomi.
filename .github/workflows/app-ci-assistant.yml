@@ -33,7 +33,7 @@ jobs:
       - name: Init private submodules
         env:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/api apps/dashboard
+        run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
 
       - uses: actions/setup-node@v4
         with:
@@ -60,7 +60,7 @@ jobs:
         working-directory: .
         env:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/api apps/dashboard
+        run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
 
       - uses: pnpm/action-setup@v4
         with:
@@ -91,7 +91,7 @@ jobs:
         working-directory: .
         env:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/dashboard
+        run: bash .github/scripts/init-submodules.sh packages apps/dashboard
 
       - uses: pnpm/action-setup@v4
         with:

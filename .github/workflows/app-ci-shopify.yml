@@ -37,7 +37,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/plugins/shopify
+        run: bash .github/scripts/init-submodules.sh packages apps/plugins/shopify
 
       - uses: pnpm/action-setup@v4
         with:

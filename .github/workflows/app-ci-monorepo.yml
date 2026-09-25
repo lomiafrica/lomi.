@@ -53,11 +53,11 @@ jobs:
         working-directory: ./apps/api
     steps:
       - uses: actions/checkout@v5
-      - name: Checkout private API + dashboard submodules
+      - name: Checkout private API + dashboard + packages submodules
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/api apps/dashboard
+        run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -90,6 +90,11 @@ jobs:
         working-directory: ./apps/docs
     steps:
       - uses: actions/checkout@v5
+      - name: Checkout workspace packages
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -130,11 +135,11 @@ jobs:
         working-directory: ./apps/admin
     steps:
       - uses: actions/checkout@v5
-      - name: Checkout private admin submodule
+      - name: Checkout private admin + packages submodules
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/admin
+        run: bash .github/scripts/init-submodules.sh packages apps/admin
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -155,11 +160,11 @@ jobs:
         working-directory: ./apps/checkout
     steps:
       - uses: actions/checkout@v5
-      - name: Checkout checkout submodule
+      - name: Checkout checkout + packages submodules
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/checkout
+        run: bash .github/scripts/init-submodules.sh packages apps/checkout
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -182,11 +187,11 @@ jobs:
         working-directory: ./packages/shared
     steps:
       - uses: actions/checkout@v5
-      - name: Checkout dashboard submodule
+      - name: Checkout dashboard + packages submodules
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/dashboard
+        run: bash .github/scripts/init-submodules.sh packages apps/dashboard
       - uses: pnpm/action-setup@v4
         with:
           version: 9

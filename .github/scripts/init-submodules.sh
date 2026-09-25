@@ -38,15 +38,35 @@ url_for_path() {
   return 1
 }
 
-git submodule sync -- "$@"
+is_gitlink() {
+  local path="$1" mode
+  mode="$(git ls-tree HEAD -- "$path" | awk '{print $1}')"
+  [[ "$mode" == "160000" ]]
+}
 
-if git -c protocol.version=1 submodule update --init --force --checkout -- "$@"; then
+paths=()
+for path in "$@"; do
+  if is_gitlink "$path"; then
+    paths+=("$path")
+  else
+    echo "skip ${path} (not a submodule gitlink)"
+  fi
+done
+
+if [[ ${#paths[@]} -eq 0 ]]; then
+  echo "no submodule gitlinks to initialize"
+  exit 0
+fi
+
+git submodule sync -- "${paths[@]}"
+
+if git -c protocol.version=1 submodule update --init --force --checkout -- "${paths[@]}"; then
   exit 0
 fi
 
 echo "submodule update failed; fetching pinned SHAs directly" >&2
 
-for path in "$@"; do
+for path in "${paths[@]}"; do
   sha="$(git rev-parse "HEAD:${path}")"
   url="$(url_for_path "$path")"
   if [[ -z "$url" ]]; then

@@ -33,10 +33,10 @@ jobs:
           submodules: recursive
           token: ${{ secrets.REPO_CHECKOUT_PAT }}
 
-      - name: Ensure private API submodule is present
+      - name: Ensure private API and packages submodules are present
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh apps/api
+        run: bash .github/scripts/init-submodules.sh packages apps/api
 
       - uses: pnpm/action-setup@v4
         with:

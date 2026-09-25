@@ -1,13 +1,6 @@
 {
-  "git": {
-    "deploymentEnabled": false
-  },
-  "github": {
-    "autoJobCancelation": true
-  },
-  "ignoreCommand": "[ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ] || exit 0; git diff HEAD^ HEAD --quiet -- . ../../packages/ui ../../packages/shared",
   "functions": {
-    "app/api/**/*.ts": {
+    "apps/docs/app/api/**/*.ts": {
       "maxDuration": 60
     }
   },
@@ -53,45 +46,13 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
-    },
-    {
-      "source": "/sitemap.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, s-maxage=86400"
-        }
-      ]
-    },
-    {
-      "source": "/robots.txt",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/plain"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, s-maxage=86400"
-        }
-      ]
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ],
-  "installCommand": "if [ -f lib/scripts/vercel-install.mjs ]; then node lib/scripts/vercel-install.mjs; else node apps/docs/lib/scripts/vercel-install.mjs; fi",
-  "buildCommand": "if [ -f apps/docs/package.json ]; then pnpm --dir apps/docs build; else pnpm build; fi",
-  "devCommand": "next dev",
+  "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/docs",
+  "buildCommand": "pnpm --dir apps/docs build",
+  "devCommand": "pnpm --dir apps/docs dev",
   "framework": "nextjs",
-  "outputDirectory": ".next",
+  "outputDirectory": "apps/docs/.next",
   "regions": ["fra1"],
   "env": {
     "NEXT_TELEMETRY_DISABLED": "1"
