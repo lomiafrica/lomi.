@@ -38,15 +38,15 @@ jobs:
         with:
           node-version: 22
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install each app
+      - name: Install
         run: |
           set -euo pipefail
+          printf '%s\n' '{"private":true,"name":"lomi.","packageManager":"pnpm@9.15.9"}' > package.json
+          pnpm install --no-frozen-lockfile
           while IFS= read -r dir; do
             [ -f "$dir/package.json" ] || continue
-            node tooling/scripts/install-app-with-packages.mjs "$dir"
+            pnpm --dir "$dir" install --ignore-workspace --no-frozen-lockfile
           done <<'EOF'
-          apps/dashboard
-          apps/admin
           apps/website
           apps/docs
           apps/checkout
@@ -57,9 +57,9 @@ jobs:
           apps/jumbo
           apps/sdks/ts
           apps/sdks/embed
+          packages/pay
+          packages/receipt-pdf
           EOF
-          pnpm --dir packages/pay install --ignore-workspace --no-frozen-lockfile
-          pnpm --dir packages/receipt-pdf install --ignore-workspace --no-frozen-lockfile
       - name: Lint
         run: node tooling/scripts/workspace.mjs lint
       - name: Typecheck
