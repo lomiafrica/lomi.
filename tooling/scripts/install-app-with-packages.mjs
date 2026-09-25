@@ -209,7 +209,7 @@ function installDeps(appRel, dir, { frozen }) {
   const args = ["install", "--ignore-workspace"];
   if (frozen && existsSync(path.join(dir, "pnpm-lock.yaml"))) {
     args.push("--frozen-lockfile");
-  } else if (!existsSync(path.join(dir, "pnpm-lock.yaml"))) {
+  } else {
     args.push("--no-frozen-lockfile");
   }
   run("pnpm", args, dir);

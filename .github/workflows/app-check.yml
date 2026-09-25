@@ -38,15 +38,15 @@ jobs:
         with:
           node-version: 22
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install
+      - name: Install each app
         run: |
           set -euo pipefail
-          printf '%s\n' '{"private":true,"name":"lomi.","packageManager":"pnpm@9.15.9"}' > package.json
-          pnpm install --no-frozen-lockfile
           while IFS= read -r dir; do
             [ -f "$dir/package.json" ] || continue
-            pnpm --dir "$dir" install --ignore-workspace --no-frozen-lockfile
+            node tooling/scripts/install-app-with-packages.mjs "$dir"
           done <<'EOF'
+          apps/dashboard
+          apps/admin
           apps/website
           apps/docs
           apps/checkout
