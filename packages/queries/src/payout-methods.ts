@@ -4,7 +4,9 @@ import { rpc } from "./rpc.js";
 import type { TypedSupabaseClient } from "./types.js";
 
 export type PayoutMethodByOrgRow =
-  Database["public"]["Functions"]["fetch_payout_methods_by_org"]["Returns"][number];
+  Database["public"]["Functions"]["fetch_payout_methods_by_org"]["Returns"][number] & {
+    auto_withdrawal_cadence?: string | null;
+  };
 
 /**
  * Raw `fetch_payout_methods_by_org` rows. Apps map into dashboard PayoutMethod shapes.
