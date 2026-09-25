@@ -14,7 +14,8 @@
  * project Node version (24.x). pnpm on those uploads hits ERR_INVALID_THIS
  * talking to the registry. Do not pin engines.node or a root .node-version
  * to 22: Vercel treats that as an override of the project 24.x setting.
- * Docs keeps pnpm on its own project Node 22.x.
+ * Docs uses npm on Vercel too: pnpm 9/10 both hit ERR_INVALID_THIS
+ * talking to the registry on Fluid builders.
  * Website also links apps/website/node_modules/next to the upload root:
  * @vercel/next resolves next/package.json from cwd, not the app directory.
  * Source-only packages (@lomi./ui) still get their own install: Next compiles
@@ -105,7 +106,7 @@ function neededPackageDirs(pkg) {
 }
 
 function useNpm(appRel) {
-  return Boolean(process.env.VERCEL) && appRel !== "apps/docs";
+  return Boolean(process.env.VERCEL);
 }
 
 function rewritePnpmScriptsForNpm(appDir) {
@@ -420,7 +421,10 @@ function main() {
   }
 
   const { pkg, rewritten } = rewriteWorkspaceSpecsToFile(appDir);
-  if (useNpm(appRel) && appRel === "apps/website") {
+  if (
+    useNpm(appRel) &&
+    (appRel === "apps/website" || appRel === "apps/docs")
+  ) {
     rewritePnpmScriptsForNpm(appDir);
   }
   installFileApp(appRel, pkg, { frozen: !rewritten });
@@ -428,6 +432,7 @@ function main() {
   if (
     useNpm(appRel) &&
     (appRel === "apps/website" ||
+      appRel === "apps/docs" ||
       appRel === "apps/checkout" ||
       appRel === "apps/storefront" ||
       appRel === "apps/customers")
