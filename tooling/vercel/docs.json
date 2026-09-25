@@ -43,8 +43,8 @@
       ]
     }
   ],
-  "installCommand": "node tooling/scripts/install-app-with-packages.mjs apps/docs",
-  "buildCommand": "pnpm --dir apps/docs build",
+  "installCommand": "corepack enable && corepack prepare pnpm@9.15.9 --activate && node tooling/scripts/install-app-with-packages.mjs apps/docs",
+  "buildCommand": "corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm --dir apps/docs build",
   "devCommand": "pnpm --dir apps/docs dev",
   "framework": "nextjs",
   "outputDirectory": "apps/docs/.next",
