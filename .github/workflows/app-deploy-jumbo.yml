@@ -85,7 +85,8 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.PROFILE == 'preview' && env.SUBMIT != 'true')
         run: |
           msg=$(printf '%s' "${{ github.event.head_commit.message || github.sha }}" | head -n1 | cut -c1-80)
-          eas update --channel preview --environment preview --non-interactive --message "$msg"
+          eas update --channel preview --environment preview --non-interactive --platform ios --message "$msg"
+          eas update --channel preview --environment preview --non-interactive --platform android --message "$msg"
           echo "OTA preview: https://expo.dev/accounts/lomiafrica/projects/lomi/updates" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Vendor shared packages for EAS
