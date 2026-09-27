@@ -3,9 +3,9 @@ name: lomi · backup · supabase · storage
 on:
   workflow_dispatch:
   schedule:
-    # Storage object sync is incremental (rclone copies only changed files), so it is
-    # cheap to run hourly and keeps the off-platform file copy close to real time.
-    - cron: "43 * * * *"
+    # Every 6 hours. Each run still lists every object, so hourly walks scaled with
+    # bucket size. New and resized files are copied; same-size overwrites are not.
+    - cron: "43 */6 * * *"
 
 concurrency:
   group: lomi-backup-supabase-storage
@@ -125,6 +125,7 @@ jobs:
               "supabase:${bucket}" \
               "backup:${BACKUP_S3_BUCKET}/${prefix}/storage/${bucket}" \
               --backup-dir "backup:${BACKUP_S3_BUCKET}/${prefix}/storage-versions/${timestamp}/${bucket}" \
+              --size-only \
               --fast-list \
               --transfers 8 \
               --checkers 16 \
