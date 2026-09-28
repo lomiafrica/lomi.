@@ -154,16 +154,20 @@ jobs:
           done
           psql "$SCRATCH_DB_URL" -tAc 'select version()'
 
-          # Scratch image already owns schema auth; the postgres role cannot
-          # create there. Stub jwt/uid as supabase_admin so dumped policies compile.
-          cid="$(docker ps -q --filter "ancestor=supabase/postgres:17.4.1.075" | head -n1)"
-          if [ -z "$cid" ]; then
-            echo "::error::Could not find supabase postgres container to stub auth helpers"
-            exit 1
-          fi
-          stub='GRANT USAGE ON SCHEMA auth TO postgres, PUBLIC; CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $auth_stub$ SELECT NULL::jsonb $auth_stub$; CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $auth_stub$ SELECT NULL::uuid $auth_stub$; GRANT EXECUTE ON FUNCTION auth.jwt() TO PUBLIC; GRANT EXECUTE ON FUNCTION auth.uid() TO PUBLIC;'
-          if ! docker exec "$cid" psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -c "$stub"; then
-            docker exec "$cid" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c "SET ROLE supabase_admin; $stub"
+          # Scratch image owns schema auth. postgres cannot CREATE there; jwt() is
+          # missing from the image (uid() already exists). Install jwt as the
+          # image admin, or rewrite schema.sql so dumped policies still compile.
+          stub='CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $auth_stub$ SELECT NULL::jsonb $auth_stub$; GRANT EXECUTE ON FUNCTION auth.jwt() TO PUBLIC;'
+          created=0
+          for user in supabase_admin supabase_auth_admin; do
+            if psql "postgresql://${user}:drill-only-password@localhost:5432/postgres" -v ON_ERROR_STOP=1 -c "$stub"; then
+              created=1
+              break
+            fi
+          done
+          if [ "$created" -eq 0 ]; then
+            echo "::warning::Could not CREATE auth.jwt(); rewriting schema.sql references so policies compile"
+            perl -pi -e 's/\bauth\.jwt\s*\(\s*\)/NULL::jsonb/g' schema.sql
           fi
 
           # Supabase's dump filters already strip reserved roles and internal schemas;
