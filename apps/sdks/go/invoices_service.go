@@ -10,9 +10,9 @@ type InvoicesService struct {
 	client *Client
 }
 
-func (s *InvoicesService) Create() (interface{}, error) {
+func (s *InvoicesService) Create(body interface{}) (interface{}, error) {
 		path := "/invoices"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -152,10 +152,10 @@ func (s *InvoicesService) Send(id string) (interface{}, error) {
 	}
 
 
-func (s *InvoicesService) Update(id string) (interface{}, error) {
+func (s *InvoicesService) Update(id string, body interface{}) (interface{}, error) {
 		path := "/invoices/{id}"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("PATCH", path, nil, nil)
+		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

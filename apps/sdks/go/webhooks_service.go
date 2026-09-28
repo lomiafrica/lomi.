@@ -10,9 +10,9 @@ type WebhooksService struct {
 	client *Client
 }
 
-func (s *WebhooksService) Create() (interface{}, error) {
+func (s *WebhooksService) Create(body interface{}) (interface{}, error) {
 		path := "/webhooks"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

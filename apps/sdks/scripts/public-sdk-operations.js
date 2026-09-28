@@ -81,6 +81,7 @@ export const METHOD_NAME_BY_OP = {
   "POST /charge/card": "createCardCharge",
   "GET /charge/card/{id}": "getCardCharge",
   "POST /charge/card/{id}/cancel": "cancelCardCharge",
+  "POST /charge/card/{id}/capture": "captureCardCharge",
   "POST /payouts": "create",
   "GET /payouts": "list",
   "GET /payouts/{id}": "get",

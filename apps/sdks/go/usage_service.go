@@ -44,9 +44,9 @@ func (s *UsageService) Create() (interface{}, error) {
 	}
 
 
-func (s *UsageService) CreateEntitlement() (interface{}, error) {
+func (s *UsageService) CreateEntitlement(body interface{}) (interface{}, error) {
 		path := "/usage/entitlements"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -61,9 +61,9 @@ func (s *UsageService) CreateEntitlement() (interface{}, error) {
 	}
 
 
-func (s *UsageService) CreateSubscription() (interface{}, error) {
+func (s *UsageService) CreateSubscription(body interface{}) (interface{}, error) {
 		path := "/usage/subscriptions"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -113,9 +113,9 @@ func (s *UsageService) GetRevenue(params map[string]string) (interface{}, error)
 	}
 
 
-func (s *UsageService) GrantCredits() (interface{}, error) {
+func (s *UsageService) GrantCredits(body interface{}) (interface{}, error) {
 		path := "/usage/credits"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

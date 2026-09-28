@@ -1,0 +1,91 @@
+---
+title: "Capturer un blocage carte"
+description: "Capturer un blocage carte"
+full: true
+method: post
+path: /charge/card/{id}/capture
+operationId: ChargesController_captureCardCharge
+---
+
+## Overview
+
+Capturer un blocage carte
+
+Prélève tout ou partie d’un blocage carte confirmé. Un montant inférieur libère le reste. La vente est terminée quand le prélèvement est enregistré.
+
+### Quand l'utiliser
+
+Utilisez après confirmation du blocage (`status` vaut `requires_capture`), quand vous connaissez le montant à conserver.
+
+### Points d'attention
+
+Envoyez `Idempotency-Key`. Omettez `amount` pour prendre tout le blocage. Le montant prélevé doit respecter le minimum carte. Un seul prélèvement est possible.
+
+### Voir aussi
+
+[Blocages carte](/build/accept/card-holds) · [Annuler un encaissement carte](/api/charge/ChargesController_cancelCardCharge)
+
+## Authentication
+
+Les routes marchand exigent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** sur `https://sandbox.api.lomi.africa` et une clé **live** sur `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /charge/card/{id}/capture`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Paramètres de chemin
+
+| Nom | Requis | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | Identifiant de paiement carte (pi_...) |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | In | Requis | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Oui | - | Obligatoire pour cet appel qui déplace de l’argent. Réutilisez la même clé pour réessayer le même prélèvement. |
+| `Lomi-Account` | header | Non | - | Identifiant de compte lomi. Network optionnel (`acct_...`). S’il est présent, la clé API agit comme Opérateur et la requête vise le compte membre connecté. |
+
+### Corps de la requête
+
+| Champ | Requis | Description |
+| --- | --- | --- |
+| `amount` | Non | Montant à prélever, dans la même devise que le blocage. Omettre pour capturer tout le blocage. |
+
+## Responses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Blocage carte capturé |
+
+## Errors
+
+Les erreurs suivent le format JSON standard (code de statut et message lisible par une machine). Validez les entrées avant l’appel ; **401** indique une clé absente ou invalide, **404** une ressource absente pour cette organisation, **429** une limite de débit. Envoyez `Idempotency-Key` à chaque capture.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/capture" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: capture-senoto-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":25000}'
+```
+
+## OpenAPI
+
+- **operationId**: `ChargesController_captureCardCharge`
+- **Operation**: `POST /charge/card/{id}/capture`
+
+Schémas complets et **Try it** : [Référence API](/api). Contrat machine : `apps/docs/openapi.json` dans le dépôt.

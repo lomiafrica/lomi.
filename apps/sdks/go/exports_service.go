@@ -10,9 +10,9 @@ type ExportsService struct {
 	client *Client
 }
 
-func (s *ExportsService) Create() (interface{}, error) {
+func (s *ExportsService) Create(body interface{}) (interface{}, error) {
 		path := "/exports"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

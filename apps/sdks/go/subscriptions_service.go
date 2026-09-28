@@ -117,10 +117,10 @@ func (s *SubscriptionsService) Resume(id string) (interface{}, error) {
 	}
 
 
-func (s *SubscriptionsService) Update(id string) (interface{}, error) {
+func (s *SubscriptionsService) Update(id string, body interface{}) (interface{}, error) {
 		path := "/subscriptions/{id}"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("PATCH", path, nil, nil)
+		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

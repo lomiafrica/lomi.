@@ -6552,6 +6552,74 @@
         ]
       }
     },
+    "/charge/card/{id}/capture": {
+      "post": {
+        "description": "Takes some or all of a confirmed card hold. A lower amount releases the rest. The sale completes when the capture is recorded.",
+        "operationId": "ChargesController_captureCardCharge",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Card payment id (pi_...)",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required unique key for this write. Replays return the original response.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptureCardChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Card hold captured"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Capture card hold",
+        "tags": [
+          "Advanced Direct Charges"
+        ]
+      }
+    },
     "/invoices": {
       "post": {
         "operationId": "InvoicesController_create",
@@ -12732,6 +12800,11 @@
             "example": "ORDER_95",
             "description": "lomi. Network transfer group. Links this payment to later transfers (`POST /transfers` with the same transfer_group) for separate charges and transfers."
           },
+          "hold": {
+            "type": "boolean",
+            "example": true,
+            "description": "Block the amount on the card without taking it. Capture or cancel later. Cards only."
+          },
           "amount": {
             "type": "number",
             "example": 10000,
@@ -12840,6 +12913,16 @@
           "amount"
         ]
       },
+      "CaptureCardChargeDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 25000,
+            "description": "Amount to take, in the same currency as the hold. Omit to capture the full hold. The rest is released."
+          }
+        }
+      },
       "CardChargeAppearanceDto": {
         "type": "object",
         "properties": {
@@ -12887,6 +12970,21 @@
           "status": {
             "type": "string",
             "example": "requires_payment_method"
+          },
+          "hold": {
+            "type": "boolean",
+            "example": true,
+            "description": "True when this charge blocks the card instead of taking the money now."
+          },
+          "capture_before": {
+            "type": "string",
+            "example": "2026-10-05T16:00:00.000Z",
+            "description": "Deadline to capture a hold. Null until the customer confirms the card."
+          },
+          "amount_capturable": {
+            "type": "number",
+            "example": 100000,
+            "description": "Amount still blocked, in the original currency. Zero until the hold is confirmed."
           },
           "appearance": {
             "$ref": "#/components/schemas/CardChargeAppearanceDto"

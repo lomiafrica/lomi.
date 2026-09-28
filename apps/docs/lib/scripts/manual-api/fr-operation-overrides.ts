@@ -17,6 +17,14 @@ export const FR_OPERATION_COPY = {
     related:
       '[Soldes de compte](/api/balances/AccountsController_getBalance) · [Retraits](/api/payouts/PayoutsUnifiedController_create)',
   },
+  ChargesController_captureCardCharge: {
+    whenToUse:
+      'Utilisez après confirmation du blocage (`status` vaut `requires_capture`), quand vous connaissez le montant à conserver.',
+    caveats:
+      'Envoyez `Idempotency-Key`. Omettez `amount` pour prendre tout le blocage. Le montant prélevé doit respecter le minimum carte. Un seul prélèvement est possible.',
+    related:
+      '[Blocages carte](/build/accept/card-holds) · [Annuler un encaissement carte](/api/charge/ChargesController_cancelCardCharge)',
+  },
   ChargesController_cancelCardCharge: {
     whenToUse: "Utilisez lorsque l'acheteur abandonne le paiement.",
     related:

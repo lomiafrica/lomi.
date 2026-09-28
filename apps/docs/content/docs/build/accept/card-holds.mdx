@@ -1,0 +1,47 @@
+---
+title: 'How do I place a card hold?'
+description: 'Block a deposit on a card, then capture part of it or release the rest.'
+docType: how-to
+---
+
+import { Callout } from '@/components/docs/docs-callout';
+
+A card hold blocks an amount on the customer's card without taking it. You capture what you keep, and the rest is released. Use it for a vehicle deposit or any charge whose final amount is not known yet.
+
+<Callout type="info">
+  Holds work on cards collected with [lomi. Elements](/build/accept/payment-elements). Wave and other mobile money cannot block a card this way.
+</Callout>
+
+## Cards, duration, and fees
+
+Visa and Mastercard can be held. Some debit cards decline the block or debit it immediately. Credit cards and international cards are the reliable case.
+
+A normal online hold lasts 7 days after the customer confirms the card. When the card network allows a longer block, it can last up to 30 days (29 days and 18 hours on Visa). `capture_before` on `GET /charge/card/{id}` is the deadline. The customer's bank can release the block earlier.
+
+Releasing a hold does not incur a processing fee. Capturing one charges the normal card rate on the captured amount only. That amount must be at least 1 000 F CFA (0.50 EUR or USD). You can capture once. A lower amount releases the remainder.
+
+## Place, capture, or release
+
+1. `POST /charge/card` with `hold` set to `true`, plus amount, currency, and `customer_id` or (`customer_email` and `customer_name`). Send `Idempotency-Key`.
+2. Confirm the card with lomi. Elements and the returned `client_secret`.
+3. `GET /charge/card/{id}` until `status` is `requires_capture`. `amount_capturable` is what is still blocked, in your currency.
+4. `POST /charge/card/{id}/capture` to take the money. Omit `amount` for the full hold, or send a lower amount in the same currency. Send `Idempotency-Key`.
+5. `POST /charge/card/{id}/cancel` to release the hold without taking anything.
+
+The sale stays pending until capture is recorded, then it becomes completed. A release or an expired hold does not credit your balance.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: hold-senoto-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":100000,"currency_code":"XOF","hold":true,"customer_email":"client@example.com","customer_name":"Awa Ndiaye","description":"Vehicle deposit"}'
+```
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/capture" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: capture-senoto-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":25000}'
+```

@@ -2,6 +2,7 @@
   "title": "Charge",
   "pages": [
     "ChargesController_cancelCardCharge",
+    "ChargesController_captureCardCharge",
     "ChargesController_createCardCharge",
     "ChargesController_createMtnCharge",
     "ChargesController_createSwitchCharge",

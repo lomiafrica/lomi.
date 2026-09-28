@@ -1,0 +1,47 @@
+---
+title: 'Comment bloquer une caution carte ?'
+description: 'Bloquez un montant sur une carte, puis prélevez-en une partie ou libérez le reste.'
+docType: how-to
+---
+
+import { Callout } from '@/components/docs/docs-callout';
+
+Un blocage carte réserve un montant sur la carte du client sans le prélever. Vous capturez ce que vous gardez, et le reste est libéré. Utilisez-le pour une caution de location, ou tout encaissement dont le montant final n’est pas encore connu.
+
+<Callout type="info">
+  Les blocages fonctionnent sur les cartes encaissées avec [lomi. Elements](/build/accept/payment-elements). Wave et les autres mobiles money ne peuvent pas bloquer une carte de cette façon.
+</Callout>
+
+## Cartes, durée et frais
+
+Visa et Mastercard peuvent être bloquées. Certaines cartes de débit refusent le blocage, ou débitent tout de suite. Les cartes de crédit et les cartes internationales sont le cas fiable.
+
+Un blocage en ligne classique dure 7 jours après la confirmation de la carte. Quand le réseau de la carte autorise un blocage plus long, il peut durer jusqu’à 30 jours (29 jours et 18 heures sur Visa). `capture_before` sur `GET /charge/card/{id}` est la date limite. La banque du client peut lever le blocage plus tôt.
+
+Libérer un blocage n’entraîne pas de frais de traitement. Le capturer applique le tarif carte habituel, uniquement sur le montant prélevé. Ce montant doit être d’au moins 1 000 F CFA (0,50 EUR ou USD). Un seul prélèvement est possible. Un montant inférieur libère le reste.
+
+## Bloquer, prélever ou libérer
+
+1. `POST /charge/card` avec `hold` à `true`, plus le montant, la devise, et `customer_id` ou (`customer_email` et `customer_name`). Envoyez `Idempotency-Key`.
+2. Confirmez la carte avec lomi. Elements et le `client_secret` reçu.
+3. `GET /charge/card/{id}` jusqu’à ce que `status` vaille `requires_capture`. `amount_capturable` est le montant encore bloqué, dans votre devise.
+4. `POST /charge/card/{id}/capture` pour prélever. Omettez `amount` pour tout le blocage, ou envoyez un montant inférieur dans la même devise. Envoyez `Idempotency-Key`.
+5. `POST /charge/card/{id}/cancel` pour libérer le blocage sans rien prélever.
+
+La vente reste en attente jusqu’à l’enregistrement du prélèvement, puis elle passe à completed. Une libération ou un blocage expiré ne crédite pas votre solde.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: hold-senoto-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":100000,"currency_code":"XOF","hold":true,"customer_email":"client@example.com","customer_name":"Awa Ndiaye","description":"Caution véhicule"}'
+```
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/capture" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: capture-senoto-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":25000}'
+```

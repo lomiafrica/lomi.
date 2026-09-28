@@ -10,9 +10,9 @@ type CouponsService struct {
 	client *Client
 }
 
-func (s *CouponsService) Create() (interface{}, error) {
+func (s *CouponsService) Create(body interface{}) (interface{}, error) {
 		path := "/coupons"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

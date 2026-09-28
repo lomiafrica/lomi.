@@ -13,6 +13,7 @@
   "mcpExcludedOperationKeys": [
     "POST /charge/card",
     "POST /charge/card/{id}/cancel",
+    "POST /charge/card/{id}/capture",
     "GET /charge/card/{id}",
     "POST /charge/wave",
     "POST /charge/mtn",

@@ -28,6 +28,24 @@ func (s *ChargesService) CancelCardCharge(id string) (interface{}, error) {
 	}
 
 
+func (s *ChargesService) CaptureCardCharge(id string, body interface{}) (interface{}, error) {
+		path := "/charge/card/{id}/capture"
+		path = strings.ReplaceAll(path, "{id}", id)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
 func (s *ChargesService) CreateCardCharge(body interface{}) (interface{}, error) {
 		path := "/charge/card"
 		bodyResp, err := s.client.doRequest("POST", path, nil, body)

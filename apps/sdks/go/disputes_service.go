@@ -45,10 +45,10 @@ func (s *DisputesService) List(params map[string]string) (interface{}, error) {
 	}
 
 
-func (s *DisputesService) SubmitEvidence(id string) (interface{}, error) {
+func (s *DisputesService) SubmitEvidence(id string, body interface{}) (interface{}, error) {
 		path := "/disputes/{id}/evidence"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

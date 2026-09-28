@@ -9,9 +9,9 @@ type PayoutMethodsService struct {
 	client *Client
 }
 
-func (s *PayoutMethodsService) Create() (interface{}, error) {
+func (s *PayoutMethodsService) Create(body interface{}) (interface{}, error) {
 		path := "/payout-methods"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

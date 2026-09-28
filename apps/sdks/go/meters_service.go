@@ -10,9 +10,9 @@ type MetersService struct {
 	client *Client
 }
 
-func (s *MetersService) Create() (interface{}, error) {
+func (s *MetersService) Create(body interface{}) (interface{}, error) {
 		path := "/meters"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -81,10 +81,10 @@ func (s *MetersService) List(params map[string]string) (interface{}, error) {
 	}
 
 
-func (s *MetersService) Update(id string) (interface{}, error) {
+func (s *MetersService) Update(id string, body interface{}) (interface{}, error) {
 		path := "/meters/{id}"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("PATCH", path, nil, nil)
+		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

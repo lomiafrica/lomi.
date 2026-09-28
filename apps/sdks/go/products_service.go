@@ -10,10 +10,10 @@ type ProductsService struct {
 	client *Client
 }
 
-func (s *ProductsService) AddPrice(id string) (interface{}, error) {
+func (s *ProductsService) AddPrice(id string, body interface{}) (interface{}, error) {
 		path := "/products/{id}/prices"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -46,9 +46,9 @@ func (s *ProductsService) Archive(id string) (interface{}, error) {
 	}
 
 
-func (s *ProductsService) Create() (interface{}, error) {
+func (s *ProductsService) Create(body interface{}) (interface{}, error) {
 		path := "/products"
-		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}
@@ -117,10 +117,27 @@ func (s *ProductsService) SetDefaultPrice(id string, priceId string) (interface{
 	}
 
 
-func (s *ProductsService) Update(id string) (interface{}, error) {
+func (s *ProductsService) Update(id string, body interface{}) (interface{}, error) {
 		path := "/products/{id}"
 		path = strings.ReplaceAll(path, "{id}", id)
-		bodyResp, err := s.client.doRequest("PATCH", path, nil, nil)
+		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
+func (s *ProductsService) UpdatePricesBatch(body interface{}) (interface{}, error) {
+		path := "/products/prices/batch"
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
 		if err != nil {
 			return nil, err
 		}

@@ -103,6 +103,7 @@
   "POST /api-keys",
   "POST /charge/card",
   "POST /charge/card/{id}/cancel",
+  "POST /charge/card/{id}/capture",
   "POST /charge/mtn",
   "POST /charge/switch",
   "POST /charge/wave",

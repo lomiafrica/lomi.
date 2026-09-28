@@ -10,6 +10,24 @@ type CustomersService struct {
 	client *Client
 }
 
+func (s *CustomersService) Block(id string) (interface{}, error) {
+		path := "/customers/{id}/block"
+		path = strings.ReplaceAll(path, "{id}", id)
+		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
 func (s *CustomersService) Create(body interface{}) (interface{}, error) {
 		path := "/customers"
 		bodyResp, err := s.client.doRequest("POST", path, nil, body)
@@ -138,6 +156,41 @@ func (s *CustomersService) GetTransactions(id string) (interface{}, error) {
 func (s *CustomersService) List(params map[string]string) (interface{}, error) {
 		path := "/customers"
 		bodyResp, err := s.client.doRequest("GET", path, paramsToQuery(params), nil)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
+func (s *CustomersService) TopBySpend(params map[string]string) (interface{}, error) {
+		path := "/customers/top"
+		bodyResp, err := s.client.doRequest("GET", path, paramsToQuery(params), nil)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
+func (s *CustomersService) Unblock(id string) (interface{}, error) {
+		path := "/customers/{id}/unblock"
+		path = strings.ReplaceAll(path, "{id}", id)
+		bodyResp, err := s.client.doRequest("POST", path, nil, nil)
 		if err != nil {
 			return nil, err
 		}

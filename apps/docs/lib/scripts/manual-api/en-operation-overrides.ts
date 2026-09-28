@@ -242,6 +242,16 @@ export const EN_OPERATION_COPY = {
     related:
       '[Create card charge](/api/charge/ChargesController_createCardCharge)',
   },
+  ChargesController_captureCardCharge: {
+    summary: 'Capture card hold',
+    body: 'Takes some or all of a confirmed card hold. A lower amount releases the rest. The sale completes when the capture is recorded.',
+    whenToUse:
+      'Use after the customer confirms a hold (`status` is `requires_capture`) and you know how much to keep.',
+    caveats:
+      'Send `Idempotency-Key`. Omit `amount` to take the full hold. The captured amount must still meet the card minimum. You can capture once.',
+    related:
+      '[Card holds](/build/accept/card-holds) · [Cancel card charge](/api/charge/ChargesController_cancelCardCharge)',
+  },
   ChargesController_cancelCardCharge: {
     summary: 'Cancel embedded card charge',
     body: 'Cancels a card charge before completion.',
