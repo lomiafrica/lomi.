@@ -149,6 +149,16 @@ const config = {
         permanent: true,
       },
       {
+        source: '/build/billing/customer-portal.zh',
+        destination: '/build/billing/customer-portal',
+        permanent: true,
+      },
+      {
+        source: '/build/mcp-gsc',
+        destination: '/start/overview',
+        permanent: true,
+      },
+      {
         source: '/build/cli/ui',
         destination: '/build/cli',
         permanent: true,
