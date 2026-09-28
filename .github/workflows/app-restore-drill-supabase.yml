@@ -154,6 +154,12 @@ jobs:
           done
           psql "$SCRATCH_DB_URL" -tAc 'select version()'
 
+          # Scratch Postgres is not a full Supabase stack. Policies in the dump
+          # call auth.jwt() / auth.uid(); stub them so public schema compiles.
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE SCHEMA IF NOT EXISTS auth;'
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT NULL::jsonb $$;'
+          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT NULL::uuid $$;'
+
           # Supabase's dump filters already strip reserved roles and internal schemas;
           # ON_ERROR_STOP stays off so a single pre-existing object does not abort the
           # drill, and every error is counted and surfaced in the report instead.
@@ -162,10 +168,32 @@ jobs:
           psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=0 -q -f data.sql   2> ../restore-data.err   || true
 
           cd ..
-          for stage in roles schema data; do
+          for stage in roles schema; do
             count="$(grep -c '^psql:.*ERROR' "restore-${stage}.err" || true)"
             echo "RESTORE_${stage^^}_ERRORS=${count:-0}" >> "$GITHUB_ENV"
           done
+
+          # Auth and storage copies fail on vanilla Postgres; they are not the
+          # public ledger the drill is proving. Map each data.sql ERROR back to
+          # its COPY schema and keep only public-schema failures.
+          public_data_errors=0
+          ignored_data_errors=0
+          while IFS= read -r line; do
+            lineno="$(printf '%s\n' "$line" | sed -n 's/^psql:data\.sql:\([0-9][0-9]*\): ERROR:.*$/\1/p')"
+            if [ -z "$lineno" ]; then
+              public_data_errors=$((public_data_errors + 1))
+              continue
+            fi
+            copy_line="$(sed -n "1,${lineno}p" "$BACKUP_DIR/data.sql" | grep -E '^COPY[[:space:]]' | tail -n 1 || true)"
+            schema="$(printf '%s\n' "$copy_line" | sed -n 's/^COPY[[:space:]]*"\?\([A-Za-z_][A-Za-z0-9_]*\)"\?\..*/\1/p')"
+            schema="${schema:-public}"
+            case "$schema" in
+              auth|storage) ignored_data_errors=$((ignored_data_errors + 1)) ;;
+              *) public_data_errors=$((public_data_errors + 1)) ;;
+            esac
+          done < <(grep '^psql:.*ERROR' restore-data.err || true)
+          echo "RESTORE_DATA_ERRORS=${public_data_errors}" >> "$GITHUB_ENV"
+          echo "RESTORE_DATA_IGNORED_ERRORS=${ignored_data_errors}" >> "$GITHUB_ENV"
           echo "RESTORED_AT=$(date -u +%s)" >> "$GITHUB_ENV"
 
       - name: Verify restored database
@@ -241,7 +269,8 @@ jobs:
             echo "| Fonctions public | ${RESTORED_FUNCTIONS:-0} |"
             echo "| Politiques RLS public | ${RESTORED_POLICIES:-0} |"
             echo "| Contraintes FK non validées | ${INVALID_FKS:-n/a} |"
-            echo "| Erreurs psql (roles / schema / data) | ${RESTORE_ROLES_ERRORS:-n/a} / ${RESTORE_SCHEMA_ERRORS:-n/a} / ${RESTORE_DATA_ERRORS:-n/a} |"
+            echo "| Erreurs psql (roles / schema / data public) | ${RESTORE_ROLES_ERRORS:-n/a} / ${RESTORE_SCHEMA_ERRORS:-n/a} / ${RESTORE_DATA_ERRORS:-n/a} |"
+            echo "| Erreurs data ignorées (auth / storage) | ${RESTORE_DATA_IGNORED_ERRORS:-0} |"
             echo
             echo "## Volumes restaurés (tables clés)"
             echo
