@@ -1544,6 +1544,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/charge/card/{id}/capture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Capture card hold */
+        post: operations["ChargesController_captureCardCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoices": {
         parameters: {
             query?: never;
@@ -4024,6 +4041,11 @@ export interface components {
              * @example ORDER_95
              */
             transfer_group?: string;
+            /**
+             * @description Block the amount on the card without taking it. Capture or cancel later. Cards only.
+             * @example true
+             */
+            hold?: boolean;
             /**
              * @description Amount to charge in the original currency
              * @example 10000
@@ -7696,6 +7718,41 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["CardChargeResponseDto"];
                 };
+            };
+        };
+    };
+    ChargesController_captureCardCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Required unique key for this write. Replays return the original response. */
+                "Idempotency-Key": string;
+                /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
+                "Lomi-Account"?: string;
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path: {
+                /** @description Card payment id (pi_...) */
+                id: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @description Amount to take, in the same currency as the hold. Omit to capture the full hold. */
+                    amount?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Card hold captured */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

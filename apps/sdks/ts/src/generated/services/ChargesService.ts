@@ -14,6 +14,20 @@ export class ChargesService {
      * Cancel embedded card charge
      * @see OpenAPI `ChargesController_cancelCardCharge`
      */
+    /**
+     * Capture card hold
+     * @see OpenAPI `ChargesController_captureCardCharge`
+     */
+    public async captureCardCharge(id: string, body?: { amount?: number }, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/charge/card/{id}/capture',
+            path: { id: id },
+            body,
+            ...options,
+        });
+    }
+
     public async cancelCardCharge(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
