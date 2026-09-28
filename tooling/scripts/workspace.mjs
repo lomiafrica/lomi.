@@ -44,7 +44,7 @@ const SKIP_FORMAT_WALK = new Set([
 
 const SKIP_FORMAT_REL = new Set([
   "apps/dashboard/apps",
-  "apps/jumbo/modules",
+  "apps/pos/modules",
   "apps/plugins/references",
 ]);
 

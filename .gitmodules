@@ -21,15 +21,12 @@
 [submodule "apps/website"]
 	path = apps/website
 	url = https://github.com/lomiafrica/website.git
-[submodule "apps/jumbo"]
-	path = apps/jumbo
-	url = https://github.com/lomiafrica/jumbo.git
+[submodule "apps/pos"]
+	path = apps/pos
+	url = https://github.com/lomiafrica/pos.git
 [submodule "apps/customers"]
 	path = apps/customers
 	url = https://github.com/lomiafrica/customers.git
-[submodule "apps/design"]
-	path = apps/design
-	url = https://github.com/lomiafrica/design.git
 [submodule "apps/tools/doctool"]
 	path = apps/tools/doctool
 	url = https://github.com/lomiafrica/doctool.git

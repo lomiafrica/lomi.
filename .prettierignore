@@ -17,7 +17,7 @@ packages/shared/src/database.ts
 **/agent-openapi.json
 **/public/openapi.json
 apps/dashboard/apps
-apps/jumbo/modules
+apps/pos/modules
 apps/plugins/references
 apps/sdks/go
 apps/sdks/php
@@ -25,4 +25,3 @@ apps/sdks/python
 apps/tools/doctool/crates
 apps/tools/geolook
 apps/tools/payterm
-apps/design

@@ -256,8 +256,8 @@
       "risk": "medium"
     },
     {
-      "id": "jumbo",
-      "path": "apps/jumbo",
+      "id": "pos",
+      "path": "apps/pos",
       "kind": "app",
       "manager": "pnpm",
       "workspace": false,

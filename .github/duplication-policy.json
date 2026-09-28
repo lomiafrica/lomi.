@@ -38,7 +38,7 @@
         "apps/checkout/scripts/i18n/sync-missing-translations.js",
         "apps/storefront/scripts/i18n/sync-missing-translations.js",
         "apps/customers/scripts/i18n/sync-missing-translations.js",
-        "apps/jumbo/scripts/i18n/sync-missing-translations.js",
+        "apps/pos/scripts/i18n/sync-missing-translations.js",
         "apps/website/scripts/i18n/sync-missing-translations.js",
         "apps/dashboard/scripts/i18n/analyze-i18n.js",
         "apps/storefront/scripts/i18n/analyze-i18n.js",

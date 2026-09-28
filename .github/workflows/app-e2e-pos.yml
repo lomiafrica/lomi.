@@ -1,4 +1,4 @@
-name: lomi · e2e · jumbo
+name: lomi · e2e · pos
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         default: ''
 
 concurrency:
-  group: lomi-e2e-jumbo-${{ github.ref }}
+  group: lomi-e2e-pos-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -21,15 +21,15 @@ jobs:
     timeout-minutes: 45
     defaults:
       run:
-        working-directory: apps/jumbo
+        working-directory: apps/pos
     steps:
       - uses: actions/checkout@v5
 
-      - name: Checkout jumbo submodule
+      - name: Checkout pos submodule
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh packages apps/jumbo
+        run: bash .github/scripts/init-submodules.sh packages apps/pos
 
       - uses: pnpm/action-setup@v4
         with:
@@ -40,13 +40,13 @@ jobs:
           node-version: '22'
           cache: pnpm
           cache-dependency-path: |
-            apps/jumbo/pnpm-lock.yaml
+            apps/pos/pnpm-lock.yaml
             packages/shared/package.json
             packages/queries/package.json
 
-      - name: Install Jumbo + shared packages
+      - name: Install POS + shared packages
         working-directory: .
-        run: node tooling/scripts/install-app-with-packages.mjs apps/jumbo
+        run: node tooling/scripts/install-app-with-packages.mjs apps/pos
 
       - uses: expo/expo-github-action@v8
         with:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Download latest preview APK
         if: inputs.apk_path == ''
-        run: node scripts/eas-download-latest-preview-apk.mjs jumbo-preview.apk
+        run: node scripts/eas-download-latest-preview-apk.mjs pos-preview.apk
 
       - name: Install Maestro
         working-directory: .
@@ -74,8 +74,8 @@ jobs:
           script: |
             APK="${{ inputs.apk_path }}"
             if [ -z "$APK" ]; then
-              APK="apps/jumbo/jumbo-preview.apk"
+              APK="apps/pos/pos-preview.apk"
             fi
             adb install -r "$APK"
-            cd apps/jumbo
+            cd apps/pos
             maestro test .maestro/auth-launch.yaml .maestro/charge-critical-path.yaml

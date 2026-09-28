@@ -1,24 +1,24 @@
-name: lomi · ci · jumbo
+name: lomi · ci · pos
 
 on:
   push:
     branches: [main, develop]
     paths:
-      - "apps/jumbo"
-      - "apps/jumbo/**"
+      - "apps/pos"
+      - "apps/pos/**"
       - "packages/shared/**"
       - "packages/queries/**"
       - "tooling/scripts/install-app-with-packages.mjs"
-      - ".github/workflows/app-ci-jumbo.yml"
+      - ".github/workflows/app-ci-pos.yml"
   pull_request:
     branches: [main]
     paths:
-      - "apps/jumbo"
-      - "apps/jumbo/**"
+      - "apps/pos"
+      - "apps/pos/**"
       - "packages/shared/**"
       - "packages/queries/**"
       - "tooling/scripts/install-app-with-packages.mjs"
-      - ".github/workflows/app-ci-jumbo.yml"
+      - ".github/workflows/app-ci-pos.yml"
   workflow_dispatch:
 
 permissions:
@@ -30,15 +30,15 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apps/jumbo
+        working-directory: apps/pos
     steps:
       - uses: actions/checkout@v5
 
-      - name: Checkout jumbo submodule
+      - name: Checkout pos submodule
         working-directory: .
         env:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
-        run: bash .github/scripts/init-submodules.sh packages apps/jumbo
+        run: bash .github/scripts/init-submodules.sh packages apps/pos
 
       - uses: pnpm/action-setup@v4
         with:
@@ -49,13 +49,13 @@ jobs:
           node-version: "22"
           cache: pnpm
           cache-dependency-path: |
-            apps/jumbo/pnpm-lock.yaml
+            apps/pos/pnpm-lock.yaml
             packages/shared/package.json
             packages/queries/package.json
 
-      - name: Install Jumbo + shared packages
+      - name: Install POS + shared packages
         working-directory: .
-        run: node tooling/scripts/install-app-with-packages.mjs apps/jumbo
+        run: node tooling/scripts/install-app-with-packages.mjs apps/pos
 
       - name: Lint
         run: pnpm lint
@@ -90,11 +90,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const marker = '<!-- jumbo-eas-preview -->';
+            const marker = '<!-- pos-eas-preview -->';
             const n = context.payload.pull_request.number;
             const body = [
               marker,
-              '### Jumbo preview',
+              '### POS preview',
               '',
               'JS/copy/UI from this PR is on EAS Update branch `pr-' + n + '`.',
               'Install the latest preview binary, then this update applies on next launch.',
@@ -102,7 +102,7 @@ jobs:
               '- [EAS updates](https://expo.dev/accounts/lomiafrica/projects/lomi/updates)',
               '- [EAS builds](https://expo.dev/accounts/lomiafrica/projects/lomi/builds)',
               '',
-              'Native changes (permissions, new native modules, SDK bumps) still need a new binary: Actions → lomi · deploy · jumbo → `preview`.',
+              'Native changes (permissions, new native modules, SDK bumps) still need a new binary: Actions → lomi · deploy · pos → `preview`.',
             ].join('\n');
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
