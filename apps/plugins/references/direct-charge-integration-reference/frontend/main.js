@@ -1,19 +1,38 @@
 import {
   loadLomi,
-  createLomiElements,
-  createLomiPaymentElement,
-} from "/vendor/lomi-elements.js";
+  createLomiCardElements,
+  mountLomiCardFields,
+  mountLomiCardBrands,
+  mountLomiExpressCheckout,
+  applyLomiPayButton,
+} from "/vendor/lomi-elements.js?v=wallets";
 
 const output = document.getElementById("output");
 const eventsOutput = document.getElementById("events-output");
-const paymentSection = document.getElementById("payment-section");
 const paymentErrors = document.getElementById("payment-errors");
 const payCardButton = document.getElementById("pay-card-button");
 
+const cardTargets = {
+  number: "#lomi-card-number",
+  expiry: "#lomi-card-expiry",
+  cvc: "#lomi-card-cvc",
+};
+
+const cardAppearance = {
+  borderRadiusPx: 4,
+  pay: {
+    background: "#121317",
+    heightPx: 57,
+    fontSizePx: 20,
+    label: "Pay",
+  },
+};
+
 let lomi = null;
-let elements = null;
-let paymentElement = null;
+let cardBrands = null;
+let cardFields = null;
 let activeClientSecret = null;
+let cardTheme = "light";
 
 function printJson(element, value) {
   element.textContent = JSON.stringify(value, null, 2);
@@ -24,41 +43,48 @@ function setPaymentError(message) {
 }
 
 function updatePayButtonState() {
-  payCardButton.disabled = !(lomi && elements && activeClientSecret);
+  payCardButton.disabled = !(lomi && cardFields && activeClientSecret);
 }
 
-function teardownPaymentElement() {
-  if (paymentElement) {
-    paymentElement.unmount();
-  }
-  paymentElement = null;
-  elements = null;
-  activeClientSecret = null;
-  updatePayButtonState();
-}
-
-async function mountPaymentElement(clientSecret, publishableKey) {
+async function mountCardFields(publishableKey) {
   if (!publishableKey) {
     throw new Error("LOMI_PUBLISHABLE_KEY is missing on the server (.env)");
   }
-
-  teardownPaymentElement();
-  activeClientSecret = clientSecret;
+  if (cardFields) return;
 
   lomi = await loadLomi(publishableKey);
   if (!lomi) {
     throw new Error("Failed to initialize @lomi./sdk");
   }
 
-  elements = createLomiElements(lomi, {
-    clientSecret,
-    theme: "night",
-    borderRadiusPx: 8,
-  });
-  paymentElement = createLomiPaymentElement(elements, { billingAddress: "never" });
-  paymentElement.mount("#payment-element");
+  const elements = createLomiCardElements(lomi);
+  cardFields = mountLomiCardFields(elements, cardTargets, { theme: cardTheme });
+  watchCardBrand();
+  updatePayButtonState();
+}
 
-  paymentSection.classList.remove("hidden");
+function watchCardBrand() {
+  cardFields.number.on("change", (event) => {
+    cardBrands?.setBrand(event.brand ?? null);
+  });
+}
+
+function setCardTheme(theme) {
+  cardTheme = theme;
+  document.getElementById("lomi-card-stack")?.setAttribute("data-theme", theme);
+  document.getElementById("theme-light")?.classList.toggle("is-selected", theme === "light");
+  document.getElementById("theme-dark")?.classList.toggle("is-selected", theme === "dark");
+  if (!lomi) return;
+  if (cardFields) {
+    cardFields.number.unmount();
+    cardFields.expiry.unmount();
+    cardFields.cvc.unmount();
+    cardFields = null;
+  }
+  cardFields = mountLomiCardFields(createLomiCardElements(lomi), cardTargets, {
+    theme,
+  });
+  watchCardBrand();
   updatePayButtonState();
 }
 
@@ -129,14 +155,19 @@ document.getElementById("card-setup-form").addEventListener("submit", async (eve
       throw new Error("Missing client_secret in card charge response");
     }
 
-    await mountPaymentElement(clientSecret, config.lomi_publishable_key);
+    activeClientSecret = clientSecret;
+    await mountCardFields(config.lomi_publishable_key);
+    if (lomi) {
+      mountLomiExpressCheckout(lomi, clientSecret, "#lomi-wallets");
+    }
+    updatePayButtonState();
   } catch (error) {
     alert(error.message);
   }
 });
 
 payCardButton.addEventListener("click", async () => {
-  if (!lomi || !elements || !activeClientSecret) {
+  if (!lomi || !cardFields || !activeClientSecret) {
     alert("Create a card charge first.");
     return;
   }
@@ -145,13 +176,12 @@ payCardButton.addEventListener("click", async () => {
   setPaymentError("");
 
   try {
-    const { error, paymentIntent } = await lomi.confirmPayment({
-      elements,
-      redirect: "if_required",
-      confirmParams: {
-        return_url: `${window.location.origin}${window.location.pathname}?status=success`,
+    const { error, paymentIntent } = await lomi.confirmCardPayment(
+      activeClientSecret,
+      {
+        payment_method: { card: cardFields.number },
       },
-    });
+    );
 
     if (error) {
       setPaymentError(error.message || "Payment failed");
@@ -173,6 +203,43 @@ payCardButton.addEventListener("click", async () => {
     updatePayButtonState();
   }
 });
+
+document.getElementById("theme-light")?.addEventListener("click", () => {
+  setCardTheme("light");
+});
+document.getElementById("theme-dark")?.addEventListener("click", () => {
+  setCardTheme("dark");
+});
+
+const brandSlot = document.getElementById("lomi-card-brands");
+if (brandSlot) {
+  cardBrands = mountLomiCardBrands(brandSlot);
+}
+if (payCardButton) {
+  applyLomiPayButton(payCardButton, cardAppearance);
+}
+
+document.getElementById("lomi-pay-colors")?.addEventListener("click", (event) => {
+  const swatch = event.target.closest("[data-pay]");
+  if (!swatch || !payCardButton) return;
+  document.querySelectorAll(".lomi-pay-colors button").forEach((button) => {
+    button.classList.toggle("is-selected", button === swatch);
+  });
+  applyLomiPayButton(payCardButton, {
+    borderRadiusPx: 4,
+    pay: {
+      background: swatch.dataset.pay,
+      heightPx: 57,
+      fontSizePx: 20,
+      label: "Pay",
+    },
+  });
+});
+
+fetch("/api/config")
+  .then((response) => response.json())
+  .then((config) => mountCardFields(config.lomi_publishable_key))
+  .catch((error) => setPaymentError(error.message || "Could not load card fields"));
 
 document.getElementById("refresh-events").addEventListener("click", async () => {
   const response = await fetch("/api/webhooks/events");

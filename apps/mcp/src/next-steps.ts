@@ -62,12 +62,9 @@ export function nextStepsForHttpResult(
     );
   }
 
-  if (
-    result.status === 503 &&
-    (path.includes("/charge/card") || code === "service_unavailable")
-  ) {
+  if (result.status === 503 && path.includes("/charge/card")) {
     steps.push(
-      "Direct card charge is not available. Create a hosted checkout instead: lomi_checkout action=create, then send the customer checkout_url.",
+      "Card payments are temporarily unavailable. Retry later, or confirm with lomi. Elements using the client_secret from POST /charge/card.",
     );
   }
 

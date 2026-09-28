@@ -11,17 +11,23 @@ import {
 export type { CardFieldInput } from "@stripe/stripe-react-native";
 
 /**
- * lomi. Platform Key
- *
- * Internal platform key used for payment processing infrastructure.
- * This is an immutable value - SDK updates required if changed.
+ * lomi. platform publishable keys for Stripe React Native.
+ * Merchants pass `lomi_pk_test_…` / `lomi_pk_live_…`; these stay internal.
  */
-const LOMI_PLATFORM_KEY =
+const LOMI_PLATFORM_KEY_LIVE =
   "pk_live_51Ig94GGwgS0qnVOVpvSCeUiAf5RfjFFcv4alY8MpuB1M3X7gz3gMdcAoUA7OjG6e0Y2MAOtCsaYqkdqHT0zhTcC800gRyH9ssq";
+const LOMI_PLATFORM_KEY_TEST =
+  "pk_test_51Ig94GGwgS0qnVOVCTLJtrdam3tbuKhsLk931ddn9oYaQ2gDn768IDGJ6cgV0EJ1zfNsJpVURjVIl40UNo1R4KDz00lXLCcGXV";
+
+function resolveLomiPlatformPublishableKey(publishableKey: string): string {
+  return publishableKey.startsWith("lomi_pk_test_")
+    ? LOMI_PLATFORM_KEY_TEST
+    : LOMI_PLATFORM_KEY_LIVE;
+}
 
 // Types
 export interface LomiProviderProps {
-  publishableKey: string; // Your lomi_pk_... key (validated but not used for Stripe init)
+  publishableKey: string; // lomi_pk_test_... or lomi_pk_live_...
   merchantIdentifier?: string; // Apple Pay merchant ID
   urlScheme?: string; // For 3DS redirects
   children: React.ReactElement | React.ReactElement[];
@@ -51,7 +57,6 @@ export const LomiProvider: React.FC<LomiProviderProps> = ({
   children,
   ...props
 }) => {
-  // Validate lomi. key format
   if (!publishableKey?.startsWith("lomi_pk_")) {
     console.warn(
       '[Lomi] Invalid key format. Keys should start with "lomi_pk_"',
@@ -59,7 +64,10 @@ export const LomiProvider: React.FC<LomiProviderProps> = ({
   }
 
   return (
-    <StripeProvider publishableKey={LOMI_PLATFORM_KEY} {...props}>
+    <StripeProvider
+      publishableKey={resolveLomiPlatformPublishableKey(publishableKey)}
+      {...props}
+    >
       {children}
     </StripeProvider>
   );
@@ -106,12 +114,19 @@ export const useLomiConfirmPayment = () => {
 };
 
 /**
- * LomiCardField - Card input component
+ * LomiCardField - Card input component.
+ * Pass `cardStyle` for text color, background, radius, and size on iOS and Android.
  *
  * @example
  * ```tsx
  * <LomiCardField
  *   postalCodeEnabled={false}
+ *   cardStyle={{
+ *     backgroundColor: "#ffffff",
+ *     textColor: "#111827",
+ *     borderRadius: 4,
+ *     fontSize: 13,
+ *   }}
  *   onCardChange={(cardDetails) => {
  *     setCard(cardDetails);
  *   }}

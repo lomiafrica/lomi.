@@ -20,8 +20,26 @@ Utilisez **`POST /payouts`** pour tous les virements sortants.
 </Callout>
 
 <Callout type="info">
-  Les virements MTN renvoient `400` jusqu’à prise en charge.
+  Retirez uniquement depuis le solde correspondant. Une banque américaine paie en USD. Une banque de la zone euro paie en EUR. Une banque UEMOA, Wave ou MTN paie en F CFA. Convertissez d'abord si les soldes diffèrent.
 </Callout>
+
+## Destinations par pays
+
+### Votre compte (`destination: "self"`)
+
+| Destination | Pays | Devise |
+| --- | --- | --- |
+| Wave | Côte d'Ivoire | F CFA |
+| MTN | Pays MTN live sur votre compte | F CFA |
+| π-SPI / banque locale | Bénin, Burkina Faso, Côte d'Ivoire, Guinée-Bissau, Mali, Niger, Sénégal, Togo | F CFA |
+| Banque US | États-Unis | USD |
+| Banque zone euro | Allemagne, Autriche, Belgique, Chypre, Croatie, Espagne, Estonie, Finlande, France, Grèce, Irlande, Italie, Lettonie, Lituanie, Luxembourg, Malte, Pays-Bas, Portugal, Slovaquie, Slovénie | EUR |
+| Autre IBAN | Andorre, Bulgarie, Suisse, Tchéquie, Danemark, Royaume-Uni, Gibraltar, Hongrie, Islande, Liechtenstein, Monaco, Norvège, Pologne, Roumanie, Suède | EUR |
+| Autres banques | Autres pays | USD |
+
+### Un tiers (`destination: "beneficiary"`)
+
+Paiement à un tiers sur **Wave ou MTN** avec `recipient.name` et `recipient.phone`. Les virements bancaires vers un compte tiers quelconque ne sont pas supportés.
 
 ## Créer un virement
 

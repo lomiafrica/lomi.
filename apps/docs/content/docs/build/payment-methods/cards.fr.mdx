@@ -18,7 +18,7 @@ Pour la plupart des équipes, les paiements carte devraient commencer par le che
 | --- | --- |
 | Approbation | 3DS hébergé si l’émetteur l’exige |
 | Règlement | Après `completed` ; certains réglages carte retardent `available_at` |
-| Direct vs hébergé | Hébergé. `POST /charge/card` renvoie `503` |
+| Direct vs hébergé | Checkout hébergé, liens de paiement, ou `POST /charge/card` avec lomi. Elements |
 | Remboursement | Transactions carte `completed` |
 | Min / max | - |
 
@@ -46,13 +46,11 @@ Les cartes fonctionnent en **checkout hébergé** (le plus rapide) ou en flux em
 
 ## Charge carte embarquée
 
-<Callout type="warn">
-  Les charges carte embarquées (`POST /charge/card`) et Switch (`POST /charge/switch`) ne sont pas encore disponibles et renvoient actuellement `503 service_unavailable`. Utilisez le [checkout hébergé](/build/accept/checkout) pour les cartes.
-</Callout>
-
 1. `POST /charge/card` → `client_secret`.
-2. Confirmez avec Payment Elements.
+2. Confirmez avec [lomi. Elements](/build/accept/payment-elements) (`lomi_pk_test_…` ou `lomi_pk_live_…`).
 3. Webhook ou polling pour le statut final.
+
+Le montant carte minimum est 1 000 F CFA (0,50 EUR/USD). Switch (`POST /charge/switch`) n’est pas disponible et renvoie `503`.
 
 Voir [API Charges](/api/charge/ChargesController_createCardCharge) et l’[app de référence charge directe](/build/accept/direct-charges#reference-implementation).
 

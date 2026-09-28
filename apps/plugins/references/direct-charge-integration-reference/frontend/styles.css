@@ -95,25 +95,189 @@ pre {
   margin-top: 16px;
   display: grid;
   gap: 8px;
+  background: #f7f7f4;
+  border-radius: 4px;
+  padding: 16px;
 }
 
-.payment-element-mount {
-  border: 1px solid #32445f;
-  border-radius: 8px;
-  padding: 12px;
-  background: #0b1220;
+.lomi-card-stack {
+  background: #fff;
+}
+
+.lomi-card-number,
+.lomi-card-expiry,
+.lomi-card-cvc {
+  position: relative;
+  height: 40px;
+  padding: 8px 12px;
+  background: var(--lomi-card-bg, #fff);
+  border: 1px solid var(--lomi-card-border, #d1d5db);
+  box-sizing: border-box;
+  color-scheme: light;
+}
+
+.lomi-card-stack[data-theme="dark"] .lomi-card-number,
+.lomi-card-stack[data-theme="dark"] .lomi-card-expiry,
+.lomi-card-stack[data-theme="dark"] .lomi-card-cvc {
+  color-scheme: dark;
+}
+
+.lomi-card-number-wrap {
+  position: relative;
+}
+
+.lomi-card-number {
+  border-radius: 4px 4px 0 0;
+  padding-right: 72px;
+}
+
+.lomi-card-brands {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+.lomi-card-brands.is-fading {
+  opacity: 0;
+}
+
+.lomi-card-brands img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 2px;
+  filter: brightness(1.2);
+}
+
+.lomi-card-stack[data-theme="dark"] {
+  --lomi-card-bg: #18181b;
+  --lomi-card-border: #3f3f46;
+}
+
+.lomi-wallets:empty {
+  display: none;
+}
+
+.lomi-wallets {
   min-height: 44px;
+}
+  display: flex;
+  gap: 0;
+}
+
+.lomi-theme {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 0;
+  background: #fff;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.lomi-theme:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.lomi-theme:last-child {
+  border-radius: 0 4px 4px 0;
+  border-left: 0;
+}
+
+.lomi-theme.is-selected {
+  background: #121317;
+  color: #fff;
+  border-color: #121317;
+}
+
+.lomi-card-row {
+  display: flex;
+  margin-top: -1px;
+}
+
+.lomi-card-expiry,
+.lomi-card-cvc {
+  width: 50%;
+}
+
+.lomi-card-expiry {
+  border-radius: 0 0 0 4px;
+}
+
+.lomi-card-cvc {
+  border-left: 0;
+  border-radius: 0 0 4px 0;
+}
+
+.lomi-card-number:focus-within,
+.lomi-card-expiry:focus-within,
+.lomi-card-cvc:focus-within {
+  border-color: #4568ff;
+  box-shadow: 0 0 0 1px #4568ff;
+  position: relative;
+  z-index: 1;
+}
+
+.field-errors:empty {
+  display: none;
 }
 
 .field-errors {
-  min-height: 1.25rem;
-  margin: 8px 0 0;
+  min-height: 0;
+  margin: 0;
   font-size: 12px;
-  color: #f87171;
+  color: #ef4444;
 }
 
-#pay-card-button {
-  margin-top: 12px;
+#pay-card-button,
+#pay-card-button:disabled {
+  height: 3.55rem;
+  border: 0;
+  border-radius: 4px;
+  background: #121317;
+  color: #fff;
+  opacity: 1;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI",
+    sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.lomi-pay-colors {
+  display: flex;
+  gap: 8px;
+}
+
+.lomi-pay-colors button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #121317;
+}
+
+.lomi-pay-colors button[data-pay="#56A5F9"] {
+  background: #56a5f9;
+}
+
+.lomi-pay-colors button[data-pay="#f4f1ea"] {
+  background: #f4f1ea;
+}
+
+.lomi-pay-colors button.is-selected {
+  box-shadow: 0 0 0 1px #121317;
 }
 
 code {

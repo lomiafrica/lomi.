@@ -23,15 +23,15 @@ describe("next_steps", () => {
     expect(steps[0]).toMatch(/Connect with lomi/);
   });
 
-  it("routes 503 card charge to hosted checkout", () => {
+  it("explains 503 card charge as temporary", () => {
     const steps = nextStepsForHttpResult(
       result({
         status: 503,
         bodyText: '{"error_code":"service_unavailable"}',
-        pathTemplate: "/charge/card",
       }),
+      { pathTemplate: "/charge/card" },
     );
-    expect(steps[0]).toMatch(/lomi_checkout action=create/);
+    expect(steps[0]).toMatch(/lomi. Elements/);
   });
 
   it("honors Retry-After on 429", () => {

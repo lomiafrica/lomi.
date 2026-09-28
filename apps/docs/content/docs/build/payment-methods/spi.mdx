@@ -1,6 +1,6 @@
 ---
-title: 'What is SPI?'
-description: 'SPI bank and mobile-money network coverage and hosted checkout in West Africa.'
+title: 'What is π-SPI?'
+description: 'π-SPI coverage in the eight UEMOA countries, checkout, charges, and XOF payouts.'
 docType: explanation
 ---
 
@@ -8,27 +8,45 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 
 <DocsAgentIndex />
 
-**SPI** (Système de Paiement Interopérable) connects mobile-money operators and banks across West Africa. On lomi., SPI-backed methods appear on **hosted checkout** alongside Wave, MTN, and cards.
+**π-SPI** is the BCEAO instant account-to-account rail for the UEMOA. Currency is **XOF**. In the API the identifier stays `SPI`.
+
+## Countries
+
+| Code | Country |
+| --- | --- |
+| BJ | Benin |
+| BF | Burkina Faso |
+| CI | Côte d'Ivoire |
+| GW | Guinea-Bissau |
+| ML | Mali |
+| NE | Niger |
+| SN | Senegal |
+| TG | Togo |
+
+A bank account in one of these countries is a π-SPI destination. Euro and dollar payouts stay on the treasury rail.
 
 ## At a glance
 
 | | |
 | --- | --- |
-| Approval | Hosted: operator, USSD, or app on the checkout page |
-| Settlement | After the hosted payment completes, then `available_at` |
-| Direct vs hosted | Hosted only |
+| Approval | The payer scans a merchant QR, or confirms a request sent to their alias |
+| Settlement | After the bank confirms, then `available_at` |
+| Direct vs hosted | Hosted checkout, `POST /payment-requests` (XOF returns `qr_payload`), and `POST /charge/spi` |
 | Refund | Not listed on `POST /refunds` |
 | Min / max | - |
 
 Same columns as [Payment channels](/build/payment-channels#channel-capabilities).
 
-## Integration path
+## Where it shows up
 
-Use [hosted checkout](/build/accept/checkout) or [payment links](/build/accept/payment-links). SPI-specific UX (operator selection, USSD, app redirect) is handled on the hosted page.
+- **Dashboard payouts.** A UEMOA bank account is marked π-SPI. The withdrawal is sent when the bank confirms, not over several business days.
+- **Jumbo.** The same account shows π-SPI on the withdraw screen. QR pay follows the org’s π-SPI status.
+- **Checkout.** π-SPI is offered when the organization has it connected and the environment can take the payment. The payer enters their alias.
+- **Invoices.** A request-to-pay needs the customer alias. The invoice shows that alias and the QR when they are on the payment details.
 
 ## Payouts
 
-Some payout rails use SPI for bank or mobile-money disbursements. See [Payouts](/build/money/payouts) and [Sandbox payouts](/start/sandbox-payments#payouts-in-test-mode).
+XOF withdrawals with `rail: "bank"` or `rail: "spi"` are π-SPI credit transfers to a registered payout method. See [Payouts](/build/money/payouts).
 
 <DocsNextSteps>
   <DocsNextStep href="/build/payment-channels" hint="Country coverage">

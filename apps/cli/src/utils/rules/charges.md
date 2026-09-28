@@ -14,10 +14,10 @@ const charge = await lomiApi.charges.createCardCharge({
   currency_code: 'XOF',
   // customer, metadata, return_url, etc.
 });
-// Pass charge.client_secret to Stripe Elements on the client with your publishable key.
+// Pass charge.client_secret to lomi. Elements on the client with your publishable key.
 ```
 
-Client-side: confirm with `lomi_pk_test_…` / `lomi_pk_live_…`. Poll `GET /charge/card/{id}` or listen for webhooks.
+Client-side: confirm with `loadLomi('lomi_pk_test_…')` or `loadLomi('lomi_pk_live_…')`. Poll `GET /charge/card/{id}` or listen for webhooks.
 
 ## Mobile money (Wave / MTN)
 

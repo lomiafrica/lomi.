@@ -116,7 +116,7 @@ Renvoyé par [Liens de paiement](/api/payment-links).
 
 Un encaissement direct lance un paiement spécifique à un prestataire sans checkout hébergé. Utilisez-le seulement si vous devez contrôler vous-même l’expérience de paiement.
 
-`POST /charge/wave` et `POST /charge/mtn` sont les rails actifs. `POST /charge/card` et `POST /charge/switch` renvoient `503 service_unavailable` tant que ces rails restent mutés.
+`POST /charge/wave`, `POST /charge/mtn` et `POST /charge/card` sont les rails actifs. `POST /charge/switch` renvoie `503 service_unavailable`.
 
 Renvoyé par [Encaissements directs avancés](/api/charge).
 

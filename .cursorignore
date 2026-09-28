@@ -1,0 +1,19 @@
+# Secrets: keep env and credential files out of agent index and context.
+.env
+.env.*
+!.env.example
+!.env*.example
+!.env.sample
+!.env.demo
+
+# OAuth client dumps
+client_secret*.json
+**/credentials.json
+**/*-credentials.json
+
+# Local keys
+*.pem
+*.p12
+*.key
+!**/*.example.key
+**/*.keystore

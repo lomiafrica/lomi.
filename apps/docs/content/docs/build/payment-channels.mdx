@@ -22,8 +22,8 @@ Same columns on each rail page. Empty cells (`-`) mean we do not publish a numbe
 | --- | --- | --- | --- | --- | --- | --- |
 | Wave | Redirect or launch URL (`wave_launch_url` / `checkout_url`) | Test: often when the charge is created. Live: after the customer approves in Wave, then `available_at` | Hosted and `POST /charge/wave` | Completed Wave transactions | - | [Wave](/build/payment-methods/wave) |
 | MTN | Push / PIN on the customer's phone (`next_action: await_webhook`) | Test: often immediate `completed`. Live: stays `PENDING` until approve, then `available_at` | Hosted and `POST /charge/mtn` | Completed MTN transactions (live refunds are async) | - | [MTN](/build/payment-methods/mtn-momo) |
-| SPI | Hosted: operator, USSD, or app on the checkout page | After the hosted payment completes, then `available_at` | Hosted only | Not listed on `POST /refunds` | - | [SPI](/build/payment-methods/spi) |
-| Cards | Hosted 3DS when the issuer requires it | After `completed`; some card setups delay `available_at` | Hosted. `POST /charge/card` returns `503` | Completed card transactions | - | [Cards](/build/payment-methods/cards) |
+| π-SPI | Payer scans a QR or confirms a request to their alias | After the bank confirms, then `available_at` | Hosted checkout, XOF payment requests, and `POST /charge/spi` | Not listed on `POST /refunds` | - | [π-SPI](/build/payment-methods/spi) |
+| Cards | Hosted 3DS when the issuer requires it | After `completed`; some card setups delay `available_at` | Hosted, payment links, and `POST /charge/card` with lomi. Elements | Completed card transactions | 1 000 F CFA / 0.50 EUR/USD | [Cards](/build/payment-methods/cards) |
 
 **Default:** hosted checkout or payment links. Direct charges when you own the payment UI and understand rail-specific async behavior.
 

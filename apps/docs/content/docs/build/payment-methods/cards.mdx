@@ -18,7 +18,7 @@ For most teams, card payments should start with hosted checkout. Use embedded ca
 | --- | --- |
 | Approval | Hosted 3DS when the issuer requires it |
 | Settlement | After `completed`; some card setups delay `available_at` |
-| Direct vs hosted | Hosted. `POST /charge/card` returns `503` |
+| Direct vs hosted | Hosted checkout, payment links, or `POST /charge/card` with lomi. Elements |
 | Refund | Completed card transactions |
 | Min / max | - |
 
@@ -46,13 +46,11 @@ Cards work on **hosted checkout** (fastest) or **embedded** flows with [Payment 
 
 ## Embedded card charge
 
-<Callout type="warn">
-  Embedded card charges (`POST /charge/card`) and Switch charges (`POST /charge/switch`) are not available yet and currently return `503 service_unavailable`. Use [hosted checkout](/build/accept/checkout) for cards today.
-</Callout>
-
 1. `POST /charge/card` → receive `client_secret`.
-2. Confirm with Payment Elements on your site.
+2. Confirm with [lomi. Elements](/build/accept/payment-elements) on your site (`lomi_pk_test_…` or `lomi_pk_live_…`).
 3. Poll or webhook for final `transaction_status`.
+
+Card amounts start at 1 000 F CFA (0.50 EUR/USD). Switch (`POST /charge/switch`) is not available and returns `503`.
 
 See [Charges API](/api/charge/ChargesController_createCardCharge) and the [direct charge reference app](/build/accept/direct-charges#reference-implementation).
 

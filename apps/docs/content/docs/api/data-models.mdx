@@ -116,7 +116,7 @@ Returned by [Payment links](/api/payment-links).
 
 A direct charge starts a provider-specific payment without hosted checkout. Use it only when you need to control the payment experience yourself.
 
-`POST /charge/wave` and `POST /charge/mtn` are the live rails. `POST /charge/card` and `POST /charge/switch` return `503 service_unavailable` until those rails are unmuted.
+`POST /charge/wave`, `POST /charge/mtn`, and `POST /charge/card` are live. `POST /charge/switch` returns `503 service_unavailable`.
 
 Returned by [Advanced direct charges](/api/charge).
 

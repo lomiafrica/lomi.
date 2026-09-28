@@ -1,6 +1,6 @@
 ---
-title: 'Qu’est-ce que SPI ?'
-description: 'Réseau SPI et checkout hébergé en Afrique de l’Ouest.'
+title: 'Qu’est-ce que π-SPI ?'
+description: 'Couverture π-SPI dans les huit pays de l’UEMOA, checkout, encaissements et retraits XOF.'
 docType: explanation
 ---
 
@@ -8,27 +8,45 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 
 <DocsAgentIndex />
 
-**SPI** relie opérateurs mobile money et banques en Afrique de l’Ouest. Sur lomi., les moyens SPI apparaissent sur le **checkout hébergé** avec Wave, MTN et cartes.
+**π-SPI** est le rail de compte à compte instantané de la BCEAO pour l’UEMOA. La devise est le **XOF**. Dans l’API l’identifiant reste `SPI`.
+
+## Pays
+
+| Code | Pays |
+| --- | --- |
+| BJ | Bénin |
+| BF | Burkina Faso |
+| CI | Côte d'Ivoire |
+| GW | Guinée-Bissau |
+| ML | Mali |
+| NE | Niger |
+| SN | Sénégal |
+| TG | Togo |
+
+Un compte bancaire dans l’un de ces pays est une destination π-SPI. Les retraits en euro et en dollar restent sur le rail de trésorerie.
 
 ## En bref
 
 | | |
 | --- | --- |
-| Approbation | Hébergé : opérateur, USSD ou app sur la page checkout |
-| Règlement | Après le paiement hébergé, puis `available_at` |
-| Direct vs hébergé | Hébergé uniquement |
+| Approbation | Le payeur scanne un QR marchand, ou confirme une demande envoyée à son alias |
+| Règlement | Après confirmation de la banque, puis `available_at` |
+| Direct vs hébergé | Checkout hébergé, `POST /payment-requests` (le XOF renvoie `qr_payload`) et `POST /charge/spi` |
 | Remboursement | Pas listé sur `POST /refunds` |
 | Min / max | - |
 
 Mêmes colonnes que [Canaux de paiement](/build/payment-channels#channel-capabilities).
 
-## Intégration
+## Où ça apparaît
 
-Utilisez [checkout hébergé](/build/accept/checkout) ou [liens de paiement](/build/accept/payment-links).
+- **Retraits du tableau de bord.** Un compte bancaire UEMOA est marqué π-SPI. Le retrait part quand la banque confirme, pas en plusieurs jours ouvrés.
+- **Jumbo.** Le même compte affiche π-SPI sur l’écran de retrait.
+- **Checkout.** π-SPI est proposé quand l’organisation l’a connecté et que l’environnement peut encaisser. Le payeur saisit son alias.
+- **Factures.** Une demande de paiement exige l’alias du client. La facture affiche cet alias et le QR quand ils sont sur les détails de paiement.
 
 ## Reversements
 
-Certains rails de reversement passent par SPI. Voir [Reversements](/build/money/payouts).
+Les retraits XOF avec `rail: "bank"` ou `rail: "spi"` sont des virements π-SPI vers un moyen de retrait enregistré. Voir [Virements](/build/money/payouts).
 
 <DocsNextSteps>
   <DocsNextStep href="/build/payment-channels" hint="Couverture par pays">

@@ -50,7 +50,7 @@ All error responses follow a consistent JSON format:
 | `409` | Conflict | The request conflicts with the current state of the resource (for example an idempotency key reused with a different body). |
 | `429` | Too Many Requests | Rate limits have been exceeded. |
 | `500` | Internal Server Error | Something went wrong on lomi.'s end (these are rare). |
-| `503` | Service Unavailable | Temporary unavailability, including muted rails such as `POST /charge/card` and `POST /charge/switch`. Retry later, or use hosted checkout. |
+| `503` | Service Unavailable | Temporary unavailability, including muted rails such as `POST /charge/switch`. Retry later, or use hosted checkout. |
 
 ## Stable error codes
 

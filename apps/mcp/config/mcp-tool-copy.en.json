@@ -309,7 +309,7 @@
   },
   "POST /payouts": {
     "title": "Create payout",
-    "description": "Move available funds out to your configured bank/mobile account. Money-out action: set amount and currency, and check the balance first."
+    "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Check the balance first."
   },
   "POST /products": {
     "title": "Create product",

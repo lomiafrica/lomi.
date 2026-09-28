@@ -51,6 +51,6 @@ curl -sS -X POST "https://sandbox.api.lomi.africa/payouts" \
 
 </Tabs>
 
-The response includes `stellar_transaction_id` when the hop lands. The dashboard payout row shows that id (read-only). Last mile stays Wave / MTN / SPI after the USDC Payment (`memo` = first 28 of `payout_id`). Optional `last_mile_rail` (`wave` | `mtn` | `spi` | `bank`, default `wave`) records which last mile follows the hop. Stellar sits beside Airwallex (`rail: bank`); it does not intercept bank payouts.
+The response includes `stellar_transaction_id` when the hop lands. The dashboard payout row shows that id (read-only). Last mile stays Wave / MTN / SPI after the USDC Payment (`memo` = first 28 of `payout_id`). Optional `last_mile_rail` (`wave` | `mtn` | `spi` | `bank`, default `wave`) records which last mile follows the hop. Stellar sits beside international bank payouts (`rail: bank`); it does not intercept bank payouts.
 
 See also [Payouts](/build/money/payouts).

@@ -37,6 +37,30 @@ There are three ways to integrate lomi. Payments:
 
 ---
 
+<Callout type="info">
+  The browser uses your publishable key, `lomi_pk_test_…` or `lomi_pk_live_…`. The secret key stays on your server. Card numbers never reach your server or the lomi. API.
+</Callout>
+
+## Apple Pay and Google Pay
+
+The same page can show Apple Pay and Google Pay above the card fields. Those buttons stay Apple's and Google's. `loadLomi` registers the page's domain for you. You do not add the domain yourself.
+
+```javascript
+import { loadLomi, mountLomiExpressCheckout, createLomiCardElements, mountLomiCardFields } from '@lomi./sdk';
+
+const lomi = await loadLomi('lomi_pk_test_...');
+mountLomiExpressCheckout(lomi, clientSecret, '#wallets');
+
+const elements = createLomiCardElements(lomi);
+mountLomiCardFields(elements, {
+  number: '#card-number',
+  expiry: '#card-expiry',
+  cvc: '#card-cvc',
+});
+```
+
+`clientSecret` comes from `POST /charge/card` with your secret key. Apple Pay shows in Safari and Google Pay in Chrome when the domain registration is active. Localhost is skipped.
+
 ## Quick start
 
 ### 1. Get Your API Keys

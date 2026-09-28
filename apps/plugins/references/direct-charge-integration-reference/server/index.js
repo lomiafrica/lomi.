@@ -48,6 +48,9 @@ async function lomiRequest(method, routePath, body) {
     headers: {
       "Content-Type": "application/json",
       "X-API-KEY": lomiApiKey,
+      ...(method === "POST"
+        ? { "Idempotency-Key": crypto.randomUUID() }
+        : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
   });

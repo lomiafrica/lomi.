@@ -8,7 +8,7 @@ import { Callout } from '@/components/docs/docs-callout';
 Les charges directes permettent d’encaisser via `POST /charge/*` depuis votre serveur. Contrairement aux [sessions checkout](/build/accept/checkout) hébergées, vous construisez le parcours client.
 
 <Callout type="warn">
-  **Les charges directes carte et Switch ne sont pas encore disponibles.** `POST /charge/card` et `POST /charge/switch` sont désactivés le temps de finaliser les rails carte, et les appeler aujourd’hui renvoie `503 service_unavailable`. Utilisez le [checkout hébergé](/build/accept/checkout) ou les [liens de paiement](/build/accept/payment-links) pour les cartes. Seules les charges directes mobile money Wave et MTN sont actives.
+  Les charges Switch (`POST /charge/switch`) ne sont pas disponibles. Elles renvoient `503 service_unavailable`. Utilisez le [checkout hébergé](/build/accept/checkout) ou [lomi. Elements](/build/accept/payment-elements) pour les cartes.
 </Callout>
 
 <Callout type="warn">
@@ -23,8 +23,8 @@ Utilisez-les pour encaisser rapidement sans réutiliser un moyen de paiement enr
 | --- | --- | --- |
 | Wave | `POST /charge/wave` | Ouvrir `wave_launch_url` ou `checkout_url` |
 | MTN | `POST /charge/mtn` | Approuver sur le téléphone ; en live le statut démarre en `PENDING` |
-| Carte | `POST /charge/card` | **Pas encore disponible**: utilisez le [checkout hébergé](/build/accept/checkout) |
-| Switch (carte côté serveur) | `POST /charge/switch` | **Pas encore disponible**: utilisez le [checkout hébergé](/build/accept/checkout) |
+| Carte | `POST /charge/card` | Monter [lomi. Elements](/build/accept/payment-elements) avec le `client_secret` |
+| Switch (carte côté serveur) | `POST /charge/switch` | **Pas disponible**: utilisez le [checkout hébergé](/build/accept/checkout) |
 
 ## Implémentation de référence
 
@@ -41,13 +41,11 @@ pnpm run dev
 
 ## Flux carte (résumé)
 
-<Callout type="warn">
-  Pas encore disponible. Les étapes ci-dessous décrivent le flux carte prévu ; `POST /charge/card` et `POST /charge/switch` renvoient actuellement `503 service_unavailable`. Utilisez le [checkout hébergé](/build/accept/checkout) pour les cartes.
-</Callout>
-
 1. `POST /charge/card` avec montant, devise et `customer_id` ou (`customer_email` + `customer_name`).
-2. Monter Payment Elements avec `lomi_pk_...` et le `client_secret` retourné.
+2. Monter [lomi. Elements](/build/accept/payment-elements) avec `lomi_pk_test_…` ou `lomi_pk_live_…` et le `client_secret` retourné.
 3. Écouter `PAYMENT_SUCCEEDED` pour la livraison.
+
+Le montant carte minimum est 1 000 F CFA (0,50 EUR/USD). Le numéro de carte n’atteint jamais votre serveur ni l’API lomi.
 
 ## Flux mobile money (résumé)
 
@@ -76,7 +74,7 @@ Voir [Mobile money](/build/mobile-money).
 
 Une réponse `201` inclut `transactionId`, `checkoutUrl` et la session Wave. `POST /charge/mtn` suit le même schéma.
 
-Les endpoints carte (`POST /charge/card`, …) sont dans la référence REST. Ils renvoient aujourd’hui `503 service_unavailable`.
+Les endpoints carte (`POST /charge/card`, …) sont dans la référence REST. Switch (`POST /charge/switch`) renvoie encore `503 service_unavailable`.
 
 ## Scénarios bac à sable (clé test uniquement)
 

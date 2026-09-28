@@ -20,8 +20,26 @@ Use **`POST /payouts`** for all outbound money movement.
 </Callout>
 
 <Callout type="info">
-  SPI settlement for self payouts continues asynchronously after the RPC succeeds. SPI beneficiary payouts are ledger-only until SPI execution ships.
+  Withdraw only from the matching balance. A US bank pays USD. A eurozone bank pays EUR. A UEMOA bank, Wave, or MTN pays F CFA. Convert first if the ledgers differ.
 </Callout>
+
+## Destinations by country
+
+### Your own account (`destination: "self"`)
+
+| Destination | Countries | Currency |
+| --- | --- | --- |
+| Wave | Côte d'Ivoire | F CFA |
+| MTN | Live MTN countries on your account | F CFA |
+| π-SPI / local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
+| US bank | United States | USD |
+| Eurozone bank | Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain, Croatia | EUR |
+| Other IBAN | Andorra, Bulgaria, Switzerland, Czechia, Denmark, United Kingdom, Gibraltar, Hungary, Iceland, Liechtenstein, Monaco, Norway, Poland, Romania, Sweden | EUR |
+| Other banks | Remaining countries | USD |
+
+### Someone else (`destination: "beneficiary"`)
+
+Pay a third party on **Wave or MTN** with `recipient.name` and `recipient.phone`. Bank payouts to an arbitrary third-party account are not supported.
 
 ## Create a payout
 

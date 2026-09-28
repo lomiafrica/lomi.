@@ -213,7 +213,7 @@ export async function GET() {
   );
   if (cardCharge) {
     lines.push(
-      `- **Embedded card charge (Elements-style)** → [${cardCharge.data.title ?? 'Card charge'}](${docsOrigin}${cardCharge.url}) (**not available yet**: \`POST /charge/card\` returns \`503 service_unavailable\`; use [hosted checkout](/build/accept/checkout) for cards).`,
+      `- **Embedded card charge (lomi. Elements)** → [${cardCharge.data.title ?? 'Card charge'}](${docsOrigin}${cardCharge.url}) (\`POST /charge/card\` returns \`client_secret\`; confirm with \`loadLomi('lomi_pk_…')\`).`,
     );
   }
   const pr = pages.find(

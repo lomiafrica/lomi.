@@ -50,11 +50,9 @@
       </section>
 
       <section class="card">
-        <h2>3) Embedded card charge (Payment Element)</h2>
+        <h2>3) Card</h2>
         <p class="hint">
-          Step A: create the charge on your server. Step B: mount the Payment Element with the returned
-          <code>client_secret</code> via <code>@lomi./sdk</code>. Step C: call
-          <code>lomi.confirmPayment()</code>.
+          Card fields match hosted checkout. Create the charge, then pay. The card number stays in the field.
         </p>
         <form id="card-setup-form">
           <label>Amount</label>
@@ -68,11 +66,29 @@
           <button type="submit">Create card charge (get client_secret)</button>
         </form>
 
-        <div id="payment-section" class="payment-section hidden">
-          <label class="field-label">Payment details</label>
-          <div id="payment-element" class="payment-element-mount"></div>
+        <div id="payment-section" class="payment-section">
+          <div id="lomi-wallets" class="lomi-wallets"></div>
+          <div class="lomi-theme-row">
+            <button type="button" id="theme-light" class="lomi-theme is-selected">Light</button>
+            <button type="button" id="theme-dark">Dark</button>
+          </div>
+          <div class="lomi-card-stack" id="lomi-card-stack" data-theme="light">
+            <div class="lomi-card-number-wrap">
+              <div id="lomi-card-number" class="lomi-card-number"></div>
+              <div class="lomi-card-brands" id="lomi-card-brands"></div>
+            </div>
+            <div class="lomi-card-row">
+              <div id="lomi-card-expiry" class="lomi-card-expiry"></div>
+              <div id="lomi-card-cvc" class="lomi-card-cvc"></div>
+            </div>
+          </div>
           <p id="payment-errors" class="field-errors" aria-live="polite"></p>
-          <button id="pay-card-button" type="button" disabled>Pay with card</button>
+          <button id="pay-card-button" type="button" disabled>Pay</button>
+          <div class="lomi-pay-colors" id="lomi-pay-colors">
+            <button type="button" data-pay="#121317" class="is-selected" aria-label="Black"></button>
+            <button type="button" data-pay="#56A5F9" aria-label="Blue"></button>
+            <button type="button" data-pay="#f4f1ea" aria-label="Light"></button>
+          </div>
         </div>
       </section>
 
