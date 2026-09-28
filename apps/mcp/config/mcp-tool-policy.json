@@ -36,6 +36,8 @@
         "create": "POST /customers",
         "update": "PATCH /customers/{id}",
         "delete": "DELETE /customers/{id}",
+        "block": "POST /customers/{id}/block",
+        "unblock": "POST /customers/{id}/unblock",
         "transactions": "GET /customers/{id}/transactions",
         "portal": "POST /customers/{id}/portal",
         "portal_audit": "GET /customers/{id}/portal-audit",

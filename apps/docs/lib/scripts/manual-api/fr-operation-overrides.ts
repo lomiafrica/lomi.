@@ -103,6 +103,18 @@ export const FR_OPERATION_COPY = {
     related:
       '[Récupérer un client](/api/customers/CustomersController_findOne) · [Lister les clients](/api/customers/CustomersController_findAll)',
   },
+  CustomersController_block: {
+    whenToUse:
+      'Utilisez lorsque ce client ne doit plus payer. Inversez avec Débloquer. Tableau de bord : fiche client ou C’était de la fraude.',
+    related:
+      '[Débloquer un client](/api/customers/CustomersController_unblock) · [lomi. Radar](/build/money/radar)',
+  },
+  CustomersController_unblock: {
+    whenToUse:
+      'Utilisez après un blocage par erreur, ou lorsque vous acceptez à nouveau ce client.',
+    related:
+      '[Bloquer un client](/api/customers/CustomersController_block) · [lomi. Radar](/build/money/radar)',
+  },
   DiscountCouponsController_create: {
     whenToUse:
       'Utilisez pour lancer des promotions ou des remises ciblées par segment.',

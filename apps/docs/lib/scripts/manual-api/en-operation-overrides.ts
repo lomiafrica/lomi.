@@ -151,6 +151,21 @@ export const EN_OPERATION_COPY = {
     related:
       '[Portal audit log](/api/customers/CustomersController_getPortalAudit) · [List subscriptions](/api/subscriptions/SubscriptionsController_findAll)',
   },
+  CustomersController_block: {
+    summary: 'Block a customer',
+    body: 'Writes the customer’s phone, email, and saved card fingerprints onto the organization Radar blocklist. Matching charges are refused while Radar is on.',
+    whenToUse:
+      'Use when you know this buyer should not pay you again. Reverse with Unblock. Dashboard: customer sheet or This was fraud.',
+    related:
+      '[Unblock a customer](/api/customers/CustomersController_unblock) · [lomi. Radar](/build/money/radar)',
+  },
+  CustomersController_unblock: {
+    summary: 'Unblock a customer',
+    body: 'Removes that customer’s phone, email, and saved card fingerprints from the organization Radar blocklist.',
+    whenToUse: 'Use after a mistaken block, or when you will accept this buyer again.',
+    related:
+      '[Block a customer](/api/customers/CustomersController_block) · [lomi. Radar](/build/money/radar)',
+  },
   CustomersController_getPortalAudit: {
     summary: 'Customer portal audit log',
     body: 'Returns portal activity for a customer (sign-ins, subscription changes, etc.) for support and compliance.',

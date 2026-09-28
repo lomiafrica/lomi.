@@ -1,0 +1,81 @@
+---
+title: "Débloquer un client"
+description: "Débloquer un client"
+full: true
+method: post
+path: /customers/{id}/unblock
+operationId: CustomersController_unblock
+---
+
+## Aperçu
+
+Débloquer un client
+
+Retire le téléphone, l’e-mail et les empreintes de cartes de ce client de la liste de blocage Radar de l’organisation.
+
+
+### Quand l’utiliser
+
+Utilisez après un blocage par erreur, ou lorsque vous acceptez à nouveau ce client.
+
+
+### Voir aussi
+
+[Bloquer un client](/api/customers/CustomersController_block) · [lomi. Radar](/build/money/radar)
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /customers/{id}/unblock`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | UUID du client |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### Corps de la requête
+
+_Aucun corps de requête._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Succès |
+| `401` | Clé API invalide ou manquante |
+| `404` | Ressource introuvable |
+
+## Erreurs
+
+Les erreurs suivent le format JSON standard. **401** : clé manquante ou invalide. **404** : ressource absente pour cette organisation.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/customers/value/unblock" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `CustomersController_unblock`
+- **Operation**: `POST /customers/{id}/unblock`
+
+Schémas complets et **Try it** : [référence API](/api). Contrat machine : `apps/docs/openapi.json`.

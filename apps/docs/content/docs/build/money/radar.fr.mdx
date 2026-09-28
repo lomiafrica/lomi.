@@ -29,6 +29,22 @@ curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
 
 Paramètres → Radar affiche le même interrupteur et le même mode, plus les règles en vigueur. Les paiements risqués ou bloqués créent aussi une notification dans le tableau de bord quand Radar est actif.
 
+## Bloquer un client
+
+Ajoute son téléphone, son e-mail et ses cartes enregistrées à la liste de blocage de l’organisation. Les encaissements correspondants sont refusés tant que Radar est actif. Débloquer retire ces identifiants.
+
+Tableau de bord : fiche client, ou **C’était de la fraude** sur une transaction signalée (cela bloque aussi le client).
+
+```bash
+curl -X POST "https://api.lomi.africa/customers/$CUSTOMER_ID/block" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+
+curl -X POST "https://api.lomi.africa/customers/$CUSTOMER_ID/unblock" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+MCP : `lomi_customers` avec `action=block` ou `action=unblock`.
+
 ## Règles intégrées
 
 | Règle | Rails | Action par défaut |

@@ -1,0 +1,82 @@
+---
+title: "Bloquer un client"
+description: "Bloquer un client"
+full: true
+method: post
+path: /customers/{id}/block
+operationId: CustomersController_block
+---
+
+## Aperçu
+
+Bloquer un client
+
+Ajoute le téléphone, l’e-mail et les empreintes de cartes enregistrées de ce client à la liste de blocage Radar de l’organisation. Les encaissements correspondants sont refusés tant que Radar est actif.
+
+
+### Quand l’utiliser
+
+Utilisez lorsque ce client ne doit plus payer. Inversez avec Débloquer. Tableau de bord : fiche client ou C’était de la fraude.
+
+
+### Voir aussi
+
+[Débloquer un client](/api/customers/CustomersController_unblock) · [lomi. Radar](/build/money/radar)
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /customers/{id}/block`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | UUID du client |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### Corps de la requête
+
+_Aucun corps de requête._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Succès |
+| `400` | Aucun téléphone, e-mail ou carte à bloquer |
+| `401` | Clé API invalide ou manquante |
+| `404` | Ressource introuvable |
+
+## Erreurs
+
+Les erreurs suivent le format JSON standard. **401** : clé manquante ou invalide. **404** : ressource absente pour cette organisation.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/customers/value/block" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `CustomersController_block`
+- **Operation**: `POST /customers/{id}/block`
+
+Schémas complets et **Try it** : [référence API](/api). Contrat machine : `apps/docs/openapi.json`.

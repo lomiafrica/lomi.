@@ -29,6 +29,22 @@ curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
 
 Dashboard Settings → Radar shows the same on/off and mode controls, plus the rules in effect. Risky and blocked charges also create an in-app notification when Radar is on.
 
+## Block a customer
+
+Writes their phone, email, and saved cards onto the organization blocklist. Matching charges are refused while Radar is on. Unblock removes those identifiers.
+
+Dashboard: customer sheet, or **This was fraud** on a flagged transaction (that also blocks them).
+
+```bash
+curl -X POST "https://api.lomi.africa/customers/$CUSTOMER_ID/block" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+
+curl -X POST "https://api.lomi.africa/customers/$CUSTOMER_ID/unblock" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+MCP: `lomi_customers` with `action=block` or `action=unblock`.
+
 ## Built-in rules
 
 | Rule | Rails | Default action |

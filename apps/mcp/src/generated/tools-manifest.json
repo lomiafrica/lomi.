@@ -512,7 +512,7 @@
     {
       "name": "lomi_customers",
       "title": "Customers",
-      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `top` — Top customers by spend (GET /customers/top). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `top` — Top customers by spend (GET /customers/top). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `block` — Block a customer (POST /customers/{id}/block). Required: id.\n- `unblock` — Unblock a customer (POST /customers/{id}/unblock). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Customers"
       ],
@@ -533,12 +533,14 @@
               "create",
               "update",
               "delete",
+              "block",
+              "unblock",
               "transactions",
               "portal",
               "portal_audit",
               "subscriptions"
             ],
-            "description": "Which REST operation to run. One of: list, top, get, create, update, delete, transactions, portal, portal_audit, subscriptions."
+            "description": "Which REST operation to run. One of: list, top, get, create, update, delete, block, unblock, transactions, portal, portal_audit, subscriptions."
           },
           "body": {
             "type": "object",
@@ -613,7 +615,7 @@
       "readOnly": false,
       "destructive": true,
       "alwaysLoad": true,
-      "searchHint": "audit create customers delete get list patch portal portal_audit post subscriptions top transactions update",
+      "searchHint": "audit block create customers delete get list patch portal portal_audit post subscriptions top transactions unblock update",
       "actions": {
         "list": {
           "operationKey": "GET /customers",
@@ -727,6 +729,46 @@
           "wantsBody": false,
           "title": "Delete customer",
           "description": "Permanently delete a customer by id. Destructive: past transactions are kept, but the customer can no longer be charged or subscribed.",
+          "tags": [
+            "Customers"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "block": {
+          "operationKey": "POST /customers/{id}/block",
+          "method": "post",
+          "pathTemplate": "/customers/{id}/block",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "CustomersController_block",
+          "write": true,
+          "wantsBody": false,
+          "title": "Block a customer",
+          "description": "Add this customer's phone, email, and saved card fingerprints to the organization Radar blocklist. Matching charges are refused while Radar is on. Use action unblock to reverse.",
+          "tags": [
+            "Customers"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "unblock": {
+          "operationKey": "POST /customers/{id}/unblock",
+          "method": "post",
+          "pathTemplate": "/customers/{id}/unblock",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "CustomersController_unblock",
+          "write": true,
+          "wantsBody": false,
+          "title": "Unblock a customer",
+          "description": "Remove this customer's phone, email, and saved card fingerprints from the organization Radar blocklist so matching charges are no longer refused for that reason.",
           "tags": [
             "Customers"
           ],
@@ -2644,7 +2686,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create payout",
-          "description": "Move available funds out to your configured bank/mobile account. Money-out action: set amount and currency, and check the balance first.",
+          "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Check the balance first.",
           "tags": [
             "Payouts"
           ],

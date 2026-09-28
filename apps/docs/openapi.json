@@ -1917,6 +1917,137 @@
         ]
       }
     },
+    "/customers/{id}/block": {
+      "post": {
+        "description": "Ajoute le téléphone, l'e-mail et les empreintes de cartes enregistrées de ce client à la liste de blocage Radar de l'organisation. Les encaissements correspondants sont refusés tant que Radar est actif.",
+        "operationId": "CustomersController_block",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID du client",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client ajouté à la liste de blocage Radar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRadarBlockResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Aucun téléphone, e-mail ou carte à bloquer"
+          },
+          "401": {
+            "description": "Clé API invalide ou manquante"
+          },
+          "404": {
+            "description": "Client introuvable ou accès refusé"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Bloquer un client",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/customers/{id}/unblock": {
+      "post": {
+        "description": "Retire le téléphone, l'e-mail et les empreintes de cartes enregistrées de ce client de la liste de blocage Radar de l'organisation.",
+        "operationId": "CustomersController_unblock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID du client",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client retiré de la liste de blocage Radar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRadarBlockResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé API invalide ou manquante"
+          },
+          "404": {
+            "description": "Client introuvable ou accès refusé"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Débloquer un client",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
     "/payment-requests": {
       "post": {
         "description": "Crée une demande de paiement pour un client. Elle a une date d’expiration et peut être suivie jusqu’à réussite ou expiration.",
@@ -9360,6 +9491,41 @@
           "mime_type",
           "expires_at"
         ]
+      },
+      "CustomerRadarBlockEntryDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["phone", "email", "fingerprint"],
+            "example": "email"
+          },
+          "value": {
+            "type": "string",
+            "example": "ada@example.com"
+          }
+        },
+        "required": ["kind", "value"]
+      },
+      "CustomerRadarBlockResponseDto": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "blocked": {
+            "type": "boolean",
+            "example": true
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerRadarBlockEntryDto"
+            }
+          }
+        },
+        "required": ["customer_id", "blocked", "entries"]
       },
       "CustomerResponseDto": {
         "type": "object",

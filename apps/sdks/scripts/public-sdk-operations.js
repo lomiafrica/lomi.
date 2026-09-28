@@ -36,6 +36,8 @@ export const METHOD_NAME_BY_OP = {
   "GET /customers/{id}/subscriptions": "getSubscriptions",
   "GET /customers/{id}/portal-audit": "getPortalAudit",
   "POST /customers/{id}/portal": "createPortalSession",
+  "POST /customers/{id}/block": "block",
+  "POST /customers/{id}/unblock": "unblock",
   "GET /coupons": "list",
   "GET /coupons/{id}": "get",
   "GET /coupons/{id}/performance": "getPerformance",

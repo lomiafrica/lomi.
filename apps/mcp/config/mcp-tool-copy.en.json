@@ -279,9 +279,17 @@
     "title": "Create customer",
     "description": "Create a customer record (email, name, metadata) to attach future payments and subscriptions to. Returns the new customer id."
   },
+  "POST /customers/{id}/block": {
+    "title": "Block a customer",
+    "description": "Add this customer's phone, email, and saved card fingerprints to the organization Radar blocklist. Matching charges are refused while Radar is on. Use action unblock to reverse."
+  },
   "POST /customers/{id}/portal": {
     "title": "Launch customer portal session",
     "description": "Create a short-lived URL letting a customer manage their own subscriptions and payment methods. Share the returned link with the customer."
+  },
+  "POST /customers/{id}/unblock": {
+    "title": "Unblock a customer",
+    "description": "Remove this customer's phone, email, and saved card fingerprints from the organization Radar blocklist so matching charges are no longer refused for that reason."
   },
   "POST /coupons": {
     "title": "Create discount coupon",
