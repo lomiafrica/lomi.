@@ -18,7 +18,9 @@ Visa and Mastercard can be held. Some debit cards decline the block or debit it 
 
 A normal online hold lasts 7 days after the customer confirms the card. When the card network allows a longer block, it can last up to 30 days (29 days and 18 hours on Visa). `capture_before` on `GET /charge/card/{id}` is the deadline. The customer's bank can release the block earlier.
 
-Releasing a hold does not incur a processing fee. Capturing one charges the normal card rate on the captured amount only. That amount must be at least 1 000 F CFA (0.50 EUR or USD). You can capture once. A lower amount releases the remainder.
+Each hold costs 1 000 F CFA (2 USD or 2 EUR). That fee is charged whether you release the hold or capture part of it. Capturing also charges the normal card rate on the captured amount only. The captured amount must be at least 1 000 F CFA (0.50 EUR or USD). You can capture once. A lower amount releases the remainder.
+
+The hold fee is listed under Other fees in Settings → Fees, not in the card rate row. On the transaction, Payment details shows Card hold and the time the block ends.
 
 ## Place, capture, or release
 

@@ -18,7 +18,9 @@ Visa et Mastercard peuvent être bloquées. Certaines cartes de débit refusent 
 
 Un blocage en ligne classique dure 7 jours après la confirmation de la carte. Quand le réseau de la carte autorise un blocage plus long, il peut durer jusqu’à 30 jours (29 jours et 18 heures sur Visa). `capture_before` sur `GET /charge/card/{id}` est la date limite. La banque du client peut lever le blocage plus tôt.
 
-Libérer un blocage n’entraîne pas de frais de traitement. Le capturer applique le tarif carte habituel, uniquement sur le montant prélevé. Ce montant doit être d’au moins 1 000 F CFA (0,50 EUR ou USD). Un seul prélèvement est possible. Un montant inférieur libère le reste.
+Chaque blocage coûte 1 000 F CFA (2 USD ou 2 EUR). Ces frais sont dus que vous libériez la caution ou que vous en préleviez une partie. Un prélèvement ajoute aussi le tarif carte habituel, uniquement sur le montant prélevé. Ce montant doit être d’au moins 1 000 F CFA (0,50 EUR ou USD). Un seul prélèvement est possible. Un montant inférieur libère le reste.
+
+Ces frais apparaissent dans Autres frais (Réglages → Frais), pas sur la ligne du tarif carte. Sur la transaction, Détails du paiement indique Caution carte et l’heure de fin du blocage.
 
 ## Bloquer, prélever ou libérer
 
