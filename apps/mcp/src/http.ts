@@ -334,7 +334,7 @@ async function resolveTransportCredential(req: Request): Promise<boolean> {
   const introspected = await introspectOAuthAccessToken(oauthToken);
   return Boolean(
     introspected.active &&
-    (introspected.connection_key || introspected.provisioning_key),
+      (introspected.connection_key || introspected.provisioning_key),
   );
 }
 

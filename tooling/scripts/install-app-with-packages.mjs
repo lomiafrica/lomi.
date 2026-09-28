@@ -425,10 +425,7 @@ function main() {
   }
 
   const { pkg, rewritten } = rewriteWorkspaceSpecsToFile(appDir);
-  if (
-    useNpm(appRel) &&
-    (appRel === "apps/website" || appRel === "apps/docs")
-  ) {
+  if (useNpm(appRel) && (appRel === "apps/website" || appRel === "apps/docs")) {
     rewritePnpmScriptsForNpm(appDir);
   }
   installFileApp(appRel, pkg, { frozen: !rewritten });
