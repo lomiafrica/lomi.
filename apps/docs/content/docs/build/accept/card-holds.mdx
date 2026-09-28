@@ -33,7 +33,7 @@ The sale stays pending until capture is recorded, then it becomes completed. A r
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
-  -H "Idempotency-Key: hold-senoto-1001" \
+  -H "Idempotency-Key: hold-1001" \
   -H "Content-Type: application/json" \
   -d '{"amount":100000,"currency_code":"XOF","hold":true,"customer_email":"client@example.com","customer_name":"Awa Ndiaye","description":"Vehicle deposit"}'
 ```
@@ -41,7 +41,7 @@ curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/capture" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
-  -H "Idempotency-Key: capture-senoto-1001" \
+  -H "Idempotency-Key: capture-1001" \
   -H "Content-Type: application/json" \
   -d '{"amount":25000}'
 ```

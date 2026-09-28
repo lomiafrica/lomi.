@@ -17,7 +17,6 @@ import {
   IntegrationSurface,
   IntegrationSurfaceGroup,
 } from '@/components/docs/integration-surface-group';
-import { McpOperationIndex } from '@/components/docs/mcp-operation-index';
 import {
   DocsContactForm,
   DocsSecurityForm,
@@ -59,7 +58,6 @@ export function getMDXComponents(components?: MDXComponents) {
     InlineCommand,
     IntegrationSurfaceGroup,
     IntegrationSurface,
-    McpOperationIndex,
     DocsContactForm,
     DocsSecurityForm,
     DocsTierCallout,

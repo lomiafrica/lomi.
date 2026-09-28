@@ -4,10 +4,10 @@ import { getDocsLocale } from '@/lib/utils/docs-locale';
 import { t as translate } from '@/lib/i18n/translations';
 import {
   listMcpToolGroups,
-  listRestDocsHrefs,
   mcpCategoryForGroup,
   mcpTwinAnchor,
 } from '@/lib/mcp-twins';
+import { listRestDocsHrefs } from '@/lib/mcp-twins-rest-hrefs';
 import {
   McpOperationIndexView,
   type McpOperationIndexGroup,

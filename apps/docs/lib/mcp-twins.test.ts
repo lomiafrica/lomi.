@@ -12,9 +12,11 @@ import {
   mcpExcludedOperationKeys,
   mcpTwinAnchor,
   mcpTwinHref,
+} from '@/lib/mcp-twins';
+import {
   listRestDocsHrefs,
   restDocsHrefFromMdxFile,
-} from '@/lib/mcp-twins';
+} from '@/lib/mcp-twins-rest-hrefs';
 import { REST_API_SIDEBAR_GROUPS } from '@/lib/scripts/manual-api/constants';
 
 test('maps REST checkout create to lomi_checkout action=create', () => {

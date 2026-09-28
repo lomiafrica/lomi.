@@ -16,8 +16,8 @@ import {
   mcpTwinAnchor,
   mcpTwinHref,
   parseMcpToolPolicy,
-  restDocsHrefFromMdxFile,
 } from '@/lib/mcp-twins';
+import { restDocsHrefFromMdxFile } from '@/lib/mcp-twins-rest-hrefs';
 import { isJsonArray, isJsonObject, isString, parseJson } from '@lomi./shared';
 
 type SidebarMeta = {
