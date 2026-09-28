@@ -1,14 +1,14 @@
 ---
 title: lomi. Radar
-description: Analysez les encaissements carte et mobile money avec évaluations de risque, webhooks et facturation à l'usage.
+description: Analysez les encaissements carte et mobile money avec évaluations de risque, webhooks et de petits frais sur les facteurs déclenchés.
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-**lomi. Radar** évalue les **encaissements entrants** (carte, MTN, Wave) avant leur finalisation. Chaque paiement reçoit une étiquette **Normal**, **Risqué** ou **Bloqué** sur la transaction. C'est distinct des [Litiges](/build/money/disputes) (chargebacks carte a posteriori) et des contrôles de retrait plateforme décrits dans [Payouts](/build/money/payouts).
+**lomi. Radar** évalue les **encaissements entrants** (carte, MTN, Wave) avant leur finalisation. Chaque paiement est enregistré comme évaluation de risque. Quand Radar est actif pour l'organisation, la transaction affiche **Normal**, **Risqué** ou **Bloqué**. C'est distinct des [Litiges](/build/money/disputes) (chargebacks carte a posteriori) et des contrôles de retrait plateforme décrits dans [Payouts](/build/money/payouts).
 
 <Callout type="info">
-  Le filtrage est toujours actif. Les marchands choisissent surveillance ou blocage. Les règles plateforme (dont les comptes non vérifiés qui encaissent des cartes USD ou EUR) ne peuvent pas être désactivées.
+  Chaque paiement est évalué en arrière-plan. L'application des règles, l'étiquette de risque, les webhooks et les frais de facteur commencent quand l'organisation active Radar. Les règles plateforme (dont les comptes non vérifiés qui encaissent des cartes USD ou EUR) ne peuvent pas être désactivées tant que Radar est actif.
 </Callout>
 
 ## Mode
@@ -17,17 +17,17 @@ import { Callout } from '@/components/docs/docs-callout';
 curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "mode": "block" }'
+  -d '{ "enabled": true, "mode": "block" }'
 ```
 
 | Champ | Valeurs | Effet |
 | --- | --- | --- |
+| `enabled` | `true` / `false` (défaut `false`) | Active l'application, les étiquettes et les frais de facteur |
 | `mode` | `monitor` | Signale sans bloquer |
 | `mode` | `block` | Refuse les encaissements selon les règles block |
 | `stripe_radar_passthrough` | `true` (défaut) | Enrichit avec les signaux réseau carte après capture |
-| `enabled` | ignoré pour le filtrage | Préférence de facturation à l'usage seulement |
 
-Paramètres → Radar affiche le même contrôle de mode. Les paiements risqués ou bloqués créent aussi une notification dans le tableau de bord.
+Paramètres → Radar affiche le même interrupteur et le même mode, plus les règles en vigueur. Les paiements risqués ou bloqués créent aussi une notification dans le tableau de bord quand Radar est actif.
 
 ## Règles intégrées
 
@@ -46,12 +46,14 @@ curl "https://api.lomi.africa/risk-assessments?decision=flag" \
   -H "X-API-KEY: $LOMI_SECRET_KEY"
 ```
 
-Filtres : `decision`, `rail`, `startDate`, `endDate`.
+Filtres : `decision`, `rail`, `startDate`, `endDate`. Les évaluations ne sont renvoyées que si Radar est actif pour l'organisation.
 
 ## Webhooks
 
 - `PAYMENT_RISK_FLAGGED`
 - `PAYMENT_RISK_BLOCKED`
+
+Ces événements ne partent que si Radar est actif.
 
 ## Litiges vs Radar vs retraits
 
@@ -61,6 +63,6 @@ Filtres : `decision`, `rail`, `startDate`, `endDate`.
 | API | `GET /disputes` | `GET /risk-assessments` | Aucune (interne) |
 | Dashboard | Paramètres → Support → Litiges | Fiche transaction : Normal / Risqué / Bloqué | Message d'erreur retrait |
 
-## Facturation à l'usage
+## Frais
 
-Un événement `radar_screen` peut être émis via [Facturation à l'usage](/build/billing/usage-billing) si un compteur est configuré. Le filtrage plateforme tourne même sans compteur.
+Radar n'ajoute pas de frais quand une règle se déclenche. Les règles plateforme sont gratuites et toujours actives. La surveillance est gratuite. Le blocage et la revue ne sont pas tarifés tant que la précision des règles n'est pas mesurée. Un prix ultérieur, s'il existe, est un montant fixe par paiement analysé ou une inclusion dans un plan. Il n'est jamais lié à un facteur déclenché.

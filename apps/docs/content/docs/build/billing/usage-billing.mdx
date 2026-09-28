@@ -93,28 +93,9 @@ Returns **202 Accepted**; processing is asynchronous.
 - **List or get usage events** when webhooks are delayed: [List usage events](/api/usage/events/UsageEventsController_findAll), [Get usage event](/api/usage/events/UsageEventsController_findOne).
 - **Revenue reporting** across MRR + usage + one-time: [Combined revenue metrics](/api/usage/UsageBillingController_getRevenue).
 
-## Reference: lomi. Radar metering
+## Reference: lomi. Radar fees
 
-[lomi. Radar](/build/money/radar) bills per screened charge when enabled on your organization. Each evaluation calls `enqueue_usage_event` with meter code **`radar_screen`** (aggregation: `count`).
-
-1. Enable Radar via [PATCH /organizations/radar-settings](/api/organizations/OrganizationsController_updateRadarSettings) (`enabled: true`). A `radar_screen` meter is created automatically when a matching usage-based product exists.
-2. Every screened charge (card, MTN, Wave) records one usage unit while Radar is on.
-3. Read balances and periods with the same endpoints as other usage meters ([Get meter balance](/api/meters/MetersController_getBalance), [List billing periods](/api/usage/UsageBillingController_listPeriods)).
-
-```bash
-curl -X POST "https://sandbox.api.lomi.africa/usage/events" \
-  -H "Authorization: Bearer $LOMI_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "transaction_id": "radar_screen_evt_123",
-    "code": "radar_screen",
-    "customer_id": "cus_...",
-    "quantity": 1,
-    "properties": { "assessment_id": "ra_...", "rail": "card" }
-  }'
-```
-
-Platform ingestion is automatic when Radar runs; the example shows the event shape for reconciliation.
+[lomi. Radar](/build/money/radar) does not bill through usage meters, and it does not charge when a rule fires. Monitor is free.
 
 ## Related
 

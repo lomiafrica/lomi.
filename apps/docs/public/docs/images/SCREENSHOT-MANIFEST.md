@@ -61,7 +61,7 @@ Capture each pair in light and dark:
 |                 |                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------- |
 | **Save as**     | `start/create-account-light.webp` and `start/create-account-dark.webp`                 |
-| **Open**        | https://dashboard.lomi.africa/onboarding                                               |
+| **Open**        | https://dashboard.lomi.africa/o                                                        |
 | **Show**        | The step with the **business profile form** (name, country, use case / business type). |
 | **Do not show** | Empty welcome splash with no form fields.                                              |
 | **Chrome**      | Full window, onboarding usually has **no sidebar**.                                    |
@@ -73,8 +73,8 @@ Capture each pair in light and dark:
 |                 |                                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **Save as**     | `start/api-keys-light.webp` and `start/api-keys-dark.webp`                                                               |
-| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/settings/access-tokens`                                                     |
-| **Show**        | **Access tokens** page, **Test** and **Live** sections both visible with `lomi_sk_test_…` / `lomi_pk_test_…` style keys. |
+| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/home#keys`                                                                  |
+| **Show**        | Home workbench **Keys** tab, publishable and secret prefixes visible (`lomi_pk_…` / `lomi_sk_…`).                        |
 | **Do not show** | Live secret keys unmasked (blur if needed).                                                                              |
 | **Chrome**      | Sidebar + top bar OK; crop to main panel.                                                                                |
 
@@ -86,7 +86,7 @@ Capture each pair in light and dark:
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Save as**     | `start/hosted-checkout-light.webp` and `start/hosted-checkout-dark.webp`                                                                   |
 | **Open**        | A **sandbox** checkout URL from `checkout_url` after creating a session ([sandbox guide](https://docs.lomi.africa/start/sandbox-payments)) |
-| **Show**        | Default **pay** step, org logo, product/amount, **Pay** button. Checkout card centered in the 16:9 frame.                                  |
+| **Show**        | Hosted pay step with **Apple Pay** / **Google Pay**, method tiles (Wave / MTN / Card), amount, **Pay** button.                             |
 | **Do not show** | Success page, cancel page, or error state.                                                                                                 |
 
 **Get a URL:** `lomi checkout create` or `POST https://sandbox.api.lomi.africa/checkout-sessions` with your test key → open the `checkout_url`.
@@ -145,7 +145,7 @@ Capture each pair in light and dark:
 | ----------- | -------------------------------------------------------------------------------------------------- |
 | **Save as** | `build/balance-light.webp` and `build/balance-dark.webp`                                           |
 | **Open**    | `https://dashboard.lomi.africa/{your-org-id}/balance`                                              |
-| **Show**    | **Test mode** ON, test balance amount visible + at least one **completed** credit line in history. |
+| **Show**    | Multi-currency balances (F CFA / EUR / USD) + **Pay out** / **Convert** / **Top up** + recent activity. |
 | **Chrome**  | Balance hero + first rows of history.                                                              |
 
 ---
@@ -155,7 +155,7 @@ Capture each pair in light and dark:
 |                 |                                                                            |
 | --------------- | -------------------------------------------------------------------------- |
 | **Save as**     | `build/payouts-light.webp` and `build/payouts-dark.webp`                   |
-| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/settings/withdrawals`         |
+| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/settings/payouts`              |
 | **Show**        | Payout methods list **or** “add withdrawal method” UI (bank / Wave / SPI). |
 | **Do not show** | Empty error state.                                                         |
 
@@ -166,8 +166,8 @@ Capture each pair in light and dark:
 |             |                                                                                                           |
 | ----------- | --------------------------------------------------------------------------------------------------------- |
 | **Save as** | `build/subscriptions-light.webp` and `build/subscriptions-dark.webp`                                      |
-| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/customers/subscriptions/{subscription-id}`                   |
-| **Show**    | One subscription detail: plan name, **status** (active/trialing), customer, billing period / next charge. |
+| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/customers` (Subscriptions tab)                                |
+| **Show**    | Subscriptions list with at least one row: plan, amount, **next billing**. Detail drawer is optional.      |
 | **Chrome**  | Detail panel centered in frame.                                                                           |
 
 ---

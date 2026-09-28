@@ -1,14 +1,14 @@
 ---
 title: lomi. Radar
-description: Screen incoming card and mobile-money charges with risk assessments, webhooks, and metered billing.
+description: Screen incoming card and mobile-money charges with risk assessments, webhooks, and a small fee on the factors that fire.
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-**lomi. Radar** evaluates **incoming** charges (card, MTN, Wave) before they complete. Every charge gets a **Normal**, **Risky**, or **Blocked** label on the transaction. It is separate from [Disputes](/build/money/disputes) (card chargebacks after the fact) and from platform payout controls described in [Payouts](/build/money/payouts).
+**lomi. Radar** evaluates **incoming** charges (card, MTN, Wave) before they complete. Every charge is recorded as a risk assessment. When Radar is on for the organization, the transaction shows a **Normal**, **Risky**, or **Blocked** label. It is separate from [Disputes](/build/money/disputes) (card chargebacks after the fact) and from platform payout controls described in [Payouts](/build/money/payouts).
 
 <Callout type="info">
-  Screening is always on. Merchants choose monitor vs block. Platform rules (including unverified accounts taking USD or EUR cards) cannot be turned off.
+  Every charge is assessed in the background. Enforcement, the transaction risk label, webhooks, and factor fees start when the organization turns Radar on. Platform rules (including unverified accounts taking USD or EUR cards) cannot be turned off while Radar is on.
 </Callout>
 
 ## Mode
@@ -17,17 +17,17 @@ import { Callout } from '@/components/docs/docs-callout';
 curl -X PATCH "https://api.lomi.africa/organizations/radar-settings" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "mode": "block" }'
+  -d '{ "enabled": true, "mode": "block" }'
 ```
 
 | Field | Values | Meaning |
 | --- | --- | --- |
+| `enabled` | `true` / `false` (default `false`) | Turn on enforcement, labels, and factor fees |
 | `mode` | `monitor` | Mark risky charges but allow them |
 | `mode` | `block` | Reject charges that trigger block rules |
 | `stripe_radar_passthrough` | `true` (default) | Merge card-network risk signals after card capture |
-| `enabled` | ignored for screening | Metering preference only |
 
-Dashboard Settings → Radar shows the same mode control. Risky and blocked charges also create an in-app notification.
+Dashboard Settings → Radar shows the same on/off and mode controls, plus the rules in effect. Risky and blocked charges also create an in-app notification when Radar is on.
 
 ## Built-in rules
 
@@ -46,7 +46,7 @@ curl "https://api.lomi.africa/risk-assessments?decision=flag&page=1&pageSize=50"
   -H "X-API-KEY: $LOMI_SECRET_KEY"
 ```
 
-Optional filters: `decision` (`allow`, `flag`, `block`), `rail` (`card`, `mtn`, `wave`), `startDate`, `endDate`.
+Optional filters: `decision` (`allow`, `flag`, `block`), `rail` (`card`, `mtn`, `wave`), `startDate`, `endDate`. Assessments are returned only while Radar is on for the organization.
 
 Example row:
 
@@ -70,7 +70,7 @@ Subscribe to:
 - `PAYMENT_RISK_FLAGGED`, charge allowed but flagged for review
 - `PAYMENT_RISK_BLOCKED`, charge blocked when `mode` is `block`
 
-Payload includes `assessment_id`, `transaction_id`, `rail`, `decision`, `risk_score`, `signals`, `amount`, and `currency_code`.
+These events fire only while Radar is on. Payload includes `assessment_id`, `transaction_id`, `rail`, `decision`, `risk_score`, `signals`, `amount`, and `currency_code`.
 
 ## Disputes vs Radar vs payout controls
 
@@ -80,6 +80,6 @@ Payload includes `assessment_id`, `transaction_id`, `rail`, `decision`, `risk_sc
 | API | `GET /disputes` | `GET /risk-assessments` | None (internal) |
 | Dashboard | Settings → Support → Disputes | Transaction sheet: Normal / Risky / Blocked | Withdrawal error message |
 
-## Metering
+## Factor fees
 
-When a `radar_screen` meter is configured, each screening can emit a usage event billed through [Usage billing](/build/billing/usage-billing). Platform screening still runs without a meter.
+Radar does not add a fee when a rule fires. Platform rules are free and always on. Monitor is free. Block and Review are not priced until rule precision is measured. A later price, if any, is a flat amount per screened charge or inclusion in a plan. It is never tied to a fired factor.
