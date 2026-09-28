@@ -183,9 +183,9 @@ jobs:
             echo "RESTORE_${stage^^}_ERRORS=${count:-0}" >> "$GITHUB_ENV"
           done
 
-          # Auth and storage copies fail on vanilla Postgres; they are not the
-          # public ledger the drill is proving. Map each data.sql ERROR back to
-          # its COPY schema and keep only public-schema failures.
+          # Auth, storage, and other managed schemas fail on this image; they are
+          # not the public ledger the drill is proving. Map each data.sql ERROR
+          # back to its COPY schema and keep only public-schema failures.
           public_data_errors=0
           ignored_data_errors=0
           while IFS= read -r line; do
@@ -198,8 +198,8 @@ jobs:
             schema="$(printf '%s\n' "$copy_line" | sed -n 's/^COPY[[:space:]]*"\?\([A-Za-z_][A-Za-z0-9_]*\)"\?\..*/\1/p')"
             schema="${schema:-public}"
             case "$schema" in
-              auth|storage) ignored_data_errors=$((ignored_data_errors + 1)) ;;
-              *) public_data_errors=$((public_data_errors + 1)) ;;
+              public) public_data_errors=$((public_data_errors + 1)) ;;
+              *) ignored_data_errors=$((ignored_data_errors + 1)) ;;
             esac
           done < <(grep '^psql:.*ERROR' restore-data.err || true)
           echo "RESTORE_DATA_ERRORS=${public_data_errors}" >> "$GITHUB_ENV"
@@ -280,7 +280,7 @@ jobs:
             echo "| Politiques RLS public | ${RESTORED_POLICIES:-0} |"
             echo "| Contraintes FK non validées | ${INVALID_FKS:-n/a} |"
             echo "| Erreurs psql (roles / schema / data public) | ${RESTORE_ROLES_ERRORS:-n/a} / ${RESTORE_SCHEMA_ERRORS:-n/a} / ${RESTORE_DATA_ERRORS:-n/a} |"
-            echo "| Erreurs data ignorées (auth / storage) | ${RESTORE_DATA_IGNORED_ERRORS:-0} |"
+            echo "| Erreurs data ignorées (hors public) | ${RESTORE_DATA_IGNORED_ERRORS:-0} |"
             echo
             echo "## Volumes restaurés (tables clés)"
             echo
