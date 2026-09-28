@@ -154,11 +154,17 @@ jobs:
           done
           psql "$SCRATCH_DB_URL" -tAc 'select version()'
 
-          # Scratch Postgres is not a full Supabase stack. Policies in the dump
-          # call auth.jwt() / auth.uid(); stub them so public schema compiles.
-          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE SCHEMA IF NOT EXISTS auth;'
-          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT NULL::jsonb $$;'
-          psql "$SCRATCH_DB_URL" -v ON_ERROR_STOP=1 -c 'CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT NULL::uuid $$;'
+          # Scratch image already owns schema auth; the postgres role cannot
+          # create there. Stub jwt/uid as supabase_admin so dumped policies compile.
+          cid="$(docker ps -q --filter "ancestor=supabase/postgres:17.4.1.075" | head -n1)"
+          if [ -z "$cid" ]; then
+            echo "::error::Could not find supabase postgres container to stub auth helpers"
+            exit 1
+          fi
+          stub='GRANT USAGE ON SCHEMA auth TO postgres, PUBLIC; CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $auth_stub$ SELECT NULL::jsonb $auth_stub$; CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $auth_stub$ SELECT NULL::uuid $auth_stub$; GRANT EXECUTE ON FUNCTION auth.jwt() TO PUBLIC; GRANT EXECUTE ON FUNCTION auth.uid() TO PUBLIC;'
+          if ! docker exec "$cid" psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -c "$stub"; then
+            docker exec "$cid" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c "SET ROLE supabase_admin; $stub"
+          fi
 
           # Supabase's dump filters already strip reserved roles and internal schemas;
           # ON_ERROR_STOP stays off so a single pre-existing object does not abort the
