@@ -7,6 +7,10 @@ import {
   getApiBaseUrl,
 } from '@/lib/docs-session';
 import {
+  DOCS_HANDOFF_FALLBACK,
+  safeDocsHandoffNext,
+} from '@/lib/tryit/handoff-next';
+import {
   isJsonObject,
   readNumber,
   readString,
@@ -15,9 +19,9 @@ import {
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
-  const next = req.nextUrl.searchParams.get('next') || '/docs/api';
+  const next = safeDocsHandoffNext(req.nextUrl.searchParams.get('next'));
   const fallback = req.nextUrl.clone();
-  fallback.pathname = '/docs/api';
+  fallback.pathname = DOCS_HANDOFF_FALLBACK;
   fallback.search = '';
 
   if (!code || !code.startsWith('lomi_bh_')) {
@@ -50,7 +54,7 @@ export async function GET(req: NextRequest) {
   }
 
   const dest = req.nextUrl.clone();
-  dest.pathname = next.startsWith('/') ? next : `/${next}`;
+  dest.pathname = next;
   dest.search = '';
   const res = NextResponse.redirect(dest);
   res.cookies.set(
