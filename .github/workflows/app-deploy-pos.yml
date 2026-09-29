@@ -101,7 +101,9 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
           EXPO_ASC_API_KEY: ${{ secrets.EXPO_ASC_API_KEY }}
-        run: node scripts/write-store-submit-secrets.mjs
+        run: |
+          node scripts/write-store-submit-secrets.mjs
+          node scripts/apply-local-submit-paths.mjs
 
       - name: Gate store upload
         if: github.event_name == 'workflow_dispatch'
@@ -118,10 +120,25 @@ jobs:
       - name: Queue EAS build
         if: github.event_name == 'workflow_dispatch'
         run: |
+          set -o pipefail
           extra=()
           if [ "${SUBMIT}" = "true" ]; then
             extra+=(--auto-submit-with-profile store)
           fi
-          eas build --profile "${PROFILE}" --platform "${PLATFORM}" --non-interactive --no-wait --json "${extra[@]}" | tee /tmp/eas-build.json
+          platforms=()
+          if [ "${PLATFORM}" = "all" ]; then
+            platforms+=(android ios)
+          else
+            platforms+=("${PLATFORM}")
+          fi
+          failed=0
+          for platform in "${platforms[@]}"; do
+            echo "Queue ${PROFILE} ${platform}"
+            if ! eas build --profile "${PROFILE}" --platform "${platform}" --non-interactive --no-wait --json "${extra[@]}" | tee -a /tmp/eas-build.json; then
+              echo "EAS ${platform} failed to queue." >> "$GITHUB_STEP_SUMMARY"
+              failed=1
+            fi
+          done
           echo "Build dashboard: https://expo.dev/accounts/lomiafrica/projects/lomi/builds" >> "$GITHUB_STEP_SUMMARY"
           echo "Starter (~USD 20) meters iOS and Android binaries. Failed builds under 3 minutes are waived (10/month). Do not re-run this job to debug JS." >> "$GITHUB_STEP_SUMMARY"
+          exit "${failed}"
