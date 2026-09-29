@@ -134,7 +134,15 @@ jobs:
           failed=0
           for platform in "${platforms[@]}"; do
             echo "Queue ${PROFILE} ${platform}"
-            if ! eas build --profile "${PROFILE}" --platform "${platform}" --non-interactive --no-wait --json "${extra[@]}" | tee -a /tmp/eas-build.json; then
+            build_extra=("${extra[@]}")
+            if [ "${SUBMIT}" = "true" ] && [ "${platform}" = "android" ] && [ ! -f .local/play-service-account.json ]; then
+              echo "Play submit key is missing. Queue the Android binary without auto-submit."
+              build_extra=()
+            fi
+            if [ "${SUBMIT}" = "true" ] && [ "${platform}" = "ios" ] && [ ! -f .local/AuthKey_VY4NYZKML7.p8 ]; then
+              echo "No local ASC key. TestFlight submit will use Expo-hosted credentials if they exist."
+            fi
+            if ! eas build --profile "${PROFILE}" --platform "${platform}" --non-interactive --no-wait --json "${build_extra[@]}" | tee -a /tmp/eas-build.json; then
               echo "EAS ${platform} failed to queue." >> "$GITHUB_STEP_SUMMARY"
               failed=1
             fi
