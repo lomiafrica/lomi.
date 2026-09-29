@@ -70,13 +70,13 @@ Capture each pair in light and dark:
 
 ## 2. API keys
 
-|                 |                                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Save as**     | `start/api-keys-light.webp` and `start/api-keys-dark.webp`                                                               |
-| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/home#keys`                                                                  |
-| **Show**        | Home workbench **Keys** tab, publishable and secret prefixes visible (`lomi_pk_…` / `lomi_sk_…`).                        |
-| **Do not show** | Live secret keys unmasked (blur if needed).                                                                              |
-| **Chrome**      | Sidebar + top bar OK; crop to main panel.                                                                                |
+|                 |                                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| **Save as**     | `start/api-keys-light.webp` and `start/api-keys-dark.webp`                                        |
+| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/home#keys`                                           |
+| **Show**        | Home workbench **Keys** tab, publishable and secret prefixes visible (`lomi_pk_…` / `lomi_sk_…`). |
+| **Do not show** | Live secret keys unmasked (blur if needed).                                                       |
+| **Chrome**      | Sidebar + top bar OK; crop to main panel.                                                         |
 
 ---
 
@@ -141,12 +141,12 @@ Capture each pair in light and dark:
 
 ## 8. Balance
 
-|             |                                                                                                    |
-| ----------- | -------------------------------------------------------------------------------------------------- |
-| **Save as** | `build/balance-light.webp` and `build/balance-dark.webp`                                           |
-| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/balance`                                              |
+|             |                                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------------- |
+| **Save as** | `build/balance-light.webp` and `build/balance-dark.webp`                                                |
+| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/balance`                                                   |
 | **Show**    | Multi-currency balances (F CFA / EUR / USD) + **Pay out** / **Convert** / **Top up** + recent activity. |
-| **Chrome**  | Balance hero + first rows of history.                                                              |
+| **Chrome**  | Balance hero + first rows of history.                                                                   |
 
 ---
 
@@ -155,7 +155,7 @@ Capture each pair in light and dark:
 |                 |                                                                            |
 | --------------- | -------------------------------------------------------------------------- |
 | **Save as**     | `build/payouts-light.webp` and `build/payouts-dark.webp`                   |
-| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/settings/payouts`              |
+| **Open**        | `https://dashboard.lomi.africa/{your-org-id}/settings/payouts`             |
 | **Show**        | Payout methods list **or** “add withdrawal method” UI (bank / Wave / SPI). |
 | **Do not show** | Empty error state.                                                         |
 
@@ -163,12 +163,12 @@ Capture each pair in light and dark:
 
 ## 10. Subscriptions
 
-|             |                                                                                                           |
-| ----------- | --------------------------------------------------------------------------------------------------------- |
-| **Save as** | `build/subscriptions-light.webp` and `build/subscriptions-dark.webp`                                      |
-| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/customers` (Subscriptions tab)                                |
-| **Show**    | Subscriptions list with at least one row: plan, amount, **next billing**. Detail drawer is optional.      |
-| **Chrome**  | Detail panel centered in frame.                                                                           |
+|             |                                                                                                      |
+| ----------- | ---------------------------------------------------------------------------------------------------- |
+| **Save as** | `build/subscriptions-light.webp` and `build/subscriptions-dark.webp`                                 |
+| **Open**    | `https://dashboard.lomi.africa/{your-org-id}/customers` (Subscriptions tab)                          |
+| **Show**    | Subscriptions list with at least one row: plan, amount, **next billing**. Detail drawer is optional. |
+| **Chrome**  | Detail panel centered in frame.                                                                      |
 
 ---
 

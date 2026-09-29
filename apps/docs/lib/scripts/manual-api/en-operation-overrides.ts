@@ -162,7 +162,8 @@ export const EN_OPERATION_COPY = {
   CustomersController_unblock: {
     summary: 'Unblock a customer',
     body: 'Removes that customer’s phone, email, and saved card fingerprints from the organization Radar blocklist.',
-    whenToUse: 'Use after a mistaken block, or when you will accept this buyer again.',
+    whenToUse:
+      'Use after a mistaken block, or when you will accept this buyer again.',
     related:
       '[Block a customer](/api/customers/CustomersController_block) · [lomi. Radar](/build/money/radar)',
   },

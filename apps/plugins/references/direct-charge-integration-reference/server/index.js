@@ -43,15 +43,17 @@ async function lomiRequest(method, routePath, body) {
     throw new Error("LOMI_SECRET_KEY is missing. Set it in .env.");
   }
 
+  const headers = {
+    "Content-Type": "application/json",
+    "X-API-KEY": lomiApiKey,
+  };
+  if (method === "POST") {
+    headers["Idempotency-Key"] = crypto.randomUUID();
+  }
+
   const response = await fetch(`${lomiBaseUrl}${routePath}`, {
     method,
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": lomiApiKey,
-      ...(method === "POST"
-        ? { "Idempotency-Key": crypto.randomUUID() }
-        : {}),
-    },
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
 
