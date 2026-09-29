@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, develop]
     paths:
+      - 'apps/api'
       - 'apps/api/**'
       - 'apps/docs/**'
       - 'apps/website/**'
@@ -12,6 +13,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'apps/api'
       - 'apps/api/**'
       - 'apps/docs/**'
       - 'apps/website/**'
