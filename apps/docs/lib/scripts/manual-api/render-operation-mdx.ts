@@ -8,7 +8,10 @@ import {
   englishRequestBodyIntro,
   englishResponseDescription,
 } from '@/lib/scripts/manual-api/en-http-fallbacks';
-import { FR_OPERATION_COPY } from '@/lib/scripts/manual-api/fr-operation-overrides';
+import {
+  FR_OPERATION_COPY,
+  type FrOperationGuidance,
+} from '@/lib/scripts/manual-api/fr-operation-overrides';
 import {
   type JsonObject,
   type JsonValue,
@@ -493,7 +496,7 @@ export function renderOperationPageMdx(input: {
     lang === 'en' && isEnOperationId(operationId)
       ? EN_OPERATION_COPY[operationId]
       : undefined;
-  const frCopy =
+  const frCopy: FrOperationGuidance | undefined =
     lang === 'fr' && isFrOperationId(operationId)
       ? FR_OPERATION_COPY[operationId]
       : undefined;
