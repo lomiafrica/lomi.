@@ -22,8 +22,9 @@
  * those package sources and cannot see the app node_modules tree. Docs keeps
  * pnpm for that install (npm 10 `--omit=peer` crashes with edgesOut on Node
  * 22, and a restored `.pnpm` tree from cache makes it worse). Website/admin
- * npm deploys still use `npm install --omit=dev --omit=peer`. @lomi./pay
- * installs with the same omit flags so it does not pull a second Next.
+ * npm deploys still use `npm install --omit=dev --omit=peer`. pnpm source-only
+ * installs pass `--config.auto-install-peers` from the lockfile so a frozen
+ * CI install does not die on ERR_PNPM_LOCKFILE_CONFIG_MISMATCH.
  * Keep `@types/react` / `@types/react-dom` in pay `dependencies` so checkout
  * typecheck can resolve `react` next to the nested runtime copy lucide pulls.
  * Keep `date-fns` in UI `dependencies` so Vite can resolve react-day-picker.
@@ -266,6 +267,14 @@ function linkAppReactIntoUi(appRel) {
   }
 }
 
+function lockfileAutoInstallPeers(dir) {
+  const lockPath = path.join(dir, "pnpm-lock.yaml");
+  if (!existsSync(lockPath)) return false;
+  const head = readFileSync(lockPath, "utf8").slice(0, 500);
+  const match = head.match(/autoInstallPeers:\s*(true|false)/);
+  return match?.[1] === "true";
+}
+
 function installSourceOnlyPackage(appRel, dir) {
   wipeCachedNodeModules(dir);
   if (useNpm(appRel)) {
@@ -277,12 +286,15 @@ function installSourceOnlyPackage(appRel, dir) {
     stripLeakedReactTypes(dir);
     return;
   }
+  // CI freezes the lockfile. The peer flag has to match settings.autoInstallPeers
+  // or pnpm exits ERR_PNPM_LOCKFILE_CONFIG_MISMATCH (@lomi./ui is false, pay is true).
+  const peers = lockfileAutoInstallPeers(dir);
   const args = [
     "install",
     "--ignore-workspace",
     "--ignore-scripts",
     "--prod",
-    "--config.auto-install-peers=false",
+    `--config.auto-install-peers=${peers}`,
   ];
   if (!existsSync(path.join(dir, "pnpm-lock.yaml"))) {
     args.push("--no-frozen-lockfile");
@@ -391,8 +403,8 @@ function installFileApp(appRel, pkg, { frozen }) {
       runBuildScript(appRel, dir);
     } else {
       // Source-only packages still need runtime deps (clsx, radix, pay
-      // React types). Omit peers so a second Next does not install. Strip
-      // nested react and leaked React 18 types from UI only.
+      // React types). Peer install follows the lockfile. Strip nested react
+      // and leaked React 18 types from UI only.
       installSourceOnlyPackage(appRel, dir);
     }
     hoistNodeModules(dir);
