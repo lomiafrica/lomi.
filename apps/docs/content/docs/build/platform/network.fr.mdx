@@ -62,7 +62,7 @@ Voir [Frais et règlement](#frais-et-règlement) pour ce qui bouge dans chaque c
 
 1. Ouvrez **Network → Members** dans le [tableau de bord](https://dashboard.lomi.africa) et créez une invitation. Choisissez les capacités à demander et, si besoin, la règle de frais pour ce membre.
 2. Copiez le lien d'onboarding hébergé, `https://dashboard.lomi.africa/network/enroll/{token}`, et envoyez-le au membre.
-3. Le membre suit le parcours hébergé (ci-dessous). L'adhésion apparaît dans **Members** en **En revue** jusqu'à la fin de la vérification, puis **Activé**.
+3. Le membre suit le parcours hébergé (ci-dessous). L'adhésion apparaît dans **Members** en **En revue**. Ouvrez cette ligne et choisissez **Activer**. Les paiements délégués restent refusés tant que vous ne l'avez pas fait.
 4. Notez l'identifiant public du membre (`acct_...`).
 
 Le lien d'inscription ouvre un parcours à vos couleurs (nom et logo de l'Opérateur). Il demande, dans l'ordre :
@@ -78,7 +78,7 @@ Une fois terminé, le membre arrive sur son propre tableau de bord lomi. en **mo
 
 ### Onboarding intégré
 
-Si vous préférez garder le membre dans votre produit, montez le [composant intégré](#composants-intégrés) `onboarding` avec une session de compte. Le membre passe par les mêmes étapes (organisation, vérification, informations de l'entreprise, moyen de versement, vérification finale) sans quitter votre page. Utilisez l'invitation hébergée quand vous voulez le moins d'intégration possible ; utilisez l'onboarding intégré quand votre produit a déjà un espace de réglages pour les vendeurs.
+Si vous préférez lancer l'inscription depuis votre produit, montez le [composant intégré](#composants-intégrés) `onboarding` avec une session de compte. Il affiche le statut de l'adhésion et les exigences ouvertes, puis ouvre le même lien d'inscription hébergé pour que le membre se connecte, se fasse vérifier et ajoute un moyen de versement. Utilisez l'invitation hébergée quand vous n'avez qu'un lien à envoyer. Utilisez le composant intégré quand votre produit a déjà un espace de réglages vendeur et que vous voulez y montrer ce statut.
 
 ### Statuts des membres
 
@@ -86,8 +86,8 @@ Les statuts sont par adhésion et par environnement. Ils s'affichent dans **Memb
 
 | Statut | Signification | Action requise |
 | --- | --- | --- |
-| En revue | L'inscription est terminée et la vérification est en cours. Les paiements délégués sont refusés. | Rien de votre côté. lomi. vérifie les nouveaux marchands ; les marchands déjà vérifiés passent rapidement. |
-| Activé | La vérification est passée et les capacités accordées sont actives. Paiements, remboursements et transferts circulent. | Aucune. |
+| En revue | L'inscription est terminée. Les paiements délégués sont refusés. | Choisissez **Activer** sur le membre dans **Members**. Les capacités sont accordées à ce moment-là. |
+| Activé | Vous avez activé l'adhésion et les capacités accordées sont actives. Paiements, remboursements et transferts circulent. | Aucune. |
 | Bientôt restreint | Une exigence est due avant une date : document manquant, identifiant expiré ou moyen de versement. | Le membre la complète depuis son tableau de bord avant la date. Envoyez un [lien de connexion](#tableau-de-bord-membre-et-liens-de-connexion) ou affichez le composant `notification-banner`. |
 | Restreint | La date est passée. Les paiements délégués et les transferts vers ce membre sont refusés tant que l'exigence n'est pas remplie. Les versements peuvent être retenus. | Le membre complète l'exigence ; le statut repasse à Activé après re-vérification par lomi. |
 | Refusé | La vérification a échoué. Aucun paiement. | Contactez le support avec le membre ; une nouvelle inscription corrigée peut être nécessaire. |
@@ -106,7 +106,7 @@ Les capacités sont accordées par adhésion et environnement. À l'activation, 
 | `customer.read` | Lire les clients du membre. |
 | `customer.write` | Créer et mettre à jour les clients du membre. |
 | `transaction.read` | Lire les transactions et remboursements du membre. |
-| `account.read` | Lire le compte et les informations d'entreprise du membre. |
+| `account.read` | Ouvrir une session de compte pour que le membre affiche les composants intégrés. |
 | `balance.read` | Lire le solde du membre (`GET /accounts/balance` avec `Lomi-Account`). |
 | `transfer.receive` | Être la `destination` de paiements destination et de `POST /transfers`. |
 | `account.login_link` | Créer des liens de connexion vers le tableau de bord membre. |
@@ -193,7 +193,7 @@ Rien ne part vers les membres à la fin du paiement. Quand vous êtes prêt (apr
 
 Si `Lomi-Account` est envoyé vers un autre endpoint, l'API rejette la requête au lieu de changer silencieusement le périmètre organisation. L'environnement de la clé API contrôle celui de la requête : une clé test exige des capacités en mode test, une clé live exige des capacités en mode live.
 
-Les appels clients créent et mettent à jour des clients sous l'organisation du membre. lomi. enregistre les métadonnées Network sur les clients créés par un Opérateur, et les listes incluent les clients créés par cet Opérateur ou rattachés à des transactions déléguées.
+Les appels clients créent et mettent à jour des clients sous l'organisation du membre. lomi. enregistre les métadonnées Network sur les clients créés par un Opérateur, et les listes incluent les clients créés par cet Opérateur ou rattachés à des transactions déléguées. Les liens vers le portail acheteur (`POST /customers/{id}/portal`) restent sur la clé du membre. Cette route refuse `Lomi-Account`. L'acheteur utilise ensuite `customers.lomi.africa`.
 
 Pour les endpoints qui prennent en charge `Idempotency-Key`, envoyez une clé normale. lomi. la lie à l'adhésion et inclut `Lomi-Account` dans la signature, afin que deux Opérateurs ciblant le même membre n'entrent pas en collision.
 
@@ -372,7 +372,7 @@ L'URL est valable 5 minutes et à usage unique. Créez-la côté serveur quand l
 
 ## Composants intégrés
 
-Les composants intégrés affichent des écrans membre dans vos propres pages : `payments`, `payouts`, `balance`, `onboarding` et `notification-banner` (exigences ouvertes et avertissements Bientôt restreint).
+Les composants intégrés affichent des écrans membre dans vos propres pages : `payments` (historique des paiements), `payouts` (historique des versements ; le membre retire toujours depuis **Solde** dans son tableau de bord), `balance`, `onboarding` (statut, exigences ouvertes, et un lien vers l'inscription hébergée) et `notification-banner` (exigences ouvertes et avertissements Bientôt restreint).
 
 1. Côté serveur, créez une session de compte pour le membre :
 
@@ -426,7 +426,7 @@ Les membres avec `webhook.receive` reçoivent aussi leurs propres webhooks sur l
 
 ## Passer en production
 
-1. **Test.** Ouvrez **Network** dans le tableau de bord et terminez l'assistant de configuration (profil de plateforme, règle de frais par défaut, `fees_collector`, `losses_collector`). Votre Network est actif en **test** tout de suite : invitez des membres test, testez chaque type de paiement, transfert et remboursement avec une clé `lomi_sk_test_...` sur `https://sandbox.api.lomi.africa`.
+1. **Test.** Ouvrez **Network** dans le tableau de bord et terminez l'assistant de configuration (profil de plateforme, règle de frais par défaut, `fees_collector`, `losses_collector`). Votre Network est actif en **test** tout de suite : invitez un membre test, choisissez **Activer** sur ce membre, puis testez chaque type de paiement, transfert et remboursement avec une clé `lomi_sk_test_...` sur `https://sandbox.api.lomi.africa`.
 2. **Demander l'accès live.** Dans **Network → Paramètres**, cliquez sur **Demander l'accès live** et décrivez votre plateforme. lomi. examine le cas d'usage et la configuration des frais.
 3. **Approbation.** Une fois approuvé, les adhésions live et les capacités live deviennent disponibles. Invitez des membres en live (ou réinvitez les membres test), enregistrez les webhooks live et passez à une clé `lomi_sk_live_...` sur `https://api.lomi.africa`.
 

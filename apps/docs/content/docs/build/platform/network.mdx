@@ -62,7 +62,7 @@ See [Fees and settlement](#fees-and-settlement) for what moves in each case.
 
 1. Open **Network → Members** in the [dashboard](https://dashboard.lomi.africa) and create an invite. Pick the capabilities to request and, optionally, the fee rule for this member.
 2. Copy the hosted onboarding link, `https://dashboard.lomi.africa/network/enroll/{token}`, and send it to the member.
-3. The member completes the hosted flow (below). The membership appears in **Members** as **In review** until verification clears, then **Enabled**.
+3. The member completes the hosted flow (below). The membership appears in **Members** as **In review**. Open that row and choose **Activate**. Delegated payments stay refused until you do.
 4. Note the member public id (`acct_...`).
 
 The enrollment link opens a branded flow with your Operator name and logo. It asks for, in order:
@@ -78,7 +78,7 @@ After completion the member lands in their own lomi. dashboard in **member mode*
 
 ### Embedded onboarding
 
-If you would rather keep the member inside your product, mount the `onboarding` [embedded component](#embedded-components) with an account session. The member goes through the same steps (organization, verification, business details, payout method, review) without leaving your page. Use the hosted invite when you want the least integration work; use embedded onboarding when your product already has a settings area for sellers.
+If you would rather start onboarding from your product, mount the `onboarding` [embedded component](#embedded-components) with an account session. It shows the membership status and open requirements, then opens the same hosted enrollment link so the member can sign in, verify, and add a payout method. Use the hosted invite when you only need to send a link. Use the embedded component when your product already has a seller settings area and you want that status next to it.
 
 ### Member statuses
 
@@ -86,8 +86,8 @@ Statuses are per membership and per environment. They show in **Members** and on
 
 | Status | Meaning | Action required |
 | --- | --- | --- |
-| In review | Enrollment is complete and verification is pending. Delegated payments are refused. | None from you. lomi. reviews new merchants; existing verified merchants clear quickly. |
-| Enabled | Verification passed and the granted capabilities are active. Payments, refunds, and transfers flow. | None. |
+| In review | Enrollment is complete. Delegated payments are refused. | Choose **Activate** on the member in **Members**. Capabilities are granted at that moment. |
+| Enabled | You activated the membership and the granted capabilities are active. Payments, refunds, and transfers flow. | None. |
 | Restricted soon | A requirement is due by a deadline: a missing document, an expired identifier, or a payout method. | The member completes it from their dashboard before the date. Send a [login link](#member-dashboard-and-login-links) or show the `notification-banner` component. |
 | Restricted | The deadline passed. Delegated payments and transfers to this member are refused until the requirement is met. Payouts may be held. | The member completes the requirement; the status returns to Enabled once lomi. re-checks. |
 | Rejected | Verification failed. No payments. | Contact support with the member; a corrected enrollment may be needed. |
@@ -106,7 +106,7 @@ Capabilities are granted per membership and environment. On activation, lomi. gr
 | `customer.read` | Read the member's customers. |
 | `customer.write` | Create and update the member's customers. |
 | `transaction.read` | Read the member's transactions and refunds. |
-| `account.read` | Read the member's account and business details. |
+| `account.read` | Open an account session so the member can render embedded components. |
 | `balance.read` | Read the member's balance (`GET /accounts/balance` with `Lomi-Account`). |
 | `transfer.receive` | Be the `destination` of destination charges and `POST /transfers`. |
 | `account.login_link` | Create login links into the member dashboard. |
@@ -193,7 +193,7 @@ Nothing moves to members at completion. When you are ready (after delivery, at t
 
 If `Lomi-Account` is sent to another endpoint, the API rejects the request instead of silently switching organization scope. The API key environment controls the request environment: a test key requires test-mode grants, a live key requires live-mode grants.
 
-Customer calls create and update customers under the member organization. lomi. records Network metadata on customers created by an Operator, and customer lists include customers created by that Operator or attached to delegated transactions.
+Customer calls create and update customers under the member organization. lomi. records Network metadata on customers created by an Operator, and customer lists include customers created by that Operator or attached to delegated transactions. Buyer portal links (`POST /customers/{id}/portal`) stay on the member's own key. That route rejects `Lomi-Account`. The buyer then uses `customers.lomi.africa`.
 
 For endpoints that support `Idempotency-Key`, send a normal key. lomi. scopes it by membership and includes `Lomi-Account` in the fingerprint, so two Operators targeting the same member do not collide.
 
@@ -372,7 +372,7 @@ The URL is valid for 5 minutes and single use. Create it server-side when the me
 
 ## Embedded components
 
-Embedded components render member surfaces inside your own pages: `payments`, `payouts`, `balance`, `onboarding`, and `notification-banner` (open requirements and Restricted soon warnings).
+Embedded components render member surfaces inside your own pages: `payments` (payment history), `payouts` (payout history; the member still withdraws from **Balance** in their dashboard), `balance`, `onboarding` (status, open requirements, and a link to the hosted enrollment), and `notification-banner` (open requirements and Restricted soon warnings).
 
 1. Server-side, create an account session for the member:
 
@@ -426,7 +426,7 @@ Members with `webhook.receive` also get their own webhooks on their organization
 
 ## Go live
 
-1. **Test.** Open **Network** in the dashboard and finish the setup wizard (platform profile, default fee rule, `fees_collector`, `losses_collector`). Your Network is active for **test** right away: invite test members, run every charge type, transfer, and refund with a `lomi_sk_test_...` key against `https://sandbox.api.lomi.africa`.
+1. **Test.** Open **Network** in the dashboard and finish the setup wizard (platform profile, default fee rule, `fees_collector`, `losses_collector`). Your Network is active for **test** right away: invite a test member, choose **Activate** on that member, then run every charge type, transfer, and refund with a `lomi_sk_test_...` key against `https://sandbox.api.lomi.africa`.
 2. **Request live access.** In **Network → Settings**, click **Request live access** and describe your platform. lomi. reviews the use case and the fee setup.
 3. **Approval.** Once approved, live memberships and live capability grants become available. Invite members in live (or re-invite test members), register live webhooks, and switch to a `lomi_sk_live_...` key against `https://api.lomi.africa`.
 
