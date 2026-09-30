@@ -1,6 +1,6 @@
 ---
-title: "Get a meter"
-description: "Get a meter"
+title: "Lire un compteur"
+description: "Lire un compteur"
 full: true
 method: get
 path: /meters/{id}
@@ -9,17 +9,19 @@ operationId: MetersController_findOne
 
 ## Aperçu
 
-Get a meter
+Lire un compteur
+
+Renvoie un compteur par identifiant. Les événements dépensent la somme de `quantity`. L’agrégation enregistrée ne change pas le solde.
 
 ### Quand l’utiliser
 
-Utilisez cet endpoint quand vous devez exécuter `GET /meters/&#123;id&#125;` (Get a meter).
+Utilisez quand vous avez un identifiant de compteur et que vous voulez son nom, son produit ou son état actif.
 
 
 
 ### Voir aussi
 
-[List meters](/api/meters/MetersController_findAll) · [Meter balance](/api/meters/MetersController_getBalance)
+[Lister les compteurs](/api/meters/MetersController_findAll) · [Solde du compteur](/api/meters/MetersController_getBalance)
 
 ## Authentification
 

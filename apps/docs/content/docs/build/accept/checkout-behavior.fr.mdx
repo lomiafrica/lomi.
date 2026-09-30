@@ -37,7 +37,7 @@ La tarification flexible est disponible pour les produits **ponctuels** uniqueme
 Les produits récurrents (`product_type: recurring`) créent une **instance d’abonnement** à la fin de l’inscription. Cela s’applique au tunnel hébergé, aux liens de paiement, à la vitrine (bouton S’abonner) et aux sessions API avec un `product_id` récurrent.
 
 <Callout type="warning">
-  **Ne mélangez pas produits récurrents et ponctuels dans un même panier.** Le flux multi-lignes `create_checkout_session_with_line_items` vise les produits ponctuels. Vendez les abonnements via une session ou un lien dédié au produit récurrent.
+  **Un panier a un seul type de produit.** Les produits ponctuels peuvent partager un panier. Les packs d’usage peuvent partager un panier. Un produit récurrent reste dans sa propre session ou son propre lien. Mélanger un produit ponctuel et un pack d’usage renvoie `line_items_mixed_product_types`.
 </Callout>
 
 ### Premier paiement et essais

@@ -1,6 +1,6 @@
 ---
-title: "Update a meter"
-description: "Update a meter"
+title: "Mettre à jour un compteur"
+description: "Mettre à jour un compteur"
 full: true
 method: patch
 path: /meters/{id}
@@ -9,17 +9,19 @@ operationId: MetersController_update
 
 ## Aperçu
 
-Update a meter
+Mettre à jour un compteur
+
+Active ou désactive un compteur. Le filtre et l’agrégation sont enregistrés et ne changent pas la dépense des unités.
 
 ### Quand l’utiliser
 
-Utilisez cet endpoint quand vous devez exécuter `PATCH /meters/&#123;id&#125;` (Update a meter).
+Désactivez un compteur quand l’historique d’usage doit rester.
 
 
 
 ### Voir aussi
 
-[Get meter](/api/meters/MetersController_findOne)
+[Lire un compteur](/api/meters/MetersController_findOne)
 
 ## Authentification
 

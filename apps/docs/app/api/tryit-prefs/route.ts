@@ -7,8 +7,12 @@ import {
   COOKIE_TRYIT_ORG,
   COOKIE_TRYIT_USE_TEST_KEY,
 } from '@/lib/tryit/constants';
-import { docsApiGet, getDocsSessionToken } from '@/lib/docs-session';
-import { isJsonObject, readBoolean } from '@lomi./shared';
+import {
+  docsApiGet,
+  getApiBaseUrl,
+  getDocsSessionToken,
+} from '@/lib/docs-session';
+import { isJsonObject, readBoolean, validateJsonValue } from '@lomi./shared';
 
 const bodySchema = z.object({
   useTestKey: z.boolean(),
@@ -45,6 +49,37 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Organization not allowed or no test secret key' },
         { status: 403 },
+      );
+    }
+    const remembered = await fetch(
+      `${getApiBaseUrl()}/auth/docs-session/organization`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ organizationId }),
+        cache: 'no-store',
+      },
+    );
+    if (remembered.ok) {
+      let payload: ReturnType<typeof validateJsonValue> | null = null;
+      try {
+        payload = validateJsonValue(await remembered.json());
+      } catch {
+        payload = null;
+      }
+      if (isJsonObject(payload) && payload.ok === false) {
+        return NextResponse.json(
+          { error: 'Could not remember this organization' },
+          { status: 502 },
+        );
+      }
+    } else if (remembered.status !== 404) {
+      return NextResponse.json(
+        { error: 'Could not remember this organization' },
+        { status: 502 },
       );
     }
   }

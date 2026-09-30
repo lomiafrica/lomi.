@@ -11,7 +11,7 @@ operationId: ProductsController_create
 
 Create product
 
-Creates a catalog product with at least one price in a single request. Supports pay_what_you_want via pricing_model and minimum_amount/maximum_amount on nested prices.
+Creates a catalog product with at least one price in a single request. Supports pay_what_you_want via pricing_model and minimum_amount/maximum_amount on nested prices. For a usage product, the price amount is the pack price and included_units is how many units that payment buys.
 
 
 ### When to use this
@@ -50,7 +50,30 @@ _No query parameters._
 
 ### Request body
 
-_No application/json body for this operation._
+JSON request payload.
+
+Schema: `CreateProductDto`
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `name` | Yes | `string` | Product name |
+| `product_type` | Yes | `string` | `one_time`, `recurring`, or `usage_based` |
+| `prices` | Yes | `array` | At least one price. `amount` is what the customer pays. For a usage product, `included_units` is how many units that payment buys. |
+| `usage_unit` | No | `string` | Unit label on a usage product |
+| `meter_code` | No | `string` | Meter name. Defaults to a slug of the product name. |
+
+Example body:
+
+```json
+{
+  "name": "API calls",
+  "product_type": "usage_based",
+  "usage_unit": "call",
+  "prices": [
+    { "amount": 5000, "currency_code": "XOF", "included_units": 1000 }
+  ]
+}
+```
 
 
 ## Responses
@@ -71,7 +94,7 @@ Errors follow the standard JSON error format (status code and machine-readable m
 curl -sS -X POST "https://sandbox.api.lomi.africa/products" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"name":"API calls","product_type":"usage_based","usage_unit":"call","prices":[{"amount":5000,"currency_code":"XOF","included_units":1000}]}'
 ```
 
 ## OpenAPI

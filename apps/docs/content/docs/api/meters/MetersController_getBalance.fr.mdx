@@ -1,6 +1,6 @@
 ---
-title: "Get meter balance for a customer"
-description: "Get meter balance for a customer"
+title: "Lire le solde d'un compteur"
+description: "Lire le solde d'un compteur"
 full: true
 method: get
 path: /meters/{id}/balances/{customerId}
@@ -9,20 +9,19 @@ operationId: MetersController_getBalance
 
 ## Aperçu
 
-Get meter balance for a customer
+Lire le solde d'un compteur
 
-Returns aggregated consumed units for the meter and customer.
+Renvoie les unités créditées, les unités consommées et les unités encore disponibles pour un client sur un compteur. balance est credited_units moins consumed_units.
 
+### Quand l'utiliser
 
-### Quand l’utiliser
-
-Utilisez cet endpoint quand vous devez exécuter `GET /meters/&#123;id&#125;/balances/&#123;customerId&#125;` (Get meter balance for a customer).
+Utilisez pour afficher les unités restantes du pack, ou avant d'accepter plus d'usage.
 
 
 
 ### Voir aussi
 
-[Credit wallet](/api/usage/UsageBillingController_creditWallet) · [Record usage event](/api/usage/UsageEventsController_ingest)
+[Enregistrer un événement d'usage](/api/usage/UsageEventsController_ingest) · [Facturation à l'usage](/build/billing/usage-billing)
 
 ## Authentification
 

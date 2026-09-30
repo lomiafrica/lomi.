@@ -3,7 +3,6 @@
   "pages": [
     "UsageBillingController_checkEntitlement",
     "UsageBillingController_createEntitlement",
-    "UsageBillingController_creditWallet",
     "UsageBillingController_getRevenue",
     "UsageBillingController_listPeriods",
     "UsageEventsController_createUsageSubscription",

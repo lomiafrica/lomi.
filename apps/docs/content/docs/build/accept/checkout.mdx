@@ -56,14 +56,13 @@ When `product_id` or `price_id` points to a price with `pricing_model: pay_what_
 
 ### Multi-item checkout (`line_items`)
 
-When you pass **`line_items`**, each row must reference a **one-time** price with **standard** (fixed) pricing. The API returns **400** with one of:
+When you pass **`line_items`**, every line must be the same product type, with **standard** (fixed) pricing. One-time products can share a cart. Usage packs can share a cart. The API returns **400** with one of:
 
 | Code | Meaning |
 |------|---------|
-| `line_items_pwyw_not_supported` | A line uses `pay_what_you_want` pricing, use a single-product session instead |
-| `line_items_recurring_not_supported` | A line references a recurring product |
-| `line_items_usage_based_not_supported` | Usage-based pricing (not yet supported in carts) |
-| `line_items_mixed_product_types` | Mixed one-time and recurring products in one cart |
+| `line_items_pwyw_not_supported` | A line uses `pay_what_you_want`. Use a single-product session. |
+| `line_items_recurring_not_supported` | A line is a recurring product. Sell that plan in its own session. |
+| `line_items_mixed_product_types` | The cart mixes one-time products and usage packs. |
 
 ### Recurring (subscription) products
 

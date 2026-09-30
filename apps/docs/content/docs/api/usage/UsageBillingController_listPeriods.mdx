@@ -11,16 +11,16 @@ operationId: UsageBillingController_listPeriods
 
 List usage billing periods
 
-Returns billing periods for usage subscriptions, optionally filtered by subscription ID.
+Returns historical billing-period rows for a usage subscription. Pack charges come from checkout and top-ups.
 
 
 ### When to use this
 
-Use for invoicing windows, period-close reconciliation, or support lookups.
+Use when you need to read period history you already stored. Remaining units and the next pack are in the usage billing guide.
 
 ### See also
 
-[Get subscription usage](/api/subscriptions/SubscriptionsController_getUsage) · [Usage billing guide](/build/billing/usage-billing)
+[Get meter balance](/api/meters/MetersController_getBalance) · [Usage billing guide](/build/billing/usage-billing)
 
 
 ## Authentication

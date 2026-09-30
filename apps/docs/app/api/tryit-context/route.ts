@@ -67,9 +67,14 @@ export async function GET() {
     return NextResponse.json(payload);
   }
 
+  const lastVisitedOrganizationId =
+    context && isJsonObject(context)
+      ? readString(context, 'lastVisitedOrganizationId')
+      : null;
   const selectedOrganizationId = selectTryitOrganizationId(
     organizations,
     cookieOrg,
+    lastVisitedOrganizationId,
   );
 
   const testApiKey = selectedOrganizationId
@@ -89,11 +94,7 @@ export async function GET() {
     volumeTier: null,
   });
 
-  if (
-    organizations.length === 1 &&
-    selectedOrganizationId &&
-    cookieOrg !== selectedOrganizationId
-  ) {
+  if (selectedOrganizationId && cookieOrg !== selectedOrganizationId) {
     res.cookies.set(
       COOKIE_TRYIT_ORG,
       selectedOrganizationId,

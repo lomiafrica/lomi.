@@ -2092,7 +2092,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get a customer's meter balance",
-          "description": "Return aggregated consumed units for a meter and customer. Use to see current usage before billing.",
+          "description": "Return units credited, units consumed, and units still available for a customer on a meter. balance is credited minus consumed.",
           "tags": [
             "Meters"
           ],
@@ -2850,7 +2850,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create payout",
-          "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Check the balance first.",
+          "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Purpose is required as reason (trimmed, at most 140 characters). The confirmation preview shows it, and the execute call must send the same text. Check the balance first.",
           "tags": [
             "Payouts"
           ],
@@ -3977,7 +3977,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get subscription usage",
-          "description": "Return metered usage for one usage-based subscription in the current period. Use to preview the upcoming invoice.",
+          "description": "Return units credited, units consumed, and units still available on a usage subscription.",
           "tags": [
             "Subscriptions"
           ],
@@ -4478,7 +4478,7 @@
     {
       "name": "lomi_usage",
       "title": "Usage billing",
-      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). Required: body.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `credits` — Grant usage credits (POST /usage/credits). Required: body.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). Required: body.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Usage"
       ],
@@ -4497,12 +4497,11 @@
               "set_entitlement",
               "periods",
               "revenue",
-              "credits",
               "events",
               "get_event",
               "create_subscription"
             ],
-            "description": "Which REST operation to run. One of: check_entitlement, set_entitlement, periods, revenue, credits, events, get_event, create_subscription."
+            "description": "Which REST operation to run. One of: check_entitlement, set_entitlement, periods, revenue, events, get_event, create_subscription."
           },
           "body": {
             "type": "object",
@@ -4561,7 +4560,7 @@
       "readOnly": false,
       "destructive": false,
       "alwaysLoad": false,
-      "searchHint": "check_entitlement create_subscription credits entitlements events get get_event periods post revenue set_entitlement subscriptions usage",
+      "searchHint": "check_entitlement create_subscription entitlements events get get_event periods post revenue set_entitlement subscriptions usage",
       "actions": {
         "check_entitlement": {
           "operationKey": "GET /usage/entitlements",
@@ -4617,7 +4616,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List usage billing periods",
-          "description": "List billing periods for usage-based subscriptions, with accrued charges.",
+          "description": "List historical billing-period rows for a usage subscription. Pack charges come from checkout and top-ups.",
           "tags": [
             "Usage"
           ],
@@ -4636,31 +4635,13 @@
           "write": false,
           "wantsBody": false,
           "title": "Get usage billing revenue",
-          "description": "Return revenue from usage-based billing over time. Use for metered-revenue reporting.",
+          "description": "Return MRR, usage pack revenue, and one-time revenue for a date range. Requires start_date and end_date.",
           "tags": [
             "Usage"
           ],
           "requiredInput": [
             "end_date",
             "start_date"
-          ]
-        },
-        "credits": {
-          "operationKey": "POST /usage/credits",
-          "method": "post",
-          "pathTemplate": "/usage/credits",
-          "pathParamNames": [],
-          "queryParamNames": [],
-          "operationId": "UsageBillingController_creditWallet",
-          "write": true,
-          "wantsBody": true,
-          "title": "Grant usage credits",
-          "description": "Grant prepaid credits to a customer that offset future usage-based charges. Use for trials, goodwill, or top-ups.",
-          "tags": [
-            "Usage"
-          ],
-          "requiredInput": [
-            "body"
           ]
         },
         "events": {
@@ -4679,7 +4660,7 @@
           "write": false,
           "wantsBody": false,
           "title": "List usage events",
-          "description": "List recorded metered usage events. Filter by meter or customer to audit what was billed.",
+          "description": "List usage events. Filter by meter or customer. A failed event with insufficient_balance did not spend units.",
           "tags": [
             "Usage"
           ],
@@ -4697,7 +4678,7 @@
           "write": false,
           "wantsBody": false,
           "title": "Get usage event",
-          "description": "Retrieve one metered usage event by id.",
+          "description": "Retrieve one usage event by id.",
           "tags": [
             "Usage"
           ],
@@ -4715,7 +4696,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create usage subscription",
-          "description": "Enroll a customer on a usage-based product with no upfront charge. Required before metered usage can be billed.",
+          "description": "Enroll a customer on a usage pack. The balance starts at zero until they pay, and events are refused until then.",
           "tags": [
             "Usage"
           ],

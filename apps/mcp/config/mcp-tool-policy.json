@@ -279,7 +279,6 @@
         "set_entitlement": "POST /usage/entitlements",
         "periods": "GET /usage/periods",
         "revenue": "GET /usage/revenue",
-        "credits": "POST /usage/credits",
         "events": "GET /usage/events",
         "get_event": "GET /usage/events/{id}",
         "create_subscription": "POST /usage/subscriptions"

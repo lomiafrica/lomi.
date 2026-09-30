@@ -11,7 +11,7 @@ operationId: ChargesController_createWaveCharge
 
 Create direct mobile-money charge
 
-Starts a payer-facing mobile-money charge on a supported rail; the response includes the next step for the customer. Check **`next_action`** (`redirect` with `url`) in addition to `wave_launch_url` / `checkout_url`.
+Starts a payer-facing mobile-money charge on a supported rail; the response includes the next step for the customer. Check **`next_action`** (`redirect` with `url`) in addition to `wave_launch_url` / `checkout_url`. Use a checkout session unless your app must lock this rail.
 
 
 ### When to use this

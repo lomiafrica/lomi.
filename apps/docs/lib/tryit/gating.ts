@@ -32,7 +32,12 @@ export function parseTryitOrgId(
 export function selectTryitOrganizationId(
   organizations: readonly { id: string }[],
   cookieOrg: string | null | undefined,
+  lastVisitedOrg?: string | null,
 ): string | null {
+  const lastVisited = parseTryitOrgId(lastVisitedOrg);
+  if (lastVisited && organizations.some((item) => item.id === lastVisited)) {
+    return lastVisited;
+  }
   const org = parseTryitOrgId(cookieOrg);
   if (org && organizations.some((item) => item.id === org)) return org;
   if (organizations.length === 1) return organizations[0]!.id;

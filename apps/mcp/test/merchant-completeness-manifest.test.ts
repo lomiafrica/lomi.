@@ -58,7 +58,6 @@ describe("merchant completeness manifest", () => {
       ["lomi_payouts", "create"],
       ["lomi_subscriptions", "update"],
       ["lomi_usage", "set_entitlement"],
-      ["lomi_usage", "credits"],
       ["lomi_usage", "create_subscription"],
       ["lomi_webhooks", "create"],
     ] as const;

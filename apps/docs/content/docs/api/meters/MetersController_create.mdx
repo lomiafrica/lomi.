@@ -11,12 +11,12 @@ operationId: MetersController_create
 
 Create a meter
 
-Defines a billable metric for usage-based products. Events with a matching `code` update meter balances when processed.
+Creating a usage product already creates one meter. Events spend the sum of `quantity`. Use this endpoint when that product needs another meter. Stored aggregation does not change the balance.
 
 
 ### When to use this
 
-First step in usage billing: create a meter before ingesting usage events or enrolling customers on usage-based products.
+After the usage product exists, when you need a second meter. A normal pack does not need this call.
 
 ### See also
 

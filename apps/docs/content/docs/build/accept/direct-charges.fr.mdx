@@ -1,11 +1,11 @@
 ---
 title: 'Comment utiliser les charges ?'
-description: 'Encaissements Wave, MTN et carte initiés côté serveur lorsque vous contrôlez l’UI de paiement.'
+description: 'Encaissements initiés côté serveur pour une application qui doit verrouiller un seul rail. Le checkout hébergé est le choix par défaut.'
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-Les charges directes permettent d’encaisser via `POST /charge/*` depuis votre serveur. Contrairement aux [sessions checkout](/build/accept/checkout) hébergées, vous construisez le parcours client.
+Les charges directes sont pour une application qui doit verrouiller un seul rail. Le checkout hébergé est le choix par défaut : créez une [session de checkout](/build/accept/checkout), le client choisit le moyen, et un nouveau rail apparaît sans changer votre code. `POST /charge/*` encaisse depuis votre serveur et vous construisez le parcours client.
 
 <Callout type="warn">
   Les charges Switch (`POST /charge/switch`) ne sont pas disponibles. Elles renvoient `503 service_unavailable`. Utilisez le [checkout hébergé](/build/accept/checkout) ou [lomi. Elements](/build/accept/payment-elements) pour les cartes.

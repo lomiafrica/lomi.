@@ -37,7 +37,7 @@ Flexible pricing is available for **one-time** products only (`pricing_model: pa
 Recurring products (`product_type: recurring`) create a **subscription instance** when signup completes. This applies to hosted checkout, payment links, storefront subscribe flows, and API-created sessions with a recurring `product_id`.
 
 <Callout type="warning">
-  **Do not mix recurring and one-time products in a single cart checkout.** Multi-line `create_checkout_session_with_line_items` is intended for one-time products. Sell subscriptions via a dedicated session or payment link for the recurring product.
+  **A cart is one product type.** One-time products can share a cart. Usage packs can share a cart. A recurring product stays in its own session or payment link. Mixing a one-time product with a usage pack returns `line_items_mixed_product_types`.
 </Callout>
 
 ### First payment and trials

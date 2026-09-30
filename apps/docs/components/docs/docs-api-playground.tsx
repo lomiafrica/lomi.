@@ -3,6 +3,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { parseJson } from '@lomi./shared';
 import { t as translate } from '@/lib/i18n/translations';
 import { useTranslation } from '@/lib/utils/translation-context';
 import { useDocsWorkspace } from '@/lib/docs/workspace-context';
@@ -14,6 +15,16 @@ import {
 type DocsApiPlaygroundClientProps = {
   operation: TryItOperation;
 };
+
+function presentSandboxResult(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return text;
+  try {
+    return JSON.stringify(parseJson(trimmed), null, 2);
+  } catch {
+    return text;
+  }
+}
 
 type PlaygroundFetchInit = {
   method: string;
@@ -130,11 +141,12 @@ export function DocsApiPlaygroundClient({
         </button>
       ) : null}
       {status ? (
-        <pre className="docs-api-playground-result">
-          <strong>{status}</strong>
-          {'\n'}
-          {result}
-        </pre>
+        <div className="docs-api-playground-response">
+          <p className="docs-api-playground-status">{status}</p>
+          <pre className="docs-api-playground-result">
+            {presentSandboxResult(result ?? '')}
+          </pre>
+        </div>
       ) : null}
     </div>
   );

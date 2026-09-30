@@ -3,6 +3,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 import { Label } from '@lomi./ui/label';
 import { cn } from '@lomi./ui/cn';
 import { useDocsWorkspace } from '@/lib/docs/workspace-context';
@@ -79,18 +80,13 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
   const needsOrganizationChoice = workspace.selectedOrganizationId === null;
 
   return (
-    <div
-      className={cn(
-        'mb-6 rounded-lg border border-fd-border bg-fd-card px-4 py-3 text-sm shadow-sm',
-      )}
-    >
-      <div className="flex flex-col gap-1.5 sm:min-w-[220px]">
-        <Label htmlFor="tryit-org">{t('tryit.organization')}</Label>
+    <div className="docs-api-playground-org">
+      <Label htmlFor="tryit-org" className="docs-api-playground-label">
+        {t('tryit.organization')}
+      </Label>
+      <div className="docs-api-playground-org-control">
         <select
           id="tryit-org"
-          className={cn(
-            'rounded-md border border-fd-border bg-fd-background px-2 py-1.5 text-fd-foreground',
-          )}
           value={workspace.selectedOrganizationId ?? ''}
           onChange={(event) => {
             const orgId = event.target.value;
@@ -110,6 +106,7 @@ export function TryItOpenApiPanel({ enabled }: TryItOpenApiPanelProps) {
             </option>
           ))}
         </select>
+        <ChevronDown aria-hidden className="docs-api-playground-org-chevron" />
       </div>
     </div>
   );

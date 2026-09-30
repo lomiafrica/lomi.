@@ -239,7 +239,7 @@ export async function GET() {
   );
   if (usageBillingGuide && metersCreate) {
     lines.push(
-      `- **Usage billing (metered products)** → [${usageBillingGuide.data.title ?? 'Usage billing'}](${docsOrigin}${usageBillingGuide.url}), meters, usage events, billing periods ([Create meter](${docsOrigin}${metersCreate.url})).`,
+      `- **Usage billing (prepaid packs)** → [${usageBillingGuide.data.title ?? 'Usage billing'}](${docsOrigin}${usageBillingGuide.url}): pack checkout on card, Wave, or MTN, then events spend the units ([Create meter](${docsOrigin}${metersCreate.url})).`,
     );
   }
   const payouts = firstApiPageInFolder(pages, 'payouts');

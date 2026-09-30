@@ -88,19 +88,6 @@ export class UsageService {
     }
 
     /**
-     * Credit prepaid usage units
-     * @see OpenAPI `UsageBillingController_creditWallet`
-     */
-    public async grantCredits(body: components['schemas']['CreditWalletDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
-        return requestWithClient<unknown>(this.client, {
-            method: 'POST',
-            url: '/usage/credits',
-            body,
-            ...options,
-        });
-    }
-
-    /**
      * List usage events
      * @see OpenAPI `UsageEventsController_findAll`
      */

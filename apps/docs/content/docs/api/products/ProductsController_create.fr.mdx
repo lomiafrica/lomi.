@@ -11,7 +11,7 @@ operationId: ProductsController_create
 
 Créer un produit
 
-Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement.
+Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement. Pour un produit à l'usage, le montant du tarif est le prix du pack et `included_units` est le nombre d'unités que ce paiement achète.
 
 
 ### Quand l’utiliser
@@ -50,7 +50,30 @@ _Aucun paramètre de requête._
 
 ### Corps de la requête
 
-_Pas de corps JSON pour cette opération._
+Corps JSON.
+
+Schéma : `CreateProductDto`
+
+| Champ | Obligatoire | Type | Description |
+| --- | --- | --- | --- |
+| `name` | Oui | `string` | Nom du produit |
+| `product_type` | Oui | `string` | `one_time`, `recurring` ou `usage_based` |
+| `prices` | Oui | `array` | Au moins un tarif. `amount` est ce que le client paie. Pour un produit à l’usage, `included_units` est le nombre d’unités que ce paiement achète. |
+| `usage_unit` | Non | `string` | Libellé de l’unité sur un produit à l’usage |
+| `meter_code` | Non | `string` | Nom du compteur. Par défaut, un slug du nom du produit. |
+
+Exemple de corps :
+
+```json
+{
+  "name": "Appels API",
+  "product_type": "usage_based",
+  "usage_unit": "appel",
+  "prices": [
+    { "amount": 5000, "currency_code": "XOF", "included_units": 1000 }
+  ]
+}
+```
 
 
 ## Réponses
@@ -71,7 +94,7 @@ Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalid
 curl -sS -X POST "https://sandbox.api.lomi.africa/products" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"name":"Appels API","product_type":"usage_based","usage_unit":"appel","prices":[{"amount":5000,"currency_code":"XOF","included_units":1000}]}'
 ```
 
 ## OpenAPI

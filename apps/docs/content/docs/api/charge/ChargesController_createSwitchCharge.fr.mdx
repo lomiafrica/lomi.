@@ -11,7 +11,7 @@ operationId: ChargesController_createSwitchCharge
 
 Create Switch charge (server-side card authorization)
 
-Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a redirect URL for 3DS authentication or signal `retry_other_rail` to fall back to another rail. Requires a PCI-DSS-compliant integration.
+Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a redirect URL for 3DS authentication or signal `retry_other_rail` to fall back to another rail. Requires a PCI-DSS-compliant integration. Utilisez une session de checkout, sauf si votre application doit verrouiller ce rail.
 
 
 ### Quand l’utiliser

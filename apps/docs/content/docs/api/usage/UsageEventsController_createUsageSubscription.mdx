@@ -11,12 +11,12 @@ operationId: UsageEventsController_createUsageSubscription
 
 Create a usage subscription
 
-Enrolls a customer on a `usage_based` product without an upfront charge. Required before billing metered usage to that customer.
+Enrolls a customer on a usage pack. The balance starts at zero until they pay, and events are refused until then.
 
 
 ### When to use this
 
-After creating a usage-based product and meter; enroll each customer before sending usage events tied to a subscription.
+After creating a usage pack. Send checkout so the customer pays before events can spend units.
 
 ### See also
 

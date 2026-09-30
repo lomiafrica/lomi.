@@ -1,11 +1,11 @@
 ---
 title: 'How do I use charges?'
-description: 'Server-initiated Wave, MTN, and card charges when you need full control over the payment UI.'
+description: 'Server-initiated charges for an app that must lock one rail. Hosted checkout is the default.'
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-Direct charges let you collect payment from your server using `POST /charge/*`. Unlike hosted [checkout sessions](/build/accept/checkout), you build the customer-facing flow yourself.
+Direct charges are for an app that must lock one rail. Hosted checkout is the default: create a [checkout session](/build/accept/checkout), the customer picks the method, and a new rail appears without a code change. `POST /charge/*` collects payment from your server and you build the customer-facing flow yourself.
 
 <Callout type="warn">
   Switch charges (`POST /charge/switch`) are not available. They return `503 service_unavailable`. Use [hosted checkout](/build/accept/checkout) or [lomi. Elements](/build/accept/payment-elements) for cards.

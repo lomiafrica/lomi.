@@ -19,7 +19,7 @@ Crée un produit avec un ou plusieurs tarifs. Au moins un tarif est obligatoire.
 - `name`, `product_type` (`one_time`, `recurring`, `usage_based`) et un tableau `prices` sont obligatoires.
 - Chaque tarif exige `amount` et `currency_code`. Pour un produit récurrent, ajoutez `billing_interval` sur le tarif.
 - Champs réservés au récurrent : `trial_enabled`, `trial_period_days`, `failed_payment_action`, `charge_day`, `first_payment_type`: voir la page API.
-- Produits à l’usage : `usage_aggregation`, `usage_unit`: voir la page API.
+- Packs d’usage : `amount` sur le tarif est ce que le client paie. `included_units` est le nombre d’unités que ce paiement achète. `usage_unit` est le libellé de l’unité. lomi. additionne `quantity` sur un compteur. Laissez `billing_interval` vide. Voir [Facturation à l’usage](/build/billing/usage-billing).
 
 <Callout type="info">
   **Métadonnées optionnelles** pour les produits récurrents (via `metadata` à la création / mise à jour) : `subscription_length` (`"automatic"` par défaut) et `fixed_charges` (nombre entier de cycles avant expiration). Ce ne sont pas des champs API de premier niveau ; stockez-les dans `metadata`.
@@ -89,6 +89,21 @@ const tipJar = await lomi.products.create({
   ],
 });
 
+// Pack d'usage : amount est le prix du pack, included_units est ce que ce paiement achète
+const pack = await lomi.products.create({
+  name: 'Appels API',
+  product_type: 'usage_based',
+  usage_unit: 'appel',
+  prices: [
+    {
+      amount: 5000,
+      currency_code: 'XOF',
+      included_units: 1000,
+      is_default: true,
+    },
+  ],
+});
+
 console.log(`Product created: ${product.product_id}`);
 ```
 </Tab>
@@ -134,6 +149,21 @@ tip_jar = client.products.create({
     ]
 })
 
+# Pack d'usage : amount est le prix du pack, included_units est ce que ce paiement achète
+pack = client.products.create({
+    "name": "Appels API",
+    "product_type": "usage_based",
+    "usage_unit": "appel",
+    "prices": [
+        {
+            "amount": 5000,
+            "currency_code": "XOF",
+            "included_units": 1000,
+            "is_default": True
+        }
+    ]
+})
+
 print(f"Product created: {product['product_id']}")
 ```
 </Tab>
@@ -171,6 +201,24 @@ curl -X POST "https://api.lomi.africa/products" \
         "minimum_amount": 500,
         "maximum_amount": 5000,
         "currency_code": "XOF",
+        "is_default": true
+      }
+    ]
+  }'
+
+# Pack d'usage : amount est le prix du pack, included_units est ce que ce paiement achète
+curl -X POST "https://api.lomi.africa/products" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Appels API",
+    "product_type": "usage_based",
+    "usage_unit": "appel",
+    "prices": [
+      {
+        "amount": 5000,
+        "currency_code": "XOF",
+        "included_units": 1000,
         "is_default": true
       }
     ]

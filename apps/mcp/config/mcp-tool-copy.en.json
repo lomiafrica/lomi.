@@ -121,7 +121,7 @@
   },
   "GET /meters/{id}/balances/{customerId}": {
     "title": "Get a customer's meter balance",
-    "description": "Return aggregated consumed units for a meter and customer. Use to see current usage before billing."
+    "description": "Return units credited, units consumed, and units still available for a customer on a meter. balance is credited minus consumed."
   },
   "GET /organizations/radar-settings": {
     "title": "Get fraud (Radar) settings",
@@ -237,23 +237,23 @@
   },
   "GET /usage/periods": {
     "title": "List usage billing periods",
-    "description": "List billing periods for usage-based subscriptions, with accrued charges."
+    "description": "List historical billing-period rows for a usage subscription. Pack charges come from checkout and top-ups."
   },
   "GET /usage/revenue": {
     "title": "Get usage billing revenue",
-    "description": "Return revenue from usage-based billing over time. Use for metered-revenue reporting."
+    "description": "Return MRR, usage pack revenue, and one-time revenue for a date range. Requires start_date and end_date."
   },
   "GET /subscriptions/{id}/usage": {
     "title": "Get subscription usage",
-    "description": "Return metered usage for one usage-based subscription in the current period. Use to preview the upcoming invoice."
+    "description": "Return units credited, units consumed, and units still available on a usage subscription."
   },
   "GET /usage/events": {
     "title": "List usage events",
-    "description": "List recorded metered usage events. Filter by meter or customer to audit what was billed."
+    "description": "List usage events. Filter by meter or customer. A failed event with insufficient_balance did not spend units."
   },
   "GET /usage/events/{id}": {
     "title": "Get usage event",
-    "description": "Retrieve one metered usage event by id."
+    "description": "Retrieve one usage event by id."
   },
   "GET /webhooks/deliveries": {
     "title": "List webhook deliveries",
@@ -337,7 +337,7 @@
   },
   "POST /payouts": {
     "title": "Create payout",
-    "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Check the balance first."
+    "description": "Move available funds to a matching destination: F CFA in UEMOA, USD to a US bank, EUR to a eurozone bank. Self payouts need payout_method_id. Beneficiary Wave/MTN need recipient name and phone. Purpose is required as reason (trimmed, at most 140 characters). The confirmation preview shows it, and the execute call must send the same text. Check the balance first."
   },
   "POST /products": {
     "title": "Create product",
@@ -383,17 +383,13 @@
     "title": "Resume subscription",
     "description": "Reverse a scheduled cancellation so the subscription keeps billing. Pass the id. Only works before the cancellation takes effect."
   },
-  "POST /usage/credits": {
-    "title": "Grant usage credits",
-    "description": "Grant prepaid credits to a customer that offset future usage-based charges. Use for trials, goodwill, or top-ups."
-  },
   "POST /usage/entitlements": {
     "title": "Set plan entitlement",
     "description": "Create or update a feature entitlement (limit/quota) on a plan. Use to define what usage-based plans include."
   },
   "POST /usage/subscriptions": {
     "title": "Create usage subscription",
-    "description": "Enroll a customer on a usage-based product with no upfront charge. Required before metered usage can be billed."
+    "description": "Enroll a customer on a usage pack. The balance starts at zero until they pay, and events are refused until then."
   },
   "POST /webhooks": {
     "title": "Create webhook endpoint",

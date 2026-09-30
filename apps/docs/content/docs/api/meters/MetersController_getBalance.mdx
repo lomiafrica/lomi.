@@ -11,16 +11,16 @@ operationId: MetersController_getBalance
 
 Get meter balance for a customer
 
-Returns consumed, credited, and net balance units for a customer on a specific meter.
+Returns units credited, units consumed, and units still available for a customer on a meter. balance is credited_units minus consumed_units.
 
 
 ### When to use this
 
-Use for prepaid wallets, usage dashboards, or entitlement checks before granting access.
+Use to show remaining pack units, or before you accept more usage.
 
 ### See also
 
-[Credit wallet](/api/usage/UsageBillingController_creditWallet) · [Record usage event](/api/usage/UsageEventsController_ingest)
+[Record usage event](/api/usage/UsageEventsController_ingest) · [Usage billing guide](/build/billing/usage-billing)
 
 
 ## Authentication

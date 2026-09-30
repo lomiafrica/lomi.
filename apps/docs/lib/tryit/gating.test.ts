@@ -69,6 +69,21 @@ test('rejects unsigned sessions and accounts without test keys', () => {
   );
 });
 
+test('prefers the dashboard organization over a stale docs cookie', () => {
+  const orgs = [
+    { id: '11111111-1111-4111-8111-111111111111' },
+    { id: '22222222-2222-4222-8222-222222222222' },
+  ];
+  assert.equal(
+    selectTryitOrganizationId(
+      orgs,
+      '22222222-2222-4222-8222-222222222222',
+      '11111111-1111-4111-8111-111111111111',
+    ),
+    '11111111-1111-4111-8111-111111111111',
+  );
+});
+
 test('selects the cookie org when it belongs to the session', () => {
   assert.equal(parseTryitOrgId('not-a-uuid'), null);
   assert.equal(

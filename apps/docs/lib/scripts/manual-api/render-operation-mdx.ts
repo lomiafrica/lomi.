@@ -493,19 +493,21 @@ export function renderOperationPageMdx(input: {
     lang === 'en' && isEnOperationId(operationId)
       ? EN_OPERATION_COPY[operationId]
       : undefined;
-  const guidanceCopy =
-    lang === 'en'
-      ? isEnOperationId(operationId)
-        ? EN_OPERATION_COPY[operationId]
-        : undefined
-      : isFrOperationId(operationId)
-        ? FR_OPERATION_COPY[operationId]
-        : undefined;
-  const titleSource = enCopy?.summary ?? operation.summary ?? operationId;
+  const frCopy =
+    lang === 'fr' && isFrOperationId(operationId)
+      ? FR_OPERATION_COPY[operationId]
+      : undefined;
+  const guidanceCopy = lang === 'en' ? enCopy : frCopy;
+  const titleSource =
+    (lang === 'en' ? enCopy?.summary : frCopy?.summary) ??
+    operation.summary ??
+    operationId;
   const overviewDetail =
     lang === 'en' && enCopy
       ? (enCopy.body ?? operation.description)
-      : operation.description;
+      : lang === 'fr'
+        ? (frCopy?.body ?? operation.description)
+        : operation.description;
   const description = overviewDetail
     ? `\n\n${escapeMdxText(overviewDetail)}\n`
     : '';

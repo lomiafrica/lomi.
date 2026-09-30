@@ -11,7 +11,7 @@ operationId: ChargesController_createSwitchCharge
 
 Create Switch charge
 
-Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a 3DS redirect URL or signal `retry_other_rail` to fall back to another rail.
+Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a 3DS redirect URL or signal `retry_other_rail` to fall back to another rail. Use a checkout session unless your app must lock this rail.
 
 
 ### When to use this

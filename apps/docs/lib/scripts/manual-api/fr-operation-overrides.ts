@@ -5,6 +5,8 @@
  * Keeps EN/FR heading structure aligned for doctool `sync-i18n --check`.
  */
 export type FrOperationGuidance = {
+  summary?: string;
+  body?: string;
   whenToUse?: string;
   caveats?: string;
   related?: string;
@@ -178,6 +180,7 @@ export const FR_OPERATION_COPY = {
     related: '[Récupérer un produit](/api/products/ProductsController_findOne)',
   },
   ProductsController_create: {
+    body: 'Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n’est précisé au paiement. Pour un produit à l’usage, le montant du tarif est le prix du pack et `included_units` est le nombre d’unités que ce paiement achète.',
     whenToUse:
       'Utilisez lors de l’onboarding catalogue pour checkout, abonnements ou liens de paiement liés à des SKU.',
     related:
@@ -301,5 +304,62 @@ export const FR_OPERATION_COPY = {
       'Clé secrète Opérateur **sans** `Lomi-Account`. Nécessite `account.read` pour l’environnement de la clé et `member_dashboard` réglé sur `full` ou `member_mode` sur votre profil opérateur. `components` est un objet indexé par composant (`payments`, `payouts`, `balance`, `onboarding`, `notification_banner`) avec un indicateur `enabled` ; les composants omis sont activés. Le `client_secret` (`nas_...`) expire après 60 minutes ; n’exposez jamais votre clé Opérateur au navigateur.',
     related:
       '[Créer un lien de connexion](/api/network/NetworkAccountsController_createLoginLink) · [Guide lomi. Network](/build/platform/network#composants-intégrés)',
+  },
+  MetersController_create: {
+    summary: 'Créer un compteur',
+    body: 'Créer un produit d’usage crée déjà un compteur. Les événements dépensent la somme de `quantity`. Utilisez cet endpoint quand ce produit a besoin d’un autre compteur. L’agrégation enregistrée ne change pas le solde.',
+    whenToUse:
+      'Après le produit d’usage, si vous avez besoin d’un second compteur. Un pack normal n’a pas besoin de cet appel.',
+    related:
+      '[Facturation à l’usage](/build/billing/usage-billing) · [Enregistrer un événement d’usage](/api/usage/UsageEventsController_ingest) · [Lister les compteurs](/api/meters/MetersController_findAll)',
+  },
+  MetersController_findOne: {
+    summary: 'Lire un compteur',
+    body: 'Renvoie un compteur par identifiant. Les événements dépensent la somme de `quantity`. L’agrégation enregistrée ne change pas le solde.',
+    whenToUse:
+      'Utilisez quand vous avez un identifiant de compteur et que vous voulez son nom, son produit ou son état actif.',
+    related:
+      '[Lister les compteurs](/api/meters/MetersController_findAll) · [Solde du compteur](/api/meters/MetersController_getBalance)',
+  },
+  MetersController_update: {
+    summary: 'Mettre à jour un compteur',
+    body: 'Active ou désactive un compteur. Le filtre et l’agrégation sont enregistrés et ne changent pas la dépense des unités.',
+    whenToUse:
+      'Désactivez un compteur quand l’historique d’usage doit rester.',
+    related: '[Lire un compteur](/api/meters/MetersController_findOne)',
+  },
+  MetersController_getBalance: {
+    summary: 'Lire le solde d’un compteur',
+    body: 'Renvoie les unités créditées, les unités consommées et les unités encore disponibles pour un client sur un compteur. balance est credited_units moins consumed_units.',
+    whenToUse:
+      'Utilisez pour afficher les unités restantes du pack, ou avant d’accepter plus d’usage.',
+    related:
+      '[Enregistrer un événement d’usage](/api/usage/UsageEventsController_ingest) · [Facturation à l’usage](/build/billing/usage-billing)',
+  },
+  UsageBillingController_listPeriods: {
+    summary: 'Lister les périodes de facturation d’usage',
+    body: 'Renvoie les périodes historiques d’un abonnement d’usage. Les packs sont encaissés au checkout et au rechargement.',
+    whenToUse:
+      'Utilisez pour lire un historique de périodes déjà enregistré. Les unités restantes et le pack suivant sont dans le guide de facturation à l’usage.',
+    related:
+      '[Solde du compteur](/api/meters/MetersController_getBalance) · [Facturation à l’usage](/build/billing/usage-billing)',
+  },
+  SubscriptionsController_getUsage: {
+    summary: 'Lire l’usage d’un abonnement',
+    body: 'Renvoie les unités créditées, les unités consommées et les unités encore disponibles sur un abonnement d’usage.',
+    whenToUse:
+      'Utilisez sur un écran d’usage client, ou pour voir ce qu’il reste du pack.',
+    related:
+      '[Solde du compteur](/api/meters/MetersController_getBalance) · [Enregistrer un événement d’usage](/api/usage/UsageEventsController_ingest) · [Facturation à l’usage](/build/billing/usage-billing)',
+  },
+  UsageBillingController_getRevenue: {
+    summary: 'Métriques de revenu combinées',
+    body: 'Renvoie le MRR, le revenu des packs d’usage et le revenu ponctuel sur une plage de dates.',
+    whenToUse:
+      'Utilisez pour un rapport financier qui combine le MRR des abonnements, le revenu des packs d’usage et les paiements ponctuels.',
+    caveats:
+      'Exige les paramètres de requête `start_date` et `end_date`.',
+    related:
+      '[Métriques d’organisation](/api/organizations/OrganizationsController_getMetrics) · [Facturation à l’usage](/build/billing/usage-billing)',
   },
 };

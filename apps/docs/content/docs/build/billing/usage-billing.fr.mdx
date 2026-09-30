@@ -1,65 +1,33 @@
 ---
 title: Facturation à l'usage
-description: Mesurer la consommation, inscrire les clients sur des produits à l'usage et consulter les périodes de facturation.
+description: Vendre un pack d'usage prépayé, puis dépenser les unités au fil des événements.
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-La facturation à l'usage permet de facturer selon une **consommation mesurée** (appels API, sièges, crédits, etc.) sur des produits `usage_based`. Chaque étape ci-dessous correspond à un endpoint REST public dans [openapi.json](https://github.com/lomiafrica/lomi./blob/main/apps/docs/openapi.json).
+La facturation à l'usage vend un **pack**. Le prix est ce que le client paie. Le pack est le nombre d'unités que ce paiement achète. Chaque événement dépense ces unités. Un solde trop bas refuse l'événement. Un solde faible renvoie le même pack.
 
 <TaskSurfaces task="meter-usage" />
 
 <Callout type="info">
-  Pour la configuration produit (`product_type: usage_based`, tarifs, agrégation), voir **[Produits](/build/billing/products)**. Les abonnements à l'usage sont distincts des abonnements checkout récurrents, utilisez **`POST /usage/subscriptions`** pour inscrire un client sur un plan à l'usage.
+  Pour la configuration produit (`product_type: usage_based`), voir **[Produits](/build/billing/products)**. La carte et le mobile money paient le pack sur le checkout hébergé.
 </Callout>
-
-## Hors périmètre
-
-Il n’y a pas d’identifiant de cycle de facturation côté marchand, ni d’API pour changer le montant avant la date de facture. L’usage est ingéré, puis facturé sur la période. Créez d’abord le produit et le tarif, inscrivez avec `POST /usage/subscriptions`, puis envoyez les événements. Voir [Produits](/build/billing/products).
 
 ## Étapes
 
-### 1. Créer un produit à l'usage
+### 1. Créer le pack
 
-Créez un produit avec `product_type: usage_based` et un prix récurrent. Voir [Produits](/build/billing/products).
+Créez un produit `product_type: usage_based`. Indiquez le prix du pack, le nombre d'unités que ce paiement achète (`included_units`) et le libellé de l'unité. lomi. crée un compteur qui additionne `quantity`. Le code du compteur est son nom.
 
-### 2. Créer un compteur (meter)
+### 2. Envoyer le checkout
 
-Définissez le code de métrique facturable que votre application enverra à chaque événement d'usage.
+Créez une session de checkout avec ce produit. Le client paie par carte, Wave ou MTN. Un paiement terminé crédite `included_units` multiplié par la quantité.
 
-```bash
-curl -X POST "https://sandbox.api.lomi.africa/meters" \
-  -H "Authorization: Bearer $LOMI_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "api_calls",
-    "product_id": "prod_...",
-    "filter": { "code": "api_calls" },
-    "aggregation": { "type": "sum", "property": "quantity" }
-  }'
-```
+Vous pouvez d'abord inscrire le client avec `POST /usage/subscriptions`. Le solde commence à zéro, et les événements sont refusés tant qu'il n'a pas payé.
 
-→ [Créer un compteur](/api/meters/MetersController_create)
+### 3. Enregistrer les événements
 
-### 3. Inscrire le client (abonnement à l'usage)
-
-Avant d'ingérer de l'usage pour un client, inscrivez-le sur le produit à l'usage.
-
-```bash
-curl -X POST "https://sandbox.api.lomi.africa/usage/subscriptions" \
-  -H "Authorization: Bearer $LOMI_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customer_id": "cus_...",
-    "product_id": "prod_..."
-  }'
-```
-
-→ [Créer un abonnement à l'usage](/api/usage/events/UsageEventsController_createUsageSubscription)
-
-### 4. Enregistrer les événements d'usage
-
-Envoyez l'usage au fil de l'eau. Utilisez un `transaction_id` stable par événement logique pour l'idempotence.
+Envoyez l'usage au fil de l'eau. Utilisez un `transaction_id` stable par événement logique.
 
 ```bash
 curl -X POST "https://sandbox.api.lomi.africa/usage/events" \
@@ -74,33 +42,36 @@ curl -X POST "https://sandbox.api.lomi.africa/usage/events" \
   }'
 ```
 
-Retourne **202 Accepted** ; le traitement est asynchrone.
+Répond **202 Accepted**. Le traitement dépense le solde quand l'événement tient dedans.
 
 → [Enregistrer un événement d'usage](/api/usage/events/UsageEventsController_ingest)
 
-### 5. Consulter soldes et périodes
+### 4. Lire les unités restantes
 
 | Objectif | Endpoint |
-|----------|----------|
-| Portefeuille compteur client | [Solde compteur](/api/meters/MetersController_getBalance) |
-| Usage de la période en cours | [Usage abonnement](/api/subscriptions/SubscriptionsController_getUsage) |
-| Périodes historiques | [Lister les périodes](/api/usage/UsageBillingController_listPeriods) |
-| Crédits prépayés | [Créditer le portefeuille](/api/usage/UsageBillingController_creditWallet) |
-| Contrôle d'accès fonctionnel | [Vérifier une entitlement](/api/usage/UsageBillingController_checkEntitlement) |
+|------|----------|
+| Unités restantes | [Solde du compteur](/api/meters/MetersController_getBalance) |
+| Usage de l'abonnement | [Usage de l'abonnement](/api/subscriptions/SubscriptionsController_getUsage) |
 
-## Réconciliation
+`balance` est les unités encore disponibles (`credited_units` moins `consumed_units`). C'est ce nombre qui ouvre ou ferme l'accès.
 
-- **Lister ou récupérer les événements d'usage** si les webhooks sont en retard : [Lister](/api/usage/events/UsageEventsController_findAll), [Récupérer](/api/usage/events/UsageEventsController_findOne).
-- **Reporting revenus** MRR + usage + ponctuel : [Métriques revenus combinées](/api/usage/UsageBillingController_getRevenue).
+## Quand le pack est épuisé
 
-## Référence : frais lomi. Radar
+Si l'événement dépasse les unités restantes, il est enregistré en `failed` avec `insufficient_balance`. Rien n'est consommé. Renvoyez un événement après que le client a payé un autre pack.
 
-[lomi. Radar](/build/money/radar) ne facture pas via les compteurs d'usage, et ne facture pas quand une règle se déclenche. La surveillance est gratuite.
+Un événement réussi qui laisse le solde sous 20 % du dernier pack ouvre un seul rechargement pour le même pack.
+
+- **Carte.** Si le premier pack a été payé par carte, cette carte enregistrée est débitée sans la présence du client. Un débit réussi crédite un autre pack tout de suite.
+- **Wave et MTN.** Le mobile money ne peut pas être prélevé. Le client reçoit le lien de checkout du pack et le paie comme le premier pack. Un paiement terminé crédite les unités.
+- Si le débit de la carte échoue, le client reçoit ce même lien.
+
+## Rapprochement
+
+- **Lister ou lire les événements** pour le statut de traitement : [Lister les événements](/api/usage/events/UsageEventsController_findAll), [Lire un événement](/api/usage/events/UsageEventsController_findOne).
+- **Revenu** entre MRR, packs et paiements ponctuels : [Métriques de revenu](/api/usage/UsageBillingController_getRevenue).
 
 ## Voir aussi
 
-- [Radar](/build/money/radar): produit de filtrage des transactions
-
-- [Abonnements](/build/billing/subscriptions): abonnements checkout récurrents (distincts des abonnements à l'usage)
-- [Produits](/build/billing/products): catalogue et configuration `usage_based`
-- [Vérifier les paiements](/build/reliability/verify-payments): confirmer le statut avant d'accorder l'accès
+- [Abonnements](/build/billing/subscriptions) : abonnements checkout récurrents (distincts des packs d'usage)
+- [Produits](/build/billing/products) : catalogue et configuration `usage_based`
+- [Vérifier les paiements](/build/reliability/verify-payments) : confirmer le paiement du pack avant de considérer les unités comme créditées

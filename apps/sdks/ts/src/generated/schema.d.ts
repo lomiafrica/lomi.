@@ -2138,23 +2138,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/usage/credits": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Credit prepaid usage units to a customer meter wallet */
-        post: operations["UsageBillingController_creditWallet"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/usage/entitlements": {
         parameters: {
             query?: never;
@@ -3311,7 +3294,7 @@ export interface components {
              */
             price_id: string;
             /**
-             * @description Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout.
+             * @description What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout.
              * @example 10000
              */
             amount: number;
@@ -3521,7 +3504,7 @@ export interface components {
         };
         CreatePriceDto: {
             /**
-             * @description Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted).
+             * @description What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted).
              * @example 10000
              */
             amount: number;
@@ -3537,6 +3520,11 @@ export interface components {
              * @enum {string}
              */
             billing_interval?: "day" | "week" | "month" | "year";
+            /**
+             * @description Units credited when this price is paid. Required for usage products.
+             * @example 1000
+             */
+            included_units?: number;
             /**
              * @description Pricing model
              * @default standard
@@ -3669,7 +3657,7 @@ export interface components {
         };
         AddPriceDto: {
             /**
-             * @description Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted).
+             * @description What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted).
              * @example 10000
              */
             amount: number;
@@ -4995,13 +4983,6 @@ export interface components {
         };
         UsageSubscriptionResponseDto: {
             subscription_id: string;
-        };
-        CreditWalletDto: {
-            meter_id: string;
-            customer_id: string;
-            /** @example 100 */
-            units: number;
-            reason?: string;
         };
         CreateApiKeyDto: {
             name: string;
@@ -9507,30 +9488,6 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    UsageBillingController_creditWallet: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
-                "Lomi-Version"?: string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreditWalletDto"];
-            };
-        };
-        responses: {
-            201: {
                 headers: {
                     [name: string]: unknown;
                 };

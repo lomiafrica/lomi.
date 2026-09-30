@@ -11,7 +11,7 @@ operationId: ChargesController_createMtnCharge
 
 Create MTN charge
 
-Starts a payer-facing MTN RequestToPay charge. With a **test** API key the transaction completes in the ledger without calling the MTN sandbox. Responses include **`next_action`** (`await_webhook` with `status`) alongside `data.status`.
+Starts a payer-facing MTN RequestToPay charge. With a **test** API key the transaction completes in the ledger without calling the MTN sandbox. Responses include **`next_action`** (`await_webhook` with `status`) alongside `data.status`. Use a checkout session unless your app must lock this rail.
 
 
 ### When to use this

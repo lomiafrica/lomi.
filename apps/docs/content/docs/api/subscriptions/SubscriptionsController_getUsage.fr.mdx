@@ -1,6 +1,6 @@
 ---
-title: "Get meter usage for a subscription"
-description: "Get meter usage for a subscription"
+title: "Lire l'usage d'un abonnement"
+description: "Lire l'usage d'un abonnement"
 full: true
 method: get
 path: /subscriptions/{id}/usage
@@ -9,17 +9,17 @@ operationId: SubscriptionsController_getUsage
 
 ## Aperçu
 
-Get meter usage for a subscription
+Lire l'usage d'un abonnement
 
-### Quand l’utiliser
+Renvoie les unités créditées, les unités consommées et les unités encore disponibles sur un abonnement d'usage.
 
-Utilisez cet endpoint quand vous devez exécuter `GET /subscriptions/&#123;id&#125;/usage` (Get meter usage for a subscription).
+### Quand l'utiliser
 
-
+Utilisez sur un écran d'usage client, ou pour voir ce qu'il reste du pack.
 
 ### Voir aussi
 
-[List billing periods](/api/usage/UsageBillingController_listPeriods) · [Record usage event](/api/usage/UsageEventsController_ingest)
+[Solde du compteur](/api/meters/MetersController_getBalance) · [Enregistrer un événement d'usage](/api/usage/UsageEventsController_ingest) · [Facturation à l'usage](/build/billing/usage-billing)
 
 ## Authentification
 

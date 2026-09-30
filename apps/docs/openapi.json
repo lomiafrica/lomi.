@@ -2923,7 +2923,7 @@
         ]
       },
       "post": {
-        "description": "Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement.",
+        "description": "Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement. Pour un produit à l'usage, le montant du tarif est le prix du pack et included_units est le nombre d'unités que ce paiement achète.",
         "operationId": "ProductsController_create",
         "parameters": [
           {
@@ -6192,7 +6192,7 @@
     },
     "/charge/wave": {
       "post": {
-        "description": "Starts a payer-facing Wave mobile-money charge. Redirect the customer to `wave_launch_url` or `checkout_url` in the response.",
+        "description": "Starts a payer-facing Wave mobile-money charge. Redirect the customer to `wave_launch_url` or `checkout_url` in the response. Use a checkout session unless your app must lock this rail.",
         "operationId": "ChargesController_createWaveCharge",
         "parameters": [
           {
@@ -6263,7 +6263,7 @@
     },
     "/charge/mtn": {
       "post": {
-        "description": "Initiates an MTN RequestToPay. With a test API key the transaction completes in the ledger without calling the MTN sandbox.",
+        "description": "Initiates an MTN RequestToPay. With a test API key the transaction completes in the ledger without calling the MTN sandbox. Use a checkout session unless your app must lock this rail.",
         "operationId": "ChargesController_createMtnCharge",
         "parameters": [
           {
@@ -6331,7 +6331,7 @@
     },
     "/charge/switch": {
       "post": {
-        "description": "Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a redirect URL for 3DS authentication or signal `retry_other_rail` to fall back to another rail. Requires a PCI-DSS-compliant integration.",
+        "description": "Authorizes a card from server-supplied credentials and routes it across acquiring rails. May return a redirect URL for 3DS authentication or signal `retry_other_rail` to fall back to another rail. Requires a PCI-DSS-compliant integration. Use a checkout session unless your app must lock this rail.",
         "operationId": "ChargesController_createSwitchCharge",
         "parameters": [
           {
@@ -6389,7 +6389,7 @@
     },
     "/charge/card": {
       "post": {
-        "description": "Creates an uncaptured card PaymentIntent and returns client_secret for lomi. Elements. Card numbers never hit this API.",
+        "description": "Creates an uncaptured card PaymentIntent and returns client_secret for lomi. Elements. Card numbers never hit this API. Use a checkout session unless your app must lock this rail.",
         "operationId": "ChargesController_createCardCharge",
         "parameters": [
           {
@@ -7783,7 +7783,7 @@
     },
     "/meters/{id}/balances/{customerId}": {
       "get": {
-        "description": "Returns aggregated consumed units for the meter and customer.",
+        "description": "Returns units credited, units consumed, and units still available for a customer on a meter. balance is credited_units minus consumed_units.",
         "operationId": "MetersController_getBalance",
         "parameters": [
           {
@@ -7994,7 +7994,7 @@
     },
     "/usage/subscriptions": {
       "post": {
-        "description": "Enrolls a customer on a usage_based product without an upfront charge. Required before billing metered usage.",
+        "description": "Enrolls a customer on a usage pack. The balance starts at zero until they pay, and events are refused until then.",
         "operationId": "UsageEventsController_createUsageSubscription",
         "parameters": [
           {
@@ -8132,47 +8132,6 @@
           }
         ],
         "summary": "Combined MRR + usage + one-time revenue metrics",
-        "tags": [
-          "Usage"
-        ]
-      }
-    },
-    "/usage/credits": {
-      "post": {
-        "operationId": "UsageBillingController_creditWallet",
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditWalletDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ],
-        "summary": "Credit prepaid usage units to a customer meter wallet",
         "tags": [
           "Usage"
         ]
@@ -10491,7 +10450,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout."
+            "description": "What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout."
           },
           "currency_code": {
             "type": "string",
@@ -10514,6 +10473,12 @@
               "year"
             ],
             "nullable": true
+          },
+          "included_units": {
+            "type": "number",
+            "example": 1000,
+            "nullable": true,
+            "description": "Units credited when this price is paid. Set on usage products."
           },
           "pricing_model": {
             "type": "string",
@@ -10686,7 +10651,7 @@
           "usage_aggregation": {
             "type": "string",
             "example": "sum",
-            "description": "Usage aggregation method",
+            "description": "Stored on the meter. Events spend the sum of quantity. Leave this as sum.",
             "enum": [
               "sum",
               "max",
@@ -10859,7 +10824,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -10881,6 +10846,11 @@
               "month",
               "year"
             ]
+          },
+          "included_units": {
+            "type": "number",
+            "example": 1000,
+            "description": "Units credited when this price is paid. Required for usage products."
           },
           "pricing_model": {
             "type": "string",
@@ -11032,7 +11002,7 @@
           "usage_aggregation": {
             "type": "string",
             "example": "sum",
-            "description": "Usage aggregation method (usage_based products only)",
+            "description": "Stored on the meter. Events spend the sum of quantity. Leave this as sum.",
             "enum": [
               "sum",
               "max",
@@ -11063,7 +11033,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -13534,7 +13504,7 @@
               "type": "sum",
               "property": "quantity"
             },
-            "description": "Aggregation config: sum, count, max, last_during_period, last_ever"
+            "description": "Stored on the meter. Events spend the sum of quantity."
           }
         },
         "required": [
@@ -13763,29 +13733,6 @@
         },
         "required": [
           "subscription_id"
-        ]
-      },
-      "CreditWalletDto": {
-        "type": "object",
-        "properties": {
-          "meter_id": {
-            "type": "string"
-          },
-          "customer_id": {
-            "type": "string"
-          },
-          "units": {
-            "type": "number",
-            "example": 100
-          },
-          "reason": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "meter_id",
-          "customer_id",
-          "units"
         ]
       },
       "CreateApiKeyDto": {

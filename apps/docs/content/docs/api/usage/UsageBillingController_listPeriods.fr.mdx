@@ -1,6 +1,6 @@
 ---
-title: "List usage billing periods"
-description: "List usage billing periods"
+title: "Lister les périodes de facturation d'usage"
+description: "Lister les périodes de facturation d'usage"
 full: true
 method: get
 path: /usage/periods
@@ -9,17 +9,17 @@ operationId: UsageBillingController_listPeriods
 
 ## Aperçu
 
-List usage billing periods
+Lister les périodes de facturation d'usage
 
-### Quand l’utiliser
+Renvoie les périodes historiques d'un abonnement d'usage. Les packs sont encaissés au checkout et au rechargement.
 
-Utilisez cet endpoint quand vous devez exécuter `GET /usage/periods` (List usage billing periods).
+### Quand l'utiliser
 
-
+Utilisez pour lire un historique de périodes déjà enregistré. Les unités restantes et le pack suivant sont dans le guide de facturation à l'usage.
 
 ### Voir aussi
 
-[Get subscription usage](/api/subscriptions/SubscriptionsController_getUsage) · [Usage billing guide](/build/billing/usage-billing)
+[Solde du compteur](/api/meters/MetersController_getBalance) · [Facturation à l'usage](/build/billing/usage-billing)
 
 ## Authentification
 

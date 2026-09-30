@@ -1,65 +1,33 @@
 ---
 title: Usage billing
-description: Meter usage, enroll customers on usage-based products, and read billing periods.
+description: Sell a prepaid usage pack, then spend the units as events come in.
 ---
 
 import { Callout } from '@/components/docs/docs-callout';
 
-Usage billing lets you charge customers based on **metered consumption** (API calls, seats, credits, etc.) on top of `usage_based` products. The flow is contract-first: every step below maps to a public REST endpoint in [openapi.json](https://github.com/lomiafrica/lomi./blob/main/apps/docs/openapi.json).
+Usage billing sells a **pack**. The price is what the customer pays. The pack is how many units that payment buys. Each event spends those units. A short balance refuses the event. A low balance sends the same pack again.
 
 <TaskSurfaces task="meter-usage" />
 
 <Callout type="info">
-  For product setup (`product_type: usage_based`, prices, aggregation), see **[Products](/build/billing/products)**. Usage subscriptions are separate from recurring checkout subscriptions, use **`POST /usage/subscriptions`** to enroll customers on usage-based plans.
+  For product setup (`product_type: usage_based`), see **[Products](/build/billing/products)**. Cards and mobile money both pay the pack on hosted checkout.
 </Callout>
-
-## What this is not
-
-There is no merchant-facing billing cycle id, and no API to change the amount before the bill date. Usage is ingested, then billed on the period. Create the product and price first, enroll with `POST /usage/subscriptions`, then send events. See [Products](/build/billing/products).
 
 ## Golden path
 
-### 1. Create a usage-based product
+### 1. Create the pack
 
-Create a product with `product_type: usage_based` and a recurring price. See [Products](/build/billing/products).
+Create a product with `product_type: usage_based`. Set the pack price, how many units that payment buys (`included_units`), and the unit label. lomi. creates one meter that sums `quantity`. The meter code is the meter name.
 
-### 2. Create a meter
+### 2. Send checkout
 
-Define the billable metric code your app will send on each usage event.
+Create a checkout session with that product. The customer pays by card, Wave, or MTN. A completed payment credits `included_units` times the quantity.
 
-```bash
-curl -X POST "https://sandbox.api.lomi.africa/meters" \
-  -H "Authorization: Bearer $LOMI_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "api_calls",
-    "product_id": "prod_...",
-    "filter": { "code": "api_calls" },
-    "aggregation": { "type": "sum", "property": "quantity" }
-  }'
-```
+You can enroll a customer first with `POST /usage/subscriptions`. The balance starts at zero, and events are refused until they pay.
 
-→ [Create meter](/api/meters/MetersController_create)
+### 3. Record events
 
-### 3. Enroll the customer (usage subscription)
-
-Before ingesting usage for a customer, enroll them on the usage-based product.
-
-```bash
-curl -X POST "https://sandbox.api.lomi.africa/usage/subscriptions" \
-  -H "Authorization: Bearer $LOMI_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customer_id": "cus_...",
-    "product_id": "prod_..."
-  }'
-```
-
-→ [Create usage subscription](/api/usage/events/UsageEventsController_createUsageSubscription)
-
-### 4. Record usage events
-
-Send usage as it happens. Use a stable `transaction_id` per logical event for idempotency.
+Send usage as it happens. Use a stable `transaction_id` per logical event.
 
 ```bash
 curl -X POST "https://sandbox.api.lomi.africa/usage/events" \
@@ -74,33 +42,36 @@ curl -X POST "https://sandbox.api.lomi.africa/usage/events" \
   }'
 ```
 
-Returns **202 Accepted**; processing is asynchronous.
+Returns **202 Accepted**. Processing spends the balance when the event fits.
 
 → [Record usage event](/api/usage/events/UsageEventsController_ingest)
 
-### 5. Read balances and billing periods
+### 4. Read remaining units
 
 | Goal | Endpoint |
 |------|----------|
-| Customer meter wallet | [Get meter balance](/api/meters/MetersController_getBalance) |
-| Usage in current period | [Get subscription usage](/api/subscriptions/SubscriptionsController_getUsage) |
-| Historical periods | [List billing periods](/api/usage/UsageBillingController_listPeriods) |
-| Prepaid credits | [Credit wallet](/api/usage/UsageBillingController_creditWallet) |
-| Feature gating | [Check entitlement](/api/usage/UsageBillingController_checkEntitlement) |
+| Units remaining | [Get meter balance](/api/meters/MetersController_getBalance) |
+| Usage on the subscription | [Get subscription usage](/api/subscriptions/SubscriptionsController_getUsage) |
+
+`balance` is units still available (`credited_units` minus `consumed_units`). Gate access on that number.
+
+## When the pack runs out
+
+If the event is larger than the remaining units, it is stored as `failed` with `insufficient_balance`. Nothing is consumed. Send a new event after the customer pays for another pack.
+
+A successful event that leaves the balance under 20% of the last pack opens one top-up for the same pack.
+
+- **Card.** If the first pack was paid by card, that saved card is charged without the customer present. A successful charge credits another pack immediately.
+- **Wave and MTN.** Mobile money cannot be pulled. The customer receives the pack checkout link and pays it the same way as the first pack. Completing that checkout credits the units.
+- If the saved card charge fails, the customer receives that same link.
 
 ## Reconciliation
 
-- **List or get usage events** when webhooks are delayed: [List usage events](/api/usage/events/UsageEventsController_findAll), [Get usage event](/api/usage/events/UsageEventsController_findOne).
-- **Revenue reporting** across MRR + usage + one-time: [Combined revenue metrics](/api/usage/UsageBillingController_getRevenue).
-
-## Reference: lomi. Radar fees
-
-[lomi. Radar](/build/money/radar) does not bill through usage meters, and it does not charge when a rule fires. Monitor is free.
+- **List or get usage events** when you need the processing status: [List usage events](/api/usage/events/UsageEventsController_findAll), [Get usage event](/api/usage/events/UsageEventsController_findOne).
+- **Revenue reporting** across MRR, packs, and one-time payments: [Combined revenue metrics](/api/usage/UsageBillingController_getRevenue).
 
 ## Related
 
-- [Radar](/build/money/radar): transaction screening product
-
-- [Subscriptions](/build/billing/subscriptions): recurring checkout subscriptions (distinct from usage subscriptions)
+- [Subscriptions](/build/billing/subscriptions): recurring checkout subscriptions (distinct from usage packs)
 - [Products](/build/billing/products): catalog and `usage_based` configuration
-- [Verify payments](/build/reliability/verify-payments): confirm transaction status before fulfilling access
+- [Verify payments](/build/reliability/verify-payments): confirm the pack payment before treating units as credited

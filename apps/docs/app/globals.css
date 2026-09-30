@@ -2195,12 +2195,57 @@ html.dark .docs-turnstile-mount {
   opacity: 0.6;
 }
 
+.docs-api-playground-org {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.docs-api-playground-org-control {
+  position: relative;
+}
+
+.docs-api-playground-org-control select {
+  width: 100%;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  padding: 0.45rem 2.5rem 0.45rem 0.6rem;
+  font: inherit;
+  appearance: none;
+}
+
+.docs-api-playground-org-chevron {
+  position: absolute;
+  inset-inline-end: 1.15rem;
+  top: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-fd-muted-foreground);
+}
+
+.docs-api-playground-response {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.docs-api-playground-status {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .docs-api-playground-result {
   margin: 0;
   max-height: 18rem;
   overflow: auto;
   padding: 0.75rem 1rem;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* Custom Image Layouts */
@@ -2464,6 +2509,15 @@ figure.shiki,
   overflow-x: auto;
   margin-top: 0;
   margin-bottom: 0;
+}
+
+pre.docs-api-playground-result {
+  margin: 0;
+  max-height: 18rem;
+  overflow: auto;
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 figure.shiki {

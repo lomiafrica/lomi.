@@ -113,23 +113,6 @@ func (s *UsageService) GetRevenue(params map[string]string) (interface{}, error)
 	}
 
 
-func (s *UsageService) GrantCredits(body interface{}) (interface{}, error) {
-		path := "/usage/credits"
-		bodyResp, err := s.client.doRequest("POST", path, nil, body)
-		if err != nil {
-			return nil, err
-		}
-		if len(bodyResp) == 0 {
-			return nil, nil
-		}
-		var out interface{}
-		if err := json.Unmarshal(bodyResp, &out); err != nil {
-			return nil, err
-		}
-		return out, nil
-	}
-
-
 func (s *UsageService) List(params map[string]string) (interface{}, error) {
 		path := "/usage/events"
 		bodyResp, err := s.client.doRequest("GET", path, paramsToQuery(params), nil)

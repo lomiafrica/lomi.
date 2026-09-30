@@ -145,7 +145,6 @@
   "POST /team/invitations",
   "POST /transfers",
   "POST /transfers/{id}/reversals",
-  "POST /usage/credits",
   "POST /usage/entitlements",
   "POST /usage/events",
   "POST /usage/subscriptions",

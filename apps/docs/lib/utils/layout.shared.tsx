@@ -25,7 +25,7 @@ export function baseOptions(): BaseLayoutProps {
     // see fumadocs-ui navigation links
     links: linkItems,
     themeSwitch: {
-      // Full-width Beecargo-style user nav (Dashboard, Language, Theme, MCP, backlinks)
+      // Full-width user nav: Dashboard and backlinks, then Language, Theme, MCP
       component: <DocsSidebarLocaleAndTheme />,
     },
   };

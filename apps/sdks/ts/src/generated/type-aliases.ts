@@ -34,7 +34,6 @@ export type CreateTransferReversal = components['schemas']['CreateTransferRevers
 export type CreateUsageSubscription = components['schemas']['CreateUsageSubscriptionDto'];
 export type CreateWaveCharge = components['schemas']['CreateWaveChargeDto'];
 export type CreateWebhookBody = components['schemas']['CreateWebhookBodyDto'];
-export type CreditWallet = components['schemas']['CreditWalletDto'];
 export type CustomerRadarBlockResponse = components['schemas']['CustomerRadarBlockResponseDto'];
 export type CustomerResponse = components['schemas']['CustomerResponseDto'];
 export type DeleteAccount = components['schemas']['DeleteAccountDto'];

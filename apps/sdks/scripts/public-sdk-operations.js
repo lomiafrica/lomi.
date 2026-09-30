@@ -120,7 +120,6 @@ export const METHOD_NAME_BY_OP = {
   "GET /usage/revenue": "getRevenue",
   "GET /usage/events": "list",
   "GET /usage/events/{id}": "get",
-  "POST /usage/credits": "grantCredits",
   "POST /usage/entitlements": "createEntitlement",
   "POST /usage/events": "create",
   "POST /usage/subscriptions": "createSubscription",

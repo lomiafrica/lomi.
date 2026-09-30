@@ -1,6 +1,7 @@
 /* @proprietary license */
 
 import { isJsonObject, type JsonObject, type JsonValue } from '@lomi./shared';
+import { exampleBodyForOperation } from '@/lib/openapi/example-body';
 import {
   toOpenApiHttpMethod,
   type OpenApiHttpMethod,
@@ -21,38 +22,6 @@ export type TryItOperation = {
   exampleBody: string | null;
   hasBody: boolean;
 };
-
-function jsonExample(value: JsonValue | undefined): string | null {
-  if (value === undefined) return null;
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return null;
-  }
-}
-
-function exampleFromMedia(media: JsonValue | undefined): string | null {
-  if (!isJsonObject(media)) return null;
-  const direct = jsonExample(media.example);
-  if (direct) return direct;
-  const examples = media.examples;
-  if (!isJsonObject(examples)) return null;
-  for (const entry of Object.values(examples)) {
-    if (!isJsonObject(entry)) continue;
-    const value = jsonExample(entry.value);
-    if (value) return value;
-  }
-  return null;
-}
-
-function exampleFromRequestBody(operation: JsonObject): string | null {
-  const requestBody = operation.requestBody;
-  if (!isJsonObject(requestBody)) return null;
-  const content = requestBody.content;
-  if (!isJsonObject(content)) return null;
-  const json = content['application/json'];
-  return exampleFromMedia(json);
-}
 
 export function pathParamNames(route: string): string[] {
   const names: string[] = [];
@@ -94,7 +63,7 @@ export function getTryItOperation(
     path: route,
     sandboxOrigin,
     pathParams: pathParamNames(route),
-    exampleBody: hasBody ? exampleFromRequestBody(operation) : null,
+    exampleBody: hasBody ? exampleBodyForOperation(document, operation) : null,
     hasBody,
   };
 }

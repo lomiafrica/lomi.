@@ -1,6 +1,6 @@
 ---
-title: "Create a meter"
-description: "Create a meter"
+title: "Créer un compteur"
+description: "Créer un compteur"
 full: true
 method: post
 path: /meters
@@ -9,20 +9,19 @@ operationId: MetersController_create
 
 ## Aperçu
 
-Create a meter
+Créer un compteur
 
-Defines a billable metric for usage-based products. Events with matching code update meter balances.
-
+Créer un produit d’usage crée déjà un compteur. Les événements dépensent la somme de `quantity`. Utilisez cet endpoint quand ce produit a besoin d’un autre compteur. L’agrégation enregistrée ne change pas le solde.
 
 ### Quand l’utiliser
 
-Utilisez cet endpoint quand vous devez exécuter `POST /meters` (Create a meter).
+Après le produit d’usage, si vous avez besoin d’un second compteur. Un pack normal n’a pas besoin de cet appel.
 
 
 
 ### Voir aussi
 
-[Usage billing guide](/build/billing/usage-billing) · [Record usage event](/api/usage/UsageEventsController_ingest) · [List meters](/api/meters/MetersController_findAll)
+[Facturation à l’usage](/build/billing/usage-billing) · [Enregistrer un événement d’usage](/api/usage/UsageEventsController_ingest) · [Lister les compteurs](/api/meters/MetersController_findAll)
 
 ## Authentification
 

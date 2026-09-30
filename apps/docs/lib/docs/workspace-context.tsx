@@ -14,10 +14,7 @@ import {
   resolveTestApiKeyDisplay,
   type ApiKeyResolution,
 } from '@/lib/docs/personalize';
-import {
-  readStoredOrgId,
-  writeStoredOrgId,
-} from '@/lib/docs/workspace-storage';
+import { writeStoredOrgId } from '@/lib/docs/workspace-storage';
 import { canSendSandbox } from '@/lib/tryit/gating';
 import {
   isJsonArray,
@@ -124,40 +121,25 @@ export function DocsWorkspaceProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    void (async () => {
+    const load = async () => {
       try {
-        const stored = readStoredOrgId();
         const body = await fetchTryitContext();
-        if (cancelled) return;
-        if (!body) {
-          return;
-        }
-        if (
-          stored &&
-          body.organizations.some((org) => org.id === stored) &&
-          body.selectedOrganizationId !== stored
-        ) {
-          const saved = await persistTryitOrg(stored);
-          if (cancelled) return;
-          if (saved) {
-            const refreshed = await fetchTryitContext();
-            if (cancelled) return;
-            if (refreshed) {
-              setCtx(refreshed);
-              return;
-            }
-          }
-          body.selectedOrganizationId = stored;
-        }
+        if (cancelled || !body) return;
         setCtx(body);
       } catch {
         /* signed-out / offline */
       } finally {
         if (!cancelled) setReady(true);
       }
-    })();
+    };
+    void load();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void load();
+    };
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, []);
 

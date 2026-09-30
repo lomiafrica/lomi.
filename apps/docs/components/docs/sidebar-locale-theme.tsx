@@ -98,7 +98,7 @@ function SubmenuChevron({ open, mobile }: { open: boolean; mobile: boolean }) {
 
 /**
  * Full-width Beecargo-style user nav for the docs sidebar.
- * Hover opens instantly; Language / Theme / MCP fly out to the right on desktop.
+ * Hover opens instantly. Dashboard and links sit above Language, Theme, and MCP.
  */
 export function DocsSidebarLocaleAndTheme({
   mobile = false,
@@ -115,7 +115,7 @@ export function DocsSidebarLocaleAndTheme({
   const t = (key: string) => translate(key, currentLanguage);
   const selectedOrg =
     organizations.find((org) => org.id === selectedOrganizationId) ??
-    organizations[0];
+    (organizations.length === 1 ? organizations[0] : undefined);
   const orgName = signedIn ? selectedOrg?.name.trim() || null : null;
   const avatarSeed = orgName ? (selectedOrg?.id ?? orgName) : 'docs-guest';
   const [open, setOpen] = useState(false);
@@ -318,9 +318,7 @@ export function DocsSidebarLocaleAndTheme({
           />
         </span>
         {orgName ? (
-          <span className="min-w-0 flex-1 truncate" title={orgName}>
-            {orgName}
-          </span>
+          <span className="min-w-0 flex-1 truncate">{orgName}</span>
         ) : (
           <span className="min-w-0 flex-1" />
         )}
@@ -364,6 +362,31 @@ export function DocsSidebarLocaleAndTheme({
               {t('docs.shell.dashboard')}
             </span>
           </a>
+
+          {BACKLINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              role="menuitem"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeAll}
+              onMouseEnter={() => {
+                if (!mobile && canHover()) setSubmenu(null);
+              }}
+              className={itemClass(mobile)}
+            >
+              <link.Icon className="size-4 shrink-0" />
+              <span className="min-w-0 flex-1 truncate">
+                {t(link.labelKey)}
+              </span>
+            </a>
+          ))}
+
+          <div
+            role="separator"
+            className="my-1 h-px bg-[color:var(--docs-sidebar-hairline)]"
+          />
 
           <div
             className="relative"
@@ -498,31 +521,6 @@ export function DocsSidebarLocaleAndTheme({
               )),
             )}
           </div>
-
-          <div
-            role="separator"
-            className="my-1 h-px bg-[color:var(--docs-sidebar-hairline)]"
-          />
-
-          {BACKLINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              role="menuitem"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeAll}
-              onMouseEnter={() => {
-                if (!mobile && canHover()) setSubmenu(null);
-              }}
-              className={itemClass(mobile)}
-            >
-              <link.Icon className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">
-                {t(link.labelKey)}
-              </span>
-            </a>
-          ))}
         </div>
       ) : null}
     </div>

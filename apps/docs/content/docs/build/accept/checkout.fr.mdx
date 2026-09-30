@@ -56,14 +56,13 @@ Lorsque `product_id` ou `price_id` pointe vers un tarif avec `pricing_model: pay
 
 ### Panier multi-produits (`line_items`)
 
-Avec **`line_items`**, chaque ligne doit référencer un tarif **ponctuel** en tarification **standard** (fixe). L’API renvoie **400** avec l’un des codes :
+Avec **`line_items`**, chaque ligne doit être du même type de produit, en tarification **standard** (fixe). Les produits ponctuels peuvent partager un panier. Les packs d’usage peuvent partager un panier. L’API renvoie **400** avec l’un des codes :
 
 | Code | Signification |
 |------|----------------|
-| `line_items_pwyw_not_supported` | Une ligne utilise `pay_what_you_want`, utilisez une session mono-produit |
-| `line_items_recurring_not_supported` | Une ligne référence un produit récurrent |
-| `line_items_usage_based_not_supported` | Tarification à l’usage (pas encore prise en charge en panier) |
-| `line_items_mixed_product_types` | Mélange ponctuel et récurrent dans un même panier |
+| `line_items_pwyw_not_supported` | Une ligne utilise `pay_what_you_want`. Utilisez une session mono-produit. |
+| `line_items_recurring_not_supported` | Une ligne est un produit récurrent. Vendez ce forfait dans sa propre session. |
+| `line_items_mixed_product_types` | Le panier mélange des produits ponctuels et des packs d’usage. |
 
 ### Produits récurrents (abonnements)
 

@@ -48,6 +48,7 @@ pub struct PayoutsCreateArgs {
     pub recipient_name: Option<String>,
     #[arg(long)]
     pub recipient_phone: Option<String>,
+    /// Purpose of this payout (required, max 140 characters)
     #[arg(long)]
     pub reason: Option<String>,
     /// Return the confirmation preview without executing
@@ -155,6 +156,16 @@ async fn create_payout(common: &CommonOptions, args: PayoutsCreateArgs) -> Resul
         bail!("--payout-method-id is required for self payouts");
     }
 
+    let reason = args
+        .reason
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| anyhow::anyhow!("--reason is required (Purpose, max 140 characters)"))?;
+    if reason.chars().count() > 140 {
+        bail!("--reason must be 140 characters or fewer");
+    }
+
     let body = CreatePayoutRequest {
         destination,
         rail,
@@ -162,7 +173,7 @@ async fn create_payout(common: &CommonOptions, args: PayoutsCreateArgs) -> Resul
         currency_code: args.currency,
         payout_method_id: args.payout_method_id,
         recipient,
-        reason: args.reason,
+        reason: Some(reason.to_string()),
         confirmation_token: None,
     };
     let mut response: serde_json::Value = client.post("/payouts", &body).await?;
