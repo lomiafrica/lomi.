@@ -201,7 +201,7 @@ Utilisez `https://sandbox.api.lomi.africa` pour des données sandbox.
 - **Ressources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
 
-Chaque action MCP ci-dessous correspond à une opération de l’API. Les charges directes et `POST /usage/events` ne sont pas exposées en MCP.
+Chaque action MCP ci-dessous correspond à une opération de l’API. Les blocages carte sont `lomi_card_holds` (create, get, increment, capture, cancel). Wave, MTN, Switch et `POST /usage/events` ne sont pas exposés en MCP.
 
 <McpOperationIndex />
 

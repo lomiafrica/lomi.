@@ -1,0 +1,91 @@
+---
+title: "Raise card hold"
+description: "Raise card hold"
+full: true
+method: post
+path: /charge/card/{id}/increment
+operationId: ChargesController_incrementCardHold
+---
+
+## Overview
+
+Raise card hold
+
+Blocks a higher total on a confirmed card hold. One capture still settles it. A decline leaves the current block.
+
+### When to use this
+
+Use when the deposit must cover a higher amount before you capture, and `can_increment` is true.
+
+### Caveats
+
+Send `Idempotency-Key`. `amount` is the new total, not the increase. It must be higher than the current block. When `can_increment` is false, capture or release instead.
+
+### See also
+
+[Card holds](/build/accept/card-holds) · [Capture card hold](/api/charge/ChargesController_captureCardCharge)
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /charge/card/{id}/increment`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | - | Card payment id (pi_...) |
+
+### Query parameters
+
+_No query parameters._
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Yes | - | Required for this money-moving call. Reuse the same key when retrying the same raise. |
+| `Lomi-Account` | header | No | - | Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. |
+
+### Request body
+
+| Field | Required | Description |
+| --- | --- | --- |
+| `amount` | Yes | New total to block, in the same currency as the hold. Must be higher than the current block. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Card hold raised |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. Send `Idempotency-Key` on every raise. A decline leaves the current block in place.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/increment" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: raise-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":150000}'
+```
+
+## OpenAPI
+
+- **operationId**: `ChargesController_incrementCardHold`
+- **Operation**: `POST /charge/card/{id}/increment`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

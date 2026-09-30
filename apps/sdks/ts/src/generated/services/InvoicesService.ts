@@ -14,10 +14,11 @@ export class InvoicesService {
      * Create invoice
      * @see OpenAPI `InvoicesController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['InvoiceResponseDto']> {
+    public async create(body: components['schemas']['CreateInvoiceDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['InvoiceResponseDto']> {
         return requestWithClient<components['schemas']['InvoiceResponseDto']>(this.client, {
             method: 'POST',
             url: '/invoices',
+            body,
             ...options,
         });
     }
@@ -153,11 +154,12 @@ export class InvoicesService {
      * Update invoice
      * @see OpenAPI `InvoicesController_update`
      */
-    public async update(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['InvoiceResponseDto']> {
+    public async update(id: string, body: components['schemas']['UpdateInvoiceDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['InvoiceResponseDto']> {
         return requestWithClient<components['schemas']['InvoiceResponseDto']>(this.client, {
             method: 'PATCH',
             url: '/invoices/{id}',
             path: { id: id },
+            body,
             ...options,
         });
     }

@@ -6578,6 +6578,74 @@
         ]
       }
     },
+    "/charge/card/{id}/increment": {
+      "post": {
+        "description": "Blocks a higher total on a confirmed card hold. One capture still settles it. A decline leaves the current block.",
+        "operationId": "ChargesController_incrementCardHold",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Card payment id (pi_...)",
+            "schema": {}
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required unique key for this write. Replays return the original response.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncrementCardHoldDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Card hold raised"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Raise card hold",
+        "tags": [
+          "Advanced Direct Charges"
+        ]
+      }
+    },
     "/charge/card/{id}/cancel": {
       "post": {
         "operationId": "ChargesController_cancelCardCharge",
@@ -12994,6 +13062,11 @@
             "example": true,
             "description": "True when this charge blocks the card instead of taking the money now."
           },
+          "can_increment": {
+            "type": "boolean",
+            "example": true,
+            "description": "True when this hold can be raised before capture. False when the card cannot, or before the customer confirms it."
+          },
           "capture_before": {
             "type": "string",
             "example": "2026-10-05T16:00:00.000Z",
@@ -13046,6 +13119,19 @@
             "description": "Amount to take, in the same currency as the hold. Omit to capture the full hold. The rest is released."
           }
         }
+      },
+      "IncrementCardHoldDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 150000,
+            "description": "New total to block, in the same currency as the hold. Must be higher than the current block."
+          }
+        },
+        "required": [
+          "amount"
+        ]
       },
       "InvoiceLineItemDto": {
         "type": "object",

@@ -14,25 +14,25 @@ export class ChargesService {
      * Cancel embedded card charge
      * @see OpenAPI `ChargesController_cancelCardCharge`
      */
-    /**
-     * Capture card hold
-     * @see OpenAPI `ChargesController_captureCardCharge`
-     */
-    public async captureCardCharge(id: string, body?: { amount?: number }, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
-        return requestWithClient<unknown>(this.client, {
-            method: 'POST',
-            url: '/charge/card/{id}/capture',
-            path: { id: id },
-            body,
-            ...options,
-        });
-    }
-
     public async cancelCardCharge(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/charge/card/{id}/cancel',
             path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
+     * Capture card hold
+     * @see OpenAPI `ChargesController_captureCardCharge`
+     */
+    public async captureCardCharge(id: string, body: components['schemas']['CaptureCardChargeDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/charge/card/{id}/capture',
+            path: { id: id },
+            body,
             ...options,
         });
     }
@@ -98,6 +98,20 @@ export class ChargesService {
             method: 'GET',
             url: '/charge/card/{id}',
             path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
+     * Raise card hold
+     * @see OpenAPI `ChargesController_incrementCardHold`
+     */
+    public async incrementCardHold(id: string, body: components['schemas']['IncrementCardHoldDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/charge/card/{id}/increment',
+            path: { id: id },
+            body,
             ...options,
         });
     }

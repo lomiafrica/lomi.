@@ -74,7 +74,7 @@ Voir [Mobile money](/build/mobile-money).
 
 Une réponse `201` inclut `transactionId`, `checkoutUrl` et la session Wave. `POST /charge/mtn` suit le même schéma.
 
-Les endpoints carte (`POST /charge/card`, `GET /charge/card/{id}`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel`) sont dans la référence REST. Pour bloquer une caution sans la prélever, mettez `hold` à `true` et suivez [Blocages carte](/build/accept/card-holds). Switch (`POST /charge/switch`) renvoie encore `503 service_unavailable`.
+Les endpoints carte (`POST /charge/card`, `GET /charge/card/{id}`, `POST /charge/card/{id}/increment`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel`) sont dans la référence REST. Pour bloquer une caution sans la prélever, mettez `hold` à `true` et suivez [Blocages carte](/build/accept/card-holds). Switch (`POST /charge/switch`) renvoie encore `503 service_unavailable`.
 
 ## Scénarios bac à sable (clé test uniquement)
 

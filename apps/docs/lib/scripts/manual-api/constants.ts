@@ -95,6 +95,7 @@ const PUBLIC_REST_API_OPERATIONS = [
   'GET /charge/card/{id}',
   'POST /charge/card/{id}/cancel',
   'POST /charge/card/{id}/capture',
+  'POST /charge/card/{id}/increment',
   'POST /charge/mtn',
   'POST /charge/switch',
   'POST /charge/wave',

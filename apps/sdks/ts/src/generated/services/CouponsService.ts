@@ -14,10 +14,11 @@ export class CouponsService {
      * Create discount coupon
      * @see OpenAPI `DiscountCouponsController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['DiscountCouponResponseDto']> {
+    public async create(body: components['schemas']['CreateDiscountCouponDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['DiscountCouponResponseDto']> {
         return requestWithClient<components['schemas']['DiscountCouponResponseDto']>(this.client, {
             method: 'POST',
             url: '/coupons',
+            body,
             ...options,
         });
     }

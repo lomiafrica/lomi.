@@ -15,10 +15,11 @@ export class WebhooksService {
      * Create webhook
      * @see OpenAPI `WebhooksController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+    public async create(body: components['schemas']['CreateWebhookBodyDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/webhooks',
+            body,
             ...options,
         });
     }

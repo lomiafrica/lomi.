@@ -131,3 +131,21 @@ func (s *ChargesService) GetCardCharge(id string) (interface{}, error) {
 		return out, nil
 	}
 
+
+func (s *ChargesService) IncrementCardHold(id string, body interface{}) (interface{}, error) {
+		path := "/charge/card/{id}/increment"
+		path = strings.ReplaceAll(path, "{id}", id)
+		bodyResp, err := s.client.doRequest("POST", path, nil, body)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+

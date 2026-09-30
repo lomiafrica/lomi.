@@ -63,6 +63,7 @@ async fn dispatch(command: cli::app::Commands, common: &cli::CommonOptions) -> a
         Commands::Trigger(args) => commands::trigger::run(common, args).await,
         Commands::Mcp(args) => commands::mcp_config::run(common, args).await,
         Commands::Probe(args) => commands::probe::run(common, args).await,
+        Commands::Charges(args) => commands::charges::run(common, args).await,
         Commands::Checkout(args) => commands::checkout::run(common, args).await,
         Commands::Payments(args) => commands::payments::run(common, args).await,
         Commands::Webhooks(args) => commands::webhooks_cmd::run(common, args).await,

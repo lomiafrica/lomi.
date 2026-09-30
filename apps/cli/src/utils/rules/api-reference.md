@@ -52,6 +52,8 @@ Base URLs:
 - `POST /charge/card`: Encaissement carte embarqué (client_secret)
 - `GET /charge/card/{id}`: Récupérer un encaissement carte
 - `POST /charge/card/{id}/cancel`: Annuler un encaissement carte
+- `POST /charge/card/{id}/capture`: Capturer un blocage carte
+- `POST /charge/card/{id}/increment`: Augmenter un blocage carte
 - `GET /payment-links`: Lister les liens de paiement
 - `POST /payment-links`: Créer un lien de paiement
 - `GET /payment-links/{id}`: Obtenir un lien de paiement par ID
@@ -97,6 +99,12 @@ Full docs: https://docs.lomi.africa/api
 lomi checkout create --amount 10000 --currency XOF \
   --success-url https://example.com/success \
   --cancel-url https://example.com/cancel --json
+
+# Card deposit
+lomi charges hold --amount 100000 --currency XOF --email client@example.com --name "Awa Ndiaye" --json
+lomi charges raise pi_123 --amount 150000 --json
+lomi charges capture pi_123 --amount 25000 --json
+lomi charges release pi_123 --json
 
 # Refund
 lomi refunds create --transaction-id <uuid> --amount 5000 --json

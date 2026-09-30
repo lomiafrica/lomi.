@@ -1,0 +1,91 @@
+---
+title: "Augmenter un blocage carte"
+description: "Augmenter un blocage carte"
+full: true
+method: post
+path: /charge/card/{id}/increment
+operationId: ChargesController_incrementCardHold
+---
+
+## Overview
+
+Augmenter un blocage carte
+
+Bloque un total plus élevé sur une caution carte déjà confirmée. Un seul prélèvement la règle ensuite. Un refus laisse le blocage actuel.
+
+### Quand l'utiliser
+
+Utilisez quand la caution doit couvrir un montant plus élevé avant le prélèvement, et que `can_increment` vaut vrai.
+
+### Points d'attention
+
+Envoyez `Idempotency-Key`. `amount` est le nouveau total, pas l’augmentation. Il doit être supérieur au blocage actuel. Quand `can_increment` vaut faux, prélevez ou libérez.
+
+### Voir aussi
+
+[Blocages carte](/build/accept/card-holds) · [Capturer un blocage carte](/api/charge/ChargesController_captureCardCharge)
+
+## Authentication
+
+Les routes marchand exigent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** sur `https://sandbox.api.lomi.africa` et une clé **live** sur `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /charge/card/{id}/increment`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Paramètres de chemin
+
+| Nom | Requis | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | - | Identifiant de paiement carte (pi_...) |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | In | Requis | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Oui | - | Obligatoire pour cet appel qui déplace de l’argent. Réutilisez la même clé pour réessayer la même augmentation. |
+| `Lomi-Account` | header | Non | - | Identifiant de compte lomi. Network optionnel (`acct_...`). S’il est présent, la clé API agit comme Opérateur et la requête vise le compte membre connecté. |
+
+### Corps de la requête
+
+| Champ | Requis | Description |
+| --- | --- | --- |
+| `amount` | Oui | Nouveau total à bloquer, dans la même devise que le blocage. Doit être supérieur au blocage actuel. |
+
+## Responses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Blocage carte augmenté |
+
+## Errors
+
+Les erreurs suivent le format JSON standard (code de statut et message lisible par une machine). Validez les entrées avant l’appel ; **401** indique une clé absente ou invalide, **404** une ressource absente pour cette organisation, **429** une limite de débit. Envoyez `Idempotency-Key` à chaque augmentation. Un refus laisse le blocage actuel en place.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/increment" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: raise-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":150000}'
+```
+
+## OpenAPI
+
+- **operationId**: `ChargesController_incrementCardHold`
+- **Operation**: `POST /charge/card/{id}/increment`
+
+Schémas complets et **Try it** : [Référence API](/api). Contrat machine : `apps/docs/openapi.json` dans le dépôt.

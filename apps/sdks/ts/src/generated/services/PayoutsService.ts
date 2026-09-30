@@ -14,10 +14,11 @@ export class PayoutsService {
      * Create payout
      * @see OpenAPI `PayoutsUnifiedController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['CreatePayoutResponseDto']> {
+    public async create(body: components['schemas']['CreatePayoutDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['CreatePayoutResponseDto']> {
         return requestWithClient<components['schemas']['CreatePayoutResponseDto']>(this.client, {
             method: 'POST',
             url: '/payouts',
+            body,
             ...options,
         });
     }

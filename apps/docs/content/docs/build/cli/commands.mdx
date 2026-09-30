@@ -187,6 +187,60 @@ lomi transactions get 123e4567-e89b-12d3-a456-426614174000
 lomi transactions get 123e4567-e89b-12d3-a456-426614174000 --json
 ```
 
+### `lomi charges hold`
+
+Block a card deposit (`POST /charge/card` with `hold` true). The customer confirms the card in lomi. Elements with the returned `client_secret`. Card numbers never go through the CLI.
+
+```bash
+lomi charges hold \
+  --amount 100000 \
+  --currency XOF \
+  --email client@example.com \
+  --name "Awa Ndiaye" \
+  --description "Vehicle deposit" \
+  --json
+```
+
+| Flag | Description |
+| --- | --- |
+| `--amount` | Amount to block |
+| `--currency` | `XOF`, `USD`, or `EUR` |
+| `--customer-id` | Existing customer. Otherwise pass `--email` and `--name` |
+| `--description` | Optional description |
+
+### `lomi charges get <id>`
+
+Read the hold (`GET /charge/card/{id}`). Wait until `status` is `requires_capture`. `can_increment` says whether the card can take a higher total.
+
+```bash
+lomi charges get pi_123 --json
+```
+
+### `lomi charges raise <id>`
+
+Raise the blocked total (`POST /charge/card/{id}/increment`). `--amount` is the new total, not the increase.
+
+```bash
+lomi charges raise pi_123 --amount 150000 --json
+```
+
+### `lomi charges capture <id>`
+
+Take some or all of the hold (`POST /charge/card/{id}/capture`). Omit `--amount` to take the full hold. A lower amount releases the rest. One capture only.
+
+```bash
+lomi charges capture pi_123 --amount 25000 --json
+lomi charges capture pi_123 --json
+```
+
+### `lomi charges release <id>`
+
+Release the hold without taking the money (`POST /charge/card/{id}/cancel`).
+
+```bash
+lomi charges release pi_123 --json
+```
+
 ### `lomi refunds create`
 
 Create a refund for a completed transaction (`POST /refunds`).

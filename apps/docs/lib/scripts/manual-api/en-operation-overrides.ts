@@ -243,6 +243,16 @@ export const EN_OPERATION_COPY = {
     related:
       '[Create card charge](/api/charge/ChargesController_createCardCharge)',
   },
+  ChargesController_incrementCardHold: {
+    summary: 'Raise card hold',
+    body: 'Blocks a higher total on a confirmed card hold. One capture still settles it. A decline leaves the current block.',
+    whenToUse:
+      'Use when the deposit must cover a higher amount before you capture, and `can_increment` is true.',
+    caveats:
+      'Send `Idempotency-Key`. `amount` is the new total, not the increase. It must be higher than the current block. When `can_increment` is false, capture or release instead.',
+    related:
+      '[Card holds](/build/accept/card-holds) · [Capture card hold](/api/charge/ChargesController_captureCardCharge)',
+  },
   ChargesController_captureCardCharge: {
     summary: 'Capture card hold',
     body: 'Takes some or all of a confirmed card hold. A lower amount releases the rest. The sale completes when the capture is recorded.',

@@ -75,7 +75,7 @@ See [Mobile money](/build/mobile-money) for the full guide.
 
 A `201` response includes `transactionId`, `checkoutUrl`, and Wave session details. `POST /charge/mtn` follows the same pattern; see [Create MTN charge](/api/charge/ChargesController_createMtnCharge).
 
-Card endpoints (`POST /charge/card`, `GET /charge/card/{id}`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel`) are in the REST reference. To block a deposit without taking it, set `hold` to `true` and follow [Card holds](/build/accept/card-holds). Switch (`POST /charge/switch`) still returns `503 service_unavailable`.
+Card endpoints (`POST /charge/card`, `GET /charge/card/{id}`, `POST /charge/card/{id}/increment`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel`) are in the REST reference. To block a deposit without taking it, set `hold` to `true` and follow [Card holds](/build/accept/card-holds). Switch (`POST /charge/switch`) still returns `503 service_unavailable`.
 
 ## Sandbox scenarios (test key only)
 

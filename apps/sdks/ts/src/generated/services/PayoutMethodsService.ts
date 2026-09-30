@@ -14,10 +14,11 @@ export class PayoutMethodsService {
      * Add payout method
      * @see OpenAPI `PayoutMethodsController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+    public async create(body: components['schemas']['CreatePayoutMethodDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/payout-methods',
+            body,
             ...options,
         });
     }

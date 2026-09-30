@@ -39,10 +39,11 @@ export class UsageService {
      * Create or update an entitlement
      * @see OpenAPI `UsageBillingController_createEntitlement`
      */
-    public async createEntitlement(options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+    public async createEntitlement(body: NonNullable<paths['/usage/entitlements']['post']['requestBody']>['content']['application/json'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/usage/entitlements',
+            body,
             ...options,
         });
     }
@@ -51,10 +52,11 @@ export class UsageService {
      * Create a usage subscription
      * @see OpenAPI `UsageEventsController_createUsageSubscription`
      */
-    public async createSubscription(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['UsageSubscriptionResponseDto']> {
+    public async createSubscription(body: components['schemas']['CreateUsageSubscriptionDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['UsageSubscriptionResponseDto']> {
         return requestWithClient<components['schemas']['UsageSubscriptionResponseDto']>(this.client, {
             method: 'POST',
             url: '/usage/subscriptions',
+            body,
             ...options,
         });
     }
@@ -89,10 +91,11 @@ export class UsageService {
      * Credit prepaid usage units
      * @see OpenAPI `UsageBillingController_creditWallet`
      */
-    public async grantCredits(options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+    public async grantCredits(body: components['schemas']['CreditWalletDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
         return requestWithClient<unknown>(this.client, {
             method: 'POST',
             url: '/usage/credits',
+            body,
             ...options,
         });
     }

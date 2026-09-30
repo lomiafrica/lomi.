@@ -51,6 +51,8 @@ pub enum Commands {
     Mcp(crate::commands::mcp_config::McpArgs),
     /// Run integration health checks
     Probe(crate::commands::probe::ProbeArgs),
+    /// Place, raise, capture, or release a card hold
+    Charges(crate::commands::charges::ChargesArgs),
     /// Manage checkout sessions
     Checkout(crate::commands::checkout::CheckoutArgs),
     /// Manage payments

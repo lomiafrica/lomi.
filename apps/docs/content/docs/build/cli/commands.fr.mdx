@@ -187,6 +187,60 @@ lomi transactions get 123e4567-e89b-12d3-a456-426614174000
 lomi transactions get 123e4567-e89b-12d3-a456-426614174000 --json
 ```
 
+### `lomi charges hold`
+
+Bloque une caution carte (`POST /charge/card` avec `hold` à vrai). Le client confirme la carte dans lomi. Elements avec le `client_secret` reçu. Le numéro de carte ne passe jamais par le CLI.
+
+```bash
+lomi charges hold \
+  --amount 100000 \
+  --currency XOF \
+  --email client@example.com \
+  --name "Awa Ndiaye" \
+  --description "Caution véhicule" \
+  --json
+```
+
+| Option | Description |
+| --- | --- |
+| `--amount` | Montant à bloquer |
+| `--currency` | `XOF`, `USD` ou `EUR` |
+| `--customer-id` | Client existant. Sinon, passez `--email` et `--name` |
+| `--description` | Description optionnelle |
+
+### `lomi charges get <id>`
+
+Lit le blocage (`GET /charge/card/{id}`). Attendez que `status` vaille `requires_capture`. `can_increment` indique si la carte peut accepter un total plus élevé.
+
+```bash
+lomi charges get pi_123 --json
+```
+
+### `lomi charges raise <id>`
+
+Augmente le total bloqué (`POST /charge/card/{id}/increment`). `--amount` est le nouveau total, pas l’augmentation.
+
+```bash
+lomi charges raise pi_123 --amount 150000 --json
+```
+
+### `lomi charges capture <id>`
+
+Prélève tout ou partie du blocage (`POST /charge/card/{id}/capture`). Omettez `--amount` pour tout prélever. Un montant inférieur libère le reste. Un seul prélèvement est possible.
+
+```bash
+lomi charges capture pi_123 --amount 25000 --json
+lomi charges capture pi_123 --json
+```
+
+### `lomi charges release <id>`
+
+Libère le blocage sans prélever (`POST /charge/card/{id}/cancel`).
+
+```bash
+lomi charges release pi_123 --json
+```
+
 ### `lomi refunds create`
 
 Crée un remboursement pour une transaction complétée (`POST /refunds`).

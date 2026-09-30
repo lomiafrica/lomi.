@@ -130,11 +130,12 @@ export class SubscriptionsService {
      * Update subscription
      * @see OpenAPI `SubscriptionsController_update`
      */
-    public async update(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['SubscriptionResponseDto']> {
+    public async update(id: string, body: components['schemas']['UpdateSubscriptionDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['SubscriptionResponseDto']> {
         return requestWithClient<components['schemas']['SubscriptionResponseDto']>(this.client, {
             method: 'PATCH',
             url: '/subscriptions/{id}',
             path: { id: id },
+            body,
             ...options,
         });
     }

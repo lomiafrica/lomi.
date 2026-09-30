@@ -11,10 +11,6 @@
     "POST /customers"
   ],
   "mcpExcludedOperationKeys": [
-    "POST /charge/card",
-    "POST /charge/card/{id}/cancel",
-    "POST /charge/card/{id}/capture",
-    "GET /charge/card/{id}",
     "POST /charge/wave",
     "POST /charge/mtn",
     "POST /charge/switch",
@@ -66,6 +62,17 @@
         "list": "GET /checkout-sessions",
         "get": "GET /checkout-sessions/{id}",
         "create": "POST /checkout-sessions"
+      }
+    },
+    {
+      "name": "lomi_card_holds",
+      "title": "Card holds",
+      "actions": {
+        "create": "POST /charge/card",
+        "get": "GET /charge/card/{id}",
+        "increment": "POST /charge/card/{id}/increment",
+        "capture": "POST /charge/card/{id}/capture",
+        "cancel": "POST /charge/card/{id}/cancel"
       }
     },
     {

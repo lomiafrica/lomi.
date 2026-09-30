@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 31,
+  "toolCount": 32,
   "tools": [
     {
       "name": "lomi_api_keys",
@@ -222,6 +222,170 @@
           ],
           "requiredInput": [
             "currency"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_card_holds",
+      "title": "Card holds",
+      "description": "Card holds. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create card charge or hold (POST /charge/card). Required: body, header_Idempotency-Key.\n- `get` — Get card hold (GET /charge/card/{id}). Required: id.\n- `increment` — Raise card hold (POST /charge/card/{id}/increment). Required: body, header_Idempotency-Key, id.\n- `capture` — Capture card hold (POST /charge/card/{id}/capture). Required: body, header_Idempotency-Key, id.\n- `cancel` — Release card hold (POST /charge/card/{id}/cancel). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Advanced Direct Charges"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "increment",
+              "capture",
+              "cancel"
+            ],
+            "description": "Which REST operation to run. One of: create, get, increment, capture, cancel."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Idempotency-Key": {
+            "type": "string",
+            "description": "Required unique key for this write. Replays return the original response."
+          },
+          "header_Lomi-Account": {
+            "type": "string",
+            "example": "acct_1234567890",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "description": "Card payment id (pi_...)"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": true,
+      "alwaysLoad": false,
+      "searchHint": "advanced cancel capture card charge charges create direct get holds increment post",
+      "actions": {
+        "create": {
+          "operationKey": "POST /charge/card",
+          "method": "post",
+          "pathTemplate": "/charge/card",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "ChargesController_createCardCharge",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create card charge or hold",
+          "description": "Create a card charge and return client_secret for lomi. Elements. Set hold true to block a deposit without taking it. Card numbers never hit this tool. Send idempotency_key.",
+          "tags": [
+            "Advanced Direct Charges"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key"
+          ]
+        },
+        "get": {
+          "operationKey": "GET /charge/card/{id}",
+          "method": "get",
+          "pathTemplate": "/charge/card/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ChargesController_getCardCharge",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get card hold",
+          "description": "Read a card charge. For a hold, status requires_capture means the block is ready. amount_capturable is still blocked in the original currency. can_increment is true when this card can take a higher total. capture_before is the deadline.",
+          "tags": [
+            "Advanced Direct Charges"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "increment": {
+          "operationKey": "POST /charge/card/{id}/increment",
+          "method": "post",
+          "pathTemplate": "/charge/card/{id}/increment",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ChargesController_incrementCardHold",
+          "write": true,
+          "wantsBody": true,
+          "title": "Raise card hold",
+          "description": "Block a higher total on a confirmed hold. amount is the new total, not the increase, and must be higher than the current block. Send idempotency_key. A decline leaves the current block. Skip this when can_increment is false.",
+          "tags": [
+            "Advanced Direct Charges"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key",
+            "id"
+          ]
+        },
+        "capture": {
+          "operationKey": "POST /charge/card/{id}/capture",
+          "method": "post",
+          "pathTemplate": "/charge/card/{id}/capture",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ChargesController_captureCardCharge",
+          "write": true,
+          "wantsBody": true,
+          "title": "Capture card hold",
+          "description": "Take some or all of a confirmed card hold. Omit amount for the full block. A lower amount releases the rest. One capture only. Send idempotency_key. The amount must cover the hold fee and the card rate.",
+          "tags": [
+            "Advanced Direct Charges"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key",
+            "id"
+          ]
+        },
+        "cancel": {
+          "operationKey": "POST /charge/card/{id}/cancel",
+          "method": "post",
+          "pathTemplate": "/charge/card/{id}/cancel",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "ChargesController_cancelCardCharge",
+          "write": true,
+          "wantsBody": false,
+          "title": "Release card hold",
+          "description": "Release a card hold without taking the money. The hold fee still applies. A release does not credit the merchant balance.",
+          "tags": [
+            "Advanced Direct Charges"
+          ],
+          "requiredInput": [
+            "id"
           ]
         }
       }

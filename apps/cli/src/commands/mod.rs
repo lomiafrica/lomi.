@@ -1,5 +1,6 @@
 pub mod api_keys;
 pub mod balance;
+pub mod charges;
 pub mod checkout;
 pub mod completions;
 pub mod customers;

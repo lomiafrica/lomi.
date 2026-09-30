@@ -14,11 +14,12 @@ export class ProductsService {
      * Add product price
      * @see OpenAPI `ProductsController_addPrice`
      */
-    public async addPrice(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['PriceResponseDto']> {
+    public async addPrice(id: string, body: components['schemas']['AddPriceDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['PriceResponseDto']> {
         return requestWithClient<components['schemas']['PriceResponseDto']>(this.client, {
             method: 'POST',
             url: '/products/{id}/prices',
             path: { id: id },
+            body,
             ...options,
         });
     }
@@ -40,10 +41,11 @@ export class ProductsService {
      * Create product
      * @see OpenAPI `ProductsController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ProductResponseDto']> {
+    public async create(body: components['schemas']['CreateProductDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ProductResponseDto']> {
         return requestWithClient<components['schemas']['ProductResponseDto']>(this.client, {
             method: 'POST',
             url: '/products',
+            body,
             ...options,
         });
     }
@@ -127,11 +129,25 @@ export class ProductsService {
      * Update product
      * @see OpenAPI `ProductsController_update`
      */
-    public async update(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ProductResponseDto']> {
+    public async update(id: string, body: components['schemas']['UpdateProductDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ProductResponseDto']> {
         return requestWithClient<components['schemas']['ProductResponseDto']>(this.client, {
             method: 'PATCH',
             url: '/products/{id}',
             path: { id: id },
+            body,
+            ...options,
+        });
+    }
+
+    /**
+     * Update several product prices
+     * @see OpenAPI `ProductsController_updatePricesBatch`
+     */
+    public async updatePricesBatch(body: components['schemas']['BatchUpdatePricesDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<unknown> {
+        return requestWithClient<unknown>(this.client, {
+            method: 'POST',
+            url: '/products/prices/batch',
+            body,
             ...options,
         });
     }

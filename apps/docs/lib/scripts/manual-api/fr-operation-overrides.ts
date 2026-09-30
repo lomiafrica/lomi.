@@ -17,6 +17,14 @@ export const FR_OPERATION_COPY = {
     related:
       '[Soldes de compte](/api/balances/AccountsController_getBalance) · [Retraits](/api/payouts/PayoutsUnifiedController_create)',
   },
+  ChargesController_incrementCardHold: {
+    whenToUse:
+      'Utilisez quand la caution doit couvrir un montant plus élevé avant le prélèvement, et que `can_increment` vaut vrai.',
+    caveats:
+      'Envoyez `Idempotency-Key`. `amount` est le nouveau total, pas l’augmentation. Il doit être supérieur au blocage actuel. Quand `can_increment` vaut faux, prélevez ou libérez.',
+    related:
+      '[Blocages carte](/build/accept/card-holds) · [Capturer un blocage carte](/api/charge/ChargesController_captureCardCharge)',
+  },
   ChargesController_captureCardCharge: {
     whenToUse:
       'Utilisez après confirmation du blocage (`status` vaut `requires_capture`), quand vous connaissez le montant à conserver.',

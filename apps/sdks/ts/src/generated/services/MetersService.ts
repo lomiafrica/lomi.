@@ -14,10 +14,11 @@ export class MetersService {
      * Create a meter
      * @see OpenAPI `MetersController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['MeterResponseDto']> {
+    public async create(body: components['schemas']['CreateMeterDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['MeterResponseDto']> {
         return requestWithClient<components['schemas']['MeterResponseDto']>(this.client, {
             method: 'POST',
             url: '/meters',
+            body,
             ...options,
         });
     }
@@ -101,11 +102,12 @@ export class MetersService {
      * Update a meter
      * @see OpenAPI `MetersController_update`
      */
-    public async update(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['MeterResponseDto']> {
+    public async update(id: string, body: components['schemas']['UpdateMeterDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['MeterResponseDto']> {
         return requestWithClient<components['schemas']['MeterResponseDto']>(this.client, {
             method: 'PATCH',
             url: '/meters/{id}',
             path: { id: id },
+            body,
             ...options,
         });
     }

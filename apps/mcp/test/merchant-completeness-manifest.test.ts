@@ -73,6 +73,23 @@ describe("merchant completeness manifest", () => {
     }
   });
 
+  it("exposes card hold create, raise, capture, and release", () => {
+    const holds = manifest.tools.find((tool) => tool.name === "lomi_card_holds");
+    expect(holds?.actions.create?.operationKey).toBe("POST /charge/card");
+    expect(holds?.actions.get?.operationKey).toBe("GET /charge/card/{id}");
+    expect(holds?.actions.increment?.operationKey).toBe(
+      "POST /charge/card/{id}/increment",
+    );
+    expect(holds?.actions.capture?.operationKey).toBe(
+      "POST /charge/card/{id}/capture",
+    );
+    expect(holds?.actions.cancel?.operationKey).toBe(
+      "POST /charge/card/{id}/cancel",
+    );
+    expect(holds?.actions.increment?.wantsBody).toBe(true);
+    expect(holds?.actions.capture?.wantsBody).toBe(true);
+  });
+
   it("places every merchant tool in exactly one OAuth family", () => {
     const names = manifest.tools.map((tool) => tool.name);
     expect(mcpFamilyDuplicateTools()).toEqual([]);

@@ -11,6 +11,19 @@ export class CustomersService {
     constructor(private readonly client: LomiClient) {}
 
     /**
+     * Block a customer
+     * @see OpenAPI `CustomersController_block`
+     */
+    public async block(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['CustomerRadarBlockResponseDto']> {
+        return requestWithClient<components['schemas']['CustomerRadarBlockResponseDto']>(this.client, {
+            method: 'POST',
+            url: '/customers/{id}/block',
+            path: { id: id },
+            ...options,
+        });
+    }
+
+    /**
      * Create a customer
      * @see OpenAPI `CustomersController_create`
      */
@@ -150,6 +163,32 @@ export class CustomersService {
 
             page += 1;
         }
+    }
+
+    /**
+     * Top customers by spend
+     * @see OpenAPI `CustomersController_topBySpend`
+     */
+    public async topBySpend(params?: paths['/customers/top']['get']['parameters'] extends { query: infer Q } ? Q : Record<string, unknown>, options?: import("../../request-options.js").LomiRequestOptions): Promise<(NonNullable<NonNullable<paths['/customers/top']['get']['responses'][200]>['content']>['application/json'])> {
+        return requestWithClient<(NonNullable<NonNullable<paths['/customers/top']['get']['responses'][200]>['content']>['application/json'])>(this.client, {
+            method: 'GET',
+            url: '/customers/top',
+            query: params,
+            ...options,
+        });
+    }
+
+    /**
+     * Unblock a customer
+     * @see OpenAPI `CustomersController_unblock`
+     */
+    public async unblock(id: string, options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['CustomerRadarBlockResponseDto']> {
+        return requestWithClient<components['schemas']['CustomerRadarBlockResponseDto']>(this.client, {
+            method: 'POST',
+            url: '/customers/{id}/unblock',
+            path: { id: id },
+            ...options,
+        });
     }
 
     /**

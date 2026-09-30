@@ -201,7 +201,7 @@ Set `LOMI_API_URL` to `https://sandbox.api.lomi.africa` when working against san
 - **Resources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
 
-Each MCP action below matches one REST operation. Direct charges and `POST /usage/events` are not exposed over MCP.
+Each MCP action below matches one REST operation. Card holds are `lomi_card_holds` (create, get, increment, capture, cancel). Wave, MTN, Switch, and `POST /usage/events` are not exposed over MCP.
 
 <McpOperationIndex />
 

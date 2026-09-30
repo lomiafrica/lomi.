@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T19:28:41.108Z",
+  "generatedAt": "2026-09-30T14:06:36.815Z",
   "language": "go",
   "sdk": {
     "account": [
@@ -24,7 +24,8 @@
       "createMtnCharge",
       "createSwitchCharge",
       "createWaveCharge",
-      "getCardCharge"
+      "getCardCharge",
+      "incrementCardHold"
     ],
     "checkoutSessions": [
       "create",

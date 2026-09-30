@@ -14,10 +14,11 @@ export class ExportsService {
      * Create export
      * @see OpenAPI `MerchantExportsController_create`
      */
-    public async create(options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ExportResponseDto']> {
+    public async create(body: components['schemas']['CreateExportDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['ExportResponseDto']> {
         return requestWithClient<components['schemas']['ExportResponseDto']>(this.client, {
             method: 'POST',
             url: '/exports',
+            body,
             ...options,
         });
     }

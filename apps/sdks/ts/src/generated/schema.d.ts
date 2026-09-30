@@ -347,7 +347,7 @@ export interface paths {
         };
         /**
          * Obtenir une transaction par ID
-         * @description Renvoie une transaction. Réponse 404 si elle n'existe pas ou n'est pas accessible avec cette clé API.
+         * @description Renvoie une transaction. Accepte l'UUID interne ou l'identifiant public txn_…. Réponse 404 si elle n'existe pas ou n'est pas accessible avec cette clé API.
          */
         get: operations["TransactionsController_findOne"];
         put?: never;
@@ -376,6 +376,26 @@ export interface paths {
          * @description Crée un client dans votre organisation. Il est automatiquement rattaché à votre organisation.
          */
         post: operations["CustomersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customers/top": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Clients par volume
+         * @description Classe les clients par volume de paiements terminés, converti dans la devise de l'organisation. Les encaissements carte en EUR et USD sont inclus.
+         */
+        get: operations["CustomersController_topBySpend"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -464,6 +484,46 @@ export interface paths {
         get: operations["CustomersController_getSubscriptions"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customers/{id}/block": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Block a customer
+         * @description Adds this customer's phone, email, and saved card fingerprints to the organization Radar blocklist. Later charges that match are refused while Radar is on.
+         */
+        post: operations["CustomersController_block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customers/{id}/unblock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unblock a customer
+         * @description Removes this customer's phone, email, and saved card fingerprints from the organization Radar blocklist.
+         */
+        post: operations["CustomersController_unblock"];
         delete?: never;
         options?: never;
         head?: never;
@@ -691,6 +751,26 @@ export interface paths {
          * @description Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement.
          */
         post: operations["ProductsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/prices/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Update several product prices
+         * @description Set amounts on existing prices in one request. Use price_id or product_id (default active price). Prices with checkout history stay locked.
+         */
+        post: operations["ProductsController_updatePricesBatch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1116,7 +1196,7 @@ export interface paths {
         put?: never;
         /**
          * Submit dispute evidence
-         * @description Attach written evidence (and optional file metadata) to a card dispute before the due date.
+         * @description Submit written evidence to the card network before the due date.
          */
         post: operations["DisputesController_submitEvidence"];
         delete?: never;
@@ -1501,7 +1581,7 @@ export interface paths {
         put?: never;
         /**
          * Create card charge (client_secret)
-         * @description Creates an embedded card charge and returns the client_secret for your payment UI.
+         * @description Creates an uncaptured card PaymentIntent and returns client_secret for lomi. Elements. Card numbers never hit this API.
          */
         post: operations["ChargesController_createCardCharge"];
         delete?: never;
@@ -1527,6 +1607,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/charge/card/{id}/capture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Capture card hold
+         * @description Takes some or all of a confirmed card hold. A lower amount releases the rest. The sale completes when the capture is recorded.
+         */
+        post: operations["ChargesController_captureCardCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/charge/card/{id}/increment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Raise card hold
+         * @description Blocks a higher total on a confirmed card hold. One capture still settles it. A decline leaves the current block.
+         */
+        post: operations["ChargesController_incrementCardHold"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/charge/card/{id}/cancel": {
         parameters: {
             query?: never;
@@ -1538,23 +1658,6 @@ export interface paths {
         put?: never;
         /** Cancel card charge */
         post: operations["ChargesController_cancelCardCharge"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/charge/card/{id}/capture": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Capture card hold */
-        post: operations["ChargesController_captureCardCharge"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2165,12 +2268,12 @@ export interface paths {
         put?: never;
         /**
          * Inviter un membre
-         * @description Envoie une invitation. L’humain accepte dans le navigateur. role Admin/Member ou role_id.
+         * @description Invite by email or phone. Use role_key (staff, cashier, manager) or role_id. Legacy role Admin/Member still works.
          */
         post: operations["TeamController_invite"];
         /**
          * Révoquer une invitation
-         * @description Annule une invitation en attente par email.
+         * @description Cancels a pending invitation by email or phone.
          */
         delete: operations["TeamController_revokeInvite"];
         options?: never;
@@ -2197,7 +2300,7 @@ export interface paths {
         head?: never;
         /**
          * Changer le rôle d’un membre
-         * @description Admin/Member via role, ou rôle custom via role_id.
+         * @description Admin/Member via role, or a named role via role_id / role_key.
          */
         patch: operations["TeamController_updateRole"];
         trace?: never;
@@ -2498,7 +2601,7 @@ export interface components {
         UpdateRadarSettingsDto: {
             enabled?: boolean;
             /** @enum {string} */
-            mode?: "monitor" | "block";
+            mode?: "monitor" | "review" | "block";
             stripe_radar_passthrough?: boolean;
         };
         CreateOrganizationKeyDto: {
@@ -2569,10 +2672,15 @@ export interface components {
         };
         TransactionResponseDto: {
             /**
-             * @description Unique transaction identifier
+             * @description Unique transaction identifier (internal UUID)
              * @example 123e4567-e89b-12d3-a456-426614174000
              */
             transaction_id: string;
+            /**
+             * @description Merchant-facing public id (txn_…)
+             * @example txn_23456789ABCDEF
+             */
+            public_id: string;
             /**
              * @description Organization ID
              * @example 789e0123-e89b-12d3-a456-426614174000
@@ -2653,10 +2761,15 @@ export interface components {
              */
             refunded_amount: number;
             /**
-             * @description Currency code
+             * @description Currency of gross_amount
              * @example XOF
              */
             currency_code: string;
+            /**
+             * @description gross_amount converted to XOF, including EUR and USD card checkouts. Sum this field for volume. Do not add gross_amount across currencies.
+             * @example 655957
+             */
+            gross_amount_xof: number;
             /**
              * @description Payment provider code
              * @example WAVE
@@ -2812,6 +2925,25 @@ export interface components {
              */
             updated_at: string;
         };
+        TopCustomerSpendDto: {
+            /** @example cus_23456789ABCDEF */
+            public_id: string | null;
+            /** @example Baptiste Gueguen */
+            name: string;
+            /** @example baptiste@afyadistribution.com */
+            email: string | null;
+            /** @example +33643647913 */
+            phone_number: string | null;
+            /**
+             * @description Completed payment volume in currency_code. Foreign checkouts (EUR, USD) are already converted.
+             * @example 655957
+             */
+            total_spend: number;
+            /** @example 1 */
+            transaction_count: number;
+            /** @example XOF */
+            currency_code: string;
+        };
         PortalLaunchSessionResponseDto: {
             /**
              * @description Customer UUID
@@ -2931,6 +3063,22 @@ export interface components {
              */
             updated_at: string;
         };
+        CustomerRadarBlockEntryDto: {
+            /**
+             * @example email
+             * @enum {string}
+             */
+            kind: "phone" | "email" | "fingerprint";
+            /** @example ada@example.com */
+            value: string;
+        };
+        CustomerRadarBlockResponseDto: {
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            customer_id: string;
+            /** @example true */
+            blocked: boolean;
+            entries: components["schemas"]["CustomerRadarBlockEntryDto"][];
+        };
         PaymentRequestResponseDto: {
             /** @example 123 */
             amount: number;
@@ -2990,6 +3138,16 @@ export interface components {
             spi_remise_rate: number;
             /** @example string */
             spi_tx_id: string;
+            /**
+             * @description EMV QR payload when channel is spi
+             * @example 000201010212...
+             */
+            qr_payload?: string;
+            /**
+             * @description Merchant SHID encoded in the QR
+             * @example 6cbfafbf-57b6-44bb-bde7-024e46603a3d
+             */
+            spi_alias?: string;
             /** @example string */
             status: string;
             /** @example string */
@@ -3326,6 +3484,249 @@ export interface components {
              */
             updated_at: string;
         };
+        BatchPriceUpdateItemDto: {
+            /** @description Price UUID or public id (price_...) */
+            price_id?: string;
+            /** @description Product UUID or public id; updates the default active price */
+            product_id?: string;
+            /**
+             * @description New amount in the currency minor units
+             * @example 7500
+             */
+            amount: number;
+            /**
+             * @example XOF
+             * @enum {string}
+             */
+            currency_code?: "XOF" | "USD" | "EUR";
+        };
+        BatchUpdatePricesDto: {
+            /** @description Prices to update in one request */
+            updates: components["schemas"]["BatchPriceUpdateItemDto"][];
+            /** @description Idempotency key for safe retries of the same batch */
+            idempotency_key?: string;
+        };
+        UpdateProductDto: {
+            name?: string;
+            description?: string;
+            is_active?: boolean;
+            display_on_storefront?: boolean;
+            images?: string[];
+            sku?: string;
+            inventory_quantity?: number;
+            track_inventory?: boolean;
+            continue_selling_when_out_of_stock?: boolean;
+            metadata?: Record<string, never>;
+            fee_type_ids?: string[];
+        };
+        CreatePriceDto: {
+            /**
+             * @description Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted).
+             * @example 10000
+             */
+            amount: number;
+            /**
+             * @description Currency code
+             * @example XOF
+             * @enum {string}
+             */
+            currency_code: "XOF" | "USD" | "EUR";
+            /**
+             * @description Billing interval (required for recurring products)
+             * @example month
+             * @enum {string}
+             */
+            billing_interval?: "day" | "week" | "month" | "year";
+            /**
+             * @description Pricing model
+             * @default standard
+             * @example standard
+             * @enum {string}
+             */
+            pricing_model: "standard" | "pay_what_you_want" | "tiered";
+            /**
+             * @description Lowest unit price the customer may pay. Required when pricing_model is pay_what_you_want.
+             * @example 5000
+             */
+            minimum_amount?: number;
+            /**
+             * @description Optional upper bound on unit price when pricing_model is pay_what_you_want.
+             * @example 50000
+             */
+            maximum_amount?: number;
+            /**
+             * @description Whether this is the default price
+             * @default false
+             * @example true
+             */
+            is_default: boolean;
+            /**
+             * @description Additional metadata
+             * @example {
+             *       "notes": "Early bird pricing"
+             *     }
+             */
+            metadata?: Record<string, never>;
+        };
+        CreateProductDto: {
+            /**
+             * @description Product name
+             * @example Premium Subscription
+             */
+            name: string;
+            /**
+             * @description Product description
+             * @example Access to all premium features
+             */
+            description?: string;
+            /**
+             * @description Product type
+             * @default one_time
+             * @example recurring
+             * @enum {string}
+             */
+            product_type: "one_time" | "recurring" | "usage_based";
+            /**
+             * @description Product images URLs
+             * @example [
+             *       "https://example.com/image.png"
+             *     ]
+             */
+            images?: string[];
+            /**
+             * @description Whether the product is active
+             * @default true
+             * @example true
+             */
+            is_active: boolean;
+            /**
+             * @description Whether to display on storefront
+             * @default true
+             * @example true
+             */
+            display_on_storefront: boolean;
+            /** @description Product prices (at least one required) */
+            prices: components["schemas"]["CreatePriceDto"][];
+            /**
+             * @description Additional metadata
+             * @example {
+             *       "category": "subscription"
+             *     }
+             */
+            metadata?: Record<string, never>;
+            /**
+             * @description Fee type IDs to apply
+             * @example [
+             *       "123e4567-e89b-12d3-a456-426614174000"
+             *     ]
+             */
+            fee_type_ids?: string[];
+            /**
+             * @description Action to take on failed payment (recurring products only)
+             * @example pause
+             * @enum {string}
+             */
+            failed_payment_action?: "pause" | "cancel" | "continue";
+            /**
+             * @description Day of month to charge (1-31, recurring products only)
+             * @example 1
+             */
+            charge_day?: number;
+            /**
+             * @description When to charge first payment (recurring products only)
+             * @default initial
+             * @example initial
+             * @enum {string}
+             */
+            first_payment_type: "initial" | "non_initial" | "prorated";
+            /**
+             * @description Whether to enable trial period
+             * @default false
+             * @example false
+             */
+            trial_enabled: boolean;
+            /**
+             * @description Trial period in days (required if trial_enabled is true)
+             * @example 14
+             */
+            trial_period_days?: number;
+            /**
+             * @description Usage aggregation method (usage_based products only)
+             * @example sum
+             * @enum {string}
+             */
+            usage_aggregation?: "sum" | "max" | "last_during_period" | "last_ever";
+            /**
+             * @description Unit of usage measurement (usage_based products only)
+             * @example api_calls
+             */
+            usage_unit?: string;
+            /**
+             * @description Billable metric code for usage events (usage_based products only). Defaults to slugified product name.
+             * @example api_calls
+             */
+            meter_code?: string;
+        };
+        AddPriceDto: {
+            /**
+             * @description Price amount. For standard/tiered: fixed unit price. For pay_what_you_want: suggested unit price pre-filled at checkout (defaults to minimum_amount if omitted).
+             * @example 10000
+             */
+            amount: number;
+            /**
+             * @description Currency code
+             * @example XOF
+             * @enum {string}
+             */
+            currency_code: "XOF" | "USD" | "EUR";
+            /**
+             * @description Billing interval (must match product type)
+             * @example month
+             * @enum {string}
+             */
+            billing_interval?: "day" | "week" | "month" | "year";
+            /**
+             * @description Pricing model
+             * @default standard
+             * @example standard
+             * @enum {string}
+             */
+            pricing_model: "standard" | "pay_what_you_want" | "tiered";
+            /**
+             * @description Lowest unit price the customer may pay. Required when pricing_model is pay_what_you_want.
+             * @example 5000
+             */
+            minimum_amount?: number;
+            /**
+             * @description Optional upper bound on unit price when pricing_model is pay_what_you_want.
+             * @example 50000
+             */
+            maximum_amount?: number;
+            /**
+             * @description Whether to set as default price
+             * @default false
+             * @example false
+             */
+            is_default: boolean;
+            /**
+             * @description Additional metadata
+             * @example {
+             *       "notes": "Holiday special pricing"
+             *     }
+             */
+            metadata?: Record<string, never>;
+        };
+        UpdateSubscriptionDto: {
+            /**
+             * @example paused
+             * @enum {string}
+             */
+            status?: "pending" | "active" | "paused" | "cancelled" | "expired" | "past_due" | "trial";
+            start_date?: string;
+            end_date?: string;
+            next_billing_date?: string;
+            metadata?: Record<string, never>;
+        };
         DiscountCouponResponseDto: {
             /**
              * @description Unique coupon identifier
@@ -3441,6 +3842,94 @@ export interface components {
              */
             updated_at: string;
         };
+        CreateDiscountCouponDto: {
+            /**
+             * @description Unique coupon code (will be uppercased)
+             * @example SAVE20
+             */
+            code: string;
+            /**
+             * @description Type of discount
+             * @default percentage
+             * @example percentage
+             * @enum {string}
+             */
+            discount_type: "percentage" | "fixed";
+            /**
+             * @description Discount percentage (required if discount_type is percentage, must be between 0 and 100)
+             * @example 20
+             */
+            discount_percentage?: number;
+            /**
+             * @description Fixed discount amount (required if discount_type is fixed, must be positive)
+             * @example 1000
+             */
+            discount_fixed_amount?: number;
+            /**
+             * @description Customer type this coupon applies to
+             * @default all
+             * @example all
+             * @enum {string}
+             */
+            customer_type: "all" | "new" | "existing";
+            /**
+             * @description Usage frequency limit type
+             * @default total
+             * @example total
+             * @enum {string}
+             */
+            usage_frequency_limit: "total" | "per_customer" | "per_customer_per_product";
+            /**
+             * @description Usage limit value (required if usage_frequency_limit is not "total")
+             * @example 1
+             */
+            usage_limit_value?: number;
+            /**
+             * @description Coupon description
+             * @example 20% off all products
+             */
+            description?: string;
+            /**
+             * @description Whether the coupon is active
+             * @default true
+             * @example true
+             */
+            is_active: boolean;
+            /**
+             * @description Maximum number of times this coupon can be used
+             * @example 100
+             */
+            max_uses?: number;
+            /**
+             * @description Maximum quantity allowed per use
+             * @example 5
+             */
+            max_quantity_per_use?: number;
+            /**
+             * @description When the coupon becomes valid
+             * @example 2024-01-01T00:00:00Z
+             */
+            valid_from?: string;
+            /**
+             * @description When the coupon expires
+             * @example 2024-12-31T23:59:59Z
+             */
+            expires_at?: string;
+            /**
+             * @description Scope of the coupon
+             * @default organization_wide
+             * @example organization_wide
+             * @enum {string}
+             */
+            scope_type: "organization_wide" | "specific_products" | "specific_prices";
+            /**
+             * @description Product IDs this coupon applies to (only used if scope_type is specific_products or specific_prices)
+             * @example [
+             *       "123e4567-e89b-12d3-a456-426614174000"
+             *     ]
+             */
+            product_ids?: string[];
+        };
         CheckoutSessionResponseDto: {
             /** @example true */
             allow_coupon_code: boolean;
@@ -3448,11 +3937,16 @@ export interface components {
             allow_quantity: boolean;
             /** @example 123 */
             amount: number;
+            /**
+             * @description amount converted to XOF. A 1000 EUR checkout is included here. Do not add amount across currencies.
+             * @example 655957
+             */
+            amount_xof: number;
             /** @example string */
             cancel_url: string;
             /** @example string */
             checkout_session_id: string;
-            /** @example https://checkout.lomi.africa/checkout/123e4567-e89b-12d3-a456-426614174000 */
+            /** @example https://pay.lomi.africa/cs_TSASLZNKD7TE5F */
             checkout_url: string;
             /** @example string */
             created_at: string;
@@ -3593,6 +4087,34 @@ export interface components {
             require_name?: boolean;
             metadata?: Record<string, never>;
         };
+        PayoutRecipientDto: {
+            /** @example Ada Lovelace */
+            name: string;
+            /** @example +221771234567 */
+            phone: string;
+        };
+        CreatePayoutDto: {
+            /** @enum {string} */
+            destination: "self" | "beneficiary";
+            /** @enum {string} */
+            rail: "wave" | "spi" | "bank" | "mtn" | "stellar";
+            /**
+             * @description Last-mile rail after the Stellar USDC hop. Ignored unless rail is stellar. Defaults to wave.
+             * @enum {string}
+             */
+            last_mile_rail?: "wave" | "mtn" | "spi" | "bank";
+            /** @example 5000 */
+            amount: number;
+            /** @example XOF */
+            currency_code: string;
+            /** @description Required for self payouts and beneficiary SPI */
+            payout_method_id?: string;
+            recipient?: components["schemas"]["PayoutRecipientDto"];
+            reason?: string;
+            metadata?: Record<string, never>;
+            /** @description Token from the preview response. Omit on the first call to receive a confirmation preview; send it on the second call to execute. */
+            confirmation_token?: string;
+        };
         CreatePayoutResponseDto: {
             /** @example true */
             success: boolean;
@@ -3606,6 +4128,13 @@ export interface components {
             /** @example processing */
             status?: string;
             message?: string;
+            stellar_transaction_id?: string;
+            bridge_transfer_id?: string;
+        };
+        SubmitDisputeEvidenceDto: {
+            customer_name?: string;
+            uncategorized_text?: string;
+            files?: Record<string, never>;
         };
         CreateSupportRequestDto: {
             /** @enum {string} */
@@ -3782,6 +4311,30 @@ export interface components {
             has_more: boolean;
             /** @example eyJvZmZzZXQiOjI1fQ */
             next_cursor: string | null;
+        };
+        CreateWebhookBodyDto: {
+            /** @example https://example.com/webhooks/lomi */
+            url: string;
+            /**
+             * @example [
+             *       "PAYMENT_SUCCEEDED",
+             *       "PAYMENT_FAILED",
+             *       "DISPUTE_CREATED",
+             *       "PAYMENT_RISK_FLAGGED"
+             *     ]
+             */
+            events: string[];
+            /**
+             * @deprecated
+             * @description Alias of `events`. Prefer `events`.
+             * @example [
+             *       "PAYMENT_SUCCEEDED"
+             *     ]
+             */
+            authorized_events?: string[];
+            /** @example Webhook for payment events */
+            description?: string;
+            metadata?: Record<string, never>;
         };
         WebhookResponseDto: {
             /** @example string */
@@ -4159,6 +4712,26 @@ export interface components {
             original_currency: string;
             /** @example requires_payment_method */
             status: string;
+            /**
+             * @description True when this charge blocks the card instead of taking the money now.
+             * @example true
+             */
+            hold?: boolean;
+            /**
+             * @description True when this hold can be raised before capture. False when the card cannot, or before the customer confirms it.
+             * @example true
+             */
+            can_increment?: boolean;
+            /**
+             * @description Deadline to capture a hold. Null until the customer confirms the card.
+             * @example 2026-10-05T16:00:00.000Z
+             */
+            capture_before?: string;
+            /**
+             * @description Amount still blocked, in the original currency. Zero until the hold is confirmed.
+             * @example 100000
+             */
+            amount_capturable?: number;
             appearance?: components["schemas"]["CardChargeAppearanceDto"];
         };
         CardChargeResponseDto: {
@@ -4166,6 +4739,86 @@ export interface components {
             success: boolean;
             data: components["schemas"]["CardChargeDataDto"];
             next_action?: components["schemas"]["ChargeNextActionDto"];
+        };
+        CaptureCardChargeDto: {
+            /**
+             * @description Amount to take, in the same currency as the hold. Omit to capture the full hold. The rest is released.
+             * @example 25000
+             */
+            amount?: number;
+        };
+        IncrementCardHoldDto: {
+            /**
+             * @description New total to block, in the same currency as the hold. Must be higher than the current block.
+             * @example 150000
+             */
+            amount: number;
+        };
+        InvoiceLineItemDto: {
+            /** @example Monthly service */
+            name?: string;
+            /** @example Monthly service */
+            description?: string;
+            /**
+             * @default 1
+             * @example 1
+             */
+            quantity: number;
+            /** @example 5000 */
+            price?: number;
+            /** @example 5000 */
+            unit_price?: number;
+            /** @example 5000 */
+            amount?: number;
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            product_id?: string;
+            /** @example 321e4567-e89b-12d3-a456-426614174000 */
+            price_id?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateInvoiceDto: {
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            customer_id: string;
+            /** @example 10000 */
+            amount: number;
+            /**
+             * @default XOF
+             * @example XOF
+             * @enum {string}
+             */
+            currency_code: "XOF" | "USD" | "EUR";
+            /** @example 2026-06-30 */
+            due_date?: string;
+            /**
+             * @example manual
+             * @enum {string}
+             */
+            origin?: "manual" | "one_time_product" | "recurring_subscription" | "usage_billing" | "failed_renewal";
+            /** @example INV-2026-0001 */
+            invoice_number?: string;
+            /** @example Consulting services */
+            description?: string;
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            product_id?: string;
+            /** @example 321e4567-e89b-12d3-a456-426614174000 */
+            price_id?: string;
+            /** @example 654e7890-e89b-12d3-a456-426614174000 */
+            subscription_id?: string;
+            line_items?: components["schemas"]["InvoiceLineItemDto"][];
+            customer_details?: {
+                [key: string]: unknown;
+            };
+            payment_details?: {
+                [key: string]: unknown;
+            };
+            template?: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
         };
         InvoiceResponseDto: {
             customer_invoice_id: string;
@@ -4185,6 +4838,38 @@ export interface components {
             customer: Record<string, never> | null;
             line_items: string[] | null;
         };
+        UpdateInvoiceDto: {
+            /** @example 2026-06-30 */
+            due_date?: string;
+            /**
+             * @example sent
+             * @enum {string}
+             */
+            status?: "draft" | "sent" | "paid" | "overdue" | "cancelled";
+            /** @example Updated invoice note */
+            description?: string;
+            /** @example 10000 */
+            amount?: number;
+            /** @example 10000 */
+            amount_due?: number;
+            line_items?: components["schemas"]["InvoiceLineItemDto"][];
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            customer_id?: string;
+            /** @example 123e4567-e89b-12d3-a456-426614174000 */
+            product_id?: string;
+            /** @example 321e4567-e89b-12d3-a456-426614174000 */
+            price_id?: string;
+            /** @example 654e7890-e89b-12d3-a456-426614174000 */
+            subscription_id?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateExportDto: {
+            /** @enum {string} */
+            type: "transactions_csv" | "transactions_pdf" | "customers_csv" | "customers_pdf" | "statement_pdf" | "journal_csv" | "logs_csv" | "webhook_deliveries_csv" | "account_export";
+            filters?: Record<string, never>;
+        };
         ExportResponseDto: {
             export_id: string;
             status: string;
@@ -4194,6 +4879,51 @@ export interface components {
         };
         DeleteAccountDto: {
             confirmation_token?: string;
+        };
+        CreatePayoutMethodDto: {
+            /** @example Wave */
+            account_name: string;
+            /** @example +221771234567 */
+            account_number: string;
+            /** @example wave */
+            bank_name?: string;
+            /** @example SN */
+            country?: string;
+            /** @example BNPAFRPP */
+            bank_code?: string;
+            /** @example 021000021 */
+            branch_code?: string;
+            /** @enum {string} */
+            payout_method_type?: "spi" | "bank" | "mobile_money";
+            is_default?: boolean;
+        };
+        CreateMeterDto: {
+            /**
+             * @description Unique meter code (slug) per organization
+             * @example api_calls
+             */
+            name: string;
+            /** @description Optional usage_based product this meter bills against */
+            product_id?: string;
+            /**
+             * @description Event matching filter
+             * @example {
+             *       "code": "api_calls"
+             *     }
+             */
+            filter?: {
+                [key: string]: unknown;
+            };
+            /**
+             * @description Aggregation config: sum, count, max, last_during_period, last_ever
+             * @example {
+             *       "type": "sum",
+             *       "property": "quantity"
+             *     }
+             */
+            aggregation?: {
+                [key: string]: unknown;
+            };
         };
         MeterResponseDto: {
             meter_id: string;
@@ -4209,6 +4939,15 @@ export interface components {
             is_active: boolean;
             created_at: string;
             updated_at: string;
+        };
+        UpdateMeterDto: {
+            filter?: {
+                [key: string]: unknown;
+            };
+            aggregation?: {
+                [key: string]: unknown;
+            };
+            is_active?: boolean;
         };
         MeterBalanceResponseDto: {
             balance_id: string;
@@ -4243,8 +4982,26 @@ export interface components {
             subscription_id?: string;
             quantity_applied?: number;
         };
+        CreateUsageSubscriptionDto: {
+            /** @description Customer to enroll */
+            customer_id: string;
+            /** @description usage_based product id */
+            product_id: string;
+            /** @description Price id (defaults to product default price) */
+            price_id?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
         UsageSubscriptionResponseDto: {
             subscription_id: string;
+        };
+        CreditWalletDto: {
+            meter_id: string;
+            customer_id: string;
+            /** @example 100 */
+            units: number;
+            reason?: string;
         };
         CreateApiKeyDto: {
             name: string;
@@ -4255,9 +5012,11 @@ export interface components {
         };
         InviteTeamMemberDto: {
             email?: string;
+            /** @description E.164 phone when inviting staff without email */
             phone?: string;
             /** @enum {string} */
             role?: "Admin" | "Member";
+            /** @description RBAC role key such as staff, cashier, or manager */
             role_key?: string;
             role_id?: string;
             position?: string;
@@ -4818,7 +5577,7 @@ export interface operations {
                 "Lomi-Version"?: string;
             };
             path: {
-                /** @description UUID de la transaction */
+                /** @description Transaction UUID or txn_ public id */
                 id: string;
             };
             cookie?: never;
@@ -4845,7 +5604,7 @@ export interface operations {
                 "Lomi-Version"?: string;
             };
             path: {
-                /** @description UUID de la transaction */
+                /** @description Transaction UUID or txn_ public id */
                 id: string;
             };
             cookie?: never;
@@ -4985,6 +5744,40 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    CustomersController_topBySpend: {
+        parameters: {
+            query?: {
+                /** @description Nombre de clients à renvoyer (maximum 50) */
+                limit?: number;
+            };
+            header?: {
+                /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
+                "Lomi-Account"?: string;
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Clients ordonnés par volume converti. currency_code est la devise de l'organisation pour chaque total_spend. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example list */
+                        object?: string;
+                        /** @example XOF */
+                        currency_code?: string;
+                        data?: components["schemas"]["TopCustomerSpendDto"][];
+                    };
+                };
             };
         };
     };
@@ -5251,6 +6044,97 @@ export interface operations {
             };
         };
     };
+    CustomersController_block: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
+                "Lomi-Account"?: string;
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path: {
+                /** @description UUID du client */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Client ajouté à la liste de blocage Radar */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerRadarBlockResponseDto"];
+                };
+            };
+            /** @description Aucun téléphone, e-mail ou carte à bloquer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Clé API invalide ou manquante */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Client introuvable ou accès refusé */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomersController_unblock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
+                "Lomi-Account"?: string;
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path: {
+                /** @description UUID du client */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Client retiré de la liste de blocage Radar */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerRadarBlockResponseDto"];
+                };
+            };
+            /** @description Clé API invalide ou manquante */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Client introuvable ou accès refusé */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     CustomersController_createPortalSession: {
         parameters: {
             query?: never;
@@ -5375,6 +6259,8 @@ export interface operations {
                     metadata?: {
                         [key: string]: unknown;
                     };
+                    /** @enum {string} */
+                    channel?: "spi";
                 };
             };
         };
@@ -5787,7 +6673,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProductDto"];
+            };
+        };
         responses: {
             /** @description Produit créé avec succès */
             201: {
@@ -5807,6 +6697,31 @@ export interface operations {
             };
             /** @description Clé API invalide ou manquante */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProductsController_updatePricesBatch: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatchUpdatePricesDto"];
+            };
+        };
+        responses: {
+            /** @description Updated prices */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5890,7 +6805,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProductDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -5915,7 +6834,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddPriceDto"];
+            };
+        };
         responses: {
             /** @description Prix ajouté avec succès */
             201: {
@@ -6106,7 +7029,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSubscriptionDto"];
+            };
+        };
         responses: {
             /** @description Abonnement mis à jour */
             200: {
@@ -6263,7 +7190,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDiscountCouponDto"];
+            };
+        };
         responses: {
             /** @description Coupon créé avec succès */
             201: {
@@ -6477,9 +7408,9 @@ export interface operations {
                     customer_country?: string;
                     customer_address?: string;
                     customer_postal_code?: string;
-                    /** Format: uuid */
+                    /** @example prod_2ABCDEFGHJKLMN */
                     product_id?: string;
-                    /** Format: uuid */
+                    /** @example price_UPH2H4E2VUZZER */
                     price_id?: string;
                     /** Format: uuid */
                     subscription_id?: string;
@@ -6537,7 +7468,7 @@ export interface operations {
                      */
                     transfer_group?: string;
                     line_items?: {
-                        /** Format: uuid */
+                        /** @example price_UPH2H4E2VUZZER */
                         price_id: string;
                         quantity?: number;
                         metadata?: {
@@ -6874,7 +7805,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePayoutDto"];
+            };
+        };
         responses: {
             /** @description Virement initié */
             201: {
@@ -6958,9 +7893,13 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitDisputeEvidenceDto"];
+            };
+        };
         responses: {
-            /** @description Evidence recorded */
+            /** @description Evidence submitted */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -7424,7 +8363,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWebhookBodyDto"];
+            };
+        };
         responses: {
             /** @description Webhook créé */
             201: {
@@ -7724,11 +8667,11 @@ export interface operations {
     ChargesController_captureCardCharge: {
         parameters: {
             query?: never;
-            header?: {
-                /** @description Required unique key for this write. Replays return the original response. */
-                "Idempotency-Key": string;
+            header: {
                 /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
                 "Lomi-Account"?: string;
+                /** @description Required unique key for this write. Replays return the original response. */
+                "Idempotency-Key": string;
                 /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
                 "Lomi-Version"?: string;
             };
@@ -7740,14 +8683,43 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": {
-                    /** @description Amount to take, in the same currency as the hold. Omit to capture the full hold. */
-                    amount?: number;
-                };
+                "application/json": components["schemas"]["CaptureCardChargeDto"];
             };
         };
         responses: {
             /** @description Card hold captured */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChargesController_incrementCardHold: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
+                "Lomi-Account"?: string;
+                /** @description Required unique key for this write. Replays return the original response. */
+                "Idempotency-Key": string;
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path: {
+                /** @description Card payment id (pi_...) */
+                id: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IncrementCardHoldDto"];
+            };
+        };
+        responses: {
+            /** @description Card hold raised */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -7820,7 +8792,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvoiceDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -7892,7 +8868,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateInvoiceDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -8046,7 +9026,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExportDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -8239,7 +9223,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePayoutMethodDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -8284,7 +9272,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMeterDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -8334,7 +9326,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMeterDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -8455,7 +9451,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUsageSubscriptionDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -8524,7 +9524,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreditWalletDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -8567,7 +9571,15 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    feature_key: string;
+                    name: string;
+                    description?: string;
+                };
+            };
+        };
         responses: {
             201: {
                 headers: {

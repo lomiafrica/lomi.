@@ -165,6 +165,14 @@ Task-oriented sequences. Pass \`idempotency_key\` on every write. Use \`lomi_sea
 2. \`${n("POST /checkout-sessions")}\` referencing the product to collect the first payment and enroll.
 3. Manage later with \`${n("GET /customers/{id}/subscriptions")}\`, \`${n("POST /subscriptions/{id}/change-plan")}\`, \`${n("POST /subscriptions/{id}/cancel")}\`, \`${n("POST /subscriptions/{id}/resume")}\`.
 
+## Place a card deposit
+1. \`${n("POST /charge/card")}\` with hold true, amount, currency, and the customer. Send idempotency_key. Card numbers never go in this call.
+2. The customer confirms the card in lomi. Elements with the returned client_secret.
+3. \`${n("GET /charge/card/{id}")}\` until status is requires_capture. amount_capturable is still blocked. can_increment is true when the card can take a higher total. capture_before is the deadline.
+4. \`${n("POST /charge/card/{id}/increment")}\` with the new total (not the increase) when the deposit must go up. A decline leaves the current block.
+5. \`${n("POST /charge/card/{id}/capture")}\` to take some or all. Omit amount for the full hold. A lower amount releases the rest. One capture only.
+6. \`${n("POST /charge/card/{id}/cancel")}\` to release the hold without taking the money.
+
 ## Issue a refund
 1. \`${n("GET /transactions")}\` to find the payment.
 2. \`${n("POST /refunds")}\` with the transaction id and an optional partial amount.

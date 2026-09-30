@@ -8,6 +8,8 @@ import { Callout } from '@/components/docs/docs-callout';
 
 A card hold blocks an amount on the customer's card without taking it. You capture what you keep, and the rest is released. Use it for a vehicle deposit or any charge whose final amount is not known yet.
 
+The hold is its own card charge. The rest of the sale, such as a rental payment, can stay on another card acquirer. The customer enters the deposit card with lomi. Elements. There is no physical terminal.
+
 <Callout type="info">
   Holds work on cards collected with [lomi. Elements](/build/accept/payment-elements). Wave and other mobile money cannot block a card this way.
 </Callout>
@@ -18,7 +20,7 @@ Visa and Mastercard can be held. Some debit cards decline the block or debit it 
 
 A normal online hold lasts 7 days after the customer confirms the card. When the card network allows a longer block, it can last up to 30 days (29 days and 18 hours on Visa). `capture_before` on `GET /charge/card/{id}` is the deadline. The customer's bank can release the block earlier.
 
-Each hold costs 1 000 F CFA (2 USD or 2 EUR). That fee is charged whether you release the hold or capture part of it. Capturing also charges the normal card rate on the captured amount only. The captured amount must be at least 1 000 F CFA (0.50 EUR or USD). You can capture once. A lower amount releases the remainder.
+Each hold costs 1 000 F CFA (2 USD or 2 EUR). That fee is charged whether you release the hold or capture part of it. Capturing also charges the normal card rate on the captured amount only. The captured amount must be at least 1 000 F CFA (0.50 EUR or USD). You can capture once. A lower amount releases the remainder. If the amount you take cannot cover the hold fee and the card rate, the capture is refused and the block stays in place.
 
 The hold fee is listed under Other fees in Settings → Fees, not in the card rate row. On the transaction, Payment details shows Card hold and the time the block ends.
 
@@ -26,11 +28,16 @@ The hold fee is listed under Other fees in Settings → Fees, not in the card ra
 
 1. `POST /charge/card` with `hold` set to `true`, plus amount, currency, and `customer_id` or (`customer_email` and `customer_name`). Send `Idempotency-Key`.
 2. Confirm the card with lomi. Elements and the returned `client_secret`.
-3. `GET /charge/card/{id}` until `status` is `requires_capture`. `amount_capturable` is what is still blocked, in your currency.
-4. `POST /charge/card/{id}/capture` to take the money. Omit `amount` for the full hold, or send a lower amount in the same currency. Send `Idempotency-Key`.
-5. `POST /charge/card/{id}/cancel` to release the hold without taking anything.
+3. `GET /charge/card/{id}` until `status` is `requires_capture`. `amount_capturable` is what is still blocked, in your currency. `can_increment` is true when this card can take a higher block.
+4. `POST /charge/card/{id}/increment` with the new total, in the same currency, before you capture. Send `Idempotency-Key`. The new total must be higher than the current block. Some cards cannot be raised. When `can_increment` is false, capture or release the current block. A decline leaves that block in place.
+5. `POST /charge/card/{id}/capture` to take the money. Omit `amount` for the full hold, or send a lower amount in the same currency. Send `Idempotency-Key`.
+6. `POST /charge/card/{id}/cancel` to release the hold without taking anything.
 
 The sale stays pending until capture is recorded, then it becomes completed. A release or an expired hold does not credit your balance.
+
+On the dashboard, a pending card hold shows Take, Raise, and Release. Those do the same capture, increment, and cancel as the API.
+
+Agents can use the same calls through MCP `lomi_card_holds` (`create`, `get`, `increment`, `capture`, `cancel`) or the CLI (`lomi charges hold`, `get`, `raise`, `capture`, `release`).
 
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
@@ -41,9 +48,53 @@ curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \
 ```
 
 ```bash
+curl -sS "https://sandbox.api.lomi.africa/charge/card/pi_123" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "pi_123",
+    "status": "requires_capture",
+    "hold": true,
+    "can_increment": true,
+    "original_amount": 100000,
+    "original_currency": "XOF",
+    "amount_capturable": 100000,
+    "capture_before": "2026-10-07T12:00:00.000Z"
+  }
+}
+```
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/increment" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Idempotency-Key: raise-1001" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":150000}'
+```
+
+```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/capture" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Idempotency-Key: capture-1001" \
   -H "Content-Type: application/json" \
   -d '{"amount":25000}'
 ```
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card/pi_123/cancel" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+| Response | What to do |
+| --- | --- |
+| `This hold is not ready to capture` or `This hold is not ready to raise` | Wait until `status` is `requires_capture`. |
+| `This card cannot be raised` | Capture or release the current block. |
+| `Raise amount must be higher than the current hold` | Send the new total, not the increase. |
+| `This hold could not be raised. The current block is unchanged.` | The card declined. The existing block is still there. |
+| `Capture amount cannot exceed the hold` | Send a lower amount, or omit `amount` to take the full hold. |
+| `This amount does not cover the hold fee and the card rate. The block is unchanged.` | Capture a higher amount, or release the hold. |
+| `This charge is not a card hold` | This payment was not created with `hold` set to `true`. |

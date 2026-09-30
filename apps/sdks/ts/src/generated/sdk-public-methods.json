@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T13:35:52.543Z",
+  "generatedAt": "2026-09-30T14:06:36.383Z",
   "sdk": {
     "account": [
       "deleteAccount",
@@ -18,11 +18,13 @@
     ],
     "charges": [
       "cancelCardCharge",
+      "captureCardCharge",
       "createCardCharge",
       "createMtnCharge",
       "createSwitchCharge",
       "createWaveCharge",
-      "getCardCharge"
+      "getCardCharge",
+      "incrementCardHold"
     ],
     "checkoutSessions": [
       "create",
@@ -39,6 +41,7 @@
       "listAll"
     ],
     "customers": [
+      "block",
       "create",
       "createPortalSession",
       "delete",
@@ -48,6 +51,8 @@
       "getTransactions",
       "list",
       "listAll",
+      "topBySpend",
+      "unblock",
       "update"
     ],
     "disputes": [
@@ -143,7 +148,8 @@
       "list",
       "listAll",
       "setDefaultPrice",
-      "update"
+      "update",
+      "updatePricesBatch"
     ],
     "providers": [
       "list",
