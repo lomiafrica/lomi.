@@ -1,6 +1,6 @@
 /* @proprietary license */
 
-import { isJsonObject, type JsonObject, type JsonValue } from '@lomi./shared';
+import { isJsonObject, type JsonValue } from '@lomi./shared';
 import { exampleBodyForOperation } from '@/lib/openapi/example-body';
 import {
   toOpenApiHttpMethod,
