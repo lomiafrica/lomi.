@@ -15,7 +15,9 @@ jobs:
       cli: ${{ steps.changes.outputs.cli }}
       admin: ${{ steps.changes.outputs.admin }}
       checkout: ${{ steps.changes.outputs.checkout }}
+      storefront: ${{ steps.changes.outputs.storefront }}
       shared: ${{ steps.changes.outputs.shared }}
+      money_core: ${{ steps.changes.outputs.money_core }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -39,10 +41,33 @@ jobs:
               - 'packages/shared/**'
             checkout:
               - 'apps/checkout'
+              - 'packages'
               - 'packages/shared/**'
               - 'packages/queries/**'
+              - 'packages/pay/**'
+            storefront:
+              - 'apps/storefront'
+              - 'packages'
+              - 'packages/shared/**'
+              - 'packages/queries/**'
+              - 'packages/pay/**'
             shared:
               - 'packages/shared/**'
+            money_core:
+              - 'apps/api'
+              - 'apps/dashboard'
+              - 'packages'
+              - 'apps/dashboard/supabase/migrations/**'
+              - 'apps/api/src/core/payouts/**'
+              - 'apps/api/src/core/checkout-sessions/**'
+              - 'apps/api/src/core/spi/**'
+              - 'apps/api/src/core/mobile-money/**'
+              - 'apps/api/src/core/refunds/**'
+              - 'apps/api/src/checkout/**'
+              - 'apps/api/src/webhooks/providers/**'
+              - 'apps/api/test/db/**'
+              - 'packages/queries/src/checkout-public.ts'
+              - 'packages/shared/src/checkout-settings-contract.ts'
 
   build-api:
     needs: detect-changes
@@ -80,6 +105,58 @@ jobs:
         run: |
           node .github/scripts/assert-json-equivalent.mjs apps/docs/openapi.json apps/docs/agent-openapi.json
           node apps/docs/lib/scripts/verify-agent-contracts.mjs
+
+  test-money-core:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.money_core == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: lomi-money-core-test-db
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: ./apps/api
+    steps:
+      - uses: actions/checkout@v5
+      - name: Refuse any database other than lomi TEST
+        working-directory: .
+        env:
+          SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+        run: |
+          if [[ -z "$SUPABASE_DB_TEST_URL" ]]; then
+            echo "SUPABASE_DB_TEST_URL secret is not set; the money-core DB suite would silently skip." >&2
+            exit 1
+          fi
+          if [[ "$SUPABASE_DB_TEST_URL" == *mdswvokxrnfggrujsfjd* ]]; then
+            echo "SUPABASE_DB_TEST_URL points at production. Refusing." >&2
+            exit 1
+          fi
+          if [[ "$SUPABASE_DB_TEST_URL" != *aznvppizdjrncqhnknrc* ]]; then
+            echo "SUPABASE_DB_TEST_URL must point at lomi TEST (aznvppizdjrncqhnknrc)." >&2
+            exit 1
+          fi
+      - name: Checkout private API + dashboard + packages submodules
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+      - name: Install API dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
+      - name: Money-core migrations contract
+        run: pnpm exec jest src/core/__tests__/money-core.contract.spec.ts
+      - name: DB integration suite on lomi TEST
+        env:
+          SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+        run: pnpm test:db
 
   build-docs:
     needs: detect-changes
@@ -176,6 +253,33 @@ jobs:
       - name: Install checkout dependencies
         working-directory: .
         run: node tooling/scripts/install-app-with-packages.mjs apps/checkout
+      - run: pnpm test
+
+  test-storefront:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.storefront == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/storefront
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout storefront + packages submodules
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages apps/storefront
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/storefront/pnpm-lock.yaml
+      - name: Install storefront dependencies
+        working-directory: .
+        run: node tooling/scripts/install-app-with-packages.mjs apps/storefront
       - run: pnpm test
 
   test-shared:
