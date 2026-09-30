@@ -272,7 +272,7 @@ export const EN_OPERATION_COPY = {
   },
   PaymentLinksController_create: {
     summary: 'Create payment link',
-    body: 'Creates a shareable link: product-backed links pull catalog amounts; instant links collect a fixed amount you specify.',
+    body: 'Creates a shareable link: product-backed links pull catalog amounts; instant links collect a fixed amount you specify. Pass single_use true to turn the link off after the first completed payment.',
     whenToUse:
       'Use for invoices, social selling, or lightweight payment pages without building full checkout.',
     related:
@@ -857,7 +857,7 @@ export const EN_OPERATION_COPY = {
   },
   PaymentLinksController_update: {
     summary: 'Update payment link',
-    body: 'Patches title, URLs, checkout field flags, expiry, or instant-link amount.',
+    body: 'Patches title, URLs, checkout field flags, expiry, instant-link amount, or single_use.',
     whenToUse: 'Use to change a live link without minting a new URL.',
   },
   PaymentLinksController_archive: {

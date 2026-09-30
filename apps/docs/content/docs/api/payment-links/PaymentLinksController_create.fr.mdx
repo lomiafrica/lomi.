@@ -11,7 +11,7 @@ operationId: PaymentLinksController_create
 
 Créer un lien de paiement
 
-Crée un lien de paiement partageable : produit (lien produit) ou montant fixe (lien instantané). Les liens produit référencent un produit et un prix optionnel ; les liens instantanés ont un montant fixe.
+Crée un lien de paiement partageable : produit (lien produit) ou montant fixe (lien instantané). Les liens produit référencent un produit et un prix optionnel ; les liens instantanés ont un montant fixe. Passez single_use à true pour éteindre le lien après le premier paiement terminé.
 
 
 ### Quand l’utiliser
@@ -64,6 +64,7 @@ Schéma: `object`
 | `product_id` | Non | `string` | - |
 | `price_id` | Non | `string` | - |
 | `allow_coupon_code` | Non | `boolean` | - |
+| `single_use` | Non | `boolean` | Quand c'est true, le lien s'éteint après le premier paiement terminé. Omettez-le pour garder le lien ouvert. |
 | `allow_quantity` | Non | `boolean` | - |
 | `require_billing_address` | Non | `boolean` | When true, show and require billing address on checkout. Default false when unset. |
 | `require_email` | Non | `boolean` | When true, show and require customer email. Default true when unset. |

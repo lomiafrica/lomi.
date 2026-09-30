@@ -2457,7 +2457,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create payment link",
-          "description": "Create a reusable, shareable payment URL for a fixed amount or product. Good for agents: returns a link you can hand to one or many customers.",
+          "description": "Create a shareable payment URL for a fixed amount or product. Pass single_use true for one payment. The link turns off after the first completed payment. Omit it to keep the link open.",
           "tags": [
             "Payment Links"
           ],
@@ -2477,7 +2477,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Update payment link",
-          "description": "Update title, URLs, checkout fields, expiry, or amount (instant links).",
+          "description": "Update title, URLs, checkout fields, expiry, amount on instant links, or single_use.",
           "tags": [
             "Payment Links"
           ],

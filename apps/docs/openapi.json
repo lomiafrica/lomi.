@@ -4503,6 +4503,11 @@
                   "metadata": {
                     "type": "object",
                     "additionalProperties": true
+                  },
+                  "single_use": {
+                    "type": "boolean",
+                    "description": "When true, the link turns off after the first completed payment. Omit it to keep the link open.",
+                    "default": false
                   }
                 }
               },
@@ -11728,6 +11733,10 @@
           "url": {
             "type": "string",
             "example": "string"
+          },
+          "single_use": {
+            "type": "boolean",
+            "example": false
           }
         },
         "required": [
@@ -11803,6 +11812,10 @@
           },
           "metadata": {
             "type": "object"
+          },
+          "single_use": {
+            "type": "boolean",
+            "description": "When true, the link turns off after the first completed payment."
           }
         }
       },

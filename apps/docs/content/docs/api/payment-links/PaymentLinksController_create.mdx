@@ -11,7 +11,7 @@ operationId: PaymentLinksController_create
 
 Create payment link
 
-Creates a shareable link: product-backed links pull catalog amounts; instant links collect a fixed amount you specify.
+Creates a shareable link: product-backed links pull catalog amounts; instant links collect a fixed amount you specify. Pass single_use true to turn the link off after the first completed payment.
 
 
 ### When to use this
@@ -64,6 +64,7 @@ Schema: `object`
 | `product_id` | No | `string` | - |
 | `price_id` | No | `string` | - |
 | `allow_coupon_code` | No | `boolean` | - |
+| `single_use` | No | `boolean` | When true, the link turns off after the first completed payment. Omit it to keep the link open. |
 | `allow_quantity` | No | `boolean` | - |
 | `require_billing_address` | No | `boolean` | When true, show and require billing address on checkout. Default false when unset. |
 | `require_email` | No | `boolean` | When true, show and require customer email. Default true when unset. |
