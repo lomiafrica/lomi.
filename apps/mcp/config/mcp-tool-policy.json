@@ -257,6 +257,7 @@
         "get": "GET /organizations/{id}",
         "metrics": "GET /organizations/metrics",
         "create": "POST /organizations",
+        "update": "PATCH /organizations/{id}",
         "use": "POST /organizations/{id}/keys"
       }
     },

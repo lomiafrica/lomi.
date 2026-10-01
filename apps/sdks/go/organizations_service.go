@@ -114,6 +114,24 @@ func (s *OrganizationsService) List() (interface{}, error) {
 	}
 
 
+func (s *OrganizationsService) Update(id string, body interface{}) (interface{}, error) {
+		path := "/organizations/{id}"
+		path = strings.ReplaceAll(path, "{id}", id)
+		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)
+		if err != nil {
+			return nil, err
+		}
+		if len(bodyResp) == 0 {
+			return nil, nil
+		}
+		var out interface{}
+		if err := json.Unmarshal(bodyResp, &out); err != nil {
+			return nil, err
+		}
+		return out, nil
+	}
+
+
 func (s *OrganizationsService) UpdateRadarSettings(body interface{}) (interface{}, error) {
 		path := "/organizations/radar-settings"
 		bodyResp, err := s.client.doRequest("PATCH", path, nil, body)

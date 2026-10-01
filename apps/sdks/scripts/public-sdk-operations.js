@@ -46,6 +46,7 @@ export const METHOD_NAME_BY_OP = {
   "GET /organizations/radar-settings": "getRadarSettings",
   "PATCH /organizations/radar-settings": "updateRadarSettings",
   "GET /organizations/{id}": "get",
+  "PATCH /organizations/{id}": "update",
   "GET /merchants/{id}": "get",
   "GET /merchants/{id}/mrr": "getMrr",
   "GET /merchants/{id}/arr": "getArr",

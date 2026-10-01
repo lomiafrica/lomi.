@@ -1,0 +1,91 @@
+---
+title: "Définir l'email de support"
+description: "Définir l'email de support"
+full: true
+method: patch
+path: /organizations/{id}
+operationId: OrganizationsController_update
+---
+
+## Aperçu
+
+Définir l'email de support
+
+Enregistre immédiatement l'email de support affiché sur les factures et les reçus. Ne change pas l'email de connexion et n'envoie pas de lien de confirmation.
+
+
+### Quand l'utiliser
+
+Utilisez cet endpoint quand un marchand veut changer l'email de support sans attendre le lien de confirmation du tableau de bord.
+
+### Réserves
+
+Nécessite le droit d'écriture des paramètres de l'organisation. L'identifiant est un id public `org_` ou l'UUID de l'organisation. Ce n'est pas l'email de connexion.
+
+### Voir aussi
+
+[Récupérer une organisation](/api/organizations/OrganizationsController_findOne)
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l'en-tête `X-API-KEY` (voir [Vue d'ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`PATCH /organizations/{id}`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d'URL
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | `string` | Id public de l'organisation (`org_...`) ou UUID |
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### Corps de la requête
+
+| Champ | Obligatoire | Type | Description |
+| --- | --- | --- | --- |
+| `email` | Oui | `string` | Email de support visible par les clients. 320 caractères maximum. |
+
+Exemple :
+
+```json
+{
+  "email": "support@example.com"
+}
+```
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Email de support enregistré |
+| `400` | Email invalide |
+| `403` | Organisation inaccessible pour ce marchand |
+| `404` | Organisation introuvable |
+
+## Exemple
+
+```bash
+curl -sS -X PATCH "https://sandbox.api.lomi.africa/organizations/org_23456789ABCDEF" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"support@example.com"}'
+```
+
+## OpenAPI
+
+- **operationId**: `OrganizationsController_update`
+- **Operation**: `PATCH /organizations/{id}`
+
+Schémas complets et **Try it** : [référence API](/api).

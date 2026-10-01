@@ -2193,7 +2193,7 @@
     {
       "name": "lomi_organization",
       "title": "Organization",
-      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body.\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body.\n- `update` — Set the support email (PATCH /organizations/{id}). Required: body, id.\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Organisations"
       ],
@@ -2212,9 +2212,10 @@
               "get",
               "metrics",
               "create",
+              "update",
               "use"
             ],
-            "description": "Which REST operation to run. One of: list, get, metrics, create, use."
+            "description": "Which REST operation to run. One of: list, get, metrics, create, update, use."
           },
           "body": {
             "type": "object",
@@ -2239,7 +2240,7 @@
       "readOnly": false,
       "destructive": false,
       "alwaysLoad": false,
-      "searchHint": "create get keys list metrics organisations organization organizations post use",
+      "searchHint": "create get keys list metrics organisations organization organizations patch post update use",
       "actions": {
         "list": {
           "operationKey": "GET /organizations",
@@ -2309,6 +2310,27 @@
           ],
           "requiredInput": [
             "body"
+          ]
+        },
+        "update": {
+          "operationKey": "PATCH /organizations/{id}",
+          "method": "patch",
+          "pathTemplate": "/organizations/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "OrganizationsController_update",
+          "write": true,
+          "wantsBody": true,
+          "title": "Set the support email",
+          "description": "Set the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email.",
+          "tags": [
+            "Organisations"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
           ]
         },
         "use": {

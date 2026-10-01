@@ -617,7 +617,17 @@ export const EN_OPERATION_COPY = {
     whenToUse:
       'Use when you already store an organization ID and need a fresh profile snapshot.',
     related:
-      '[List organizations](/api/organizations/OrganizationsController_findAll)',
+      '[List organizations](/api/organizations/OrganizationsController_findAll) · [Set the support email](/api/organizations/OrganizationsController_update)',
+  },
+  OrganizationsController_update: {
+    summary: 'Set the support email',
+    body: 'Sets the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email and does not send a confirmation link.',
+    whenToUse:
+      'Use when a merchant asks to change the support email and should not wait on the dashboard confirmation link.',
+    caveats:
+      'Requires org.settings.write. The id is an org_ public id or the organization UUID. This is not the login email.',
+    related:
+      '[Retrieve organization](/api/organizations/OrganizationsController_findOne)',
   },
   OrganizationsController_getMetrics: {
     summary: 'Organization metrics',

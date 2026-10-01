@@ -403,6 +403,72 @@
         "tags": [
           "Organisations"
         ]
+      },
+      "patch": {
+        "description": "Sets the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email and does not send a confirmation link.",
+        "operationId": "OrganizationsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Organization public id (org_...) or UUID",
+            "schema": {
+              "type": "string",
+              "example": "org_23456789ABCDEF"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Support email saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportEmailResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid email"
+          },
+          "403": {
+            "description": "Organization is not available to this merchant"
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Set the support email",
+        "tags": [
+          "Organisations"
+        ]
       }
     },
     "/organizations/{id}/keys": {
@@ -9104,6 +9170,44 @@
           "created_at",
           "updated_at",
           "is_deleted"
+        ]
+      },
+      "UpdateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 320,
+            "example": "support@example.com",
+            "description": "Customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "SupportEmailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "org_23456789ABCDEF",
+            "description": "Organization public id"
+          },
+          "name": {
+            "type": "string",
+            "example": "Acme"
+          },
+          "email": {
+            "type": "string",
+            "example": "support@example.com"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
         ]
       },
       "CreateOrganizationDto": {

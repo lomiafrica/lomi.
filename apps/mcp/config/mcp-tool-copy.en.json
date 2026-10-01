@@ -471,6 +471,10 @@
     "title": "Create organization",
     "description": "Open a new organization and return a secret key once. MCP adopts that key on the session (action=create)."
   },
+  "PATCH /organizations/{id}": {
+    "title": "Set the support email",
+    "description": "Set the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email."
+  },
   "POST /organizations/{id}/keys": {
     "title": "Use organization",
     "description": "Mint a secret key for an organization this merchant already belongs to. MCP adopts that key (action=use)."

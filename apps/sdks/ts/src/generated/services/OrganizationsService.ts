@@ -124,6 +124,20 @@ export class OrganizationsService {
     }
 
     /**
+     * Set the support email
+     * @see OpenAPI `OrganizationsController_update`
+     */
+    public async update(id: string, body: components['schemas']['UpdateOrganizationDto'], options?: import("../../request-options.js").LomiRequestOptions): Promise<components['schemas']['SupportEmailResponseDto']> {
+        return requestWithClient<components['schemas']['SupportEmailResponseDto']>(this.client, {
+            method: 'PATCH',
+            url: '/organizations/{id}',
+            path: { id: id },
+            body,
+            ...options,
+        });
+    }
+
+    /**
      * Update Radar settings
      * @see OpenAPI `OrganizationsController_updateRadarSettings`
      */

@@ -91,6 +91,7 @@
   "PATCH /invoices/{id}",
   "PATCH /meters/{id}",
   "PATCH /organizations/radar-settings",
+  "PATCH /organizations/{id}",
   "PATCH /payment-links/{id}",
   "PATCH /products/{id}",
   "PATCH /settings/checkout",

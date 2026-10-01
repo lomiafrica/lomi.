@@ -5,6 +5,7 @@
     "OrganizationsController_createKey",
     "OrganizationsController_findAll",
     "OrganizationsController_findOne",
+    "OrganizationsController_update",
     "OrganizationsController_getMetrics",
     "OrganizationsController_getRadarSettings",
     "OrganizationsController_updateRadarSettings"

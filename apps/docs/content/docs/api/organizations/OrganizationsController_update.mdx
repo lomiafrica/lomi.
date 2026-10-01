@@ -1,0 +1,91 @@
+---
+title: "Set the support email"
+description: "Set the support email"
+full: true
+method: patch
+path: /organizations/{id}
+operationId: OrganizationsController_update
+---
+
+## Overview
+
+Set the support email
+
+Sets the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email and does not send a confirmation link.
+
+
+### When to use this
+
+Use when a merchant asks to change the support email and should not wait on the dashboard confirmation link.
+
+### Caveats
+
+Requires permission to write organization settings. The id is an `org_` public id or the organization UUID. This is not the login email.
+
+### See also
+
+[Retrieve organization](/api/organizations/OrganizationsController_findOne)
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`PATCH /organizations/{id}`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | `string` | Organization public id (`org_...`) or UUID |
+
+### Query parameters
+
+_No query parameters._
+
+### Request body
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `email` | Yes | `string` | Customer-facing support email. Max 320 characters. |
+
+Example body:
+
+```json
+{
+  "email": "support@example.com"
+}
+```
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Support email saved |
+| `400` | Invalid email |
+| `403` | Organization is not available to this merchant |
+| `404` | Organization not found |
+
+## Example
+
+```bash
+curl -sS -X PATCH "https://sandbox.api.lomi.africa/organizations/org_23456789ABCDEF" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"support@example.com"}'
+```
+
+## OpenAPI
+
+- **operationId**: `OrganizationsController_update`
+- **Operation**: `PATCH /organizations/{id}`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

@@ -144,7 +144,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Set the support email */
+        patch: operations["OrganizationsController_update"];
         trace?: never;
     };
     "/organizations/{id}/keys": {
@@ -2540,6 +2541,14 @@ export interface components {
              * @example null
              */
             deleted_at?: string;
+        };
+        UpdateOrganizationDto: {
+            email: string;
+        };
+        SupportEmailResponseDto: {
+            id: string;
+            name: string;
+            email: string;
         };
         CreateOrganizationDto: {
             name: string;
@@ -5266,6 +5275,56 @@ export interface operations {
                 };
             };
             /** @description Organisation introuvable ou accès refusé */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrganizationsController_update: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
+                "Lomi-Version"?: string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrganizationDto"];
+            };
+        };
+        responses: {
+            /** @description Support email saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportEmailResponseDto"];
+                };
+            };
+            /** @description Invalid email */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Organization is not available to this merchant */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Organization not found */
             404: {
                 headers: {
                     [name: string]: unknown;
