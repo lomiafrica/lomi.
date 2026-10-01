@@ -324,8 +324,7 @@ export const FR_OPERATION_COPY = {
   MetersController_update: {
     summary: 'Mettre à jour un compteur',
     body: 'Active ou désactive un compteur. Le filtre et l’agrégation sont enregistrés et ne changent pas la dépense des unités.',
-    whenToUse:
-      'Désactivez un compteur quand l’historique d’usage doit rester.',
+    whenToUse: 'Désactivez un compteur quand l’historique d’usage doit rester.',
     related: '[Lire un compteur](/api/meters/MetersController_findOne)',
   },
   MetersController_getBalance: {
@@ -357,8 +356,7 @@ export const FR_OPERATION_COPY = {
     body: 'Renvoie le MRR, le revenu des packs d’usage et le revenu ponctuel sur une plage de dates.',
     whenToUse:
       'Utilisez pour un rapport financier qui combine le MRR des abonnements, le revenu des packs d’usage et les paiements ponctuels.',
-    caveats:
-      'Exige les paramètres de requête `start_date` et `end_date`.',
+    caveats: 'Exige les paramètres de requête `start_date` et `end_date`.',
     related:
       '[Métriques d’organisation](/api/organizations/OrganizationsController_getMetrics) · [Facturation à l’usage](/build/billing/usage-billing)',
   },

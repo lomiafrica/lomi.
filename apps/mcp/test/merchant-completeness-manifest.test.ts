@@ -73,7 +73,9 @@ describe("merchant completeness manifest", () => {
   });
 
   it("exposes card hold create, raise, capture, and release", () => {
-    const holds = manifest.tools.find((tool) => tool.name === "lomi_card_holds");
+    const holds = manifest.tools.find(
+      (tool) => tool.name === "lomi_card_holds",
+    );
     expect(holds?.actions.create?.operationKey).toBe("POST /charge/card");
     expect(holds?.actions.get?.operationKey).toBe("GET /charge/card/{id}");
     expect(holds?.actions.increment?.operationKey).toBe(

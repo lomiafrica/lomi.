@@ -1,7 +1,10 @@
 /* @proprietary license */
 
 import {
+  isBoolean,
   isJsonObject,
+  isNumber,
+  isString,
   readBoolean,
   readNumber,
   readString,
@@ -48,7 +51,8 @@ function stringSample(name: string, schema: JsonObject): string {
   if (format === 'uuid' || key === 'id' || key.endsWith('_id')) {
     return SAMPLE_UUID;
   }
-  if (format === 'email' || key.includes('email')) return 'merchant@example.com';
+  if (format === 'email' || key.includes('email'))
+    return 'merchant@example.com';
   if (
     format === 'uri' ||
     format === 'url' ||
@@ -111,9 +115,9 @@ function sampleValue(
       const testValue = enumValues.find((value) => value === 'test');
       if (
         testValue === null ||
-        typeof testValue === 'string' ||
-        typeof testValue === 'number' ||
-        typeof testValue === 'boolean'
+        isString(testValue) ||
+        isNumber(testValue) ||
+        isBoolean(testValue)
       ) {
         return testValue;
       }
@@ -121,9 +125,9 @@ function sampleValue(
     const first = enumValues[0];
     if (
       first === null ||
-      typeof first === 'string' ||
-      typeof first === 'number' ||
-      typeof first === 'boolean'
+      isString(first) ||
+      isNumber(first) ||
+      isBoolean(first)
     ) {
       return first;
     }
@@ -184,7 +188,7 @@ function sampleObject(
   const required = new Set<string>();
   if (Array.isArray(requiredRaw)) {
     for (const item of requiredRaw) {
-      if (typeof item === 'string') required.add(item);
+      if (isString(item)) required.add(item);
     }
   }
 
@@ -194,7 +198,8 @@ function sampleObject(
       if (key in properties) keys.push(key);
     }
   }
-  const extraRoom = required.size === 0 ? MAX_OPTIONAL : required.size === 1 ? 3 : 0;
+  const extraRoom =
+    required.size === 0 ? MAX_OPTIONAL : required.size === 1 ? 3 : 0;
   if (extraRoom > 0) {
     for (const [key, property] of Object.entries(properties)) {
       if (keys.length >= required.size + extraRoom) break;
@@ -251,7 +256,12 @@ export function exampleBodyForOperation(
     }
   }
 
-  const sampled = sampleValue('body', json.schema, componentsSchemas(document), 0);
+  const sampled = sampleValue(
+    'body',
+    json.schema,
+    componentsSchemas(document),
+    0,
+  );
   if (!isJsonObject(sampled) || Object.keys(sampled).length === 0) return null;
   try {
     return JSON.stringify(sampled, null, 2);

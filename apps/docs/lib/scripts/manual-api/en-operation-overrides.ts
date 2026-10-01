@@ -685,8 +685,7 @@ export const EN_OPERATION_COPY = {
   MetersController_update: {
     summary: 'Update a meter',
     body: 'Turns a meter on or off. Filter and aggregation are stored and do not change how units are spent.',
-    whenToUse:
-      'Deactivate a meter when historical usage must remain.',
+    whenToUse: 'Deactivate a meter when historical usage must remain.',
     related: '[Get meter](/api/meters/MetersController_findOne)',
   },
   MetersController_getBalance: {
