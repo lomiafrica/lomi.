@@ -101,6 +101,7 @@ export function registerSearchToolsMetaTool(
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,
+        openWorldHint: false,
       },
       _meta: {
         "anthropic/alwaysLoad": true,

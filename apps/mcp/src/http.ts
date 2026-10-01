@@ -23,6 +23,7 @@ import {
   getLomiApiBaseUrl,
   getMcpHttpBearerTokens,
   getMcpReadinessChecks,
+  getOpenAiAppsChallenge,
   getOptionalMerchantApiKey,
   getOptionalPartnerKey,
   getOptionalProvisioningKey,
@@ -574,6 +575,28 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
   app.get("/server-card", rateLimitMiddleware, (_req, res) => {
     sendDiscoveryJson(res, buildMcpServerCard(manifest));
   });
+
+  app.get(
+    "/.well-known/mcp/server-card.json",
+    rateLimitMiddleware,
+    (_req, res) => {
+      sendDiscoveryJson(res, buildMcpServerCard(manifest));
+    },
+  );
+
+  app.get(
+    "/.well-known/openai-apps-challenge",
+    rateLimitMiddleware,
+    (_req, res) => {
+      const token = getOpenAiAppsChallenge();
+      if (!token) {
+        res.status(404).type("text/plain; charset=utf-8").send("Not found");
+        return;
+      }
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).type("text/plain; charset=utf-8").send(token);
+    },
+  );
 
   app.get("/robots.txt", (_req, res) => {
     res.status(200).type("text/plain; charset=utf-8").send(MCP_ROBOTS_TXT);

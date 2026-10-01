@@ -24,15 +24,50 @@ export function isReadOnlyMethod(method: string): boolean {
   return m === "get" || m === "head";
 }
 
-/** DELETE and cancel/revoke mutations are destructive. */
+/**
+ * Fragments of a non-read operation key that cannot be undone, or that send
+ * money or a message. Matched against the lowercased operation key.
+ */
+const IRREVERSIBLE_KEY_PARTS = [
+  "cancel",
+  "revoke",
+  "refund",
+  "/capture",
+  "reversal",
+  "/void",
+  "/evidence",
+  "/send",
+  "/remind",
+  "/block",
+] as const;
+
+/** Writes that move funds even when the path has none of the fragments above. */
+function isFundMovement(operationKey: string): boolean {
+  return (
+    operationKey === "post /payouts" ||
+    operationKey.startsWith("post /payouts/") ||
+    operationKey === "post /transfers" ||
+    operationKey.startsWith("post /transfers/") ||
+    operationKey.startsWith("post /settlements/instant") ||
+    operationKey === "post /charge/card"
+  );
+}
+
+/**
+ * DELETE, cancel/revoke, refunds, payouts, captures, transfers, and other
+ * irreversible writes. Read methods stay non-destructive so list/get on the
+ * same resource does not flip the flag by itself.
+ */
 export function isDestructiveOperation(
   method: string,
   operationKey: string,
 ): boolean {
   const m = method.toLowerCase();
+  if (m === "get" || m === "head") return false;
   if (m === "delete") return true;
   const key = operationKey.toLowerCase();
-  return key.includes("cancel") || key.includes("revoke");
+  if (IRREVERSIBLE_KEY_PARTS.some((part) => key.includes(part))) return true;
+  return isFundMovement(key);
 }
 
 /** Space-separated lowercase tokens for deferred tool discovery (Composer/Cursor). */

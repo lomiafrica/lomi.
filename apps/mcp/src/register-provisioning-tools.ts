@@ -58,6 +58,7 @@ function registerOneProvisioningTool(
       annotations: {
         readOnlyHint: tool.readOnly,
         destructiveHint: tool.destructive,
+        openWorldHint: false,
       },
       _meta: {
         "anthropic/searchHint": tool.searchHint,

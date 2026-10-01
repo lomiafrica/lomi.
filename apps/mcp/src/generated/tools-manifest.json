@@ -1091,7 +1091,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "disputes evidence get list litiges post submit_evidence",
       "actions": {
@@ -1448,7 +1448,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "checkout checkout_session create finalize get invoices list patch pdf post remind send session update void",
       "actions": {
@@ -2816,7 +2816,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "create get list payouts post",
       "actions": {
@@ -3333,7 +3333,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "create get list post refunds",
       "actions": {
@@ -3703,7 +3703,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "create_instant get get_instant instant list post settlements transactions",
       "actions": {
@@ -4407,7 +4407,7 @@
         }
       },
       "readOnly": false,
-      "destructive": false,
+      "destructive": true,
       "alwaysLoad": false,
       "searchHint": "create get list network post reversals reverse transfers",
       "actions": {

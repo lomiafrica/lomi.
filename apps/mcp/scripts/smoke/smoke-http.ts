@@ -24,6 +24,7 @@ const demoMerchantKey =
 type ToolAnnotationHints = {
   readOnlyHint?: boolean;
   destructiveHint?: boolean;
+  openWorldHint?: boolean;
 };
 
 type ListedToolMeta = {
@@ -104,6 +105,11 @@ async function main(): Promise<void> {
     if (!isBoolean(meta.annotations?.readOnlyHint)) {
       throw new Error(
         `smoke-http: tool ${sample.name} missing readOnlyHint annotation`,
+      );
+    }
+    if (meta.annotations?.openWorldHint !== false) {
+      throw new Error(
+        `smoke-http: tool ${sample.name} must set openWorldHint false`,
       );
     }
     const searchHint = meta._meta?.["anthropic/searchHint"];

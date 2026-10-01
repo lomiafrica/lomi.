@@ -142,7 +142,8 @@ export function registerLomiSupport(
       inputSchema,
       annotations: {
         readOnlyHint: false,
-        destructiveHint: false,
+        destructiveHint: true,
+        openWorldHint: false,
       },
       _meta: {
         "anthropic/alwaysLoad": true,

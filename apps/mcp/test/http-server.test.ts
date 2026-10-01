@@ -194,6 +194,33 @@ describe("createHttpApplication", () => {
     expect(body.ready).toBe(false);
   });
 
+  it("GET /.well-known/openai-apps-challenge returns only the portal token", async () => {
+    process.env.LOMI_OPENAI_APPS_CHALLENGE = "challenge-token-1";
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(
+      `http://127.0.0.1:${ctx.port}/.well-known/openai-apps-challenge`,
+    );
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toMatch(/text\/plain/);
+    expect(await res.text()).toBe("challenge-token-1");
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("GET /.well-known/openai-apps-challenge is absent until a token is set", async () => {
+    delete process.env.LOMI_OPENAI_APPS_CHALLENGE;
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(
+      `http://127.0.0.1:${ctx.port}/.well-known/openai-apps-challenge`,
+    );
+    expect(res.status).toBe(404);
+  });
+
   it("GET /.well-known/oauth-protected-resource returns metadata", async () => {
     const manifest = parseManifest(validateJsonValue(manifestJson));
     const app = createHttpApplication(manifest);
@@ -545,6 +572,21 @@ describe("createHttpApplication", () => {
     const body = await readResponseJson(res);
     expect(body.name).toBe("io.lomi/mcp");
     expect(body.title).toBe("lomi.");
+  });
+
+  it("GET /.well-known/mcp/server-card.json matches the server card", async () => {
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(
+      `http://127.0.0.1:${ctx.port}/.well-known/mcp/server-card.json`,
+    );
+    expect(res.status).toBe(200);
+    const body = await readResponseJson(res);
+    expect(body.name).toBe("io.lomi/mcp");
+    expect(body.remotes).toBeTruthy();
   });
 
   it("GET / returns HTML with an H1 for browsers", async () => {

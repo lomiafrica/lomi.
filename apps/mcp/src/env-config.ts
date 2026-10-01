@@ -106,6 +106,16 @@ export function getOptionalProvisioningKey(): string | null {
 
 let cachedPositivePartnerKey: string | undefined;
 
+/**
+ * Token from the OpenAI plugin portal domain check. The response body must be
+ * this string alone. Absent until a submission issues one.
+ */
+export function getOpenAiAppsChallenge(): string | null {
+  const token = process.env.LOMI_OPENAI_APPS_CHALLENGE?.trim() ?? "";
+  if (!token || token.includes("\n") || token.includes("\r")) return null;
+  return token;
+}
+
 /** Reads partner management key from env (empty/absent returns null). */
 export function getOptionalPartnerKey(): string | null {
   if (cachedPositivePartnerKey !== undefined) {
