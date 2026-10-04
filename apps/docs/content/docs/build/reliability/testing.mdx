@@ -45,7 +45,7 @@ For **test card numbers**, **Wave** and **MTN** sandbox behavior, test balances,
 
 ## Integration tests
 
-Write automated tests that interact with lomi.. **sandbox** API.
+Write automated tests that interact with lomi. **sandbox** API.
 
 ### 1. Payment flow tests
 
@@ -152,7 +152,7 @@ describe('Webhook Signature Verification', () => {
 
 ### 3. Error handling tests
 
-Test how your application handles specific API errors from lomi..
+Test how your application handles specific API errors from lomi.
 
 ```typescript filename="Testing API error handling (Jest example)"
 describe('API Error Handling', () => {
@@ -212,7 +212,7 @@ Your E2E test script would typically:
 
 1.  Navigate through your application to initiate a payment.
 2.  Trigger the creation of a lomi. Checkout Session via your backend.
-3.  **(Challenge)** Interact with lomi.. sandbox checkout page. This is often difficult/flaky in automated E2E tests. Consider:
+3.  **(Challenge)** Interact with lomi. sandbox checkout page. This is often difficult/flaky in automated E2E tests. Consider:
     - Using the [sandbox test card numbers and mobile money rules](/start/sandbox-payments) for manual or semi-automated flows.
     - Having a dedicated API endpoint in your _test environment_ that simulates the webhook callback lomi. would send upon completion (bypassing the actual sandbox UI interaction). This is often more reliable for automation.
 4.  Wait for and verify that your application receives the expected webhook (`PAYMENT_SUCCEEDED`).

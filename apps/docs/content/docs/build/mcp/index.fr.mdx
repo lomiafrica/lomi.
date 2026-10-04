@@ -1,6 +1,6 @@
 ---
 title: MCP pour clients IA
-description: Connectez Cursor, Claude Desktop ou tout client MCP à l’API marchande lomi..
+description: Connectez Cursor, Claude Desktop ou tout client MCP à l’API marchande lomi.
 ---
 
 import { McpOauthConnect } from '@/components/docs/mcp-oauth-connect';
@@ -100,7 +100,9 @@ Remplacez `YOUR_LOMI_SECRET_KEY` par votre vraie clé API, puis redémarrez votr
 
 ### Bootstrap agent sandbox (sans clé)
 
-Si le client n’a pas encore de clé marchande, connectez `https://mcp.lomi.africa/mcp/guest` (sans en-têtes). Appelez **`lomi_register_agent`** : le serveur résout une courte preuve de travail et la session MCP adopte une clé `lomi_prov_*` sandbox uniquement.
+Si le client n’a pas encore de clé marchande, connectez `https://mcp.lomi.africa/mcp/guest` (sans en-têtes, sans OAuth). Appelez **`lomi_register_agent`** : le serveur résout une courte preuve de travail et la session MCP adopte une clé `lomi_prov_*` sandbox uniquement.
+
+Les humains créent un compte sur `https://mcp.lomi.africa/mcp` (Connect with lomi. dans le navigateur). N’ajoutez pas `/mcp/guest` comme second connecteur pour y valider OAuth. L’invité n’annonce pas de serveur d’autorisation. OAuth sur cette URL casse la session MCP (`Unknown MCP session`).
 
 Puis `lomi_provision action=create_account`, `upload_document`, `complete` et `api_keys`. Dès qu’une clé `lomi_sk_test_*` revient, la session invitée est mise à niveau sur place : les outils marchands (`lomi_checkout`, `lomi_customers`, `lomi_webhooks`, ...) sont enregistrés sur la session active et le serveur envoie `notifications/tools/list_changed` ; le client rafraîchit sa liste d’outils sans se reconnecter. Tout se passe en mode TEST.
 

@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+import { connectorIcons } from "./connector-icon.js";
+
 import type { ToolsManifest } from "./manifest.js";
 import { parseManifest } from "./manifest-parse.js";
 import { registerLomiPrompts } from "./register-prompts.js";
@@ -71,7 +73,13 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     guest = false,
   } = options;
   const server = new McpServer(
-    { name: "lomi", title: "lomi.", version: manifest.apiVersion },
+    {
+      name: "lomi",
+      title: "lomi.",
+      version: manifest.apiVersion,
+      icons: connectorIcons(),
+      websiteUrl: "https://lomi.africa",
+    },
     {
       instructions: buildServerInstructions(mode, guest),
     },

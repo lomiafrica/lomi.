@@ -48,7 +48,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lomiafrica/lomi..git",
+    "url": "git+https://github.com/lomiafrica/lomi.git",
     "directory": "apps/cli/npm"
   },
   "engines": {

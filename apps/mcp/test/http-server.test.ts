@@ -250,6 +250,34 @@ describe("createHttpApplication", () => {
     expect(res.headers.get("cache-control")).toMatch(/max-age=/);
   });
 
+  it("guest protected-resource metadata does not advertise OAuth", async () => {
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(
+      `http://127.0.0.1:${ctx.port}/.well-known/oauth-protected-resource/mcp/guest`,
+    );
+    expect(res.status).toBe(200);
+    const body = await readResponseJson(res);
+    expect(body.resource).toBe("https://mcp.lomi.africa/mcp/guest");
+    expect(body.authorization_servers).toBeUndefined();
+  });
+
+  it("GET /icon.png is the dark-plate connector mark", async () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(`http://127.0.0.1:${ctx.port}/icon.png`);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toMatch(/image\/png/);
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    expect(bytes[0]).toBe(0x89);
+    expect(bytes[1]).toBe(0x50);
+  });
+
   it("POST /mcp without session credentials returns WWW-Authenticate challenge", async () => {
     delete process.env.LOMI_MCP_BEARER_TOKEN;
     delete process.env.LOMI_PROVISIONING_KEY;
@@ -346,6 +374,34 @@ describe("createHttpApplication", () => {
     });
     expect(res.status).not.toBe(401);
     expect(res.status).toBe(200);
+  });
+
+  it("POST /mcp/guest initialize with a dead session id starts a new session", async () => {
+    process.env.LOMI_MCP_BEARER_TOKEN = "secret-gate";
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(`http://127.0.0.1:${ctx.port}/mcp/guest`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json, text/event-stream",
+        "mcp-session-id": "stale-session-from-oauth-refresh",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "initialize",
+        id: 1,
+        params: {
+          protocolVersion: "2024-11-05",
+          capabilities: {},
+          clientInfo: { name: "guest-reconnect", version: "0" },
+        },
+      }),
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("mcp-session-id")).toBeTruthy();
   });
 
   it("GET /mcp/guest without a session is not 401 when gated", async () => {
@@ -572,6 +628,8 @@ describe("createHttpApplication", () => {
     const body = await readResponseJson(res);
     expect(body.name).toBe("io.lomi/mcp");
     expect(body.title).toBe("lomi.");
+    expect(Array.isArray(body.icons)).toBe(true);
+    expect(body.icons[0].src).toContain("/icon.png");
   });
 
   it("GET /.well-known/mcp/server-card.json matches the server card", async () => {

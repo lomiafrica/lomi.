@@ -6810,7 +6810,7 @@ export type Database = {
       product_type: "one_time" | "recurring" | "usage_based";
       provider_code:
         | "WAVE"
-        | "JUMBO"
+        | "BNPL"
         | "MTN"
         | "STRIPE"
         | "SPI"

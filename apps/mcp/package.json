@@ -84,7 +84,7 @@
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lomiafrica/lomi..git",
+    "url": "https://github.com/lomiafrica/lomi.git",
     "directory": "apps/mcp"
   }
 }

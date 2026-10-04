@@ -286,7 +286,7 @@ Implement robust error handling within your `processWebhookEvent` function.
 - **Log Errors:** Log detailed errors encountered during processing.
 - **Retry Logic (Internal):** For transient errors during processing (e.g., temporary database unavailability), consider internal retry logic within your background job handler.
 - **Monitoring:** Monitor your webhook endpoint for failures and your background queue for processing errors.
-- **Do Not Fail the `200 OK` Response:** Even if your internal processing fails later, ensure you have already sent the `200 OK` response to lomi.. lomi. only cares about the successful delivery acknowledgment.
+- **Do Not Fail the `200 OK` Response:** Even if your internal processing fails later, ensure you have already sent the `200 OK` response to lomi. lomi. only cares about the successful delivery acknowledgment.
 
 ### Logging
 

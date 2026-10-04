@@ -100,7 +100,9 @@ Replace `YOUR_LOMI_SECRET_KEY` with your real API key, then restart your MCP cli
 
 ### Sandbox agent bootstrap (no key)
 
-If the client has no merchant key yet, connect `https://mcp.lomi.africa/mcp/guest` (no headers). Call **`lomi_register_agent`**: the server solves a short proof-of-work and this MCP session adopts a sandbox-only `lomi_prov_*` key.
+If the client has no merchant key yet, connect `https://mcp.lomi.africa/mcp/guest` (no headers, no OAuth). Call **`lomi_register_agent`**: the server solves a short proof-of-work and this MCP session adopts a sandbox-only `lomi_prov_*` key.
+
+Humans sign up on `https://mcp.lomi.africa/mcp` (Connect with lomi. in the browser). Do not add `/mcp/guest` as a second connector and approve OAuth on it. Guest does not advertise an authorization server. OAuth on that URL drops the MCP session (`Unknown MCP session`).
 
 Then `lomi_provision action=create_account`, `upload_document`, `complete`, and `api_keys`. As soon as a `lomi_sk_test_*` key comes back, the guest session upgrades in place: the merchant tools (`lomi_checkout`, `lomi_customers`, `lomi_webhooks`, ...) are registered on the live session and the server sends `notifications/tools/list_changed`, so the client refreshes its tool list without reconnecting. Everything runs in TEST mode.
 

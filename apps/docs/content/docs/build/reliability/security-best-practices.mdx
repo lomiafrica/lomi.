@@ -75,7 +75,7 @@ We thank researchers who help keep lomi. and our merchants safe. Coordinated dis
 
 ### TLS requirements
 
-All communication with lomi.. API **must** be over HTTPS (TLS 1.2 or higher) to encrypt data in transit. Ensure your HTTP clients enforce TLS.
+All communication with lomi. API **must** be over HTTPS (TLS 1.2 or higher) to encrypt data in transit. Ensure your HTTP clients enforce TLS.
 
 ```typescript filename="Ensuring HTTPS base URL"
 import axios from 'axios';
@@ -93,7 +93,7 @@ const apiClient = axios.create({
 
 ### Request validation
 
-Validate data on your server **before** sending it to lomi.. API.
+Validate data on your server **before** sending it to lomi. API.
 
 1.  **Input Sanitization:** Sanitize user inputs to prevent injection attacks (though lomi. also performs validation, defense-in-depth is recommended).
 
@@ -245,7 +245,7 @@ app.use('/api/', apiLimiter);
 
 ### Timeouts
 
-Set reasonable timeouts for requests made to lomi.. API to prevent your application from hanging indefinitely.
+Set reasonable timeouts for requests made to lomi. API to prevent your application from hanging indefinitely.
 
 ```typescript filename="Setting timeouts with Axios"
 import axios from 'axios';

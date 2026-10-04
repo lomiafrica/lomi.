@@ -1,3 +1,4 @@
+import { connectorIcons } from "./connector-icon.js";
 import type { ToolsManifest } from "./manifest.js";
 import {
   getMcpGuestResourceUrl,
@@ -14,6 +15,7 @@ export function buildMcpServerCard(manifest: ToolsManifest) {
     description:
       "Payment infrastructure for francophone West Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.",
     websiteUrl: "https://lomi.africa",
+    icons: connectorIcons(),
     repository: {
       url: "https://github.com/lomiafrica/lomi.",
       source: "github",
@@ -184,6 +186,7 @@ export function buildMcpIndexHtml(manifest: ToolsManifest): string {
   <meta charset="utf-8">
   <title>lomi. MCP</title>
   <meta name="robots" content="index,follow">
+  <link rel="icon" href="${origin}/icon.png" type="image/png">
 </head>
 <body>
   <h1>lomi. MCP</h1>

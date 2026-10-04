@@ -56,10 +56,16 @@ import {
 import { mcpLog, mcpRequestAls } from "./mcp-request-context.js";
 import { wireMcpServer } from "./wire-mcp-server.js";
 import {
+  buildGuestProtectedResourceMetadata,
   buildProtectedResourceMetadata,
   getProtectedResourceMetadataUrl,
   introspectOAuthAccessToken,
+  isGuestProtectedResourcePath,
 } from "./oauth-introspection.js";
+import {
+  CONNECTOR_ICON_SVG,
+  connectorIconPng,
+} from "./connector-icon.js";
 import {
   buildAuthorizationServerPointer,
   buildMcpCatalog,
@@ -514,6 +520,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
 
   type DiscoveryJsonBody =
     | ReturnType<typeof buildProtectedResourceMetadata>
+    | ReturnType<typeof buildGuestProtectedResourceMetadata>
     | ReturnType<typeof buildAuthorizationServerPointer>
     | ReturnType<typeof buildMcpWellKnown>
     | ReturnType<typeof buildMcpCatalog>
@@ -526,7 +533,11 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
     res.status(200).json(body);
   }
 
-  function serveProtectedResourceMetadata(_req: Request, res: Response): void {
+  function serveProtectedResourceMetadata(req: Request, res: Response): void {
+    if (isGuestProtectedResourcePath(req.path)) {
+      sendDiscoveryJson(res, buildGuestProtectedResourceMetadata());
+      return;
+    }
     sendDiscoveryJson(res, buildProtectedResourceMetadata());
   }
 
@@ -571,6 +582,23 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
   app.get("/.well-known/mcp/catalog.json", rateLimitMiddleware, (_req, res) => {
     sendDiscoveryJson(res, buildMcpCatalog(manifest));
   });
+
+  function sendConnectorPng(_req: Request, res: Response): void {
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.status(200).send(connectorIconPng());
+  }
+
+  function sendConnectorSvg(_req: Request, res: Response): void {
+    res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.status(200).send(CONNECTOR_ICON_SVG);
+  }
+
+  app.get("/icon.png", rateLimitMiddleware, sendConnectorPng);
+  app.get("/favicon.ico", rateLimitMiddleware, sendConnectorPng);
+  app.get("/icon.svg", rateLimitMiddleware, sendConnectorSvg);
+  app.get("/favicon.svg", rateLimitMiddleware, sendConnectorSvg);
 
   app.get("/server-card", rateLimitMiddleware, (_req, res) => {
     sendDiscoveryJson(res, buildMcpServerCard(manifest));
@@ -682,7 +710,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
       await mcpRequestAls.run(store, async () => {
         try {
           const sessionHeader = req.headers["mcp-session-id"];
-          const sessionId = Array.isArray(sessionHeader)
+          let sessionId = Array.isArray(sessionHeader)
             ? sessionHeader[0]
             : sessionHeader;
 
@@ -708,15 +736,22 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           );
 
           if (sessionId && !registry.has(sessionId)) {
-            res.status(404).json({
-              jsonrpc: "2.0",
-              error: {
-                code: -32000,
-                message: "Unknown MCP session",
-              },
-              id: null,
-            });
-            return;
+            // A reconnect often retries initialize with a dead session id
+            // (OAuth refresh, process restart). Start a new session instead
+            // of failing the handshake.
+            if (isInitializeRequest(req.body)) {
+              sessionId = undefined;
+            } else {
+              res.status(404).json({
+                jsonrpc: "2.0",
+                error: {
+                  code: -32000,
+                  message: "Unknown MCP session",
+                },
+                id: null,
+              });
+              return;
+            }
           }
 
           if (sessionId && registry.has(sessionId)) {
