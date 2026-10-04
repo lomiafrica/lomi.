@@ -22,3 +22,52 @@ Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (v
 ## Endpoint
 
 `POST /whatsapp/setup-links`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d'URL
+
+_Aucun paramètre d'URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### Corps
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `connection_type` | Non | `coexistence` \| `dedicated` | `coexistence` par défaut. |
+| `language` | Non | string | Langue du parcours de connexion. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | `url` à ouvrir sur le téléphone du marchand |
+| `401` | Clé API invalide ou manquante |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. La première connexion peut être refusée tant que le volume mensuel n'atteint pas environ 150 000 F CFA.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/whatsapp/setup-links" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"connection_type":"coexistence"}'
+```
+
+## OpenAPI
+
+- **operationId**: `WhatsAppMerchantController_createSetupLink`
+- **Operation**: `POST /whatsapp/setup-links`
+
+Schémas complets et **Try it** : [référence API](/api).

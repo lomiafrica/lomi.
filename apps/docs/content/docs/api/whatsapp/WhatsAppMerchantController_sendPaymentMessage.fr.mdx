@@ -22,3 +22,61 @@ Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (v
 ## Endpoint
 
 `POST /whatsapp/payment-messages`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d'URL
+
+_Aucun paramètre d'URL._
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | Non | string | Une reprise renvoie la réponse d'origine quand un paiement est créé. |
+
+### Corps
+
+| Nom | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- |
+| `to` | Oui | string | Numéro WhatsApp du client. |
+| `amount` | Non | integer | Montant en unités mineures. |
+| `currency_code` | Non | `XOF` \| `USD` \| `EUR` | Devise du paiement. |
+| `title` | Non | string | Libellé du lien. |
+| `checkout_session_id` | Non | uuid | Paiement déjà créé, à envoyer tel quel. |
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `200` | Lien envoyé sur le numéro connecté |
+| `401` | Clé API invalide ou manquante |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **400** : `to` manquant, ou ni `amount` ni `checkout_session_id` ne permettent de construire un lien.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/whatsapp/payment-messages" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"to":"+2250100000000","amount":1500,"currency_code":"XOF"}'
+```
+
+## OpenAPI
+
+- **operationId**: `WhatsAppMerchantController_sendPaymentMessage`
+- **Operation**: `POST /whatsapp/payment-messages`
+
+Schémas complets et **Try it** : [référence API](/api).

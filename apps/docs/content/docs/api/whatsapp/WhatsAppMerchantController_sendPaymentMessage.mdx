@@ -22,3 +22,61 @@ Merchant routes require an API key in the `X-API-KEY` header (see [Integration o
 ## Endpoint
 
 `POST /whatsapp/payment-messages`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters._
+
+### Query parameters
+
+_No query parameters._
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Idempotency-Key` | header | No | string | Replays return the original response when a checkout is created. |
+
+### Body
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `to` | Yes | string | Customer WhatsApp number. |
+| `amount` | No | integer | Amount in minor units. |
+| `currency_code` | No | `XOF` \| `USD` \| `EUR` | Charge currency. |
+| `title` | No | string | Label on the payment link. |
+| `checkout_session_id` | No | uuid | Existing checkout to send instead of creating one. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Payment link sent on the connected number |
+| `401` | Invalid or missing API key |
+
+## Errors
+
+Errors follow the standard JSON error format. **401** means the key is missing or invalid. **400** means `to` is missing, or neither `amount` nor `checkout_session_id` can build a link.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/whatsapp/payment-messages" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"to":"+2250100000000","amount":1500,"currency_code":"XOF"}'
+```
+
+## OpenAPI
+
+- **operationId**: `WhatsAppMerchantController_sendPaymentMessage`
+- **Operation**: `POST /whatsapp/payment-messages`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

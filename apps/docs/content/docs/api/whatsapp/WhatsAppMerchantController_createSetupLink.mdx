@@ -22,3 +22,52 @@ Merchant routes require an API key in the `X-API-KEY` header (see [Integration o
 ## Endpoint
 
 `POST /whatsapp/setup-links`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters._
+
+### Query parameters
+
+_No query parameters._
+
+### Body
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `connection_type` | No | `coexistence` \| `dedicated` | Defaults to `coexistence`. |
+| `language` | No | string | Language for the setup flow. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Setup `url` for the merchant phone |
+| `401` | Invalid or missing API key |
+
+## Errors
+
+Errors follow the standard JSON error format. **401** means the key is missing or invalid. The first connection can be refused until monthly volume reaches about 150 000 F CFA.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/whatsapp/setup-links" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"connection_type":"coexistence"}'
+```
+
+## OpenAPI
+
+- **operationId**: `WhatsAppMerchantController_createSetupLink`
+- **Operation**: `POST /whatsapp/setup-links`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.

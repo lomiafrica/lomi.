@@ -20,3 +20,49 @@ Merchant routes require an API key in the `X-API-KEY` header (see [Integration o
 ## Endpoint
 
 `GET /whatsapp`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters._
+
+### Query parameters
+
+_No query parameters._
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `X-API-KEY` | header | Yes | string | Merchant API key. |
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Connection status, display number, and `inbound_payment_link` |
+| `401` | Invalid or missing API key |
+
+## Errors
+
+Errors follow the standard JSON error format. **401** means the key is missing or invalid. **429** means the request was rate limited.
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/whatsapp" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `WhatsAppMerchantController_getStatus`
+- **Operation**: `GET /whatsapp`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.
