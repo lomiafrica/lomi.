@@ -25,11 +25,7 @@ export function looksLikeOAuthAccessToken(token: string): boolean {
 }
 
 export function getOAuthIntrospectionInternalKey(): string {
-  return (
-    process.env.INTERNAL_API_KEY?.trim() ||
-    process.env.CRON_SECRET?.trim() ||
-    ""
-  );
+  return process.env.INTERNAL_API_KEY?.trim() || "";
 }
 
 /** RFC 9728 path-scoped protected-resource metadata URL for this MCP deployment. */
@@ -55,7 +51,7 @@ export async function introspectOAuthAccessToken(
   if (!internalKey) {
     if (!warnedMissingInternalKey) {
       console.warn(
-        "[lomi-mcp] OAuth introspection skipped: set INTERNAL_API_KEY or CRON_SECRET on the MCP service to validate lomi_oat_* tokens.",
+        "[lomi-mcp] OAuth introspection skipped: set INTERNAL_API_KEY on the MCP service to validate lomi_oat_* tokens.",
       );
       warnedMissingInternalKey = true;
     }
@@ -127,4 +123,20 @@ export function buildProtectedResourceMetadata() {
     ],
     bearer_methods_supported: ["header"],
   };
+}
+
+/**
+ * Guest bootstrap is public. Omitting authorization_servers keeps clients
+ * from opening Connect on `/mcp/guest` (that flow is only for `/mcp`).
+ */
+export function buildGuestProtectedResourceMetadata() {
+  return {
+    resource: getMcpGuestResourceUrl(),
+    bearer_methods_supported: [] as string[],
+  };
+}
+
+export function isGuestProtectedResourcePath(path: string): boolean {
+  const normalized = path.replace(/\/+$/, "");
+  return normalized.endsWith("/mcp/guest");
 }

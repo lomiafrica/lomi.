@@ -92,6 +92,19 @@ describe("env-config validation", () => {
     expect(readiness.ok).toBe(false);
   });
 
+  it("does not treat CRON_SECRET as the oauth introspection key", async () => {
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    delete process.env.INTERNAL_API_KEY;
+    process.env.CRON_SECRET = "cron-only";
+    const cfg = await loadEnvConfig();
+    const readiness = cfg.getMcpReadinessChecks();
+    const oauthCheck = readiness.checks.find(
+      (c) => c.name === "oauth_introspection",
+    );
+    expect(oauthCheck?.ok).toBe(false);
+    expect(oauthCheck?.detail).toMatch(/INTERNAL_API_KEY required/);
+  });
+
   it("allows missing oauth introspection key for local dev", async () => {
     delete process.env.LOMI_MCP_RESOURCE_URL;
     delete process.env.LOMI_OAUTH_ISSUER;

@@ -376,10 +376,7 @@ export function getMcpReadinessChecks(): McpReadinessResult {
     }
   });
 
-  const introspectionKey =
-    process.env.INTERNAL_API_KEY?.trim() ||
-    process.env.CRON_SECRET?.trim() ||
-    "";
+  const introspectionKey = process.env.INTERNAL_API_KEY?.trim() || "";
   const oauthDeploymentHint = [
     process.env.LOMI_OAUTH_ISSUER?.trim(),
     process.env.LOMI_MCP_RESOURCE_URL?.trim(),
@@ -395,7 +392,7 @@ export function getMcpReadinessChecks(): McpReadinessResult {
       name: "oauth_introspection",
       ok: !hostedOAuthDeployment,
       detail: hostedOAuthDeployment
-        ? "INTERNAL_API_KEY or CRON_SECRET required for OAuth token introspection on hosted MCP"
+        ? "INTERNAL_API_KEY required for OAuth token introspection on hosted MCP"
         : "not configured (optional for local dev)",
     });
   } else {
