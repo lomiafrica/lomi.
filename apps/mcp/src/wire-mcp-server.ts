@@ -23,6 +23,12 @@ import {
 import { registerSearchToolsMetaTool } from "./register-search-tools.js";
 import { registerLomiRegisterAgent } from "./register-agent.js";
 import { registerLomiSupport } from "./register-support.js";
+import { registerLomiDomains } from "./register-domains.js";
+import { registerLomiConnectors } from "./register-connectors.js";
+import { registerLomiCalendar } from "./register-calendar.js";
+import { registerLomiChannels } from "./register-channels.js";
+import { registerLomiMail } from "./register-mail.js";
+import { registerLomiSms } from "./register-sms.js";
 import { mcpLog } from "./mcp-request-context.js";
 import { validateJsonValue } from "@lomi./shared";
 
@@ -86,6 +92,20 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
   );
   registerLomiRegisterAgent(server, { onProvisioningKeyDiscovered });
   registerLomiSupport(server, { getApiKey });
+  const allowExtra = (name: string) =>
+    merchantAllowedTools == null || merchantAllowedTools.includes(name);
+  if (!guest && merchantAccessLevel !== "read") {
+    if (allowExtra("lomi_domains")) registerLomiDomains(server, { getApiKey });
+    if (allowExtra("lomi_connectors")) {
+      registerLomiConnectors(server, { getApiKey });
+    }
+    if (allowExtra("lomi_mail")) registerLomiMail(server, { getApiKey });
+    if (allowExtra("lomi_calendar")) {
+      registerLomiCalendar(server, { getApiKey });
+    }
+    registerLomiChannels(server, { getApiKey }, allowExtra);
+    if (allowExtra("lomi_sms")) registerLomiSms(server, { getApiKey });
+  }
   registerProvisioningTools(server, provisioningManifest, {
     getProvisioningKey,
     getPartnerKey,
@@ -142,6 +162,10 @@ function guestUpgradeOnMerchantKey(
       skipSearchTool: true,
       onMerchantKeyDiscovered,
     });
+    registerLomiDomains(server, { getApiKey });
+    registerLomiConnectors(server, { getApiKey });
+    registerLomiMail(server, { getApiKey });
+    registerLomiSms(server, { getApiKey });
     mcpLog(
       "guest_session_upgraded",
       { toolCount: manifest.tools.length },
