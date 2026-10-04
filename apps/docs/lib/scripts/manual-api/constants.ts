@@ -18,6 +18,7 @@ export const REST_API_SIDEBAR_GROUPS = [
     folders: [
       'checkout-sessions',
       'payment-links',
+      'whatsapp',
       'payment-requests',
       'invoices',
       'charge',
@@ -103,6 +104,7 @@ const PUBLIC_REST_API_OPERATIONS = [
   'customers',
   'coupons',
   'payment-links',
+  'whatsapp',
   'payment-requests',
   'payouts',
   'settlements',

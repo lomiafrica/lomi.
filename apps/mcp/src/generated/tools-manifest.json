@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 32,
+  "toolCount": 33,
   "tools": [
     {
       "name": "lomi_api_keys",
@@ -4989,6 +4989,128 @@
           "requiredInput": [
             "deliveryId",
             "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_whatsapp",
+      "title": "WhatsApp",
+      "description": "WhatsApp. Pass required `action` to choose the REST call.\n\nActions:\n- `status` — Get WhatsApp connection (GET /whatsapp). No extra required fields.\n- `update` — Update WhatsApp replies (PATCH /whatsapp). Required: body.\n- `connect` — Connect WhatsApp (POST /whatsapp/setup-links). Required: body.\n- `send_payment_link` — Send a WhatsApp payment link (POST /whatsapp/payment-messages). Required: body.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "WhatsApp"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "status",
+              "update",
+              "connect",
+              "send_payment_link"
+            ],
+            "description": "Which REST operation to run. One of: status, update, connect, send_payment_link."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Idempotency-Key": {
+            "type": "string",
+            "description": "Optional unique key. Replays return the original response."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": true,
+      "searchHint": "connect get links messages patch payment post send_payment_link setup status update whatsapp",
+      "actions": {
+        "status": {
+          "operationKey": "GET /whatsapp",
+          "method": "get",
+          "pathTemplate": "/whatsapp",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "WhatsAppMerchantController_getStatus",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get WhatsApp connection",
+          "description": "Read whether this organization has connected a WhatsApp number, the display number, and when inbound texts get a payment link (off, keyword, or any).",
+          "tags": [
+            "WhatsApp"
+          ],
+          "requiredInput": []
+        },
+        "update": {
+          "operationKey": "PATCH /whatsapp",
+          "method": "patch",
+          "pathTemplate": "/whatsapp",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "WhatsAppMerchantController_updateSettings",
+          "write": true,
+          "wantsBody": true,
+          "title": "Update WhatsApp replies",
+          "description": "Set inbound_payment_link. keyword replies when the customer writes a pay word or a message that is only an amount. any replies to every text. off never auto-replies. The merchant still receives the chat in WhatsApp.",
+          "tags": [
+            "WhatsApp"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "connect": {
+          "operationKey": "POST /whatsapp/setup-links",
+          "method": "post",
+          "pathTemplate": "/whatsapp/setup-links",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "WhatsAppMerchantController_createSetupLink",
+          "write": true,
+          "wantsBody": true,
+          "title": "Connect WhatsApp",
+          "description": "Create a setup link the merchant opens on their phone. Default connection_type is coexistence, so the WhatsApp Business app stays on the phone. Pass dedicated for an API-only number. Open url, then call status until connected is true. Requires about 150 000 F CFA of monthly volume before the first connection.",
+          "tags": [
+            "WhatsApp"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "send_payment_link": {
+          "operationKey": "POST /whatsapp/payment-messages",
+          "method": "post",
+          "pathTemplate": "/whatsapp/payment-messages",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "WhatsAppMerchantController_sendPaymentMessage",
+          "write": true,
+          "wantsBody": true,
+          "title": "Send a WhatsApp payment link",
+          "description": "Send a pay.lomi.africa link to a customer on the connected WhatsApp number. Pass to in E.164 and amount in minor units (5000 XOF is 5000, 10.00 USD is 1000), or checkout_session_id for a checkout you already created. This uses an approved template, so the customer does not need to have written first. Send idempotency_key.",
+          "tags": [
+            "WhatsApp"
+          ],
+          "requiredInput": [
+            "body"
           ]
         }
       }

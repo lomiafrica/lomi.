@@ -4460,6 +4460,128 @@
         ]
       }
     },
+    "/whatsapp": {
+      "get": {
+        "description": "Whether this organization has a connected WhatsApp number, and when inbound texts receive a payment link.",
+        "operationId": "WhatsAppMerchantController_getStatus",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": { "type": "string", "example": "1.2.0" }
+          }
+        ],
+        "summary": "Get WhatsApp connection",
+        "tags": ["WhatsApp"]
+      },
+      "patch": {
+        "description": "Choose when a customer message on the connected number gets a lomi. payment link back in the same chat.",
+        "operationId": "WhatsAppMerchantController_updateSettings",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": { "type": "string", "example": "1.2.0" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["inbound_payment_link"],
+                "properties": {
+                  "inbound_payment_link": {
+                    "type": "string",
+                    "enum": ["off", "keyword", "any"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update WhatsApp replies",
+        "tags": ["WhatsApp"]
+      }
+    },
+    "/whatsapp/payment-messages": {
+      "post": {
+        "description": "Sends a payment link to a customer on the connected WhatsApp number using an approved template.",
+        "operationId": "WhatsAppMerchantController_sendPaymentMessage",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional unique key. Replays return the original response.",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": { "type": "string", "example": "1.2.0" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["to"],
+                "properties": {
+                  "to": { "type": "string" },
+                  "amount": { "type": "integer", "minimum": 1 },
+                  "currency_code": { "type": "string", "enum": ["XOF", "USD", "EUR"] },
+                  "title": { "type": "string" },
+                  "checkout_session_id": { "type": "string", "format": "uuid" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Send a WhatsApp payment link",
+        "tags": ["WhatsApp"]
+      }
+    },
+    "/whatsapp/setup-links": {
+      "post": {
+        "description": "Returns a link the merchant opens on their phone to connect WhatsApp. Default is coexistence.",
+        "operationId": "WhatsAppMerchantController_createSetupLink",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": { "type": "string", "example": "1.2.0" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "connection_type": { "type": "string", "enum": ["coexistence", "dedicated"] },
+                  "language": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create WhatsApp setup link",
+        "tags": ["WhatsApp"]
+      }
+    },
     "/payment-links": {
       "post": {
         "description": "Crée un lien de paiement partageable : produit (lien produit) ou montant fixe (lien instantané). Les liens produit référencent un produit et un prix optionnel ; les liens instantanés ont un montant fixe.",

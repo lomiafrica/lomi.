@@ -1,0 +1,24 @@
+---
+title: "Update WhatsApp replies"
+description: "Choose when an inbound WhatsApp message receives a payment link."
+full: true
+method: patch
+path: /whatsapp
+operationId: WhatsAppMerchantController_updateSettings
+---
+
+## Overview
+
+Sets `inbound_payment_link` to `off`, `keyword`, or `any`. Connect WhatsApp first.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`PATCH /whatsapp`
+
+## Request body
+
+`inbound_payment_link` is required.

@@ -1,0 +1,24 @@
+---
+title: "Envoyer un lien de paiement WhatsApp"
+description: "Envoyer un lien de paiement hébergé sur le numéro WhatsApp connecté."
+full: true
+method: post
+path: /whatsapp/payment-messages
+operationId: WhatsAppMerchantController_sendPaymentMessage
+---
+
+## Aperçu
+
+Envoie un lien `pay.lomi.africa` à `to` sur le numéro connecté. L'envoi utilise un modèle approuvé : le client n'a pas besoin d'avoir écrit en premier.
+
+Passez `amount` en unités mineures, ou `checkout_session_id` (UUID) pour un paiement déjà créé. `Idempotency-Key` est optionnel quand un paiement est créé.
+
+Quand le client écrit au numéro, lomi. peut aussi répondre dans la conversation avec un bouton de paiement. Ce réglage est `inbound_payment_link` sur `GET /whatsapp`.
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /whatsapp/payment-messages`

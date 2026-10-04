@@ -1,0 +1,24 @@
+---
+title: "Send a WhatsApp payment link"
+description: "Send a hosted checkout link on the connected WhatsApp number."
+full: true
+method: post
+path: /whatsapp/payment-messages
+operationId: WhatsAppMerchantController_sendPaymentMessage
+---
+
+## Overview
+
+Sends a `pay.lomi.africa` link to `to` on the connected number. This uses an approved template, so the customer does not need to have written first.
+
+Pass `amount` in minor units, or `checkout_session_id` (UUID) for a checkout you already created. Optional `Idempotency-Key` when creating a checkout.
+
+When the customer messages the number, lomi. can also reply in that chat with a pay button. That path is `inbound_payment_link` on `GET /whatsapp`.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /whatsapp/payment-messages`

@@ -6,6 +6,8 @@
     "GET /checkout-sessions",
     "POST /checkout-sessions",
     "POST /payment-links",
+    "GET /whatsapp",
+    "POST /whatsapp/payment-messages",
     "GET /transactions",
     "GET /webhooks",
     "POST /customers"
@@ -84,6 +86,16 @@
         "create": "POST /payment-links",
         "update": "PATCH /payment-links/{id}",
         "archive": "DELETE /payment-links/{id}"
+      }
+    },
+    {
+      "name": "lomi_whatsapp",
+      "title": "WhatsApp",
+      "actions": {
+        "status": "GET /whatsapp",
+        "update": "PATCH /whatsapp",
+        "connect": "POST /whatsapp/setup-links",
+        "send_payment_link": "POST /whatsapp/payment-messages"
       }
     },
     {

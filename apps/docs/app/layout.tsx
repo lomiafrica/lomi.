@@ -115,13 +115,7 @@ export function generateMetadata(): Metadata {
   };
 }
 
-// Use single system font stack for everything
 const font = {
-  style: {
-    fontFamily:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  },
-  variable: '--font-main',
   className: 'font-main',
 };
 
@@ -140,7 +134,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="fr"
       className={font.className}
-      style={font.style}
       suppressHydrationWarning
     >
       <body className="relative flex min-h-screen flex-col">

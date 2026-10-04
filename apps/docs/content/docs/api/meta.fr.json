@@ -11,6 +11,7 @@
     "---Encaisser des paiements---",
     "checkout-sessions",
     "payment-links",
+    "whatsapp",
     "payment-requests",
     "invoices",
     "charge",

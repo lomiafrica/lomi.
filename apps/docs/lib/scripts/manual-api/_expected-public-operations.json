@@ -83,6 +83,7 @@
   "GET /usage/events/{id}",
   "GET /usage/periods",
   "GET /usage/revenue",
+  "GET /whatsapp",
   "GET /webhooks",
   "GET /webhooks/deliveries",
   "GET /webhooks/deliveries/{id}",
@@ -99,6 +100,7 @@
   "PATCH /subscriptions/{id}",
   "PATCH /team/members/{memberId}",
   "PATCH /webhooks/{id}",
+  "PATCH /whatsapp",
   "POST /account/delete",
   "POST /account/export",
   "POST /api-keys",
@@ -151,5 +153,7 @@
   "POST /usage/subscriptions",
   "POST /webhooks",
   "POST /webhooks/{id}/deliveries/{deliveryId}/retry",
-  "POST /webhooks/{id}/test"
+  "POST /webhooks/{id}/test",
+  "POST /whatsapp/payment-messages",
+  "POST /whatsapp/setup-links"
 ]

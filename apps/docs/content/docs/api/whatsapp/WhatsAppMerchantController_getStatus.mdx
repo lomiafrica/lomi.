@@ -1,0 +1,22 @@
+---
+title: "Get WhatsApp connection"
+description: "Read the connected WhatsApp number and reply setting."
+full: true
+method: get
+path: /whatsapp
+operationId: WhatsAppMerchantController_getStatus
+---
+
+## Overview
+
+Returns whether this organization has connected WhatsApp, the display number, and `inbound_payment_link`.
+
+`keyword` replies when a customer writes a pay word or a message that is only an amount. `any` replies to every text. `off` never auto-replies. The merchant keeps the chat in the WhatsApp app.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /whatsapp`

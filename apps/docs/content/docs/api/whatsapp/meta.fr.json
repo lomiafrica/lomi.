@@ -1,0 +1,9 @@
+{
+  "title": "WhatsApp",
+  "pages": [
+    "WhatsAppMerchantController_createSetupLink",
+    "WhatsAppMerchantController_getStatus",
+    "WhatsAppMerchantController_sendPaymentMessage",
+    "WhatsAppMerchantController_updateSettings"
+  ]
+}

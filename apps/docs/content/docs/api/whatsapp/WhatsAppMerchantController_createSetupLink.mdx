@@ -1,0 +1,24 @@
+---
+title: "Create WhatsApp setup link"
+description: "Open this link on the merchant phone to connect WhatsApp."
+full: true
+method: post
+path: /whatsapp/setup-links
+operationId: WhatsAppMerchantController_createSetupLink
+---
+
+## Overview
+
+Returns a setup `url`. The merchant opens it on their phone and finishes Meta signup.
+
+`connection_type` defaults to `coexistence`, so the WhatsApp Business app stays on the phone. `dedicated` is an API-only number.
+
+The first connection needs about 150 000 F CFA of monthly volume. A number that is already connected can request a new link below that floor.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Integration overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /whatsapp/setup-links`

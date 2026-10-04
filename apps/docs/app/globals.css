@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@lomi./ui/font.css';
 @source '../../../packages/ui/src/**/*.{ts,tsx}';
 @plugin '@tailwindcss/container-queries';
 @plugin 'tailwindcss-animate';
@@ -85,9 +86,7 @@
   --selection-bg: 215 55% 72%;
   --selection-bg-alpha: 0.3;
   --selection-foreground: 215 30% 15%;
-  --font-main:
-    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  --font-main: var(--lomi-font-sans);
   --docs-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;

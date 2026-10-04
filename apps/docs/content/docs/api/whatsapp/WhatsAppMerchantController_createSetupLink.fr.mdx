@@ -1,0 +1,24 @@
+---
+title: "Lien de connexion WhatsApp"
+description: "Ouvrir ce lien sur le téléphone du marchand pour connecter WhatsApp."
+full: true
+method: post
+path: /whatsapp/setup-links
+operationId: WhatsAppMerchantController_createSetupLink
+---
+
+## Aperçu
+
+Renvoie une `url`. Le marchand l'ouvre sur son téléphone et termine l'inscription Meta.
+
+`connection_type` vaut `coexistence` par défaut : l'application WhatsApp Business reste sur le téléphone. `dedicated` est un numéro réservé à l'API.
+
+La première connexion demande environ 150 000 F CFA de volume mensuel. Un numéro déjà connecté peut redemander un lien en dessous de ce seuil.
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /whatsapp/setup-links`
