@@ -33,7 +33,10 @@ export function registerLomiSms(
     async (input) => {
       const apiKey = ctx.getApiKey();
       if (!apiKey) {
-        return textResult("Connect with a merchant key before sending SMS.", true);
+        return textResult(
+          "Connect with a merchant key before sending SMS.",
+          true,
+        );
       }
       const payload: JsonObject = {
         action: "send",

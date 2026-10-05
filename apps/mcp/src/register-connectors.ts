@@ -13,10 +13,18 @@ const textResult = (text: string, isError = false) => ({
   isError,
 });
 
-const rest = {
-  method: "post" as const,
-  pathParamNames: [] as string[],
-  queryParamNames: [] as string[],
+type ConnectorRestBase = {
+  method: "post";
+  pathParamNames: string[];
+  queryParamNames: string[];
+  wantsBody: boolean;
+  inputSchema: JsonObject;
+};
+
+const rest: ConnectorRestBase = {
+  method: "post",
+  pathParamNames: [],
+  queryParamNames: [],
   wantsBody: true,
   inputSchema: {},
 };
@@ -30,7 +38,7 @@ export function registerLomiConnectors(
     {
       title: "Remote MCP servers",
       description:
-        "Connect a named merchant app or any remote https MCP server. action=list, catalog, connect, add, remove, authenticate, or call. connect needs slug (resend, sanity, cloudflare, slack, hubspot). add needs name and url, plus headers for a static token. authenticate returns authorization_url. call needs name, tool, and arguments. Confirm before add or remove. Requires a merchant key.",
+        "Connect a named merchant app or any remote https MCP server. action=list, catalog, connect, add, remove, authenticate, or call. connect needs slug (resend, sanity, cloudflare, slack, hubspot, godaddy). add needs name and url, plus headers for a static token. authenticate returns authorization_url. call needs name, tool, and arguments. Confirm before add or remove. Requires a merchant key.",
       inputSchema: {
         action: z.enum([
           "list",
@@ -45,6 +53,12 @@ export function registerLomiConnectors(
         name: z.string().optional(),
         url: z.string().optional(),
         headers: z.record(z.string(), z.string()).optional(),
+        account: z
+          .string()
+          .optional()
+          .describe(
+            "Account label when several accounts of one app are connected.",
+          ),
         tool: z.string().optional(),
         arguments: z.record(z.string(), z.unknown()).optional(),
       },
@@ -130,7 +144,12 @@ export function registerLomiConnectors(
         }
         const result = await callLomiRest(
           { ...rest, pathTemplate: "/connectors/authenticate" },
-          { body: { name: input.name } },
+          {
+            body: {
+              name: input.name,
+              account: isString(input.account) ? input.account : undefined,
+            },
+          },
           { baseUrl, apiKey },
         );
         return textResult(formatHttpResult(result), result.status >= 400);
@@ -147,6 +166,7 @@ export function registerLomiConnectors(
               name: input.name,
               tool: input.tool,
               arguments: isJsonObject(args) ? args : {},
+              account: isString(input.account) ? input.account : undefined,
             },
           },
           { baseUrl, apiKey },
@@ -161,11 +181,14 @@ export function registerLomiConnectors(
           method: "delete",
           pathTemplate: "/connectors/{name}",
           pathParamNames: ["name"],
-          queryParamNames: [],
+          queryParamNames: isString(input.account) ? ["account"] : [],
           wantsBody: false,
           inputSchema: {},
         },
-        { name: input.name },
+        {
+          name: input.name,
+          account: isString(input.account) ? input.account : undefined,
+        },
         { baseUrl, apiKey },
       );
       return textResult(formatHttpResult(result), result.status >= 400);

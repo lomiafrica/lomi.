@@ -36,13 +36,19 @@ export function registerLomiDomains(
         action: z.enum(["list", "add", "verify", "remove"]),
         domain: z.string().optional().describe("Hostname for add and verify"),
         type: z.enum(DOMAIN_TYPES).optional(),
-        domain_id: z.string().optional().describe("From list. Required for remove"),
+        domain_id: z
+          .string()
+          .optional()
+          .describe("From list. Required for remove"),
       },
     },
     async (input) => {
       const apiKey = ctx.getApiKey();
       if (!apiKey) {
-        return textResult("Connect with a merchant key before managing domains.", true);
+        return textResult(
+          "Connect with a merchant key before managing domains.",
+          true,
+        );
       }
       const baseUrl = getLomiApiBaseUrl();
       if (input.action === "list") {

@@ -62,10 +62,7 @@ import {
   introspectOAuthAccessToken,
   isGuestProtectedResourcePath,
 } from "./oauth-introspection.js";
-import {
-  CONNECTOR_ICON_SVG,
-  connectorIconPng,
-} from "./connector-icon.js";
+import { CONNECTOR_ICON_SVG, connectorIconPng } from "./connector-icon.js";
 import {
   buildAuthorizationServerPointer,
   buildMcpCatalog,

@@ -3,6 +3,11 @@
   "deploy": {
     "startCommand": "pnpm run start:http",
     "healthcheckPath": "/ready",
-    "healthcheckTimeout": 120
+    "healthcheckTimeout": 120,
+    "multiRegionConfig": {
+      "europe-west4-drams3a": {
+        "numReplicas": 1
+      }
+    }
   }
 }

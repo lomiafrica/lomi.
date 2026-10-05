@@ -46,7 +46,9 @@ describe("oauth-introspection", () => {
   it("does not treat CRON_SECRET as the introspection key", async () => {
     delete process.env.INTERNAL_API_KEY;
     process.env.CRON_SECRET = "cron-only";
-    const result = await introspectOAuthAccessToken("lomi_oat_cron_secret_test");
+    const result = await introspectOAuthAccessToken(
+      "lomi_oat_cron_secret_test",
+    );
     expect(result.active).toBe(false);
   });
 });

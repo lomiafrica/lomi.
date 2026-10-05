@@ -131,11 +131,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="fr"
-      className={font.className}
-      suppressHydrationWarning
-    >
+    <html lang="fr" className={font.className} suppressHydrationWarning>
       <body className="relative flex min-h-screen flex-col">
         <SiteJsonLd />
         {children}

@@ -34,7 +34,10 @@ export function registerLomiMail(
     async (input) => {
       const apiKey = ctx.getApiKey();
       if (!apiKey) {
-        return textResult("Connect with a merchant key before using mail.", true);
+        return textResult(
+          "Connect with a merchant key before using mail.",
+          true,
+        );
       }
       const body: JsonObject = {
         action: input.action,

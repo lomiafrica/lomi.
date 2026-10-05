@@ -15,7 +15,7 @@ pub async fn run(common: &CommonOptions, args: OpenArgs) -> Result<()> {
         "https://dashboard.lomi.africa".to_string()
     } else {
         format!(
-            "https://dashboard.lomi.africa/{}",
+            "https://dashboard.lomi.africa/#/{}",
             args.path.trim_start_matches('/')
         )
     };

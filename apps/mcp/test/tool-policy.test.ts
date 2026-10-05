@@ -46,15 +46,15 @@ describe("tool-policy", () => {
     expect(isDestructiveOperation("post", "POST /invoices/{id}/void")).toBe(
       true,
     );
-    expect(
-      isDestructiveOperation("post", "POST /disputes/{id}/evidence"),
-    ).toBe(true);
+    expect(isDestructiveOperation("post", "POST /disputes/{id}/evidence")).toBe(
+      true,
+    );
     expect(isDestructiveOperation("post", "POST /customers/{id}/block")).toBe(
       true,
     );
-    expect(
-      isDestructiveOperation("post", "POST /customers/{id}/unblock"),
-    ).toBe(false);
+    expect(isDestructiveOperation("post", "POST /customers/{id}/unblock")).toBe(
+      false,
+    );
     expect(isDestructiveOperation("post", "POST /checkout-sessions")).toBe(
       false,
     );

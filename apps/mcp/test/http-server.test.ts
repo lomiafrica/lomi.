@@ -891,7 +891,7 @@ describe("createHttpApplication", () => {
     );
   });
 
-  it("guest lomi_support file posts /contact and list asks for a merchant key", async () => {
+  it("guest lomi_support file asks for a merchant key and does not email", async () => {
     delete process.env.LOMI_MCP_BEARER_TOKEN;
     delete process.env.LOMI_SECRET_KEY;
     delete process.env.X_API_KEY;
@@ -965,13 +965,12 @@ describe("createHttpApplication", () => {
       },
     });
     const fileResult = jsonRpcResult(fileCall);
-    expect(fileResult.isError).not.toBe(true);
-    const fileText = JSON.stringify(fileResult.content);
-    expect(fileText).toContain("docs-guest1");
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/contact"),
-      expect.objectContaining({ method: "POST" }),
+    expect(fileResult.isError).toBe(true);
+    expect(JSON.stringify(fileResult.content)).toMatch(/merchant key/i);
+    const contactCalls = fetchMock.mock.calls.filter((call) =>
+      String(call[0]).endsWith("/contact"),
     );
+    expect(contactCalls).toHaveLength(0);
 
     const listCall = await rpc({
       jsonrpc: "2.0",

@@ -11,11 +11,7 @@ const textResult = (text: string, isError = false) => ({
   isError,
 });
 
-const post = async (
-  ctx: ChannelContext,
-  path: string,
-  body: JsonObject,
-) => {
+const post = async (ctx: ChannelContext, path: string, body: JsonObject) => {
   const apiKey = ctx.getApiKey();
   if (!apiKey) {
     return textResult("Connect with a merchant key first.", true);
@@ -40,6 +36,60 @@ export function registerLomiChannels(
   ctx: ChannelContext,
   allow: (name: string) => boolean,
 ): void {
+  if (allow("lomi_word")) {
+    server.registerTool(
+      "lomi_word",
+      {
+        title: "Word",
+        description:
+          "Create one Word document in OneDrive. action=create or authenticate. Confirm the title and text before create.",
+        inputSchema: {
+          action: z.enum(["create", "authenticate"]),
+          title: z.string().optional(),
+          body: z.string().optional(),
+        },
+      },
+      async (input) => {
+        const body: JsonObject = { action: input.action };
+        if (isString(input.title)) body.title = input.title;
+        if (isString(input.body)) body.body = input.body;
+        return post(ctx, "/connectors/word", body);
+      },
+    );
+  }
+  if (allow("lomi_onedrive")) {
+    server.registerTool(
+      "lomi_onedrive",
+      {
+        title: "OneDrive",
+        description:
+          "List the lomi. OneDrive folder or upload one https file into it. action=list, upload, or authenticate. Confirm the file name before upload.",
+        inputSchema: {
+          action: z.enum(["list", "upload", "authenticate"]),
+          name: z.string().optional(),
+          url: z.string().optional(),
+        },
+      },
+      async (input) => {
+        const body: JsonObject = { action: input.action };
+        if (isString(input.name)) body.name = input.name;
+        if (isString(input.url)) body.url = input.url;
+        return post(ctx, "/connectors/onedrive", body);
+      },
+    );
+  }
+  if (allow("lomi_excel")) {
+    server.registerTool(
+      "lomi_excel",
+      {
+        title: "Excel",
+        description:
+          "Create a lomi. Sales workbook in OneDrive or append recent completed payments. action=create, append, or authenticate. Confirm before the first write.",
+        inputSchema: { action: z.enum(["create", "append", "authenticate"]) },
+      },
+      async (input) => post(ctx, "/connectors/excel", { action: input.action }),
+    );
+  }
   if (allow("lomi_sheets")) {
     server.registerTool(
       "lomi_sheets",
@@ -49,7 +99,8 @@ export function registerLomiChannels(
           "Create a lomi. Sales sheet or append recent completed payments. action=create, append, or authenticate. Confirm before the first write.",
         inputSchema: { action: z.enum(["create", "append", "authenticate"]) },
       },
-      async (input) => post(ctx, "/connectors/sheets", { action: input.action }),
+      async (input) =>
+        post(ctx, "/connectors/sheets", { action: input.action }),
     );
   }
   if (allow("lomi_drive")) {
@@ -70,6 +121,27 @@ export function registerLomiChannels(
         if (isString(input.name)) body.name = input.name;
         if (isString(input.url)) body.url = input.url;
         return post(ctx, "/connectors/drive", body);
+      },
+    );
+  }
+  if (allow("lomi_docs")) {
+    server.registerTool(
+      "lomi_docs",
+      {
+        title: "Google Docs",
+        description:
+          "Create one Google Doc. action=create or authenticate. Confirm the title and text before create.",
+        inputSchema: {
+          action: z.enum(["create", "authenticate"]),
+          title: z.string().optional(),
+          body: z.string().optional(),
+        },
+      },
+      async (input) => {
+        const body: JsonObject = { action: input.action };
+        if (isString(input.title)) body.title = input.title;
+        if (isString(input.body)) body.body = input.body;
+        return post(ctx, "/connectors/docs", body);
       },
     );
   }
@@ -95,9 +167,9 @@ export function registerLomiChannels(
       {
         title: "Instagram and Facebook",
         description:
-          "Reply in an Instagram or Facebook conversation with a payment link. action=send or authenticate. Confirm the recipient and text before send.",
+          "Sync the signed-in Instagram account or Facebook Pages, or reply in one conversation. action=sync, send, or authenticate. Confirm the recipient and text before send.",
         inputSchema: {
-          action: z.enum(["send", "authenticate"]),
+          action: z.enum(["sync", "send", "authenticate"]),
           provider: z.enum(["instagram", "facebook"]),
           recipient: z.string().optional(),
           text: z.string().optional(),

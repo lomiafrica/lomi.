@@ -15,7 +15,7 @@ export type RegisterSupportContext = {
 };
 
 const GUEST_HINT =
-  "Connect with a merchant key (OAuth or x-lomi-api-key) to list, get, or close Settings → Support tickets. Guest sessions can only file a contact email (action=file with email + message). See https://docs.lomi.africa/build/mcp";
+  "Connect with a merchant key (OAuth or x-lomi-api-key) to file, list, get, or close Settings → Support tickets. See https://docs.lomi.africa/build/mcp";
 
 const CONTACT_TOPICS = [
   "general",
@@ -45,18 +45,22 @@ const inputSchema = {
       "delete_account",
     ])
     .describe(
-      "file: send a complaint (guest email or merchant ticket). list/get/close: merchant tickets. status: platform status URLs. export: GDPR bundle for the current org. delete_account: preview then confirmation_token.",
+      "file: open a Settings → Support ticket (merchant key required). list/get/close: merchant tickets. status: platform status URLs. export: GDPR bundle for the current org. delete_account: preview then confirmation_token.",
     ),
   email: z
     .string()
     .email()
     .optional()
-    .describe("Required for guest file (no merchant key)"),
-  name: z.string().max(200).optional().describe("Guest file display name"),
+    .describe("Ignored. Filing a ticket requires a merchant key."),
+  name: z
+    .string()
+    .max(200)
+    .optional()
+    .describe("Ignored without a merchant key"),
   topic: z
     .enum(CONTACT_TOPICS)
     .optional()
-    .describe("Guest file topic (default general)"),
+    .describe("Ignored without a merchant key"),
   locale: z.string().max(8).optional(),
   message: z
     .string()
@@ -138,7 +142,7 @@ export function registerLomiSupport(
     {
       title: "Contact lomi. support",
       description:
-        "File a complaint or support request. Guest sessions email lomi. (email + message). A merchant key creates a real Settings → Support ticket you can list, get, and close. action=status returns the status page and /ready URL. Merchant-only: action=export downloads a GDPR bundle for the current org; action=delete_account returns a confirmation_token then soft-deletes the merchant.",
+        "File a Settings → Support ticket, or list, get, and close your tickets. A merchant key is required to file. action=status returns the status page and /ready URL. Merchant-only: action=export downloads a GDPR bundle for the current org; action=delete_account returns a confirmation_token then soft-deletes the merchant.",
       inputSchema,
       annotations: {
         readOnlyHint: false,
@@ -200,51 +204,19 @@ export function registerLomiSupport(
       }
 
       if (input.action === "file") {
+        if (!apiKey) {
+          return connectHint();
+        }
         if (!isString(input.message) || input.message.trim().length < 10) {
           return textResult(
             "action=file requires message (at least 10 characters).",
             true,
           );
         }
-        if (apiKey) {
-          const result = await callLomiRest(
-            {
-              method: "post",
-              pathTemplate: "/support-requests",
-              pathParamNames: [],
-              queryParamNames: [],
-              wantsBody: true,
-              inputSchema: {},
-            },
-            {
-              body: compactJson({
-                category: input.category ?? "other",
-                message: input.message,
-                subject: input.subject,
-                transaction_id: input.transaction_id,
-                customer_id: input.customer_id,
-                product_id: input.product_id,
-                plan_id: input.plan_id,
-                payment_link_id: input.payment_link_id,
-                webhook_id: input.webhook_id,
-                payout_id: input.payout_id,
-                meter_id: input.meter_id,
-              }),
-            },
-            { baseUrl, apiKey },
-          );
-          return textResult(formatHttpResult(result), result.status >= 400);
-        }
-        if (!isString(input.email)) {
-          return textResult(
-            "Guest file requires email and message. Or connect a merchant key to open a Settings → Support ticket.",
-            true,
-          );
-        }
         const result = await callLomiRest(
           {
             method: "post",
-            pathTemplate: "/contact",
+            pathTemplate: "/support-requests",
             pathParamNames: [],
             queryParamNames: [],
             wantsBody: true,
@@ -252,14 +224,20 @@ export function registerLomiSupport(
           },
           {
             body: compactJson({
-              email: input.email,
+              category: input.category ?? "other",
               message: input.message,
-              name: input.name,
-              topic: input.topic ?? "general",
-              locale: input.locale,
+              subject: input.subject,
+              transaction_id: input.transaction_id,
+              customer_id: input.customer_id,
+              product_id: input.product_id,
+              plan_id: input.plan_id,
+              payment_link_id: input.payment_link_id,
+              webhook_id: input.webhook_id,
+              payout_id: input.payout_id,
+              meter_id: input.meter_id,
             }),
           },
-          { baseUrl },
+          { baseUrl, apiKey },
         );
         return textResult(formatHttpResult(result), result.status >= 400);
       }

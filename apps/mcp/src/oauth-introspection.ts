@@ -129,10 +129,15 @@ export function buildProtectedResourceMetadata() {
  * Guest bootstrap is public. Omitting authorization_servers keeps clients
  * from opening Connect on `/mcp/guest` (that flow is only for `/mcp`).
  */
-export function buildGuestProtectedResourceMetadata() {
+export type GuestProtectedResourceMetadata = {
+  resource: string;
+  bearer_methods_supported: string[];
+};
+
+export function buildGuestProtectedResourceMetadata(): GuestProtectedResourceMetadata {
   return {
     resource: getMcpGuestResourceUrl(),
-    bearer_methods_supported: [] as string[],
+    bearer_methods_supported: [],
   };
 }
 
