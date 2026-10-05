@@ -405,19 +405,9 @@
         ]
       },
       "patch": {
-        "description": "Sets the customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email and does not send a confirmation link.",
+        "description": "Enregistre immédiatement l'email de support affiché sur les factures et les reçus. Ne change pas l'email de connexion et n'envoie pas de lien de confirmation.",
         "operationId": "OrganizationsController_update",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Organization public id (org_...) or UUID",
-            "schema": {
-              "type": "string",
-              "example": "org_23456789ABCDEF"
-            }
-          },
           {
             "name": "Lomi-Version",
             "in": "header",
@@ -441,23 +431,16 @@
         },
         "responses": {
           "200": {
-            "description": "Support email saved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SupportEmailResponseDto"
-                }
-              }
-            }
+            "description": "Email de support enregistré"
           },
           "400": {
-            "description": "Invalid email"
+            "description": "Email invalide"
           },
           "403": {
-            "description": "Organization is not available to this merchant"
+            "description": "Accès refusé pour cette organisation"
           },
           "404": {
-            "description": "Organization not found"
+            "description": "Organisation introuvable"
           }
         },
         "security": [
@@ -465,7 +448,7 @@
             "api-key": []
           }
         ],
-        "summary": "Set the support email",
+        "summary": "Définir l'email de support",
         "tags": [
           "Organisations"
         ]
@@ -2989,7 +2972,7 @@
         ]
       },
       "post": {
-        "description": "Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement. Pour un produit à l'usage, le montant du tarif est le prix du pack et included_units est le nombre d'unités que ce paiement achète.",
+        "description": "Crée un produit avec un ou plusieurs tarifs en une seule requête. Au moins un prix est requis. Le premier prix, ou celui avec `is_default`, est utilisé lorsque aucun prix n'est précisé au paiement.",
         "operationId": "ProductsController_create",
         "parameters": [
           {
@@ -3447,6 +3430,7 @@
     },
     "/subscriptions/{id}/usage": {
       "get": {
+        "description": "Returns units credited, units consumed, and units still available on a usage subscription.",
         "operationId": "SubscriptionsController_getUsage",
         "parameters": [
           {
@@ -4460,128 +4444,6 @@
         ]
       }
     },
-    "/whatsapp": {
-      "get": {
-        "description": "Whether this organization has a connected WhatsApp number, and when inbound texts receive a payment link.",
-        "operationId": "WhatsAppMerchantController_getStatus",
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": { "type": "string", "example": "1.2.0" }
-          }
-        ],
-        "summary": "Get WhatsApp connection",
-        "tags": ["WhatsApp"]
-      },
-      "patch": {
-        "description": "Choose when a customer message on the connected number gets a lomi. payment link back in the same chat.",
-        "operationId": "WhatsAppMerchantController_updateSettings",
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": { "type": "string", "example": "1.2.0" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["inbound_payment_link"],
-                "properties": {
-                  "inbound_payment_link": {
-                    "type": "string",
-                    "enum": ["off", "keyword", "any"]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update WhatsApp replies",
-        "tags": ["WhatsApp"]
-      }
-    },
-    "/whatsapp/payment-messages": {
-      "post": {
-        "description": "Sends a payment link to a customer on the connected WhatsApp number using an approved template.",
-        "operationId": "WhatsAppMerchantController_sendPaymentMessage",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "description": "Optional unique key. Replays return the original response.",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": { "type": "string", "example": "1.2.0" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["to"],
-                "properties": {
-                  "to": { "type": "string" },
-                  "amount": { "type": "integer", "minimum": 1 },
-                  "currency_code": { "type": "string", "enum": ["XOF", "USD", "EUR"] },
-                  "title": { "type": "string" },
-                  "checkout_session_id": { "type": "string", "format": "uuid" }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Send a WhatsApp payment link",
-        "tags": ["WhatsApp"]
-      }
-    },
-    "/whatsapp/setup-links": {
-      "post": {
-        "description": "Returns a link the merchant opens on their phone to connect WhatsApp. Default is coexistence.",
-        "operationId": "WhatsAppMerchantController_createSetupLink",
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": { "type": "string", "example": "1.2.0" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "connection_type": { "type": "string", "enum": ["coexistence", "dedicated"] },
-                  "language": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create WhatsApp setup link",
-        "tags": ["WhatsApp"]
-      }
-    },
     "/payment-links": {
       "post": {
         "description": "Crée un lien de paiement partageable : produit (lien produit) ou montant fixe (lien instantané). Les liens produit référencent un produit et un prix optionnel ; les liens instantanés ont un montant fixe.",
@@ -4691,11 +4553,6 @@
                   "metadata": {
                     "type": "object",
                     "additionalProperties": true
-                  },
-                  "single_use": {
-                    "type": "boolean",
-                    "description": "When true, the link turns off after the first completed payment. Omit it to keep the link open.",
-                    "default": false
                   }
                 }
               },
@@ -4996,9 +4853,174 @@
         ]
       }
     },
+    "/whatsapp": {
+      "get": {
+        "description": "Whether this organization has a connected WhatsApp number, and when inbound texts receive a payment link.",
+        "operationId": "WhatsAppMerchantController_getStatus",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Get WhatsApp connection",
+        "tags": [
+          "WhatsApp"
+        ]
+      },
+      "patch": {
+        "description": "Choose when a customer message on the connected number gets a lomi. payment link back in the same chat.",
+        "operationId": "WhatsAppMerchantController_updateSettings",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWhatsAppSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Update WhatsApp replies",
+        "tags": [
+          "WhatsApp"
+        ]
+      }
+    },
+    "/whatsapp/setup-links": {
+      "post": {
+        "description": "Returns a link the merchant opens on their phone to connect WhatsApp. Default is coexistence, so the WhatsApp Business app stays on the phone. Open the url, then call GET /whatsapp until connected is true.",
+        "operationId": "WhatsAppMerchantController_createSetupLink",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWhatsAppSetupLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create WhatsApp setup link",
+        "tags": [
+          "WhatsApp"
+        ]
+      }
+    },
+    "/whatsapp/payment-messages": {
+      "post": {
+        "description": "Sends a payment link to a customer on the connected WhatsApp number. Uses an approved template, so the customer does not need to have written first. Pass amount in minor units, or checkout_session_id for a checkout you already created. The pay button in an open chat is sent by lomi. when the customer messages the number.",
+        "operationId": "WhatsAppMerchantController_sendPaymentMessage",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional unique key. Replays return the original response.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendWhatsAppPaymentMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Send a WhatsApp payment link",
+        "tags": [
+          "WhatsApp"
+        ]
+      }
+    },
     "/payouts": {
       "post": {
-        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary). First call without confirmation_token returns a preview. Second call with that token executes.",
+        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary). Avec l'en-tête Lomi-Account et la capacité payout.request, un virement self sort du solde du compte membre vers son compte bancaire ou mobile money enregistré. Le premier appel sans confirmation_token renvoie un aperçu. Le second appel avec ce jeton exécute le virement.",
         "operationId": "PayoutsUnifiedController_create",
         "parameters": [
           {
@@ -5008,6 +5030,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
             }
           },
           {
@@ -5100,6 +5132,16 @@
             }
           },
           {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
+          },
+          {
             "name": "Lomi-Version",
             "in": "header",
             "required": false,
@@ -5136,6 +5178,16 @@
             "in": "path",
             "description": "Payout ID",
             "schema": {}
+          },
+          {
+            "name": "Lomi-Account",
+            "in": "header",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "acct_1234567890"
+            }
           },
           {
             "name": "Lomi-Version",
@@ -8236,6 +8288,7 @@
     },
     "/usage/periods": {
       "get": {
+        "description": "Returns historical billing-period rows for a usage subscription. Pack charges come from checkout and top-ups.",
         "operationId": "UsageBillingController_listPeriods",
         "parameters": [
           {
@@ -9294,44 +9347,6 @@
           "is_deleted"
         ]
       },
-      "UpdateOrganizationDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "maxLength": 320,
-            "example": "support@example.com",
-            "description": "Customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email."
-          }
-        },
-        "required": [
-          "email"
-        ]
-      },
-      "SupportEmailResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "org_23456789ABCDEF",
-            "description": "Organization public id"
-          },
-          "name": {
-            "type": "string",
-            "example": "Acme"
-          },
-          "email": {
-            "type": "string",
-            "example": "support@example.com"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "email"
-        ]
-      },
       "CreateOrganizationDto": {
         "type": "object",
         "properties": {
@@ -9412,6 +9427,20 @@
             "type": "boolean"
           }
         }
+      },
+      "UpdateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "support@example.com",
+            "maxLength": 320,
+            "description": "Customer-facing support email on invoices and receipts. Writes immediately. Does not change the login email."
+          }
+        },
+        "required": [
+          "email"
+        ]
       },
       "CreateOrganizationKeyDto": {
         "type": "object",
@@ -10708,8 +10737,8 @@
           "included_units": {
             "type": "number",
             "example": 1000,
-            "nullable": true,
-            "description": "Units credited when this price is paid. Set on usage products."
+            "description": "Units credited when this price is paid. Set on usage products.",
+            "nullable": true
           },
           "pricing_model": {
             "type": "string",
@@ -10767,6 +10796,7 @@
           "amount",
           "currency_code",
           "billing_interval",
+          "included_units",
           "pricing_model",
           "minimum_amount",
           "maximum_amount",
@@ -10882,7 +10912,7 @@
           "usage_aggregation": {
             "type": "string",
             "example": "sum",
-            "description": "Stored on the meter. Events spend the sum of quantity. Leave this as sum.",
+            "description": "Usage aggregation method",
             "enum": [
               "sum",
               "max",
@@ -11900,6 +11930,10 @@
             "type": "boolean",
             "example": true
           },
+          "single_use": {
+            "type": "boolean",
+            "example": false
+          },
           "link_id": {
             "type": "string",
             "example": "string"
@@ -11959,10 +11993,6 @@
           "url": {
             "type": "string",
             "example": "string"
-          },
-          "single_use": {
-            "type": "boolean",
-            "example": false
           }
         },
         "required": [
@@ -11977,6 +12007,7 @@
           "environment",
           "expires_at",
           "is_active",
+          "single_use",
           "link_id",
           "link_type",
           "metadata",
@@ -12018,6 +12049,10 @@
           "cancel_url": {
             "type": "string"
           },
+          "single_use": {
+            "type": "boolean",
+            "description": "When true, the link turns off after the first completed payment."
+          },
           "allow_coupon_code": {
             "type": "boolean"
           },
@@ -12038,12 +12073,77 @@
           },
           "metadata": {
             "type": "object"
-          },
-          "single_use": {
-            "type": "boolean",
-            "description": "When true, the link turns off after the first completed payment."
           }
         }
+      },
+      "UpdateWhatsAppSettingsDto": {
+        "type": "object",
+        "properties": {
+          "inbound_payment_link": {
+            "type": "string",
+            "enum": [
+              "off",
+              "keyword",
+              "any"
+            ],
+            "description": "When a customer messages the connected number. keyword replies to pay words or a message that is only an amount. any replies to every text. off never replies."
+          }
+        },
+        "required": [
+          "inbound_payment_link"
+        ]
+      },
+      "CreateWhatsAppSetupLinkDto": {
+        "type": "object",
+        "properties": {
+          "connection_type": {
+            "type": "string",
+            "enum": [
+              "coexistence",
+              "dedicated"
+            ],
+            "description": "coexistence keeps the WhatsApp Business app on the merchant phone. dedicated is API-only.",
+            "default": "coexistence"
+          },
+          "language": {
+            "type": "string",
+            "example": "fr"
+          }
+        }
+      },
+      "SendWhatsAppPaymentMessageDto": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "example": "+2250700000000",
+            "description": "Customer WhatsApp number in E.164."
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount in minor units when creating a new checkout. 5000 XOF is 5000. 10.00 USD is 1000. Omit when checkout_session_id is set."
+          },
+          "currency_code": {
+            "type": "string",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Invoice"
+          },
+          "checkout_session_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Existing checkout session UUID from POST /checkout-sessions. Sends that hosted URL instead of creating one."
+          }
+        },
+        "required": [
+          "to"
+        ]
       },
       "PayoutRecipientDto": {
         "type": "object",
@@ -12108,7 +12208,9 @@
             "$ref": "#/components/schemas/PayoutRecipientDto"
           },
           "reason": {
-            "type": "string"
+            "type": "string",
+            "description": "Purpose of this payout. Required, trimmed, and at most 140 characters. The confirmation preview shows it, and the execute call must send the same text.",
+            "maxLength": 140
           },
           "metadata": {
             "type": "object"
@@ -12122,7 +12224,8 @@
           "destination",
           "rail",
           "amount",
-          "currency_code"
+          "currency_code",
+          "reason"
         ]
       },
       "CreatePayoutResponseDto": {
@@ -13804,7 +13907,8 @@
           },
           "aggregation": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Stored on the meter. Events spend the sum of quantity."
           },
           "is_active": {
             "type": "boolean"
