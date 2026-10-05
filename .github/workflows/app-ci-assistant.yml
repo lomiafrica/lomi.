@@ -3,6 +3,8 @@ name: lomi · ci · assistant
 on:
   pull_request:
     paths:
+      - "apps/api"
+      - "apps/dashboard"
       - "apps/api/src/merchant-assistant/**"
       - "apps/api/test/db/assistant.db-spec.ts"
       - "apps/dashboard/src/lib/assistant/**"
@@ -15,6 +17,8 @@ on:
     branches:
       - main
     paths:
+      - "apps/api"
+      - "apps/dashboard"
       - "apps/api/src/merchant-assistant/**"
       - "apps/api/test/db/assistant.db-spec.ts"
       - "apps/dashboard/src/lib/assistant/**"
