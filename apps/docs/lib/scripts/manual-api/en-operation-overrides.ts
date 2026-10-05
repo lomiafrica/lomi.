@@ -1105,6 +1105,39 @@ export const EN_OPERATION_COPY = {
     related:
       '[Create account session](/api/network/NetworkAccountsController_createAccountSession) · [lomi. Network guide](/build/platform/network#member-dashboard-and-login-links)',
   },
+  WhatsAppMerchantController_createSetupLink: {
+    summary: 'Create WhatsApp setup link',
+    body: 'Returns a setup url. The merchant opens it on their phone and finishes Meta signup so the organization can send from their WhatsApp number.',
+    whenToUse:
+      'Use when a merchant connects WhatsApp from your product and you need a one-time link to hand to their phone.',
+    related:
+      '[WhatsApp status](/api/whatsapp/WhatsAppMerchantController_getStatus) · [Update replies](/api/whatsapp/WhatsAppMerchantController_updateSettings)',
+  },
+  WhatsAppMerchantController_getStatus: {
+    summary: 'Get WhatsApp connection',
+    body: 'Returns whether this organization has connected WhatsApp, the display number, and inbound_payment_link.',
+    whenToUse:
+      'Use to show connection state before sending a payment link or changing reply settings.',
+    related:
+      '[Create setup link](/api/whatsapp/WhatsAppMerchantController_createSetupLink) · [Send payment link](/api/whatsapp/WhatsAppMerchantController_sendPaymentMessage)',
+  },
+  WhatsAppMerchantController_sendPaymentMessage: {
+    summary: 'Send a WhatsApp payment link',
+    body: 'Sends a pay.lomi.africa link to the customer on the connected number. This uses an approved template, so the customer does not need to have written first.',
+    whenToUse:
+      'Use when you already have the customer phone and want to collect payment in the merchant WhatsApp chat.',
+    caveats: 'WhatsApp must already be connected for the organization.',
+    related:
+      '[WhatsApp status](/api/whatsapp/WhatsAppMerchantController_getStatus)',
+  },
+  WhatsAppMerchantController_updateSettings: {
+    summary: 'Update WhatsApp replies',
+    body: 'Sets inbound_payment_link to off, keyword, or any. keyword replies when a customer writes a pay word or a message that is only an amount. any replies to every text. off never auto-replies.',
+    whenToUse:
+      'Use after WhatsApp is connected, when the merchant chooses how inbound messages should receive a payment link.',
+    related:
+      '[WhatsApp status](/api/whatsapp/WhatsAppMerchantController_getStatus)',
+  },
   NetworkAccountsController_createAccountSession: {
     summary: 'Create account session',
     body: 'Mints a short-lived `client_secret` (`nas_...`) that your front end passes to the embedded member components: `payments`, `payouts`, `balance`, `onboarding`, and `notification_banner`. Sessions expire after 60 minutes and are scoped to one Member Account.',
