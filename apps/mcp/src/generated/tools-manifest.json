@@ -2789,6 +2789,11 @@
             "type": "string",
             "description": "Required unique key for this write. Replays return the original response."
           },
+          "header_Lomi-Account": {
+            "type": "string",
+            "example": "acct_1234567890",
+            "description": "Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account."
+          },
           "header_Lomi-Version": {
             "type": "string",
             "example": "1.2.0",
