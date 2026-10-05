@@ -142,14 +142,11 @@ export function registerLomiConnectors(
         if (!isString(input.name)) {
           return textResult("authenticate requires name.", true);
         }
+        const authBody: JsonObject = { name: input.name };
+        if (isString(input.account)) authBody.account = input.account;
         const result = await callLomiRest(
           { ...rest, pathTemplate: "/connectors/authenticate" },
-          {
-            body: {
-              name: input.name,
-              account: isString(input.account) ? input.account : undefined,
-            },
-          },
+          { body: authBody },
           { baseUrl, apiKey },
         );
         return textResult(formatHttpResult(result), result.status >= 400);
@@ -159,16 +156,15 @@ export function registerLomiConnectors(
           return textResult("call requires name and tool.", true);
         }
         const args = input.arguments;
+        const callBody: JsonObject = {
+          name: input.name,
+          tool: input.tool,
+          arguments: isJsonObject(args) ? args : {},
+        };
+        if (isString(input.account)) callBody.account = input.account;
         const result = await callLomiRest(
           { ...rest, pathTemplate: "/connectors/call" },
-          {
-            body: {
-              name: input.name,
-              tool: input.tool,
-              arguments: isJsonObject(args) ? args : {},
-              account: isString(input.account) ? input.account : undefined,
-            },
-          },
+          { body: callBody },
           { baseUrl, apiKey },
         );
         return textResult(formatHttpResult(result), result.status >= 400);
@@ -176,6 +172,8 @@ export function registerLomiConnectors(
       if (!isString(input.name)) {
         return textResult("remove requires name.", true);
       }
+      const removeParams: JsonObject = { name: input.name };
+      if (isString(input.account)) removeParams.account = input.account;
       const result = await callLomiRest(
         {
           method: "delete",
@@ -185,10 +183,7 @@ export function registerLomiConnectors(
           wantsBody: false,
           inputSchema: {},
         },
-        {
-          name: input.name,
-          account: isString(input.account) ? input.account : undefined,
-        },
+        removeParams,
         { baseUrl, apiKey },
       );
       return textResult(formatHttpResult(result), result.status >= 400);
