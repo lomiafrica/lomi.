@@ -5,7 +5,6 @@
 
 export type { paths, components, operations } from './schema.js';
 export * from './type-aliases.js';
-export * from './types.js';
 
 export { AccountService } from './services/AccountService.js';
 export { AccountsService } from './services/AccountsService.js';

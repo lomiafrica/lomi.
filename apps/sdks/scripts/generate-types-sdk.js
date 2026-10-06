@@ -34,7 +34,6 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const apiTypesPath = join(__dirname, "../api-types.ts");
 const openapiPath = DEFAULT_OPENAPI_PATH;
 const allowlistPath = DEFAULT_ALLOWLIST_PATH;
 const outputDir = join(__dirname, "../ts/src/generated");
@@ -345,18 +344,6 @@ ${blocks}${webhookExtra}
 `;
 }
 
-function generateTypesFile(apiTypesContent) {
-  return `/**
- * API Types
- * AUTO-GENERATED - Do not edit manually
- *
- * Re-exports Database types copied from apps/api.
- */
-
-${apiTypesContent}
-`;
-}
-
 /**
  * @param {ReturnType<typeof getNormalizedOperations>['flat']} flatOps
  */
@@ -410,7 +397,6 @@ function generateIndex(servicesSorted) {
 
 export type { paths, components, operations } from './schema.js';
 export * from './type-aliases.js';
-export * from './types.js';
 
 ${lines.join("\n")}
 `;
@@ -421,7 +407,6 @@ function main() {
 
   const enSummaries = loadEnSummaries();
   const { spec, allowed } = readSpecAndAllowlist(openapiPath, allowlistPath);
-  const apiTypesContent = readFileSync(apiTypesPath, "utf-8");
 
   const { byService: allServices, operations } = getNormalizedOperations(
     spec,
@@ -480,10 +465,6 @@ function main() {
     writeFileSync(schemaPath, preservedSchema, "utf-8");
   }
 
-  writeFileSync(
-    join(outputDir, "types.ts"),
-    generateTypesFile(apiTypesContent),
-  );
   writeFileSync(
     join(outputDir, "type-aliases.ts"),
     generateSchemaTypeAliases(operations),

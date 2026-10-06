@@ -3,8 +3,8 @@
  * Master SDK Generator
  *
  * This script:
- * 1. Copies API types from apps/api to apps/sdks
- * 2. Generates SDKs for all supported languages (TypeScript, Python, Go, PHP)
+ * Generates SDKs for all supported languages (TypeScript, Python, Go, PHP)
+ * from the public OpenAPI contract. Database types stay in packages/shared.
  *
  * Run: npm run generate:all
  */
@@ -67,7 +67,6 @@ async function generateAll() {
     "📋 Public merchant SDKs use apps/docs/openapi.json + strict allowlist\n",
   );
 
-  // Step 1: Pre-generation - Copy API types
   log.step("Running pre-generation setup...");
   const preGenSuccess = exec("node scripts/pre-generate.js", {
     cwd: path.join(__dirname, ".."),
