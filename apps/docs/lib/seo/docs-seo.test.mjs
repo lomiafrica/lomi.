@@ -156,6 +156,9 @@ test('robots.txt does not block sitemap API reference pages', async () => {
   const sitemapSource = read('app/sitemap.ts');
   assert.match(sitemapSource, /path\.startsWith\('\/api\/'\)/);
   assert.match(sitemapSource, /isDocsSitemapPath/);
+  assert.doesNotMatch(sitemapSource, /AGENT_CORPUS_ROUTES/);
+  assert.match(read('app/agents/route.ts'), /noindex/);
+  assert.match(read('app/agents/[slug]/route.ts'), /noindex/);
 
   assert.equal(isDocsSitemapPath('/api/authentication'), true);
   assert.equal(isDocsSitemapPath('/api/charge'), true);
