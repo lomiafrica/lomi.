@@ -50,7 +50,8 @@
     "overrides": {
       "postcss": "^8.5.23",
       "fast-uri": "^3.1.5",
-      "nanoid": "^3.3.18"
+      "nanoid": "^3.3.18",
+      "source-map-js": "1.2.2"
     }
   },
   "dependencies": {

@@ -1,9 +1,23 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use serde::de::DeserializeOwned;
 
 use crate::api::ApiError;
 use crate::auth::AuthContext;
+
+fn require_https_api_url(url: &str) -> Result<()> {
+    let lower = url.to_ascii_lowercase();
+    if lower.starts_with("https://") {
+        return Ok(());
+    }
+    if lower.starts_with("http://localhost")
+        || lower.starts_with("http://127.0.0.1")
+        || lower.starts_with("http://[::1]")
+    {
+        return Ok(());
+    }
+    bail!("The API URL must use https. Only localhost may use http.");
+}
 
 pub struct ApiClient {
     client: reqwest::Client,
@@ -24,9 +38,12 @@ impl ApiClient {
             .default_headers(headers)
             .build()?;
 
+        let base_url = auth.api_url.trim_end_matches('/').to_string();
+        require_https_api_url(&base_url)?;
+
         Ok(Self {
             client,
-            base_url: auth.api_url.trim_end_matches('/').to_string(),
+            base_url,
             token: auth.cli_token.clone(),
         })
     }

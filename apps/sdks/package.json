@@ -24,17 +24,17 @@
     "openapi-typescript": "^7.8.0"
   },
   "overrides": {
-    "brace-expansion": "^2.1.4",
+    "brace-expansion": "2.1.7",
     "js-yaml": "^4.3.2"
   },
   "pnpm": {
     "overrides": {
-      "brace-expansion": "^2.1.4",
+      "brace-expansion": "2.1.7",
       "js-yaml": "^4.3.2"
     }
   },
   "dependencies": {
-    "brace-expansion": "^2.1.4",
+    "brace-expansion": "^2.1.7",
     "js-yaml": "^4.3.2"
   }
 }

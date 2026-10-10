@@ -133,9 +133,12 @@ fn print_charge(common: &CommonOptions, title: &str, body: &Value) -> Result<()>
     if let Some(amount) = data.get("amount_capturable") {
         println!("  {}: {amount}", "amount_capturable".bold());
     }
-    if let Some(secret) = data.get("client_secret").and_then(Value::as_str) {
-        println!("  {}: {secret}", "client_secret".bold());
-        println!("Confirm this card in lomi. Elements. Card numbers never go through the CLI.");
+    if data.get("client_secret").and_then(Value::as_str).is_some() {
+        println!(
+            "  {}: present. Re-run with --json to copy it, then confirm the card in lomi. Elements.",
+            "client_secret".bold()
+        );
+        println!("Card numbers never go through the CLI.");
     }
     Ok(())
 }

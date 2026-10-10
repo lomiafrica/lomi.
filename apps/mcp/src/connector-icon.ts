@@ -10,14 +10,17 @@ export type ConnectorIcon = {
   sizes: ["128x128" | "any"];
 };
 
+function readConnectorOrigin(): string {
+  try {
+    return new URL(getMcpResourceUrl()).origin;
+  } catch {
+    return "https://mcp.lomi.africa";
+  }
+}
+
 /** Absolute icon URLs advertised on initialize and the server card. */
 export function connectorIcons(): ConnectorIcon[] {
-  let origin = "https://mcp.lomi.africa";
-  try {
-    origin = new URL(getMcpResourceUrl()).origin;
-  } catch {
-    origin = "https://mcp.lomi.africa";
-  }
+  const origin = readConnectorOrigin();
   return [
     {
       src: `${origin}/icon.png`,

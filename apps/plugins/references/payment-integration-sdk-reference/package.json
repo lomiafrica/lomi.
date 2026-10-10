@@ -8,16 +8,17 @@
   },
   "dependencies": {
     "@lomi./embed": "^0.1.1",
-    "@lomi./sdk": "^1.5.10",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.22.2"
+    "@lomi./sdk": "^1.6.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3"
   },
   "pnpm": {
     "overrides": {
       "form-data": ">=4.0.6",
       "qs": ">=6.16.0",
-      "axios": "^1.18.1",
+      "axios": "^1.20.0",
+      "proxy-addr": "^2.0.8",
       "body-parser": "^1.20.6",
       "fast-uri": "^3.1.5"
     }
