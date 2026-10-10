@@ -12,7 +12,7 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 
 <DocsScreenshot name="build/payouts" alt="Payouts and withdrawals settings in lomi. dashboard" />
 
-- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank`, `spi`, `wave`, and `mtn` (mobile money). Allowlisted Test orgs may use `rail: "stellar"` without a payout method. See [Stellar payouts](/build/money/stellar).
+- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank` (bank transfers via our banking partner), `wave`, and `mtn` (mobile money). π-SPI (`spi`) is not available yet. Allowlisted Test orgs may use `rail: "stellar"` without a payout method. See [Stellar payouts](/build/money/stellar).
 - **`destination: "beneficiary"`**: pay a third party on **mobile rails** (`wave` or `mtn`). Requires `recipient.name` and `recipient.phone` (any E.164 mobile number; **not** tied to `payout_method_id`). Bank payouts to arbitrary accounts are not supported.
 
 <Callout type="warn">
@@ -31,11 +31,14 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 | --- | --- | --- |
 | Wave | Côte d'Ivoire | F CFA |
 | MTN | Live MTN countries on your account | F CFA |
-| π-SPI / local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
+| Local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
+| Local bank | Democratic Republic of the Congo | |
 | US bank | United States | USD |
 | Eurozone bank | Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain, Croatia | EUR |
 | Other IBAN | Andorra, Bulgaria, Switzerland, Czechia, Denmark, United Kingdom, Gibraltar, Hungary, Iceland, Liechtenstein, Monaco, Norway, Poland, Romania, Sweden | EUR |
 | Other banks | Remaining countries | USD |
+
+Local bank destinations are bank transfers via our banking partner. π-SPI is not available yet.
 
 ### Someone else (`destination: "beneficiary"`)
 
@@ -94,10 +97,10 @@ curl -X POST "https://api.lomi.africa/payouts" \
 | Field | Type | Required |
 | --- | --- | --- |
 | `destination` | `'self'` \| `'beneficiary'` | **Yes** |
-| `rail` | `'wave'` \| `'spi'` \| `'bank'` \| `'mtn'` \| `'stellar'` | **Yes** |
+| `rail` | `'wave'` \| `'spi'` \| `'bank'` \| `'mtn'` \| `'stellar'` | **Yes**. π-SPI (`spi`) is not available yet. |
 | `amount` | `number` | **Yes** |
 | `currency_code` | `string` | **Yes** |
-| `payout_method_id` | UUID | **Yes** for `self`; required for beneficiary `spi` |
+| `payout_method_id` | UUID | **Yes** for `self`; required for beneficiary `spi` (π-SPI is not available yet) |
 | `recipient` | `{ name, phone }` | **Yes** for beneficiary `wave` |
 | `reason` | `string` | No |
 
