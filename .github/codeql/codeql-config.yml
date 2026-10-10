@@ -2,7 +2,7 @@ name: lomi. CodeQL
 paths-ignore:
   - apps/plugins/references/**
   - apps/docs/apps/**
-  - apps/dashboard/apps/**
+  - apps/dashboard/**
 query-filters:
   - exclude:
       id: rust/cleartext-logging

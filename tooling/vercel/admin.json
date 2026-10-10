@@ -30,7 +30,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' https://admin.lomi.africa; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel-insights.com; script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel-insights.com; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://mdswvokxrnfggrujsfjd.supabase.co; font-src 'self' data:; connect-src 'self' https://lomi.africa https://api.lomi.africa https://mdswvokxrnfggrujsfjd.supabase.co wss://mdswvokxrnfggrujsfjd.supabase.co https://vercel.live https://*.vercel-insights.com; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; manifest-src 'self'; media-src 'self' data: blob:;"
+          "value": "default-src 'self' https://admin.lomi.africa; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel-insights.com; script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel-insights.com; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://lomi.africa https://api.lomi.africa https://*.supabase.co wss://*.supabase.co https://vercel.live https://*.vercel-insights.com; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; manifest-src 'self'; media-src 'self' data: blob:;"
         },
         {
           "key": "Permissions-Policy",

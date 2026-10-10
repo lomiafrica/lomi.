@@ -7,15 +7,15 @@ on:
     branches: [main, develop]
     paths:
       - "apps/api"
-      - "apps/dashboard/pnpm-lock.yaml"
-      - "apps/checkout/pnpm-lock.yaml"
+      - "apps/dashboard"
+      - "apps/checkout"
       - ".github/workflows/app-security-audit.yml"
   pull_request:
     branches: [main]
     paths:
       - "apps/api"
-      - "apps/dashboard/pnpm-lock.yaml"
-      - "apps/checkout/pnpm-lock.yaml"
+      - "apps/dashboard"
+      - "apps/checkout"
       - ".github/workflows/app-security-audit.yml"
   schedule:
     - cron: "30 8 * * 1"

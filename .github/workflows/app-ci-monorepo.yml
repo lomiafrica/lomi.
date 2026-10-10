@@ -122,17 +122,19 @@ jobs:
         working-directory: .
         env:
           SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+          SUPABASE_PROD_PROJECT_REF: ${{ secrets.SUPABASE_PROD_PROJECT_REF }}
+          SUPABASE_TEST_PROJECT_REF: ${{ secrets.SUPABASE_TEST_PROJECT_REF }}
         run: |
-          if [[ -z "$SUPABASE_DB_TEST_URL" ]]; then
-            echo "SUPABASE_DB_TEST_URL secret is not set; the money-core DB suite would silently skip." >&2
+          if [[ -z "$SUPABASE_DB_TEST_URL" || -z "$SUPABASE_PROD_PROJECT_REF" || -z "$SUPABASE_TEST_PROJECT_REF" ]]; then
+            echo "Database guard secrets are not set. Refusing." >&2
             exit 1
           fi
-          if [[ "$SUPABASE_DB_TEST_URL" == *mdswvokxrnfggrujsfjd* ]]; then
+          if [[ "$SUPABASE_DB_TEST_URL" == *"$SUPABASE_PROD_PROJECT_REF"* ]]; then
             echo "SUPABASE_DB_TEST_URL points at production. Refusing." >&2
             exit 1
           fi
-          if [[ "$SUPABASE_DB_TEST_URL" != *aznvppizdjrncqhnknrc* ]]; then
-            echo "SUPABASE_DB_TEST_URL must point at lomi TEST (aznvppizdjrncqhnknrc)." >&2
+          if [[ "$SUPABASE_DB_TEST_URL" != *"$SUPABASE_TEST_PROJECT_REF"* ]]; then
+            echo "SUPABASE_DB_TEST_URL is not the TEST project. Refusing." >&2
             exit 1
           fi
       - name: Checkout private API + dashboard + packages submodules

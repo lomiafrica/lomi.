@@ -2,8 +2,7 @@
 /**
  * Fail when anon or PUBLIC can EXECUTE platform admin SECURITY DEFINER RPCs.
  *
- * Canonical fix: apps/dashboard/supabase/migrations/20250226000108_settlements_api.sql
- * (security hardening block at end of file).
+ * The fix belongs in the private dashboard migrations, not in this public repo.
  *
  * Usage:
  *   SUPABASE_DB_URL=... node .github/scripts/check-anon-admin-rpc-execute.mjs

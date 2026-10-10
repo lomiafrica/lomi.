@@ -4,25 +4,25 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'apps/api'
-      - 'apps/api/**'
-      - 'apps/docs/**'
-      - 'apps/website'
-      - 'apps/website/**'
-      - 'apps/mcp/**'
-      - '.github/workflows/app-parity.yml'
+      - "apps/api"
+      - "apps/api/**"
+      - "apps/docs/**"
+      - "apps/website"
+      - "apps/website/**"
+      - "apps/mcp/**"
+      - ".github/workflows/app-parity.yml"
   pull_request:
     branches: [main]
     paths:
-      - 'apps/api'
-      - 'apps/api/**'
-      - 'apps/docs/**'
-      - 'apps/website'
-      - 'apps/website/**'
-      - 'apps/mcp/**'
-      - '.github/workflows/app-parity.yml'
+      - "apps/api"
+      - "apps/api/**"
+      - "apps/docs/**"
+      - "apps/website"
+      - "apps/website/**"
+      - "apps/mcp/**"
+      - ".github/workflows/app-parity.yml"
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: "0 6 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -48,7 +48,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: pnpm
           cache-dependency-path: |
             apps/api/pnpm-lock.yaml
