@@ -15,7 +15,9 @@ describe("public MCP instructions", () => {
       for (const guest of [false, true]) {
         const text = buildServerInstructions(mode, guest);
         for (const pattern of PRIVATE_IN_PUBLIC) {
-          expect(text, `${mode} guest=${guest} ${pattern}`).not.toMatch(pattern);
+          expect(text, `${mode} guest=${guest} ${pattern}`).not.toMatch(
+            pattern,
+          );
         }
       }
     }
