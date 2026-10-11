@@ -9,7 +9,6 @@
     "radar",
     "payouts",
     "bank-payouts",
-    "stellar",
     "balance-and-settlement"
   ]
 }

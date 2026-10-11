@@ -12178,19 +12178,8 @@
               "wave",
               "spi",
               "bank",
-              "mtn",
-              "stellar"
+              "mtn"
             ]
-          },
-          "last_mile_rail": {
-            "type": "string",
-            "enum": [
-              "wave",
-              "mtn",
-              "spi",
-              "bank"
-            ],
-            "description": "Last-mile rail after the Stellar USDC hop. Ignored unless rail is stellar. Defaults to wave."
           },
           "amount": {
             "type": "number",
@@ -12252,12 +12241,6 @@
             "example": "processing"
           },
           "message": {
-            "type": "string"
-          },
-          "stellar_transaction_id": {
-            "type": "string"
-          },
-          "bridge_transfer_id": {
             "type": "string"
           }
         },

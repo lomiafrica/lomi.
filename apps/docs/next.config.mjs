@@ -29,6 +29,7 @@ const MOVED_DOC_REDIRECTS = [
   ['/build/disputes', '/build/money/disputes'],
   ['/build/radar', '/build/money/radar'],
   ['/build/payouts', '/build/money/payouts'],
+  ['/build/money/stellar', '/build/money/payouts'],
   ['/build/balance-and-settlement', '/build/money/balance-and-settlement'],
   ['/build/webhooks', '/build/reliability'],
   ['/build/advanced-guides', '/build/reliability'],

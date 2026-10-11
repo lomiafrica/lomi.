@@ -4094,12 +4094,7 @@ export interface components {
             /** @enum {string} */
             destination: "self" | "beneficiary";
             /** @enum {string} */
-            rail: "wave" | "spi" | "bank" | "mtn" | "stellar";
-            /**
-             * @description Last-mile rail after the Stellar USDC hop. Ignored unless rail is stellar. Defaults to wave.
-             * @enum {string}
-             */
-            last_mile_rail?: "wave" | "mtn" | "spi" | "bank";
+            rail: "wave" | "spi" | "bank" | "mtn";
             /** @example 5000 */
             amount: number;
             /** @example XOF */
@@ -4125,8 +4120,6 @@ export interface components {
             /** @example processing */
             status?: string;
             message?: string;
-            stellar_transaction_id?: string;
-            bridge_transfer_id?: string;
         };
         SubmitDisputeEvidenceDto: {
             customer_name?: string;
