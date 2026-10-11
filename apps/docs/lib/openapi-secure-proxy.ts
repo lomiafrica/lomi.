@@ -26,11 +26,37 @@ export function isOriginAllowedForProxy(
 ): boolean {
   const parsed = URL.parse(targetUrl);
   if (!parsed) return false;
+  if (parsed.username || parsed.password) return false;
   if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
     return false;
   }
   return allowedOrigins.includes(parsed.origin);
 }
+
+/**
+ * The proxy must not follow a redirect off the allowlist. `fetch` follows
+ * redirects by default, which would skip the origin check on the next hop.
+ * Relative locations are resolved against the URL that was just fetched.
+ */
+export function resolveProxyRedirectTarget(
+  status: number,
+  location: string | null,
+  baseUrl: string,
+  allowedOrigins: string[],
+): 'none' | 'refuse' | string {
+  if (status < 300 || status >= 400) return 'none';
+  if (!location) return 'refuse';
+  const absolute = URL.parse(location, baseUrl);
+  if (
+    !absolute ||
+    !isOriginAllowedForProxy(absolute.toString(), allowedOrigins)
+  ) {
+    return 'refuse';
+  }
+  return absolute.toString();
+}
+
+const MAX_PROXY_REDIRECTS = 2;
 
 export type SecureProxyOptions = {
   getInjectionContext: () => Promise<{
@@ -40,10 +66,12 @@ export type SecureProxyOptions = {
   resolveTestKey: (ctx: {
     activeOrganizationId: string | null;
   }) => Promise<string | null>;
+  fetchImpl?: typeof fetch;
 };
 
 export function createSecureOpenApiProxyHandlers(options: SecureProxyOptions) {
   const allowedOrigins = getSandboxAllowedOrigins();
+  const doFetch = options.fetchImpl ?? fetch;
 
   async function handler(incomingRequest: Request): Promise<Response> {
     const urlParam = new URL(incomingRequest.url).searchParams.get('url');
@@ -61,7 +89,7 @@ export function createSecureOpenApiProxyHandlers(options: SecureProxyOptions) {
       });
     }
 
-    if (!allowedOrigins.includes(parsedUrl.origin)) {
+    if (!isOriginAllowedForProxy(parsedUrl.toString(), allowedOrigins)) {
       return Response.json(
         `[Proxy] The origin "${parsedUrl.origin}" is not allowed.`,
         { status: 400 },
@@ -105,10 +133,46 @@ export function createSecureOpenApiProxyHandlers(options: SecureProxyOptions) {
       }
     });
 
-    let res = await fetch(proxied).catch((e) => new Error(String(e)));
-    if (res instanceof Error) {
-      return Response.json(`[Proxy] Failed to proxy request: ${res.message}`, {
-        status: 500,
+    let res: Response;
+    let hops = 0;
+    for (;;) {
+      const fetched = await doFetch(proxied, { redirect: 'manual' }).catch(
+        (e) => new Error(String(e)),
+      );
+      if (fetched instanceof Error) {
+        return Response.json(
+          `[Proxy] Failed to proxy request: ${fetched.message}`,
+          { status: 500 },
+        );
+      }
+      const redirect = resolveProxyRedirectTarget(
+        fetched.status,
+        fetched.headers.get('location'),
+        proxied.url,
+        allowedOrigins,
+      );
+      if (redirect === 'refuse') {
+        return Response.json('[Proxy] Redirect target is not allowed.', {
+          status: 400,
+        });
+      }
+      if (redirect !== 'none' && hops >= MAX_PROXY_REDIRECTS) {
+        return Response.json('[Proxy] Too many redirects.', { status: 400 });
+      }
+      if (redirect === 'none') {
+        res = fetched;
+        break;
+      }
+      hops += 1;
+      const nextMethod =
+        fetched.status === 307 || fetched.status === 308
+          ? proxied.method
+          : 'GET';
+      proxied = new Request(redirect, {
+        method: nextMethod,
+        cache: 'no-cache',
+        headers: proxied.headers,
+        body: nextMethod === 'GET' || nextMethod === 'HEAD' ? undefined : body,
       });
     }
 

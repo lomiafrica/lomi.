@@ -6,7 +6,7 @@ description: "`rail: stellar` en Test, pour une organisation autorisée. Le mém
 import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 import { Callout } from '@/components/docs/docs-callout';
 
-Utilisez **`POST /payouts`** avec `rail: "stellar"` pour passer le solde marchand par USDC Circle sur Stellar. Les marchands ne détiennent pas de clés. USDC reste en trésorerie, pas une devise de `accounts`.
+Utilisez **`POST /payouts`** avec `rail: "stellar"` pour passer le solde marchand par USDC Circle sur Stellar. Les marchands ne détiennent pas de clés. USDC reste en trésorerie, pas une devise de `accounts`. Le toml mainnet du dépôt public n'est pas servi. Ce rail reste en Test.
 
 <Callout type="warn">
   Les virements Stellar sont en Test tant que votre organisation n’est pas autorisée et que le live n’est pas activé. Utilisez une clé **test** (`lomi_sk_test_…`) vers `https://sandbox.api.lomi.africa`. Le même `payout_id` (ou `Idempotency-Key`) ne crée qu’un seul Payment on-chain.

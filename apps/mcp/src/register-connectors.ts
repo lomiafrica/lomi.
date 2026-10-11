@@ -2,7 +2,12 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { getLomiApiBaseUrl } from "./env-config.js";
 import { callLomiRest, formatHttpResult } from "./lomi-http.js";
-import { isJsonObject, isString, type JsonObject } from "@lomi./shared";
+import {
+  CONNECTORS_TOOL_DESCRIPTION,
+  isJsonObject,
+  isString,
+  type JsonObject,
+} from "@lomi./shared";
 
 export type RegisterConnectorsContext = {
   getApiKey: () => string | null;
@@ -29,6 +34,8 @@ const rest: ConnectorRestBase = {
   inputSchema: {},
 };
 
+export const LOMI_CONNECTORS_MCP_DESCRIPTION = `${CONNECTORS_TOOL_DESCRIPTION} Requires a merchant key.`;
+
 export function registerLomiConnectors(
   server: McpServer,
   ctx: RegisterConnectorsContext,
@@ -37,8 +44,7 @@ export function registerLomiConnectors(
     "lomi_connectors",
     {
       title: "Remote MCP servers",
-      description:
-        "Connect a named merchant app or any remote https MCP server. action=list, catalog, connect, add, remove, authenticate, or call. connect needs slug (resend, sanity, cloudflare, slack, hubspot, godaddy). add needs name and url, plus headers for a static token. authenticate returns authorization_url. call needs name, tool, and arguments. Confirm before add or remove. Requires a merchant key.",
+      description: LOMI_CONNECTORS_MCP_DESCRIPTION,
       inputSchema: {
         action: z.enum([
           "list",
