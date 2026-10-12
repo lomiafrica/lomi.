@@ -36,6 +36,8 @@ jobs:
           else
             echo "No archive yet."
           fi
+          jq 'del(.artifacts.applicationArchiveUrl, .artifacts.buildUrl)' /tmp/eas-build-view.json > /tmp/eas-build-view.redacted.json
+          mv /tmp/eas-build-view.redacted.json /tmp/eas-build-view.json
 
       - uses: actions/upload-artifact@v4
         if: always()
