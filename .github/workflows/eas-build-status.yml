@@ -56,7 +56,7 @@ jobs:
             exit 1
           fi
           python3 - << 'PY'
-          import json, os, urllib.request
+          import gzip, json, os, urllib.request
           data = json.load(open("/tmp/eas-build-view.json"))
           errors = data.get("errors") or []
           if errors:
@@ -96,7 +96,10 @@ jobs:
                   continue
               dest = f"/tmp/eas-log-{index}.txt"
               urllib.request.urlretrieve(log_url, dest)
-              lines = open(dest, errors="replace").read().splitlines()
+              raw = open(dest, "rb").read()
+              if raw[:2] == b"\x1f\x8b":
+                  raw = gzip.decompress(raw)
+              lines = raw.decode("utf-8", "replace").splitlines()
               chunks.append(f"log {index} lines {len(lines)}")
               tail = [line for line in lines[-80:] if "http" not in line.lower()]
               chunks.extend(tail)
