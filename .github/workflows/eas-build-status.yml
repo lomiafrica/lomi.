@@ -19,6 +19,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           set -euo pipefail
+          python3 -m pip install --quiet brotli
           cat > /tmp/eas-query.json << 'JSON'
           {
             "query": "query BuildsById($buildId: ID!) { builds { byId(buildId: $buildId) { id status platform appVersion appBuildVersion distribution buildProfile gitCommitHash error { errorCode message } logFiles artifacts { buildUrl applicationArchiveUrl } } } }"
@@ -56,7 +57,7 @@ jobs:
             exit 1
           fi
           python3 - << 'PY'
-          import gzip, json, os, urllib.request, zlib
+          import brotli, gzip, json, os, urllib.request, zlib
           data = json.load(open("/tmp/eas-build-view.json"))
           errors = data.get("errors") or []
           if errors:
@@ -102,6 +103,8 @@ jobs:
                       + response.headers.get("Content-Encoding", "")
                   )
                   raw = response.read()
+                  if response.headers.get("Content-Encoding") == "br":
+                      raw = brotli.decompress(raw)
               chunks.append(f"log {index} bytes {len(raw)} magic {raw[:8].hex()}")
               strings = []
               current = bytearray()
