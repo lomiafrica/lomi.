@@ -85,20 +85,25 @@ jobs:
           artifacts.pop("applicationArchiveUrl", None)
           artifacts.pop("buildUrl", None)
           logs = build.get("logFiles") or []
-          build["logFiles"] = []
+          build["logFiles"] = [type(item).__name__ for item in logs]
           json.dump(build, open("/tmp/eas-build-view.json", "w"))
-          interesting = []
-          for index, log_url in enumerate(logs):
+          print("log file count", len(logs))
+          chunks = []
+          for index, item in enumerate(logs):
+              log_url = item if isinstance(item, str) else (item or {}).get("url") or (item or {}).get("downloadUrl")
+              if not log_url:
+                  chunks.append(f"log {index} keys {list((item or {}).keys()) if isinstance(item, dict) else type(item).__name__}")
+                  continue
               dest = f"/tmp/eas-log-{index}.txt"
               urllib.request.urlretrieve(log_url, dest)
               lines = open(dest, errors="replace").read().splitlines()
-              for i, line in enumerate(lines):
-                  if any(token in line for token in ("FAILURE:", "What went wrong", "Execution failed", "A problem occurred", "error:")):
-                      interesting.extend(lines[max(0, i - 2): i + 8])
-                      interesting.append("---")
-          text = "\n".join(interesting[-120:])
-          open("/tmp/eas-gradle-errors.txt", "w").write(text or "No matching gradle error lines.")
-          print(text[-4000:] if text else "No matching gradle error lines.")
+              chunks.append(f"log {index} lines {len(lines)}")
+              tail = [line for line in lines[-80:] if "http" not in line.lower()]
+              chunks.extend(tail)
+              chunks.append("---")
+          text = "\n".join(chunks) or "No log files."
+          open("/tmp/eas-gradle-errors.txt", "w").write(text)
+          print(text[-6000:])
           PY
 
       - uses: actions/upload-artifact@v4
