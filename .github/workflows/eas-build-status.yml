@@ -1,0 +1,37 @@
+name: lomi · eas · build status
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        description: EAS build id
+        required: true
+        type: string
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build status
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+        run: eas build:view "$BUILD_ID" --json --non-interactive > /tmp/eas-build-view.json
+
+      - name: Publish status
+        run: |
+          jq '{id,status,platform,appVersion,appBuildVersion,distribution,buildProfile,gitCommitHash,error:.error.message}' /tmp/eas-build-view.json
+          jq -r '.artifacts.applicationArchiveUrl // empty' /tmp/eas-build-view.json > /tmp/archive-url.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eas-build-view
+          path: |
+            /tmp/eas-build-view.json
+            /tmp/archive-url.txt
