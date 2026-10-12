@@ -11,32 +11,31 @@ on:
 jobs:
   status:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
       - name: Build status
         env:
           BUILD_ID: ${{ inputs.build_id }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          set +e
-          eas build:view "$BUILD_ID" --json > /tmp/eas-build-view.json 2> /tmp/eas-build-view.err
-          code=$?
-          set -e
-          if [ "$code" -ne 0 ]; then
-            echo "eas build:view exited $code"
-            # Error text only. Do not print the JSON, which can contain an archive URL.
-            sed -E 's/(eyJ[A-Za-z0-9_-]{12,})/[redacted]/g' /tmp/eas-build-view.err
-            exit "$code"
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/eas-build-view.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${EXPO_TOKEN}" \
+            -H "Accept: application/json" \
+            "https://api.expo.dev/v2/builds/${BUILD_ID}")
+          echo "HTTP ${code}"
+          if [ "$code" != "200" ]; then
+            jq -r '.message // .error // "request failed"' /tmp/eas-build-view.json
+            exit 1
           fi
-
-      - name: Publish status
-        run: |
-          jq '{id,status,platform,appVersion,appBuildVersion,distribution,buildProfile,gitCommitHash,error:.error.message}' /tmp/eas-build-view.json
-          jq -r '.artifacts.applicationArchiveUrl // empty' /tmp/eas-build-view.json > /tmp/archive-url.txt
+          jq '{id,status,platform,appVersion,appBuildVersion,distribution,buildProfile,gitCommitHash,error:(.error.message // null)}' /tmp/eas-build-view.json
+          url=$(jq -r '.artifacts.applicationArchiveUrl // .artifacts.buildUrl // empty' /tmp/eas-build-view.json)
+          if [ -n "$url" ]; then
+            curl -fsSL "$url" -o /tmp/lomi-pos.aab
+            echo "Downloaded archive bytes: $(wc -c < /tmp/lomi-pos.aab)"
+          else
+            echo "No archive yet."
+          fi
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -44,4 +43,5 @@ jobs:
           name: eas-build-view
           path: |
             /tmp/eas-build-view.json
-            /tmp/archive-url.txt
+            /tmp/lomi-pos.aab
+          if-no-files-found: warn
