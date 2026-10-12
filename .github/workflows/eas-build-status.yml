@@ -21,7 +21,7 @@ jobs:
           set -euo pipefail
           cat > /tmp/eas-query.json << 'JSON'
           {
-            "query": "query BuildsById($buildId: ID!) { builds { byId(buildId: $buildId) { id status platform appVersion appBuildVersion distribution buildProfile gitCommitHash error { errorCode message } artifacts { buildUrl applicationArchiveUrl } } } }"
+            "query": "query BuildsById($buildId: ID!) { builds { byId(buildId: $buildId) { id status platform appVersion appBuildVersion distribution buildProfile gitCommitHash error { errorCode message } logFiles artifacts { buildUrl applicationArchiveUrl } } } }"
           }
           JSON
           python3 - << 'PY'
@@ -84,7 +84,21 @@ jobs:
               print("No archive yet.")
           artifacts.pop("applicationArchiveUrl", None)
           artifacts.pop("buildUrl", None)
+          logs = build.get("logFiles") or []
+          build["logFiles"] = []
           json.dump(build, open("/tmp/eas-build-view.json", "w"))
+          interesting = []
+          for index, log_url in enumerate(logs):
+              dest = f"/tmp/eas-log-{index}.txt"
+              urllib.request.urlretrieve(log_url, dest)
+              lines = open(dest, errors="replace").read().splitlines()
+              for i, line in enumerate(lines):
+                  if any(token in line for token in ("FAILURE:", "What went wrong", "Execution failed", "A problem occurred", "error:")):
+                      interesting.extend(lines[max(0, i - 2): i + 8])
+                      interesting.append("---")
+          text = "\n".join(interesting[-120:])
+          open("/tmp/eas-gradle-errors.txt", "w").write(text or "No matching gradle error lines.")
+          print(text[-4000:] if text else "No matching gradle error lines.")
           PY
 
       - uses: actions/upload-artifact@v4
@@ -94,4 +108,5 @@ jobs:
           path: |
             /tmp/eas-build-view.json
             /tmp/lomi-pos.aab
+            /tmp/eas-gradle-errors.txt
           if-no-files-found: warn
