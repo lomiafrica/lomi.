@@ -57,7 +57,8 @@ jobs:
             exit 1
           fi
           python3 - << 'PY'
-          import brotli, gzip, json, os, urllib.request, zlib
+          import brotli, gzip, json, os, urllib.error, urllib.request, zlib
+          from urllib.parse import urlparse
           data = json.load(open("/tmp/eas-build-view.json"))
           errors = data.get("errors") or []
           if errors:
@@ -79,7 +80,16 @@ jobs:
           artifacts = build.get("artifacts") or {}
           url = artifacts.get("applicationArchiveUrl") or artifacts.get("buildUrl")
           if url:
-              urllib.request.urlretrieve(url, "/tmp/lomi-pos.aab")
+              print("archive host", urlparse(url).netloc)
+              request = urllib.request.Request(url)
+              if "expo.dev" in urlparse(url).netloc:
+                  request.add_header("Authorization", "Bearer " + os.environ["EXPO_TOKEN"])
+              try:
+                  with urllib.request.urlopen(request) as response:
+                      open("/tmp/lomi-pos.aab", "wb").write(response.read())
+              except urllib.error.HTTPError as err:
+                  print("archive http", err.code)
+                  raise
               print("Downloaded archive bytes:", os.path.getsize("/tmp/lomi-pos.aab"))
           else:
               print("No archive yet.")
