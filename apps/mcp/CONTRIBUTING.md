@@ -4,21 +4,21 @@ This guide is for **lomi. maintainers and operators** deploying or developing `a
 
 ## Deploy
 
-Environment variables are listed in [`.env.example`](./.env.example).
-
 ```bash
 cd apps/mcp
 pnpm install
 pnpm run start:http
 ```
 
-See [`railway.json`](./railway.json) for Railway deployment.
+See [`railway.json`](./railway.json) for Railway deployment. Hosted health is `GET /ready`.
 
 Key operator settings:
 
+- `INTERNAL_API_KEY`: required on hosted MCP (any non-localhost `LOMI_OAUTH_ISSUER`, `LOMI_MCP_RESOURCE_URL`, or `LOMI_API_URL`). Sent as `x-internal-key` to `POST {LOMI_API_URL}/oauth/introspect/mcp` so `lomi_oat_*` tokens can be validated. **`CRON_SECRET` is not the introspection key.** Local stdio or localhost HTTP can omit it; `/ready` then reports `oauth_introspection` as optional.
 - `LOMI_MCP_BEARER_TOKEN`: optional/legacy shared transport gate for HTTP MCP. Merchants authenticate with their API key alone (`x-lomi-api-key`); a valid lomi. credential gates the transport on its own. Keep this set only for legacy operator setups.
 - `LOMI_OPENAI_APPS_CHALLENGE`: token from the OpenAI plugin portal. When set, `GET /.well-known/openai-apps-challenge` returns that string alone.
 - `LOMI_API_URL`: default merchant API base URL for tool calls
+- `LOMI_OAUTH_ISSUER` / `LOMI_MCP_RESOURCE_URL`: OAuth discovery for hosted HTTP MCP
 
 ## Regenerate tools
 

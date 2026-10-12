@@ -98,13 +98,19 @@ curl -X POST "https://api.lomi.africa/payouts" \
 | `amount` | `number` | **Yes** |
 | `currency_code` | `string` | **Yes** |
 | `payout_method_id` | UUID | **Yes** for `self`; required for beneficiary `spi` |
-| `recipient` | `{ name, phone }` | **Yes** for beneficiary `wave` |
+| `recipient` | `{ name, phone }` | **Yes** for beneficiary `wave` or `mtn` |
 | `reason` | `string` | No |
 
 ## List and get
 
 - `GET /payouts`, withdrawals and beneficiary payouts (each row includes `kind`). Test API keys list **test withdrawals only**; live beneficiary payout rows are omitted.
 - `GET /payouts/{id}`, resolves merchant withdrawals and beneficiary payouts by ID (org-scoped).
+
+## Member withdrawals (lomi. Network)
+
+With an Operator secret key, `Lomi-Account: acct_...`, and the `payout.request` capability, `POST /payouts` with `destination: "self"` withdraws from the Member Account balance to that member's registered bank or mobile money method. The first call without `confirmation_token` returns a preview. Repeat the same body with that token and the same `Idempotency-Key` to execute. See [lomi. Network](/build/platform/network).
+
+On MCP, pass `header_Lomi-Account` to `lomi_payouts`. Destination and beneficiary payouts stay on the Operator key without that header.
 
 ## Payout blocked by platform risk controls
 

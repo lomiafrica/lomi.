@@ -41,7 +41,7 @@ lomi switch sandbox
 lomi listen http://localhost:3000/webhooks
 ```
 
-À la connexion, le CLI affiche votre organisation et `LOMI_WEBHOOK_SECRET`. Ajoutez le secret dans `.env` :
+À la connexion, le CLI affiche votre organisation. Si le flux inclut un secret webhook, il indique que le secret a été reçu et **n’affiche pas** la valeur. Copiez `LOMI_WEBHOOK_SECRET` depuis le [tableau de bord](https://dashboard.lomi.africa) (**Developers → Webhooks**) dans `.env` :
 
 ```dotenv filename=".env"
 LOMI_WEBHOOK_SECRET=whsec_...

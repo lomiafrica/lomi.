@@ -205,6 +205,20 @@ Utilisez `https://sandbox.api.lomi.africa` pour des données sandbox.
 
 Chaque action MCP ci-dessous correspond à une opération de l’API. Les blocages carte sont `lomi_card_holds` (create, get, increment, capture, cancel). Wave, MTN, Switch et `POST /usage/events` ne sont pas exposés en MCP.
 
+### Network (`header_Lomi-Account`)
+
+Les opérateurs [lomi. Network](/build/platform/network) approuvés utilisent la même clé secrète. Les en-têtes OpenAPI deviennent des arguments d’outil préfixés par `header_`. Le serveur transmet `header_Lomi-Account` comme `Lomi-Account: acct_...`.
+
+| Modèle de paiement | MCP |
+| --- | --- |
+| **Direct** | Passez `header_Lomi-Account` sur `lomi_checkout` `create`, `lomi_card_holds`, `lomi_customers`, `lomi_transactions`, `lomi_refunds`, `lomi_balance` et `lomi_payouts` quand la route REST correspondante accepte l’en-tête. |
+| **Destination** | Omettez l’en-tête. Mettez `transfer_data.destination` dans le body de `lomi_checkout` create. |
+| **Charges et transferts séparés** | Omettez l’en-tête. Créez le checkout sur le compte Opérateur, puis `lomi_transfers` `create` (aperçu, puis `confirmation_token`). |
+
+`lomi_network` (`login_link`, `account_session`) est réservé à l’Opérateur : n’envoyez pas `header_Lomi-Account`. Les liens de paiement n’acceptent pas l’en-tête. `lomi_customers` `portal` le refuse : ouvrez le portail acheteur avec la clé du membre. Les charges Wave et MTN restent sur l’API REST.
+
+Les écritures exigent toujours `header_Idempotency-Key` ou `idempotency_key`. Le Network live demande une approbation.
+
 <McpOperationIndex />
 
 ## Onboarding piloté par agent (0 à 1)
