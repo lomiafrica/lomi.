@@ -19,25 +19,73 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           set -euo pipefail
+          cat > /tmp/eas-query.json << 'JSON'
+          {
+            "query": "query BuildsById($buildId: ID!) { builds { byId(buildId: $buildId) { id status platform appVersion appBuildVersion distribution buildProfile gitCommitHash error { errorCode message } artifacts { buildUrl applicationArchiveUrl } } } }"
+          }
+          JSON
+          python3 - << 'PY'
+          import json
+          import os
+          query = json.load(open("/tmp/eas-query.json"))
+          query["variables"] = {"buildId": os.environ["BUILD_ID"]}
+          json.dump(query, open("/tmp/eas-query.json", "w"))
+          PY
           code=$(curl -sS -o /tmp/eas-build-view.json -w "%{http_code}" \
             -H "Authorization: Bearer ${EXPO_TOKEN}" \
+            -H "Content-Type: application/json" \
             -H "Accept: application/json" \
-            "https://api.expo.dev/v2/builds/${BUILD_ID}")
+            --data @/tmp/eas-query.json \
+            "https://api.expo.dev/graphql")
           echo "HTTP ${code}"
           if [ "$code" != "200" ]; then
-            jq -r '.message // .error // "request failed"' /tmp/eas-build-view.json
+            python3 - << 'PY'
+          import json
+          raw = open("/tmp/eas-build-view.json").read()
+          try:
+              data = json.loads(raw)
+          except json.JSONDecodeError:
+              print(raw[:180])
+              raise SystemExit(1)
+          errors = data.get("errors") or []
+          if errors:
+              print(errors[0].get("message", "graphql error"))
+          else:
+              print(data.get("message") or "request failed")
+          PY
             exit 1
           fi
-          jq '{id,status,platform,appVersion,appBuildVersion,distribution,buildProfile,gitCommitHash,error:(.error.message // null)}' /tmp/eas-build-view.json
-          url=$(jq -r '.artifacts.applicationArchiveUrl // .artifacts.buildUrl // empty' /tmp/eas-build-view.json)
-          if [ -n "$url" ]; then
-            curl -fsSL "$url" -o /tmp/lomi-pos.aab
-            echo "Downloaded archive bytes: $(wc -c < /tmp/lomi-pos.aab)"
-          else
-            echo "No archive yet."
-          fi
-          jq 'del(.artifacts.applicationArchiveUrl, .artifacts.buildUrl)' /tmp/eas-build-view.json > /tmp/eas-build-view.redacted.json
-          mv /tmp/eas-build-view.redacted.json /tmp/eas-build-view.json
+          python3 - << 'PY'
+          import json, os, urllib.request
+          data = json.load(open("/tmp/eas-build-view.json"))
+          errors = data.get("errors") or []
+          if errors:
+              print(errors[0].get("message", "graphql error"))
+              raise SystemExit(1)
+          build = data["data"]["builds"]["byId"]
+          safe = {
+              "id": build.get("id"),
+              "status": build.get("status"),
+              "platform": build.get("platform"),
+              "appVersion": build.get("appVersion"),
+              "appBuildVersion": build.get("appBuildVersion"),
+              "distribution": build.get("distribution"),
+              "buildProfile": build.get("buildProfile"),
+              "gitCommitHash": build.get("gitCommitHash"),
+              "error": (build.get("error") or {}).get("message"),
+          }
+          print(json.dumps(safe))
+          artifacts = build.get("artifacts") or {}
+          url = artifacts.get("applicationArchiveUrl") or artifacts.get("buildUrl")
+          if url:
+              urllib.request.urlretrieve(url, "/tmp/lomi-pos.aab")
+              print("Downloaded archive bytes:", os.path.getsize("/tmp/lomi-pos.aab"))
+          else:
+              print("No archive yet.")
+          artifacts.pop("applicationArchiveUrl", None)
+          artifacts.pop("buildUrl", None)
+          json.dump(build, open("/tmp/eas-build-view.json", "w"))
+          PY
 
       - uses: actions/upload-artifact@v4
         if: always()
