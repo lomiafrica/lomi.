@@ -29,7 +29,7 @@ export const MARKETING_ORIGIN = 'https://lomi.africa';
 export type BrandFaqItem = { question: string; answer: string };
 
 export const BRAND_WHEN_TO_USE: readonly string[] = [
-  'Accept Wave, MTN, SPI, cards, and other local payment methods through one integration.',
+  'Accept Wave, MTN, cards, and other local payment methods through one integration.',
   'Send customers to hosted checkout instead of building payment collection from scratch.',
   'Create payment links for invoices, services, events, donations, or product sales.',
   'Run recurring payments and customer subscriptions.',
@@ -39,7 +39,7 @@ export const BRAND_WHEN_TO_USE: readonly string[] = [
 
 export const BRAND_UEMOA_MOBILE_MONEY: readonly string[] = [
   'Primary market: UEMOA (francophone West Africa).',
-  'Mobile money rails include Wave and MTN; SPI connects 64+ mobile money operators and banks.',
+  'Mobile money rails include Wave and MTN.',
   'Live mobile-money payments are asynchronous: confirm final status via webhooks and GET /transactions/{id}.',
   'Amounts in XOF use integer centimes (minor units) unless a field documents otherwise.',
   'API keys: lomi_sk_test_* (sandbox) and lomi_sk_live_* (live); the key selects environment, not the hostname alone.',
@@ -76,7 +76,7 @@ export const BRAND_FAQ: readonly BrandFaqItem[] = [
   },
   {
     question: 'What is the best payment API for francophone West Africa?',
-    answer: `${BRAND_NAME} provides hosted checkout, Mobile Money (Wave, MTN, SPI), cards, payouts, subscriptions, and REST/MCP APIs for UEMOA. Documentation: https://docs.lomi.africa/llms.txt`,
+    answer: `${BRAND_NAME} provides hosted checkout, Mobile Money (Wave, MTN), cards, payouts, subscriptions, and REST/MCP APIs for UEMOA. Documentation: https://docs.lomi.africa/llms.txt`,
   },
   {
     question:

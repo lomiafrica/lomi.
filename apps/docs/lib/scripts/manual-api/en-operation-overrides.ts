@@ -309,7 +309,7 @@ export const EN_OPERATION_COPY = {
   },
   PayoutsUnifiedController_create: {
     summary: 'Create payout',
-    body: 'Withdraw to a registered payout method (self) or pay a beneficiary on mobile rails (wave/SPI).',
+    body: 'Withdraw to a registered payout method (self) or pay a beneficiary on mobile rails (wave).',
     whenToUse: 'Use for treasury movements from your lomi. balance.',
     caveats:
       'Self payouts require payout_method_id; beneficiary wave requires recipient.name and recipient.phone (any mobile number, not payout_method_id). Wave rails (self or beneficiary) return 400 on test API keys; live keys only. MTN returns 400 until supported.',
@@ -438,7 +438,7 @@ export const EN_OPERATION_COPY = {
     summary: 'Request an instant settlement (Nitro)',
     body: 'Rail mode records a Nitro fee on an existing payout. Advance mode unlocks held card funds up to the organization cap. Requires `Idempotency-Key`. Advance stays off until ops approves a limit.',
     whenToUse:
-      'Use after creating a Wave or SPI payout (rail) or to release held card balance (advance) when Nitro is enabled for the organization.',
+      'Use after creating a Wave payout (rail) or to release held card balance (advance) when Nitro is enabled for the organization.',
     caveats:
       'Rail requires `payout_id`. Advance is live-only, excludes disputed transactions, and fails when the org cap is exceeded. Not a loan and not insurance.',
     related:
@@ -785,7 +785,7 @@ export const EN_OPERATION_COPY = {
     summary: 'List payment providers',
     body: 'Returns connection status for payment providers configured for your organization.',
     whenToUse:
-      'Use to show which rails (card, Wave, MTN, SPI) are enabled before rendering checkout options.',
+      'Use to show which rails (card, Wave, MTN) are enabled before rendering checkout options.',
     related:
       '[Choose integration](/build/choose-integration) · [Mobile money](/build/mobile-money)',
   },
@@ -1048,7 +1048,7 @@ export const EN_OPERATION_COPY = {
   },
   PayoutMethodsController_create: {
     summary: 'Add payout method',
-    body: 'Registers a bank, SPI, or mobile money destination for payouts.',
+    body: 'Registers a bank or mobile money destination for payouts.',
     whenToUse: 'Use when the merchant needs a new withdrawal destination.',
   },
   TransactionsController_receiptPdf: {

@@ -12,7 +12,7 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 
 <DocsScreenshot name="build/payouts" alt="Payouts and withdrawals settings in lomi. dashboard" />
 
-- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank`, `spi`, `wave`, and `mtn` (mobile money).
+- **`destination: "self"`**: withdraw to a **registered** payout method on your organization (`payout_method_id` required). Supports `bank`, `wave`, and `mtn` (mobile money).
 - **`destination: "beneficiary"`**: pay a third party on **mobile rails** (`wave` or `mtn`). Requires `recipient.name` and `recipient.phone` (any E.164 mobile number; **not** tied to `payout_method_id`). Bank payouts to arbitrary accounts are not supported.
 
 <Callout type="warn">
@@ -31,7 +31,7 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 | --- | --- | --- |
 | Wave | Côte d'Ivoire | F CFA |
 | MTN | Live MTN countries on your account | F CFA |
-| π-SPI / local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
+| Local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
 | US bank | United States | USD |
 | Eurozone bank | Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain, Croatia | EUR |
 | Other IBAN | Andorra, Bulgaria, Switzerland, Czechia, Denmark, United Kingdom, Gibraltar, Hungary, Iceland, Liechtenstein, Monaco, Norway, Poland, Romania, Sweden | EUR |

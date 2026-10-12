@@ -1,16 +1,23 @@
 ---
 title: 'Qu’est-ce que π-SPI ?'
-description: 'Couverture π-SPI dans les huit pays de l’UEMOA, checkout, encaissements et retraits XOF.'
+description: 'π-SPI est le rail de compte à compte instantané de la BCEAO pour l’UEMOA. Il n’est pas disponible sur lomi.'
 docType: explanation
 ---
 
 import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
+import { Callout } from '@/components/docs/docs-callout';
 
 <DocsAgentIndex />
 
 **π-SPI** est le rail de compte à compte instantané de la BCEAO pour l’UEMOA. La devise est le **XOF**. Dans l’API l’identifiant reste `SPI`.
 
+<Callout type="warn">
+  **Non disponible.** lomi. n’est pas participant PI-SPI et n’offre pas l’encaissement ni les retraits π-SPI.
+</Callout>
+
 ## Pays
+
+Le rail couvre ces membres de l’UEMOA. C’est la géographie du rail, pas une disponibilité lomi.
 
 | Code | Pays |
 | --- | --- |
@@ -23,39 +30,11 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 | SN | Sénégal |
 | TG | Togo |
 
-Un compte bancaire dans l’un de ces pays est une destination π-SPI. Les retraits en euro et en dollar restent sur le rail de trésorerie.
-
-## En bref
-
-| | |
-| --- | --- |
-| Approbation | Le payeur scanne un QR marchand, ou confirme une demande envoyée à son alias |
-| Règlement | Après confirmation de la banque, puis `available_at` |
-| Direct vs hébergé | Checkout hébergé, `POST /payment-requests` (le XOF renvoie `qr_payload`) et `POST /charge/spi` |
-| Remboursement | Pas listé sur `POST /refunds` |
-| Min / max | - |
-
-Mêmes colonnes que [Canaux de paiement](/build/payment-channels#channel-capabilities).
-
-## Où ça apparaît
-
-- **Retraits du tableau de bord.** Un compte bancaire UEMOA est marqué π-SPI. Le retrait part quand la banque confirme, pas en plusieurs jours ouvrés.
-- **lomi.** Le même compte affiche π-SPI sur l’écran de retrait.
-- **Checkout.** π-SPI est proposé quand l’organisation l’a connecté et que l’environnement peut encaisser. Le payeur saisit son alias.
-- **Factures.** Une demande de paiement exige l’alias du client. La facture affiche cet alias et le QR quand ils sont sur les détails de paiement.
-
-## Reversements
-
-Les retraits XOF avec `rail: "bank"` ou `rail: "spi"` sont des virements π-SPI vers un moyen de retrait enregistré. Voir [Virements](/build/money/payouts).
-
 <DocsNextSteps>
   <DocsNextStep href="/build/payment-channels" hint="Couverture par pays">
     Canaux de paiement
   </DocsNextStep>
-  <DocsNextStep href="/build/mobile-money" hint="Wave, MTN et SPI">
+  <DocsNextStep href="/build/mobile-money" hint="Wave et MTN">
     Mobile money
-  </DocsNextStep>
-  <DocsNextStep href="/api/providers/ProvidersController_findAll" hint="Rails connectés">
-    API Prestataires
   </DocsNextStep>
 </DocsNextSteps>

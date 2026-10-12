@@ -1,6 +1,6 @@
 {
   "title": "Canaux de paiement",
-  "description": "Guides Wave, MTN, SPI et cartes.",
+  "description": "Guides Wave, MTN et cartes.",
   "icon": "Wallet",
   "pages": ["wave", "mtn-momo", "spi", "cards"]
 }

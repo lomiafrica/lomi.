@@ -22,7 +22,6 @@ Mêmes colonnes sur chaque page rail. Une cellule vide (`-`) signifie que nous n
 | --- | --- | --- | --- | --- | --- | --- |
 | Wave | Redirection ou URL de lancement (`wave_launch_url` / `checkout_url`) | Test : souvent à la création. Live : après approbation dans Wave, puis `available_at` | Hébergé et `POST /charge/wave` | Transactions Wave `completed` | - | [Wave](/build/payment-methods/wave) |
 | MTN | Push / PIN sur le téléphone (`next_action: await_webhook`) | Test : souvent `completed` immédiat. Live : reste `PENDING` jusqu’à approbation, puis `available_at` | Hébergé et `POST /charge/mtn` | Transactions MTN `completed` (remboursements live asynchrones) | - | [MTN](/build/payment-methods/mtn-momo) |
-| π-SPI | Le payeur scanne un QR ou confirme une demande vers son alias | Après confirmation de la banque, puis `available_at` | Checkout hébergé, demandes XOF et `POST /charge/spi` | Pas listé sur `POST /refunds` | - | [π-SPI](/build/payment-methods/spi) |
 | Cartes | 3DS hébergé si l’émetteur l’exige | Après `completed` ; certains réglages carte retardent `available_at` | Hébergé, liens de paiement, et `POST /charge/card` avec lomi. Elements | Transactions carte `completed` | 1 000 F CFA / 0,50 EUR/USD | [Cartes](/build/payment-methods/cards) |
 
 **Par défaut :** checkout hébergé ou liens de paiement. Charges directes si vous maîtrisez l’UI et le comportement asynchrone.
@@ -32,6 +31,7 @@ Mêmes colonnes sur chaque page rail. Une cellule vide (`-`) signifie que nous n
 | Canal | Statut |
 | --- | --- |
 | Orange Money | Pas un rail lomi. |
+| π-SPI | Non disponible |
 | Djamo | Bientôt pour la Côte d’Ivoire et le Sénégal |
 
 <Callout type="info">
@@ -40,18 +40,18 @@ Mêmes colonnes sur chaque page rail. Une cellule vide (`-`) signifie que nous n
 
 ## Marchés et devises
 
-Cartes, Apple Pay, Google Pay et π-SPI dans toute l'UEMOA. Wave en Côte d'Ivoire.
+Cartes, Apple Pay et Google Pay dans toute l'UEMOA. Wave en Côte d'Ivoire.
 
 | Pays | Devise | Moyens disponibles |
 | --- | --- | --- |
-| Côte d'Ivoire | `XOF` | Wave, MTN, cartes, Apple Pay, Google Pay et π-SPI |
-| Bénin | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Burkina Faso | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Guinée-Bissau | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Mali | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Niger | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Sénégal | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
-| Togo | `XOF` | Cartes, Apple Pay, Google Pay et π-SPI |
+| Côte d'Ivoire | `XOF` | Wave, MTN, cartes, Apple Pay et Google Pay |
+| Bénin | `XOF` | Cartes, Apple Pay et Google Pay |
+| Burkina Faso | `XOF` | Cartes, Apple Pay et Google Pay |
+| Guinée-Bissau | `XOF` | Cartes, Apple Pay et Google Pay |
+| Mali | `XOF` | Cartes, Apple Pay et Google Pay |
+| Niger | `XOF` | Cartes, Apple Pay et Google Pay |
+| Sénégal | `XOF` | Cartes, Apple Pay et Google Pay |
+| Togo | `XOF` | Cartes, Apple Pay et Google Pay |
 | Cartes internationales | `USD`, `EUR` (selon produit) | Cartes, Apple Pay et Google Pay |
 
 ## MTN: environnements cibles [#mtn-momo-supported-countries]
@@ -96,7 +96,7 @@ L’environnement est déterminé par la **clé API** (`lomi_sk_test_...` vs `lo
 | Webhooks | `environment: "test"` | `environment: "live"` |
 
 <DocsNextSteps>
-  <DocsNextStep href="/build/mobile-money" hint="Wave, MTN et SPI">
+  <DocsNextStep href="/build/mobile-money" hint="Wave et MTN">
     Mobile money
   </DocsNextStep>
   <DocsNextStep href="/build/accept/direct-charges" hint="Encaisser depuis votre serveur">

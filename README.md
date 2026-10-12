@@ -67,11 +67,9 @@ All open-source repositories will be merged into the monorepo in the coming mont
 
 ## Payment infrastructure
 
-lomi. integrates with the **SPI**, the official Central Bank-backed payment interoperability platform. With lomi., you can accept payments across 8 UEMOA countries (Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo). Our platform enables Bank-to-Bank, Bank-to-Wallet, Wallet-to-Bank, and Wallet-to-Wallet transactions through our suite of APIs.
+lomi. is a payment processing platform for francophone West Africa (UEMOA). Accept Wave, cards, Apple Pay, and Google Pay through one integration. Native support for the West African CFA Franc (XOF).
 
-The platform provides instant payment confirmation and settlement, allowing you to send payments using SHID, MCOD, or MBNO aliases without ever sharing account numbers. We offer native support for the West African CFA Franc (XOF).
-
-For fellow fintechs, we built an SDK around this infrastructure: `pi-spi-sdk` - a community TypeScript SDK for the PI-SPI Business API ([apps/sdks/pi-spi-sdk](./apps/sdks/pi-spi-sdk)).
+A community TypeScript SDK for the BCEAO PI-SPI Business API is published separately as `pi-spi-sdk` ([apps/sdks/pi-spi-sdk](./apps/sdks/pi-spi-sdk)). lomi. is not a PI-SPI participant and does not offer π-SPI live.
 
 ## Documentation
 

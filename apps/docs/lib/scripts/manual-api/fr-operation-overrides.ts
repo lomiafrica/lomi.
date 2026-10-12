@@ -217,7 +217,7 @@ export const FR_OPERATION_COPY = {
   },
   SettlementsController_createInstant: {
     whenToUse:
-      'Utilisez après un retrait Wave ou SPI (rail) ou pour débloquer un solde carte retenu (avance) lorsque Nitro est activé pour l’organisation.',
+      'Utilisez après un retrait Wave (rail) ou pour débloquer un solde carte retenu (avance) lorsque Nitro est activé pour l’organisation.',
     caveats:
       'Le rail exige `payout_id`. L’avance est live uniquement, exclut les transactions en litige et échoue si le plafond d’organisation est dépassé. Ce n’est ni un prêt ni une assurance.',
     related:

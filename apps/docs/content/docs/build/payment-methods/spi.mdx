@@ -1,16 +1,23 @@
 ---
 title: 'What is π-SPI?'
-description: 'π-SPI coverage in the eight UEMOA countries, checkout, charges, and XOF payouts.'
+description: 'π-SPI is the BCEAO instant account-to-account rail for the UEMOA. It is not available on lomi.'
 docType: explanation
 ---
 
 import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
+import { Callout } from '@/components/docs/docs-callout';
 
 <DocsAgentIndex />
 
 **π-SPI** is the BCEAO instant account-to-account rail for the UEMOA. Currency is **XOF**. In the API the identifier stays `SPI`.
 
+<Callout type="warn">
+  **Not available.** lomi. is not a PI-SPI participant and does not offer π-SPI collection or payouts.
+</Callout>
+
 ## Countries
+
+The rail covers these UEMOA members. That is the rail's geography, not lomi. availability.
 
 | Code | Country |
 | --- | --- |
@@ -23,39 +30,11 @@ import { DocsAgentIndex } from '@/components/docs/docs-agent-index';
 | SN | Senegal |
 | TG | Togo |
 
-A bank account in one of these countries is a π-SPI destination. Euro and dollar payouts stay on the treasury rail.
-
-## At a glance
-
-| | |
-| --- | --- |
-| Approval | The payer scans a merchant QR, or confirms a request sent to their alias |
-| Settlement | After the bank confirms, then `available_at` |
-| Direct vs hosted | Hosted checkout, `POST /payment-requests` (XOF returns `qr_payload`), and `POST /charge/spi` |
-| Refund | Not listed on `POST /refunds` |
-| Min / max | - |
-
-Same columns as [Payment channels](/build/payment-channels#channel-capabilities).
-
-## Where it shows up
-
-- **Dashboard payouts.** A UEMOA bank account is marked π-SPI. The withdrawal is sent when the bank confirms, not over several business days.
-- **lomi.** The same account shows π-SPI on the withdraw screen. QR pay follows the org’s π-SPI status.
-- **Checkout.** π-SPI is offered when the organization has it connected and the environment can take the payment. The payer enters their alias.
-- **Invoices.** A request-to-pay needs the customer alias. The invoice shows that alias and the QR when they are on the payment details.
-
-## Payouts
-
-XOF withdrawals with `rail: "bank"` or `rail: "spi"` are π-SPI credit transfers to a registered payout method. See [Payouts](/build/money/payouts).
-
 <DocsNextSteps>
   <DocsNextStep href="/build/payment-channels" hint="Country coverage">
     Payment channels
   </DocsNextStep>
-  <DocsNextStep href="/build/mobile-money" hint="Wave, MTN, and SPI">
+  <DocsNextStep href="/build/mobile-money" hint="Wave and MTN">
     Mobile money
-  </DocsNextStep>
-  <DocsNextStep href="/api/providers/ProvidersController_findAll" hint="Connected rails">
-    Providers API
   </DocsNextStep>
 </DocsNextSteps>

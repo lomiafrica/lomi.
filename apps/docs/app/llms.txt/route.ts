@@ -143,7 +143,7 @@ export async function GET() {
   );
   lines.push('');
   lines.push(
-    "- **Côte d'Ivoire, Senegal, and UEMOA:** Wave (`XOF`), cards, and SPI on hosted checkout.",
+    "- **Côte d'Ivoire, Senegal, and UEMOA:** Wave (`XOF`) and cards on hosted checkout.",
   );
   lines.push('- **MTN:** CI plus CM, GH, UG, ZM, BJ, CG, SZ, GN, ZA, LR, NG.');
   lines.push(

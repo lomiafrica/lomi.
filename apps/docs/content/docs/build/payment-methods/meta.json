@@ -1,6 +1,6 @@
 {
   "title": "Payment channels",
-  "description": "Deep dives for Wave, MTN, SPI, and cards.",
+  "description": "Deep dives for Wave, MTN, and cards.",
   "icon": "Wallet",
   "pages": ["wave", "mtn-momo", "spi", "cards"]
 }
