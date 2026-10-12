@@ -94,9 +94,14 @@ jobs:
               if not log_url:
                   chunks.append(f"log {index} keys {list((item or {}).keys()) if isinstance(item, dict) else type(item).__name__}")
                   continue
-              dest = f"/tmp/eas-log-{index}.txt"
-              urllib.request.urlretrieve(log_url, dest)
-              raw = open(dest, "rb").read()
+              with urllib.request.urlopen(log_url) as response:
+                  chunks.append(
+                      "content-type "
+                      + response.headers.get("Content-Type", "")
+                      + " encoding "
+                      + response.headers.get("Content-Encoding", "")
+                  )
+                  raw = response.read()
               chunks.append(f"log {index} bytes {len(raw)} magic {raw[:8].hex()}")
               strings = []
               current = bytearray()
