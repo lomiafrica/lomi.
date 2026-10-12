@@ -97,7 +97,19 @@ jobs:
               dest = f"/tmp/eas-log-{index}.txt"
               urllib.request.urlretrieve(log_url, dest)
               raw = open(dest, "rb").read()
-              chunks.append(f"log {index} bytes {len(raw)} magic {raw[:4].hex()}")
+              chunks.append(f"log {index} bytes {len(raw)} magic {raw[:8].hex()}")
+              strings = []
+              current = bytearray()
+              for byte in raw:
+                  if 32 <= byte < 127:
+                      current.append(byte)
+                  elif len(current) >= 10:
+                      strings.append(current.decode())
+                      current = bytearray()
+                  else:
+                      current = bytearray()
+              picked = [s for s in strings if any(token in s.lower() for token in ("fail", "error", "exception", "gradle", "manifest", "permission"))]
+              chunks.append("\n".join(picked[:40]))
               if raw[:2] == b"\x1f\x8b":
                   raw = gzip.decompress(raw)
               elif raw[:2] in (b"\x78\x9c", b"\x78\xda", b"\x78\x01"):
