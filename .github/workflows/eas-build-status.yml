@@ -21,7 +21,17 @@ jobs:
       - name: Build status
         env:
           BUILD_ID: ${{ inputs.build_id }}
-        run: eas build:view "$BUILD_ID" --json --non-interactive > /tmp/eas-build-view.json
+        run: |
+          set +e
+          eas build:view "$BUILD_ID" --json > /tmp/eas-build-view.json 2> /tmp/eas-build-view.err
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            echo "eas build:view exited $code"
+            # Error text only. Do not print the JSON, which can contain an archive URL.
+            sed -E 's/(eyJ[A-Za-z0-9_-]{12,})/[redacted]/g' /tmp/eas-build-view.err
+            exit "$code"
+          fi
 
       - name: Publish status
         run: |
