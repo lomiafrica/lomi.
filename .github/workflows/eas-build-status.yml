@@ -56,7 +56,7 @@ jobs:
             exit 1
           fi
           python3 - << 'PY'
-          import gzip, json, os, urllib.request
+          import gzip, json, os, urllib.request, zlib
           data = json.load(open("/tmp/eas-build-view.json"))
           errors = data.get("errors") or []
           if errors:
@@ -97,12 +97,21 @@ jobs:
               dest = f"/tmp/eas-log-{index}.txt"
               urllib.request.urlretrieve(log_url, dest)
               raw = open(dest, "rb").read()
+              chunks.append(f"log {index} bytes {len(raw)} magic {raw[:4].hex()}")
               if raw[:2] == b"\x1f\x8b":
                   raw = gzip.decompress(raw)
-              lines = raw.decode("utf-8", "replace").splitlines()
-              chunks.append(f"log {index} lines {len(lines)}")
-              tail = [line for line in lines[-80:] if "http" not in line.lower()]
-              chunks.extend(tail)
+              elif raw[:2] in (b"\x78\x9c", b"\x78\xda", b"\x78\x01"):
+                  raw = zlib.decompress(raw)
+              text_log = raw.decode("utf-8", "replace")
+              lines = text_log.splitlines()
+              hits = []
+              for i, line in enumerate(lines):
+                  low = line.lower()
+                  if any(token in low for token in ("failure:", "what went wrong", "execution failed", "a problem occurred")):
+                      hits.extend(lines[max(0, i - 1): i + 12])
+                      hits.append("---")
+              chunks.append(f"log {index} lines {len(lines)} hits {len(hits)}")
+              chunks.extend(hits[-60:] or [line for line in lines[-30:] if line.isascii()])
               chunks.append("---")
           text = "\n".join(chunks) or "No log files."
           open("/tmp/eas-gradle-errors.txt", "w").write(text)
