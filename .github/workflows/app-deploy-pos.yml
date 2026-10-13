@@ -101,6 +101,8 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
           EXPO_ASC_API_KEY: ${{ secrets.EXPO_ASC_API_KEY }}
+          EXPO_ASC_KEY_ID: ${{ secrets.EXPO_ASC_KEY_ID }}
+          EXPO_ASC_ISSUER_ID: ${{ secrets.EXPO_ASC_ISSUER_ID }}
         run: |
           node scripts/write-store-submit-secrets.mjs
           node scripts/apply-local-submit-paths.mjs
@@ -139,8 +141,12 @@ jobs:
               echo "Play submit key is missing. Queue the Android binary without auto-submit."
               build_extra=()
             fi
-            if [ "${SUBMIT}" = "true" ] && [ "${platform}" = "ios" ] && [ ! -f .local/AuthKey_VY4NYZKML7.p8 ]; then
-              echo "No local ASC key. TestFlight submit will use Expo-hosted credentials if they exist."
+            if [ "${SUBMIT}" = "true" ] && [ "${platform}" = "ios" ]; then
+              if [ -n "${EXPO_ASC_KEY_ID}" ] && [ -f ".local/AuthKey_${EXPO_ASC_KEY_ID}.p8" ]; then
+                export EXPO_ASC_API_KEY_PATH="$PWD/.local/AuthKey_${EXPO_ASC_KEY_ID}.p8"
+              else
+                echo "No local ASC key. TestFlight submit will use Expo-hosted credentials if they exist."
+              fi
             fi
             if ! eas build --profile "${PROFILE}" --platform "${platform}" --non-interactive --no-wait --json "${build_extra[@]}" | tee -a /tmp/eas-build.json; then
               echo "EAS ${platform} failed to queue." >> "$GITHUB_STEP_SUMMARY"
