@@ -50,6 +50,8 @@ jobs:
       PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'preview' }}
       PLATFORM: ${{ github.event_name == 'workflow_dispatch' && inputs.platform || 'android' }}
       SUBMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.submit || false }}
+      EXPO_ASC_KEY_ID: ${{ secrets.EXPO_ASC_KEY_ID }}
+      EXPO_ASC_ISSUER_ID: ${{ secrets.EXPO_ASC_ISSUER_ID }}
     steps:
       - uses: actions/checkout@v5
 
