@@ -1,0 +1,119 @@
+name: lomi · pos · ios cert import
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Replace the distribution certificate p12
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          IOS_DIST_CERT_P12: ${{ secrets.IOS_DIST_CERT_P12 }}
+          IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+          IOS_DIST_CERT_KEY: ${{ secrets.IOS_DIST_CERT_KEY }}
+          IOS_DIST_CERT_PORTAL_ID: ${{ secrets.IOS_DIST_CERT_PORTAL_ID }}
+        run: |
+          node <<'EOF'
+          const accountId = '8476e26b-34b1-4ae5-b765-d994444bdbf8';
+          const teamId = '5b1fd364-1e8c-4f74-9776-b4720c257181';
+
+          if (!process.env.IOS_DIST_CERT_P12 || process.env.IOS_DIST_CERT_P12.length < 1000) {
+            throw new Error('distribution certificate payload is missing');
+          }
+
+          const scrub = (value) =>
+            JSON.parse(
+              JSON.stringify(value, (key, item) => {
+                if (typeof item === 'string' && item.length > 80) return '[redacted]';
+                return item;
+              }),
+            );
+
+          async function gql(query, variables) {
+            const response = await fetch('https://api.expo.dev/graphql', {
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${process.env.EXPO_TOKEN}`,
+              },
+              body: JSON.stringify({ query, variables }),
+            });
+            const json = await response.json();
+            if (!response.ok || json.errors) {
+              const error = new Error('graphql failed');
+              error.detail = scrub({ status: response.status, errors: json.errors });
+              throw error;
+            }
+            return json.data;
+          }
+
+          const existing = await gql(
+            `query Existing($projectFullName: String!) {
+              app { byFullName(fullName: $projectFullName) {
+                iosAppCredentials {
+                  iosAppBuildCredentialsList {
+                    id
+                    iosDistributionType
+                    distributionCertificate { id developerPortalIdentifier }
+                  }
+                }
+              } }
+            }`,
+            { projectFullName: '@lomiafrica/lomi' },
+          );
+
+          const build = existing.app.byFullName.iosAppCredentials
+            .flatMap((row) => row.iosAppBuildCredentialsList ?? [])
+            .find((row) => row.iosDistributionType === 'APP_STORE');
+          if (!build?.id || !build.distributionCertificate?.id) {
+            throw new Error('App Store build credentials are missing');
+          }
+
+          const input = {
+            certP12: process.env.IOS_DIST_CERT_P12,
+            certPassword: process.env.IOS_DIST_CERT_PASSWORD,
+            certPrivateSigningKey: process.env.IOS_DIST_CERT_KEY,
+            developerPortalIdentifier: process.env.IOS_DIST_CERT_PORTAL_ID,
+            appleTeamId: teamId,
+          };
+
+          let certificateId = build.distributionCertificate.id;
+          try {
+            const updated = await gql(
+              `mutation UpdateCert($id: ID!, $input: AppleDistributionCertificateInput!) {
+                appleDistributionCertificate {
+                  updateAppleDistributionCertificate(id: $id, appleDistributionCertificateInput: $input) { id }
+                }
+              }`,
+              { id: certificateId, input },
+            );
+            certificateId = updated.appleDistributionCertificate.updateAppleDistributionCertificate.id;
+            console.log(JSON.stringify({ updated: true, certificateId }));
+          } catch (error) {
+            console.log(JSON.stringify({ updateFailed: error.detail ?? error.message }));
+            const created = await gql(
+              `mutation CreateCert($input: AppleDistributionCertificateInput!, $accountId: ID!) {
+                appleDistributionCertificate {
+                  createAppleDistributionCertificate(appleDistributionCertificateInput: $input, accountId: $accountId) { id }
+                }
+              }`,
+              { accountId, input },
+            );
+            certificateId = created.appleDistributionCertificate.createAppleDistributionCertificate.id;
+            await gql(
+              `mutation Assign($buildId: ID!, $certificateId: ID!) {
+                iosAppBuildCredentials {
+                  setDistributionCertificate(id: $buildId, distributionCertificateId: $certificateId) { id }
+                }
+              }`,
+              { buildId: build.id, certificateId },
+            );
+            console.log(JSON.stringify({ replaced: true, certificateId, buildId: build.id }));
+          }
+          EOF
