@@ -94,7 +94,7 @@ present AS (
 )`;
 }
 
-function buildAuditSql(expected) {
+function buildAuditSql(expected, grantee = "authenticated") {
   return `
 WITH expected(table_name, privilege_type) AS (
   VALUES
@@ -105,7 +105,7 @@ actual AS (
   SELECT table_name, privilege_type
   FROM information_schema.role_table_grants
   WHERE table_schema = 'public'
-    AND grantee = 'authenticated'
+    AND grantee = '${grantee}'
   UNION
   SELECT cols.table_name, 'SELECT'
   FROM information_schema.columns cols
@@ -123,7 +123,7 @@ actual AS (
           WHERE granted.table_schema = 'public'
             AND granted.table_name = missing.table_name
             AND granted.column_name = missing.column_name
-            AND granted.grantee = 'authenticated'
+            AND granted.grantee = '${grantee}'
             AND granted.privilege_type = 'SELECT'
         )
     )
@@ -158,7 +158,7 @@ ORDER BY e.table_name;
 `.trim();
 }
 
-function buildPsqlJsonAuditSql(expected) {
+function buildPsqlJsonAuditSql(expected, grantee = "authenticated") {
   return `
 WITH expected(table_name, privilege_type) AS (
   VALUES
@@ -169,7 +169,7 @@ actual AS (
   SELECT table_name, privilege_type
   FROM information_schema.role_table_grants
   WHERE table_schema = 'public'
-    AND grantee = 'authenticated'
+    AND grantee = '${grantee}'
   UNION
   SELECT cols.table_name, 'SELECT'
   FROM information_schema.columns cols
@@ -187,7 +187,7 @@ actual AS (
           WHERE granted.table_schema = 'public'
             AND granted.table_name = missing.table_name
             AND granted.column_name = missing.column_name
-            AND granted.grantee = 'authenticated'
+            AND granted.grantee = '${grantee}'
             AND granted.privilege_type = 'SELECT'
         )
     )
@@ -338,18 +338,57 @@ function main() {
   }
 
   const presentCount = expected.size - absentNames.length;
-  if (rows.length === 0) {
+
+  // service_role on the money tables is the grant set whose loss broke
+  // Wave withdrawals on 13 Oct 2026. The authenticated audit above cannot
+  // see it, so audit those tables for service_role too.
+  const serviceRoleExpected = new Map([
+    ["payouts", new Set(["SELECT", "INSERT", "UPDATE"])],
+    ["beneficiary_payouts", new Set(["SELECT", "INSERT", "UPDATE"])],
+    ["accounts", new Set(["SELECT", "UPDATE"])],
+  ]);
+  let serviceRows;
+  try {
+    if (databaseUrl) {
+      serviceRows = runPsqlQuery(
+        buildPsqlJsonAuditSql(serviceRoleExpected, "service_role"),
+        databaseUrl,
+      );
+    } else {
+      serviceRows = runLinkedQuery(
+        buildAuditSql(serviceRoleExpected, "service_role"),
+        dashboardRoot,
+      );
+    }
+  } catch (err) {
+    console.error("Failed to run service_role grant audit.");
+    console.error(err instanceof Error ? err.message : err);
+    process.exit(2);
+  }
+  const serviceMissing = Array.isArray(serviceRows) ? serviceRows : [];
+
+  if (rows.length === 0 && serviceMissing.length === 0) {
     console.log(
-      `OK: authenticated grants match ${presentCount} present tables from ${path.basename(enableRlsPath)}`,
+      `OK: authenticated grants match ${presentCount} present tables from ${path.basename(enableRlsPath)}; service_role money-table grants present`,
     );
     process.exit(0);
   }
 
-  console.error(
-    `FAIL: ${rows.length} missing authenticated grant(s) vs ${path.basename(enableRlsPath)}:`,
-  );
-  for (const row of rows) {
-    console.error(`  - ${row.table_name}.${row.missing_privilege}`);
+  if (rows.length > 0) {
+    console.error(
+      `FAIL: ${rows.length} missing authenticated grant(s) vs ${path.basename(enableRlsPath)}:`,
+    );
+    for (const row of rows) {
+      console.error(`  - ${row.table_name}.${row.missing_privilege}`);
+    }
+  }
+  if (serviceMissing.length > 0) {
+    console.error(
+      `FAIL: ${serviceMissing.length} missing service_role grant(s) on money tables:`,
+    );
+    for (const row of serviceMissing) {
+      console.error(`  - ${row.table_name}.${row.missing_privilege}`);
+    }
   }
   process.exit(1);
 }
