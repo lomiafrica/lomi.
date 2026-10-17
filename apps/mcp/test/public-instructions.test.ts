@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { buildServerInstructions } from "../src/server-instructions.js";
 
 const PRIVATE_IN_PUBLIC = [
-  /notion\.so/i,
-  /app\.notion\.com/i,
-  /notion\.site/i,
-  /agents\.md/i,
+  "notion.so",
+  "app.notion.com",
+  "notion.site",
+  "agents.md",
 ];
 
 describe("public MCP instructions", () => {
@@ -15,9 +15,10 @@ describe("public MCP instructions", () => {
       for (const guest of [false, true]) {
         const text = buildServerInstructions(mode, guest);
         for (const pattern of PRIVATE_IN_PUBLIC) {
-          expect(text, `${mode} guest=${guest} ${pattern}`).not.toMatch(
-            pattern,
-          );
+          expect(
+            text.toLowerCase(),
+            `${mode} guest=${guest} ${pattern}`,
+          ).not.toContain(pattern);
         }
       }
     }
