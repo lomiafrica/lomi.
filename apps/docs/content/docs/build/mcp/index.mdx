@@ -205,6 +205,20 @@ Set `LOMI_API_URL` to `https://sandbox.api.lomi.africa` when working against san
 
 Each MCP action below matches one REST operation. Card holds are `lomi_card_holds` (create, get, increment, capture, cancel). Wave, MTN, Switch, and `POST /usage/events` are not exposed over MCP.
 
+### Network (`header_Lomi-Account`)
+
+Approved [lomi. Network](/build/platform/network) Operators use the same secret key. OpenAPI header parameters become tool arguments prefixed with `header_`. The server forwards `header_Lomi-Account` as `Lomi-Account: acct_...`.
+
+| Charge model | MCP |
+| --- | --- |
+| **Direct** | Pass `header_Lomi-Account` on `lomi_checkout` `create`, `lomi_card_holds`, `lomi_customers`, `lomi_transactions`, `lomi_refunds`, `lomi_balance`, and `lomi_payouts` when the matching REST route accepts the header. |
+| **Destination** | Omit the header. Put `transfer_data.destination` in the `lomi_checkout` create body. |
+| **Separate charges and transfers** | Omit the header. Create the checkout on the Operator account, then `lomi_transfers` `create` (preview, then `confirmation_token`). |
+
+`lomi_network` (`login_link`, `account_session`) is Operator-only: do not send `header_Lomi-Account`. Payment links do not accept the header. `lomi_customers` `portal` rejects it: launch the buyer portal with the member's own key. Wave and MTN direct charges stay on the REST API.
+
+Writes still need `header_Idempotency-Key` or `idempotency_key`. Live Network requires approval.
+
 <McpOperationIndex />
 
 ## Agent-driven onboarding (0 to 1)

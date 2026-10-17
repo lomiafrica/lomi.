@@ -13,10 +13,10 @@ Utilisez **`POST /payouts`** pour tous les virements sortants. Le prix d'un vire
 <DocsScreenshot name="build/payouts" alt="Paramètres de reversements dans le tableau de bord lomi." />
 
 - **`destination: "self"`**: retrait vers un **moyen de paiement enregistré** (`payout_method_id` requis). Rails : `bank`, `spi`, `wave`, et `mtn` (mobile money).
-- **`destination: "beneficiary"`**: paiement à un tiers sur **mobile money** (`wave` aujourd’hui). `recipient.name` et `recipient.phone` requis (numéro libre ; **sans** lien avec `payout_method_id`).
+- **`destination: "beneficiary"`**: paiement à un tiers sur **mobile money** (`wave` ou `mtn`). `recipient.name` et `recipient.phone` requis (numéro libre ; **sans** lien avec `payout_method_id`). Les virements bancaires vers un compte tiers arbitraire ne sont pas pris en charge.
 
 <Callout type="warn">
-  **Les virements Wave (`rail: "wave"`) exigent une clé API live** (`lomi_sk_live_…`). Les clés test renvoient `400` pour les virements self et beneficiary Wave, aucun appel Wave réel.
+  **Les virements Wave et MTN exigent une clé API live** (`lomi_sk_live_…`). Les clés test renvoient `400` pour les virements mobile money, aucun appel prestataire réel.
 </Callout>
 
 <Callout type="info">
@@ -77,13 +77,19 @@ curl -X POST "https://api.lomi.africa/payouts" \
 | `amount` | `number` | **Oui** |
 | `currency_code` | `string` | **Oui** |
 | `payout_method_id` | UUID | **Oui** pour `self` ; requis pour beneficiary `spi` |
-| `recipient` | `{ name, phone }` | **Oui** pour beneficiary `wave` |
+| `recipient` | `{ name, phone }` | **Oui** pour beneficiary `wave` ou `mtn` |
 | `reason` | `string` | Non |
 
 ## Lister et obtenir
 
 - `GET /payouts`, retraits et virements bénéficiaires (`kind`). Les clés test ne listent que les retraits test ; les bénéficiaires live sont exclus.
 - `GET /payouts/{id}`, retrait marchand ou bénéficiaire, limité à l’organisation de la clé.
+
+## Retraits membre (lomi. Network)
+
+Avec une clé secrète Opérateur, `Lomi-Account: acct_...` et la capacité `payout.request`, `POST /payouts` avec `destination: "self"` retire le solde du compte membre vers le moyen bancaire ou mobile money enregistré de ce membre. Le premier appel sans `confirmation_token` renvoie un aperçu. Répétez le même body avec ce jeton et la même `Idempotency-Key` pour exécuter. Voir [lomi. Network](/build/platform/network).
+
+En MCP, passez `header_Lomi-Account` à `lomi_payouts`. Les virements destination et bénéficiaires restent sur la clé Opérateur sans cet en-tête.
 
 ## Retrait bloqué par les contrôles de risque plateforme
 

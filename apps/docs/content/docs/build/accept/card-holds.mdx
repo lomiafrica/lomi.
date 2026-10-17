@@ -37,7 +37,7 @@ The sale stays pending until capture is recorded, then it becomes completed. A r
 
 On the dashboard, a pending card hold shows Take, Raise, and Release. Those do the same capture, increment, and cancel as the API.
 
-Agents can use the same calls through MCP `lomi_card_holds` (`create`, `get`, `increment`, `capture`, `cancel`) or the CLI (`lomi charges hold`, `get`, `raise`, `capture`, `release`).
+Agents can use the same calls through MCP `lomi_card_holds` (`create`, `get`, `increment`, `capture`, `cancel`) or the CLI (`lomi charges hold`, `get`, `raise`, `capture`, `release`). Network Operators pass `Lomi-Account` (REST) or `header_Lomi-Account` (MCP) to hold a card on a Member Account. See [lomi. Network](/build/platform/network).
 
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \

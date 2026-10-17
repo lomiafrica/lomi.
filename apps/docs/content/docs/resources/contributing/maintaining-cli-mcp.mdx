@@ -67,8 +67,9 @@ Maintainer docs: [`apps/mcp/CONTRIBUTING.md`](https://github.com/lomiafrica/lomi
 | Regenerate tools | `pnpm run generate` → commit `src/generated/tools-manifest.json` |
 | Drift CI | `pnpm docs:drift` (OpenAPI ↔ MDX, MCP manifest, agent contracts) |
 | Agent OpenAPI | `cd apps/api && pnpm run openapi:export:agent` → `apps/docs/agent-openapi.json` (agent, provisioning, partners) |
-| OAuth / agent connect env | API: `LOMI_OAUTH_ISSUER`, `LOMI_DASHBOARD_BASE_URL`: MCP: `LOMI_OAUTH_ISSUER`, `LOMI_MCP_RESOURCE_URL` |
-| Deploy | `.env.example`, `railway.json` |
+| OAuth / agent connect env | API: `LOMI_OAUTH_ISSUER`, `LOMI_DASHBOARD_BASE_URL`. MCP: `LOMI_OAUTH_ISSUER`, `LOMI_MCP_RESOURCE_URL` |
+| OAuth introspection | Hosted MCP: set `INTERNAL_API_KEY` to the API internal key used at `POST /oauth/introspect/mcp`. `CRON_SECRET` is not accepted. Localhost can omit it (`/ready` still reports `oauth_introspection` as optional). |
+| Deploy | `railway.json`. Hosted `/ready` fails when OAuth URLs are non-localhost and `INTERNAL_API_KEY` is missing. |
 | Tests | `pnpm test` |
 | Agent plugin | `node apps/tools/agent-plugin/scripts/validate.mjs` |
 
