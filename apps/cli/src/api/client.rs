@@ -5,16 +5,22 @@ use serde::de::DeserializeOwned;
 use crate::api::ApiError;
 use crate::auth::AuthContext;
 
-fn require_https_api_url(url: &str) -> Result<()> {
-    let lower = url.to_ascii_lowercase();
+fn request_url(base_url: &str, path: &str) -> Result<String> {
+    let base = base_url.trim_end_matches('/');
+    let lower = base.to_ascii_lowercase();
     if lower.starts_with("https://") {
-        return Ok(());
+        let host = &base["https://".len()..];
+        if host.is_empty() {
+            bail!("The API URL must use https. Only localhost may use http.");
+        }
+        return Ok(format!("https://{host}{path}"));
     }
-    if lower.starts_with("http://localhost")
+    let loopback = lower.starts_with("http://localhost")
         || lower.starts_with("http://127.0.0.1")
-        || lower.starts_with("http://[::1]")
-    {
-        return Ok(());
+        || lower.starts_with("http://[::1]");
+    if loopback {
+        let host = &base["http://".len()..];
+        return Ok(format!("http://{host}{path}"));
     }
     bail!("The API URL must use https. Only localhost may use http.");
 }
@@ -39,7 +45,7 @@ impl ApiClient {
             .build()?;
 
         let base_url = auth.api_url.trim_end_matches('/').to_string();
-        require_https_api_url(&base_url)?;
+        request_url(&base_url, "")?;
 
         Ok(Self {
             client,
@@ -54,7 +60,7 @@ impl ApiClient {
     }
 
     pub async fn get_text(&self, path: &str) -> Result<String> {
-        let url = format!("{}{}", self.base_url, path);
+        let url = request_url(&self.base_url, path)?;
         let response = self
             .client
             .get(&url)
@@ -87,7 +93,7 @@ impl ApiClient {
         body: Option<&B>,
         send_idempotency_key: bool,
     ) -> Result<T> {
-        let url = format!("{}{}", self.base_url, path);
+        let url = request_url(&self.base_url, path)?;
         let mut request = self.client.request(method, &url);
 
         if let Some(body) = body {
