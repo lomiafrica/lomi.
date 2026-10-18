@@ -627,9 +627,17 @@ html.dark .docs-turnstile-mount {
   color: var(--sidebar-foreground);
 }
 
+/* The sidebar grid area includes the flexible left gutter. On wide screens
+   that gutter grows, and a stretched inset would make the floating card
+   fill it. Keep the card at the sidebar column, anchored to the article. */
 #nd-sidebar:not([data-collapsed='true']) {
-  inset: var(--docs-sidebar-inset);
-  width: auto;
+  inset-block: var(--docs-sidebar-inset);
+  inset-inline-end: var(--docs-sidebar-inset);
+  inset-inline-start: auto;
+  width: min(
+    calc(var(--fd-sidebar-width) - var(--docs-sidebar-inset)),
+    calc(100% - (var(--docs-sidebar-inset) * 2))
+  );
   overflow: visible;
   border-inline-end-width: 0;
   border-radius: var(--docs-sidebar-radius);
