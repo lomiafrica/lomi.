@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@10.28.2",
+  "overrides": {
+    "mdast-util-to-markdown": "2.1.2"
+  },
   "pnpm": {
     "overrides": {
       "fast-xml-parser": "^5.3.4",
