@@ -37,7 +37,7 @@ La vente reste en attente jusqu’à l’enregistrement du prélèvement, puis e
 
 Sur le tableau de bord, une caution en attente affiche Prélever, Augmenter et Libérer. Ces actions font le même prélèvement, la même augmentation et la même annulation que l’API.
 
-Un agent peut passer par MCP `lomi_card_holds` (`create`, `get`, `increment`, `capture`, `cancel`) ou par le CLI (`lomi charges hold`, `get`, `raise`, `capture`, `release`).
+Un agent peut passer par MCP `lomi_card_holds` (`create`, `get`, `increment`, `capture`, `cancel`) ou par le CLI (`lomi charges hold`, `get`, `raise`, `capture`, `release`). Les opérateurs Network passent `Lomi-Account` (REST) ou `header_Lomi-Account` (MCP) pour bloquer une carte sur un compte membre. Voir [lomi. Network](/build/platform/network).
 
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/charge/card" \

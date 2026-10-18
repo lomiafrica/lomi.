@@ -101,13 +101,14 @@ Capabilities are granted per membership and environment. On activation, lomi. gr
 
 | Capability | Lets the Operator |
 | --- | --- |
-| `payment.create` | Create direct charges and checkout sessions for the member (`Lomi-Account` on `POST /checkout-sessions`, `POST /charge/*`). |
+| `payment.create` | Create direct charges and checkout sessions for the member (`Lomi-Account` on `POST /checkout-sessions`, `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card`, and card-hold increment, capture, and cancel). |
 | `refund.create` | Refund the member's transactions (`POST /refunds` with `Lomi-Account`). |
 | `customer.read` | Read the member's customers. |
 | `customer.write` | Create and update the member's customers. |
 | `transaction.read` | Read the member's transactions and refunds. |
 | `account.read` | Open an account session so the member can render embedded components. |
 | `balance.read` | Read the member's balance (`GET /accounts/balance` with `Lomi-Account`). |
+| `payout.request` | Withdraw from the member's balance to that member's registered payout method (`POST /payouts` with `Lomi-Account` and `destination: "self"`). |
 | `transfer.receive` | Be the `destination` of destination charges and `POST /transfers`. |
 | `account.login_link` | Create login links into the member dashboard. |
 | `webhook.receive` | Receive Network webhooks for this member on your Operator endpoints. |
@@ -135,7 +136,7 @@ curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
   }'
 ```
 
-The checkout session belongs to the Member Account: the hosted page shows the member's branding and payment methods, and the transaction appears in the member's Transactions. When the payment completes, the member is credited the net amount and your fee (`500` here) moves from the member to your Operator balance as an `operator_fee` transfer. The same header works on `POST /charge/wave` and `POST /charge/mtn`.
+The checkout session belongs to the Member Account: the hosted page shows the member's branding and payment methods, and the transaction appears in the member's Transactions. When the payment completes, the member is credited the net amount and your fee (`500` here) moves from the member to your Operator balance as an `operator_fee` transfer. The same header works on `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card`, and the card-hold increment, capture, and cancel routes.
 
 ### Destination charges
 
@@ -184,14 +185,20 @@ Nothing moves to members at completion. When you are ready (after delivery, at t
 | --- | --- |
 | `POST /checkout-sessions` | `payment.create` |
 | `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card` | `payment.create` |
+| `POST /charge/card/{id}/increment`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel` | `payment.create` |
 | `GET /transactions`, `GET /transactions/{id}`, `GET /charge/card/{id}` | `transaction.read` |
 | `GET /refunds`, `GET /refunds/{id}` | `transaction.read` |
 | `POST /refunds` | `refund.create` |
-| `GET /customers`, `GET /customers/{id}`, `GET /customers/{id}/transactions` | `customer.read` |
-| `POST /customers`, `PATCH /customers/{id}` | `customer.write` |
+| `GET /customers`, `GET /customers/top`, `GET /customers/{id}`, `GET /customers/{id}/transactions` | `customer.read` |
+| `POST /customers`, `PATCH /customers/{id}`, `POST /customers/{id}/block`, `POST /customers/{id}/unblock` | `customer.write` |
 | `GET /accounts/balance` | `balance.read` |
+| `POST /payouts`, `GET /payouts`, `GET /payouts/{id}` | `payout.request` |
 
 If `Lomi-Account` is sent to another endpoint, the API rejects the request instead of silently switching organization scope. The API key environment controls the request environment: a test key requires test-mode grants, a live key requires live-mode grants.
+
+### MCP
+
+The same Operator secret key works on [hosted MCP](/build/mcp). Pass `header_Lomi-Account` on the resource tool that maps to a row above (`lomi_checkout`, `lomi_card_holds`, `lomi_customers`, `lomi_transactions`, `lomi_refunds`, `lomi_balance`, `lomi_payouts`). Destination charges and `lomi_transfers` stay on the Operator key without that header. `lomi_network` (`login_link`, `account_session`) is Operator-only. Wave and MTN direct charges accept `Lomi-Account` on the REST API only. Payment links do not accept the header.
 
 Customer calls create and update customers under the member organization. lomi. records Network metadata on customers created by an Operator, and customer lists include customers created by that Operator or attached to delegated transactions. Buyer portal links (`POST /customers/{id}/portal`) stay on the member's own key. That route rejects `Lomi-Account`. The buyer then uses `customers.lomi.africa`.
 

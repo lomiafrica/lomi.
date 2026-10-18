@@ -101,13 +101,14 @@ Les capacités sont accordées par adhésion et environnement. À l'activation, 
 
 | Capacité | Permet à l'Opérateur de |
 | --- | --- |
-| `payment.create` | Créer des paiements directs et des sessions de checkout pour le membre (`Lomi-Account` sur `POST /checkout-sessions`, `POST /charge/*`). |
+| `payment.create` | Créer des paiements directs et des sessions de checkout pour le membre (`Lomi-Account` sur `POST /checkout-sessions`, `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card`, et les routes increment, capture et cancel d’un blocage carte). |
 | `refund.create` | Rembourser les transactions du membre (`POST /refunds` avec `Lomi-Account`). |
 | `customer.read` | Lire les clients du membre. |
 | `customer.write` | Créer et mettre à jour les clients du membre. |
 | `transaction.read` | Lire les transactions et remboursements du membre. |
 | `account.read` | Ouvrir une session de compte pour que le membre affiche les composants intégrés. |
 | `balance.read` | Lire le solde du membre (`GET /accounts/balance` avec `Lomi-Account`). |
+| `payout.request` | Retirer le solde du membre vers son moyen de paiement enregistré (`POST /payouts` avec `Lomi-Account` et `destination: "self"`). |
 | `transfer.receive` | Être la `destination` de paiements destination et de `POST /transfers`. |
 | `account.login_link` | Créer des liens de connexion vers le tableau de bord membre. |
 | `webhook.receive` | Recevoir les webhooks Network de ce membre sur vos endpoints Opérateur. |
@@ -135,7 +136,7 @@ curl -sS -X POST "https://sandbox.api.lomi.africa/checkout-sessions" \
   }'
 ```
 
-La session de checkout appartient au compte membre : la page hébergée affiche la marque et les moyens de paiement du membre, et la transaction apparaît dans ses Transactions. À la fin du paiement, le membre est crédité du montant net et votre commission (`500` ici) passe du membre à votre solde Opérateur via un transfert `operator_fee`. Le même en-tête fonctionne sur `POST /charge/wave` et `POST /charge/mtn`.
+La session de checkout appartient au compte membre : la page hébergée affiche la marque et les moyens de paiement du membre, et la transaction apparaît dans ses Transactions. À la fin du paiement, le membre est crédité du montant net et votre commission (`500` ici) passe du membre à votre solde Opérateur via un transfert `operator_fee`. Le même en-tête fonctionne sur `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card`, et les routes increment, capture et cancel d’un blocage carte.
 
 ### Paiements destination
 
@@ -184,14 +185,20 @@ Rien ne part vers les membres à la fin du paiement. Quand vous êtes prêt (apr
 | --- | --- |
 | `POST /checkout-sessions` | `payment.create` |
 | `POST /charge/wave`, `POST /charge/mtn`, `POST /charge/card` | `payment.create` |
+| `POST /charge/card/{id}/increment`, `POST /charge/card/{id}/capture`, `POST /charge/card/{id}/cancel` | `payment.create` |
 | `GET /transactions`, `GET /transactions/{id}`, `GET /charge/card/{id}` | `transaction.read` |
 | `GET /refunds`, `GET /refunds/{id}` | `transaction.read` |
 | `POST /refunds` | `refund.create` |
-| `GET /customers`, `GET /customers/{id}`, `GET /customers/{id}/transactions` | `customer.read` |
-| `POST /customers`, `PATCH /customers/{id}` | `customer.write` |
+| `GET /customers`, `GET /customers/top`, `GET /customers/{id}`, `GET /customers/{id}/transactions` | `customer.read` |
+| `POST /customers`, `PATCH /customers/{id}`, `POST /customers/{id}/block`, `POST /customers/{id}/unblock` | `customer.write` |
 | `GET /accounts/balance` | `balance.read` |
+| `POST /payouts`, `GET /payouts`, `GET /payouts/{id}` | `payout.request` |
 
 Si `Lomi-Account` est envoyé vers un autre endpoint, l'API rejette la requête au lieu de changer silencieusement le périmètre organisation. L'environnement de la clé API contrôle celui de la requête : une clé test exige des capacités en mode test, une clé live exige des capacités en mode live.
+
+### MCP
+
+La même clé secrète Opérateur fonctionne sur le [MCP hébergé](/build/mcp). Passez `header_Lomi-Account` sur l’outil ressource qui correspond à une ligne ci-dessus (`lomi_checkout`, `lomi_card_holds`, `lomi_customers`, `lomi_transactions`, `lomi_refunds`, `lomi_balance`, `lomi_payouts`). Les paiements destination et `lomi_transfers` restent sur la clé Opérateur sans cet en-tête. `lomi_network` (`login_link`, `account_session`) est réservé à l’Opérateur. Les charges Wave et MTN acceptent `Lomi-Account` uniquement sur l’API REST. Les liens de paiement n’acceptent pas l’en-tête.
 
 Les appels clients créent et mettent à jour des clients sous l'organisation du membre. lomi. enregistre les métadonnées Network sur les clients créés par un Opérateur, et les listes incluent les clients créés par cet Opérateur ou rattachés à des transactions déléguées. Les liens vers le portail acheteur (`POST /customers/{id}/portal`) restent sur la clé du membre. Cette route refuse `Lomi-Account`. L'acheteur utilise ensuite `customers.lomi.africa`.
 
