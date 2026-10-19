@@ -177,7 +177,7 @@ Example, **phone-only** session:
 The customer sees only the phone field (plus the optional WhatsApp toggle). Name, email, and billing address are hidden.
 
 <Callout type="info">
-  **Mobile money:** When the phone field is visible but optional, **Wave** and **MTN** still require a valid phone number at payment time. Card and other methods may proceed without phone when it is optional.
+  **Mobile money:** **MTN** still needs a valid phone number at payment time so the request can be pushed to that wallet. **Wave** does not: the customer can pay with any Wave account, including when the checkout page has no phone. If they type a number, it must be valid. Card and other methods may proceed without phone when it is optional.
 </Callout>
 
 ### Resolution order

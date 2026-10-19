@@ -88,7 +88,7 @@ lomi --log-level debug dev
 | Option | Description |
 | --- | --- |
 | `--profile` | Nom du profil (défaut : `default`) |
-| `-a, --api-url` | URL de base API |
+| `-a, --api-url` | URL de base API (`https` obligatoire sauf localhost) |
 | `-l, --log-level` | Verbosité des logs |
 | `--skip-telemetry` | Désactiver la télémétrie |
 
@@ -100,6 +100,10 @@ lomi --log-level debug dev
 | Sandbox | `https://sandbox.api.lomi.africa` |
 
 Les profils `sandbox` et `default` mappent automatiquement l’URL appropriée lors de la connexion.
+
+<Callout type="warning" title="HTTPS uniquement (sauf localhost)">
+  Le CLI envoie le jeton enregistré à chaque requête API. Les `api_url` distantes et `-a` / `--api-url` doivent utiliser **https**. `http` n’est autorisé que pour les hôtes loopback : `localhost`, `127.0.0.1` et `[::1]`. Toute autre URL `http://` échoue avec `The API URL must use https. Only localhost may use http.`
+</Callout>
 
 ## Exemple CI
 

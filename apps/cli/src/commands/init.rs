@@ -557,7 +557,7 @@ server.listen(PORT, () => console.log(`Webhook server listening on http://localh
         format!(
             r#"# lomi. environment variables
 LOMI_SECRET_KEY={api_key}
-# Run `lomi listen` to receive your webhook secret, or copy from the dashboard
+# Copy LOMI_WEBHOOK_SECRET from the dashboard (Developers → Webhooks). lomi listen does not print it.
 LOMI_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 LOMI_API_URL={api_url}
 "#
