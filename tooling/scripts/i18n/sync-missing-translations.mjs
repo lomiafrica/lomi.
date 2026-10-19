@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const LOCALES = ["fr", "es", "zh"];
+const DEFAULT_LOCALES = ["fr", "es", "zh"];
 
 function readArg(name, fallback) {
   const prefix = `${name}=`;
@@ -17,6 +17,14 @@ function readArg(name, fallback) {
   if (index !== -1 && process.argv[index + 1]) return process.argv[index + 1];
   return fallback;
 }
+
+/** Target locales. Defaults stay fr, es, zh so existing apps are unchanged. */
+const LOCALES = readArg("--locales", DEFAULT_LOCALES.join(","))
+  .split(",")
+  .map((locale) => locale.trim())
+  .filter(Boolean);
+/** Record missing keys in sync-diff.json without copying English into the locale file. */
+const NO_FILL = process.argv.includes("--no-fill");
 
 const LOCALES_DIR = path.resolve(
   process.cwd(),
@@ -35,6 +43,8 @@ const DIFF_PATH = path.join(LOCALES_DIR, "sync-diff.json");
  * Usage:
  *   node sync-missing-translations.js           # add missing keys only
  *   node sync-missing-translations.js --sort    # also sort keys alphabetically
+ *   node sync-missing-translations.js --locales fr,es,zh
+ *   node sync-missing-translations.js --no-fill # record missing keys, do not copy English
  */
 
 function isPlainObject(value) {
@@ -228,11 +238,11 @@ function syncTranslations({ sort = false } = {}) {
     for (const locale of LOCALES) {
       console.log(`\n🔄 Processing ${locale.toUpperCase()} locale...`);
 
-      // Read the target locale file
+      // Read the target locale file. A missing file counts as empty.
       const localePath = path.join(LOCALES_DIR, `${locale}.json`);
-      const localeTranslations = JSON.parse(
-        fs.readFileSync(localePath, "utf8"),
-      );
+      const localeTranslations = fs.existsSync(localePath)
+        ? JSON.parse(fs.readFileSync(localePath, "utf8"))
+        : {};
       localeTranslationsByLocale[locale] = localeTranslations;
 
       // Find missing keys by comparing with English
@@ -261,28 +271,37 @@ function syncTranslations({ sort = false } = {}) {
           continue;
         }
 
-        // Add to locale translations
-        setNestedValue(localeTranslations, keyParts, englishValue);
+        if (!NO_FILL) {
+          setNestedValue(localeTranslations, keyParts, englishValue);
+        }
         addedThisRun[locale][key] = englishValue;
         addedCount++;
 
-        console.log(`✓ Added to ${locale.toUpperCase()}: ${key}`);
+        console.log(
+          NO_FILL
+            ? `• Missing in ${locale.toUpperCase()}: ${key}`
+            : `✓ Added to ${locale.toUpperCase()}: ${key}`,
+        );
       }
 
-      const output = sort
-        ? sortObjectKeys(localeTranslations)
-        : localeTranslations;
+      if (!NO_FILL) {
+        const output = sort
+          ? sortObjectKeys(localeTranslations)
+          : localeTranslations;
 
-      fs.writeFileSync(
-        localePath,
-        JSON.stringify(output, null, 2) + "\n",
-        "utf8",
-      );
+        fs.writeFileSync(
+          localePath,
+          JSON.stringify(output, null, 2) + "\n",
+          "utf8",
+        );
+        console.log(`Updated file: ${localePath}`);
+      }
 
       console.log(
-        `✅ Successfully synced ${addedCount} translation keys from English to ${locale.toUpperCase()}`,
+        NO_FILL
+          ? `📋 Recorded ${addedCount} missing keys for ${locale.toUpperCase()} without copying English`
+          : `✅ Successfully synced ${addedCount} translation keys from English to ${locale.toUpperCase()}`,
       );
-      console.log(`Updated file: ${localePath}`);
 
       totalAddedCount += addedCount;
     }

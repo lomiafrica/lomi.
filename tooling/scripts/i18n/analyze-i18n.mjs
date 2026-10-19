@@ -64,7 +64,12 @@ const LOCALES_DIR = path.resolve(
   process.cwd(),
   readArg("--locales-dir", "src/lib/locales"),
 );
-const LOCALES = ["en", "fr", "es", "zh"];
+const DEFAULT_LOCALES = ["en", "fr", "es", "zh"];
+/** Defaults stay en, fr, es, zh so existing apps are unchanged. */
+const LOCALES = readArg("--locales", DEFAULT_LOCALES.join(","))
+  .split(",")
+  .map((locale) => locale.trim())
+  .filter(Boolean);
 const PROTECTED_PREFIXES = collectRepeatable("--protect");
 
 // Extract translation keys and patterns from code
@@ -323,7 +328,7 @@ async function analyzeTranslations() {
 async function checkTranslationCompleteness() {
   console.log("🔍 Checking translation completeness across locales...\n");
 
-  const locales = ["en", "fr", "es", "zh"];
+  const locales = LOCALES.includes("en") ? LOCALES : ["en", ...LOCALES];
   const localeData = {};
 
   // Load all locale files
@@ -364,7 +369,7 @@ async function checkTranslationCompleteness() {
 
   let totalMissing = 0;
 
-  for (const locale of ["fr", "es", "zh"]) {
+  for (const locale of locales.filter((code) => code !== "en")) {
     if (!localeData[locale]) continue;
 
     const localeKeys = localeData[locale].keys;
