@@ -230,6 +230,18 @@ function sendPlainCredentialMismatch(res: Response): void {
   res.status(401).send("MCP session credential mismatch");
 }
 
+function sendUnknownMcpSession(res: Response): void {
+  applyOauthCors(res);
+  res.status(404).json({
+    jsonrpc: "2.0",
+    error: {
+      code: -32000,
+      message: "Unknown MCP session",
+    },
+    id: null,
+  });
+}
+
 function normalizeClientIp(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed || trimmed.toLowerCase() === "unknown") return null;
@@ -285,6 +297,15 @@ function createLomiMcpExpressApp(
   const app = express();
   const limit = mcpMaxBodyBytes();
   app.use(express.json({ limit: limit }));
+  app.use((req, _res, next) => {
+    const queryAt = req.url.indexOf("?");
+    const path = queryAt === -1 ? req.url : req.url.slice(0, queryAt);
+    const search = queryAt === -1 ? "" : req.url.slice(queryAt);
+    if (path.length > 1 && path.endsWith("/")) {
+      req.url = path.replace(/\/+$/, "") + search;
+    }
+    next();
+  });
 
   if (mcpTrustProxy()) {
     app.set("trust proxy", 1);
@@ -347,6 +368,20 @@ async function bearerAuthMiddleware(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  const accept = req.headers.accept;
+  if (
+    (req.method === "GET" || req.method === "HEAD") &&
+    !req.headers.authorization &&
+    !extractSessionMerchantApiKey(req) &&
+    !extractSessionProvisioningKey(req) &&
+    !extractSessionPartnerKey(req) &&
+    isString(accept) &&
+    accept.includes("text/html")
+  ) {
+    res.redirect(302, "/");
+    return;
+  }
+
   const tokens = getMcpHttpBearerTokens();
   const auth = req.headers.authorization;
   const presented =
@@ -962,10 +997,17 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           ? sessionHeader[0]
           : sessionHeader;
         if (!sessionId) {
-          return void res.status(400).send("Invalid or missing MCP session ID");
+          return void res.status(400).json({
+            jsonrpc: "2.0",
+            error: {
+              code: -32000,
+              message: "Bad Request: No valid MCP session ID provided",
+            },
+            id: null,
+          });
         }
         if (!registry.has(sessionId)) {
-          return void res.status(404).send("Unknown MCP session");
+          return void sendUnknownMcpSession(res);
         }
         const guest = req.path.endsWith("/guest");
         const headerMerchantKey = extractSessionMerchantApiKey(req);
@@ -1027,10 +1069,17 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
           ? sessionHeader[0]
           : sessionHeader;
         if (!sessionId) {
-          return void res.status(400).send("Invalid or missing MCP session ID");
+          return void res.status(400).json({
+            jsonrpc: "2.0",
+            error: {
+              code: -32000,
+              message: "Bad Request: No valid MCP session ID provided",
+            },
+            id: null,
+          });
         }
         if (!registry.has(sessionId)) {
-          return void res.status(404).send("Unknown MCP session");
+          return void sendUnknownMcpSession(res);
         }
         const guest = req.path.endsWith("/guest");
         const headerMerchantKey = extractSessionMerchantApiKey(req);
