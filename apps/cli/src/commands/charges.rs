@@ -133,14 +133,20 @@ fn print_charge(common: &CommonOptions, title: &str, body: &Value) -> Result<()>
     if let Some(amount) = data.get("amount_capturable") {
         println!("  {}: {amount}", "amount_capturable".bold());
     }
-    if data.get("client_secret").and_then(Value::as_str).is_some() {
-        println!(
-            "  {}: present. Re-run with --json to copy it, then confirm the card in lomi. Elements.",
-            "client_secret".bold()
-        );
+    if let Some(notice) = client_secret_text_notice(data) {
+        println!("  {}: {notice}", "client_secret".bold());
         println!("Card numbers never go through the CLI.");
     }
     Ok(())
+}
+
+const CLIENT_SECRET_TEXT_NOTICE: &str =
+    "present. Re-run with --json to copy it, then confirm the card in lomi. Elements.";
+
+fn client_secret_text_notice(data: &Value) -> Option<&'static str> {
+    data.get("client_secret")
+        .and_then(Value::as_str)
+        .map(|_| CLIENT_SECRET_TEXT_NOTICE)
 }
 
 async fn hold(common: &CommonOptions, args: ChargesHoldArgs) -> Result<()> {
@@ -222,4 +228,32 @@ async fn release(common: &CommonOptions, id: &str) -> Result<()> {
         .post(&format!("/charge/card/{id}/cancel"), &json!({}))
         .await?;
     print_charge(common, "Card hold released", &body)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn text_mode_never_prints_the_client_secret_value() {
+        let secret = "pi_secret_do_not_print";
+        let data = json!({
+            "id": "pi_1",
+            "status": "requires_capture",
+            "client_secret": secret
+        });
+        let notice = client_secret_text_notice(&data).unwrap();
+        assert!(!notice.contains(secret));
+        assert!(notice.contains("present"));
+        assert!(client_secret_text_notice(&json!({ "id": "pi_1" })).is_none());
+    }
+
+    #[test]
+    fn charge_ids_must_be_pi_prefixed_and_safe_for_paths() {
+        assert_eq!(charge_id("pi_abc123").unwrap(), "pi_abc123");
+        assert!(charge_id("evt_1").is_err());
+        assert!(charge_id("pi_../etc").is_err());
+        assert!(charge_id("pi_abc/def").is_err());
+        assert!(charge_id("").is_err());
+    }
 }
