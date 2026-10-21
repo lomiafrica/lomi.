@@ -138,11 +138,7 @@ export interface LomiCardFields {
   cvc: LomiCardCvcElement;
 }
 export type LomiPaymentElementTheme =
-  | "light"
-  | "dark"
-  | "flat"
-  | "stripe"
-  | "night";
+  "light" | "dark" | "flat" | "stripe" | "night";
 export type LomiBillingAddressCollection = "auto" | "never";
 
 export interface CreateLomiElementsOptions {
