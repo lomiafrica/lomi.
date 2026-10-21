@@ -43,7 +43,7 @@ pub async fn run(common: &CommonOptions, args: ListenArgs) -> Result<()> {
         me.environment.bright_black()
     );
 
-    if me.environment == "live" && !args.allow_production {
+    if live_listen_blocked(&me.environment, args.allow_production) {
         bail!(
             "CLI listen is sandbox-first. Use profile `sandbox` or pass --allow-production (requires API CLI_LISTEN_ALLOW_PRODUCTION=true)."
         );
@@ -124,15 +124,8 @@ async fn handle_event(
             if let Some(org_id) = &event.organization_id {
                 println!("{} {}", "Organization:".bright_black(), org_id.cyan());
             }
-            if event
-                .webhook_secret
-                .as_deref()
-                .is_some_and(|secret| !secret.is_empty())
-            {
-                println!(
-                    "{} Webhook secret received. Store it as LOMI_WEBHOOK_SECRET (value not printed).",
-                    "○".bright_black()
-                );
+            if let Some(notice) = webhook_secret_notice(event.webhook_secret.as_deref()) {
+                println!("{} {}", "○".bright_black(), notice);
             }
             cli::output::divider();
         }
@@ -188,4 +181,60 @@ async fn handle_event(
         }
     }
     Ok(())
+}
+
+fn live_listen_blocked(environment: &str, allow_production: bool) -> bool {
+    environment == "live" && !allow_production
+}
+
+const WEBHOOK_SECRET_NOTICE: &str =
+    "Webhook secret received. Store it as LOMI_WEBHOOK_SECRET (value not printed).";
+
+fn webhook_secret_notice(secret: Option<&str>) -> Option<&'static str> {
+    secret
+        .filter(|value| !value.is_empty())
+        .map(|_| WEBHOOK_SECRET_NOTICE)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sandbox_listen_is_allowed_without_flag() {
+        assert!(!live_listen_blocked("sandbox", false));
+        assert!(!live_listen_blocked("test", false));
+        assert!(!live_listen_blocked("live", true));
+    }
+
+    #[test]
+    fn live_listen_requires_allow_production() {
+        assert!(live_listen_blocked("live", false));
+    }
+
+    #[test]
+    fn connected_notice_does_not_include_the_secret() {
+        let secret = "whsec_should_never_print";
+        let notice = webhook_secret_notice(Some(secret)).unwrap();
+        assert!(!notice.contains(secret));
+        assert!(notice.contains("LOMI_WEBHOOK_SECRET"));
+        assert!(webhook_secret_notice(None).is_none());
+        assert!(webhook_secret_notice(Some("")).is_none());
+    }
+
+    #[test]
+    fn parses_sse_data_line() {
+        let block = "event: message\ndata: {\"type\":\"connected\",\"organization_id\":\"org_1\",\"webhook_secret\":\"whsec_secret\"}\n\n";
+        let event = parse_sse_block(block).unwrap();
+        assert_eq!(event.event_type, "connected");
+        assert_eq!(event.organization_id.as_deref(), Some("org_1"));
+        assert_eq!(event.webhook_secret.as_deref(), Some("whsec_secret"));
+    }
+
+    #[test]
+    fn skips_empty_or_invalid_sse_data() {
+        assert!(parse_sse_block("event: ping\n\n").is_none());
+        assert!(parse_sse_block("data: not-json\n\n").is_none());
+        assert!(parse_sse_block("data:\n\n").is_none());
+    }
 }

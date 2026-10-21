@@ -94,3 +94,71 @@ fn verify_legacy_signature(
     let signed_payload = format!("{timestamp}.{raw_body}");
     verify_lomi_signature(&signed_payload, signature, secret)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use hmac::{Hmac, Mac};
+    use sha2::Sha256;
+
+    fn sign(secret: &str, payload: &str) -> String {
+        type HmacSha256 = Hmac<Sha256>;
+        let mut mac = HmacSha256::new_from_slice(secret.as_bytes()).unwrap();
+        mac.update(payload.as_bytes());
+        hex::encode(mac.finalize().into_bytes())
+    }
+
+    #[test]
+    fn accepts_matching_hmac() {
+        let secret = "whsec_test";
+        let body = r#"{"id":"evt_1","type":"payment.succeeded"}"#;
+        let signature = sign(secret, body);
+        assert!(verify_lomi_signature(body, &signature, secret).is_ok());
+    }
+
+    #[test]
+    fn rejects_tampered_body_or_secret() {
+        let secret = "whsec_test";
+        let body = r#"{"id":"evt_1"}"#;
+        let signature = sign(secret, body);
+        assert_eq!(
+            verify_lomi_signature(r#"{"id":"evt_2"}"#, &signature, secret).unwrap_err(),
+            "Signature mismatch"
+        );
+        assert_eq!(
+            verify_lomi_signature(body, &signature, "whsec_other").unwrap_err(),
+            "Signature mismatch"
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_hex() {
+        assert_eq!(
+            verify_lomi_signature("{}", "not-hex", "whsec_test").unwrap_err(),
+            "Invalid signature encoding"
+        );
+    }
+
+    #[test]
+    fn verifies_v1_header_over_timestamp_and_body() {
+        let secret = "whsec_test";
+        let body = r#"{"id":"evt_1"}"#;
+        let timestamp = "1710000000";
+        let signature = sign(secret, &format!("{timestamp}.{body}"));
+        let header = format!("t={timestamp},v1={signature}");
+        assert!(verify_v1_signature(body, &header, secret).is_ok());
+        assert!(verify_v1_signature(body, "v1=only", secret).is_err());
+        assert!(verify_v1_signature(body, &format!("t={timestamp},v1=00"), secret).is_err());
+    }
+
+    #[test]
+    fn verifies_legacy_s_header() {
+        let secret = "whsec_test";
+        let body = "{}";
+        let timestamp = "1710000000";
+        let signature = sign(secret, &format!("{timestamp}.{body}"));
+        let header = format!("t={timestamp},s={signature}");
+        assert!(verify_legacy_signature(body, &header, secret).is_ok());
+        assert!(verify_legacy_signature(body, &format!("t={timestamp}"), secret).is_err());
+    }
+}
