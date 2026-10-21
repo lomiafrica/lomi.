@@ -95,7 +95,3 @@
 	path = packages
 	url = https://github.com/lomiafrica/packages.git
 	branch = main
-
-[submodule "apps/nomad"]
-	path = apps/nomad
-	url = https://github.com/princemuichkine/nomad.git
