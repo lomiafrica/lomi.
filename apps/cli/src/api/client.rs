@@ -22,6 +22,10 @@ fn http_url_host(rest: &str) -> &str {
 }
 
 fn allows_cleartext_http(rest: &str) -> bool {
+    let authority = rest.split(['/', '?', '#']).next().unwrap_or(rest);
+    if authority.contains('@') {
+        return false;
+    }
     matches!(http_url_host(rest), "localhost" | "127.0.0.1" | "::1")
 }
 
@@ -216,6 +220,9 @@ mod tests {
             "http://127.0.0.1.nip.io",
             "http://[::1]evil",
             "http://localhost@evil.com",
+            "http://evil.com@localhost",
+            "http://user:pass@127.0.0.1",
+            "http://evil.com@[::1]",
         ] {
             assert!(
                 request_url(url, "/me").is_err(),
