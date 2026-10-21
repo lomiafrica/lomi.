@@ -7,7 +7,7 @@ settings:
 overrides:
   esbuild: ^0.28.1
   hono: ^4.12.34
-  vite: 7.3.5
+  vite: 7.3.7
   fast-uri: ^3.1.7
   '@hono/node-server': ^2.0.12
   brace-expansion@^5: ^5.0.9
@@ -32,8 +32,8 @@ importers:
         specifier: file:../../packages/shared
         version: file:../../packages/shared
       '@modelcontextprotocol/sdk':
-        specifier: ^1.31.0
-        version: 1.31.0(zod@4.6.5)
+        specifier: ^1.32.0
+        version: 1.32.1(zod@4.6.5)
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -78,11 +78,11 @@ importers:
         specifier: ^8.71.0
         version: 8.71.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       vite:
-        specifier: 7.3.5
-        version: 7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
+        specifier: 7.3.7
+        version: 7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@22.20.4)(vite@7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))
+        version: 4.1.11(@types/node@22.20.4)(vite@7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))
 
 packages:
 
@@ -324,8 +324,8 @@ packages:
   '@lomi./shared@file:../../packages/shared':
     resolution: {directory: ../../packages/shared, type: directory}
 
-  '@modelcontextprotocol/sdk@1.31.0':
-    resolution: {integrity: sha512-UvTMgnNlnIBO/22ob2RcVGDlcvOslQs8T59+FTGdA0L27a39fdGF/EDETNtDVK4DZGpwomlsYpRdA8UXcVL/pw==}
+  '@modelcontextprotocol/sdk@1.32.1':
+    resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -697,7 +697,7 @@ packages:
     resolution: {integrity: sha512-2XJVD55d1o5AZous5CCGKS74g/riOj9odEt2bQpCVZeblHyHdnMeFl4jl0XjU21stf4mbjUkew2eXQZt65g5CQ==}
     peerDependencies:
       msw: ^2.4.9
-      vite: 7.3.5
+      vite: 7.3.7
     peerDependenciesMeta:
       msw:
         optional: true
@@ -1558,8 +1558,8 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  vite@7.3.5:
-    resolution: {integrity: sha512-KuOaNhcnGFN2zIPGA7wRmzF+lJA1sea7rHq17aiJ++9lzY1WWG6Jpwqwe1KNbRVPIqHmr8GLYx7jbrQcN/7/ww==}
+  vite@7.3.7:
+    resolution: {integrity: sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1614,7 +1614,7 @@ packages:
       '@vitest/ui': 4.1.11
       happy-dom: '*'
       jsdom: '*'
-      vite: 7.3.5
+      vite: 7.3.7
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -1851,7 +1851,7 @@ snapshots:
     dependencies:
       libphonenumber-js: 1.13.14
 
-  '@modelcontextprotocol/sdk@1.31.0(zod@4.6.5)':
+  '@modelcontextprotocol/sdk@1.32.1(zod@4.6.5)':
     dependencies:
       '@hono/node-server': 2.1.3(hono@4.13.11)
       ajv: 8.20.0
@@ -2192,13 +2192,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))':
+  '@vitest/mocker@4.1.11(vite@7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -3110,7 +3110,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15):
+  vite@7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15):
     dependencies:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.7)
@@ -3124,10 +3124,10 @@ snapshots:
       jiti: 2.7.0
       tsx: 4.23.15
 
-  vitest@4.1.11(@types/node@22.20.4)(vite@7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)):
+  vitest@4.1.11(@types/node@22.20.4)(vite@7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))
+      '@vitest/mocker': 4.1.11(vite@7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -3144,7 +3144,7 @@ snapshots:
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 7.3.5(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 7.3.7(@types/node@22.20.4)(jiti@2.7.0)(tsx@4.23.15)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.20.4

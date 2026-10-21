@@ -38,7 +38,7 @@
     "overrides": {
       "esbuild": "^0.28.1",
       "hono": "^4.12.34",
-      "vite": "7.3.5",
+      "vite": "7.3.7",
       "fast-uri": "^3.1.7",
       "@hono/node-server": "^2.0.12",
       "brace-expansion@^5": "^5.0.9",
@@ -51,12 +51,15 @@
       "source-map-js": "1.2.2",
       "brace-expansion@^1": "^1.1.18",
       "nanoid": "^3.3.18"
+    },
+    "auditConfig": {
+      "ignoreGhsas": ["GHSA-vfj7-8cjw-p6xm"]
     }
   },
   "dependencies": {
     "@lomi./sdk-scripts": "file:../sdks/scripts",
     "@lomi./shared": "file:../../packages/shared",
-    "@modelcontextprotocol/sdk": "^1.31.0",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
     "zod": "^4.6.5"
@@ -73,7 +76,7 @@
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.71.0",
-    "vite": "7.3.5",
+    "vite": "7.3.7",
     "vitest": "^4.1.11"
   },
   "keywords": [
