@@ -31,6 +31,8 @@ Mêmes colonnes que [Canaux de paiement](/build/payment-channels#channel-capabil
 3. Il approuve dans l’app Wave.
 4. Confirmez via webhooks ou `GET /transactions/{id}` avant livraison.
 
+Le checkout Wave hébergé n’exige pas de téléphone sur la page. Le client peut payer avec n’importe quel compte Wave. Un numéro saisi est validé ; un champ vide ouvre quand même Wave. `POST /charge/wave` exige toujours `customer.phoneNumber`.
+
 ## Charge directe
 
 `POST /charge/wave` exige le **XOF**. La réponse contient `wave_launch_url` ou `checkout_url`.

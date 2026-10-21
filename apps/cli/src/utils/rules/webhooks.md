@@ -42,4 +42,4 @@ function verifyLomiWebhook(rawBody: string, signatureV1: string, secret: string)
 
 ## Environment variable
 
-Set `LOMI_WEBHOOK_SECRET=whsec_…` from `lomi listen` (connected event) or your dashboard webhook settings.
+Set `LOMI_WEBHOOK_SECRET=whsec_…` from the dashboard (**Developers → Webhooks**). `lomi listen` confirms when a secret was received but does not print the value.

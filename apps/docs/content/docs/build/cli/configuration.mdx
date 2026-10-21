@@ -88,7 +88,7 @@ lomi --log-level debug dev
 | Flag | Description |
 | --- | --- |
 | `--profile` | Profile name (default: `default`) |
-| `-a, --api-url` | API base URL override |
+| `-a, --api-url` | API base URL override (`https` required except localhost) |
 | `-l, --log-level` | Log verbosity |
 | `--skip-telemetry` | Opt out of telemetry |
 
@@ -100,6 +100,10 @@ lomi --log-level debug dev
 | Sandbox | `https://sandbox.api.lomi.africa` |
 
 Profiles `sandbox` and `default` map to the appropriate URL automatically during login.
+
+<Callout type="warning" title="HTTPS only (except localhost)">
+  The CLI attaches your stored token to every API request. Remote `api_url` values and `-a` / `--api-url` must use **https**. `http` is allowed only for loopback hosts: `localhost`, `127.0.0.1`, and `[::1]`. Any other `http://` URL fails with `The API URL must use https. Only localhost may use http.`
+</Callout>
 
 ## CI example
 

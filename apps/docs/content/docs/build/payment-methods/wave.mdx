@@ -31,6 +31,8 @@ Same columns as [Payment channels](/build/payment-channels#channel-capabilities)
 3. Customer approves in the Wave app.
 4. Confirm with webhooks or `GET /transactions/{id}` before fulfilling.
 
+Hosted Wave does not require a phone on the page. The customer can pay with any Wave account. A typed number is validated; a blank field still opens Wave. Direct `POST /charge/wave` still requires nested `customer.phoneNumber`.
+
 ## Direct charge
 
 `POST /charge/wave` requires **XOF** and a nested `customer` object with `name` and `phoneNumber` in E.164 format. The response includes `wave_launch_url` or `checkout_url`: redirect or deep-link the customer.

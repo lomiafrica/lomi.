@@ -5,7 +5,7 @@ Thank you for considering contributing to lomi.! This document will outline how 
 ## Prerequisites
 
 - **You're familiar with GitHub Issues and Pull Requests**
-- **You've read the [docs](https://develoeprs.lomi.africa).**
+- **You've read the [docs](https://docs.lomi.africa).**
 - **You've setup a test project with `bun install lomi.cli`**
 
 ## Issues before PRs
