@@ -20,7 +20,8 @@
       "axios": "^1.20.0",
       "proxy-addr": "^2.0.8",
       "body-parser": "^1.20.6",
-      "fast-uri": "^3.1.5"
+      "fast-uri": "^3.1.5",
+      "follow-redirects": "1.16.1"
     }
   }
 }

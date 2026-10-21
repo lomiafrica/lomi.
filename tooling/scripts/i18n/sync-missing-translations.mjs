@@ -150,12 +150,22 @@ function sortObjectKeys(obj) {
   return sorted;
 }
 
+function readJsonFile(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (error) {
+    if (error && error.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 function readSyncDiff() {
-  if (!fs.existsSync(DIFF_PATH)) {
+  const parsed = readJsonFile(DIFF_PATH);
+  if (!parsed) {
     return { added: Object.fromEntries(LOCALES.map((l) => [l, {}])) };
   }
 
-  const diff = JSON.parse(fs.readFileSync(DIFF_PATH, "utf8"));
+  const diff = parsed;
   diff.added ??= {};
 
   for (const locale of LOCALES) {
@@ -240,9 +250,7 @@ function syncTranslations({ sort = false } = {}) {
 
       // Read the target locale file. A missing file counts as empty.
       const localePath = path.join(LOCALES_DIR, `${locale}.json`);
-      const localeTranslations = fs.existsSync(localePath)
-        ? JSON.parse(fs.readFileSync(localePath, "utf8"))
-        : {};
+      const localeTranslations = readJsonFile(localePath) ?? {};
       localeTranslationsByLocale[locale] = localeTranslations;
 
       // Find missing keys by comparing with English
