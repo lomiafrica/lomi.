@@ -4,7 +4,7 @@ use colored::Colorize;
 use futures_util::StreamExt;
 use serde::Deserialize;
 
-use crate::api::{ApiClient, MeResponse};
+use crate::api::{request_url, ApiClient, MeResponse};
 use crate::auth::session::ensure_authenticated;
 use crate::cli::{self, CommonOptions};
 
@@ -49,7 +49,7 @@ pub async fn run(common: &CommonOptions, args: ListenArgs) -> Result<()> {
         );
     }
 
-    let mut url = format!("{}/cli/listen", auth.api_url.trim_end_matches('/'));
+    let mut url = request_url(&auth.api_url, "/cli/listen")?;
     if args.allow_production {
         url.push_str("?allow_production=true");
     }

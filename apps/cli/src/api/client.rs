@@ -29,7 +29,7 @@ fn allows_cleartext_http(rest: &str) -> bool {
     matches!(http_url_host(rest), "localhost" | "127.0.0.1" | "::1")
 }
 
-fn request_url(base_url: &str, path: &str) -> Result<String> {
+pub fn request_url(base_url: &str, path: &str) -> Result<String> {
     let base = base_url.trim_end_matches('/');
     let lower = base.to_ascii_lowercase();
     if let Some(rest) = lower.strip_prefix("https://") {
@@ -229,5 +229,19 @@ mod tests {
                 "cleartext should be rejected for {url}"
             );
         }
+    }
+
+    #[test]
+    fn auth_and_listen_paths_use_the_same_https_guard() {
+        assert_eq!(
+            request_url("https://api.lomi.africa", "/cli-auth/device-auth").unwrap(),
+            "https://api.lomi.africa/cli-auth/device-auth"
+        );
+        assert_eq!(
+            request_url("http://127.0.0.1:3000", "/cli/listen").unwrap(),
+            "http://127.0.0.1:3000/cli/listen"
+        );
+        assert!(request_url("http://api.lomi.africa", "/cli-auth/revoke").is_err());
+        assert!(request_url("http://localhost@evil.com", "/cli/listen").is_err());
     }
 }
