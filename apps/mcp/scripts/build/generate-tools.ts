@@ -15,6 +15,7 @@ import {
 } from "../../src/generator/mcp-english-copy.js";
 import {
   assertGroupsCoverOperations,
+  bodyFieldsFromSchema,
   buildGroupDescription,
   loadMerchantGroups,
   mergeGroupInputSchema,
@@ -222,6 +223,7 @@ function main(): void {
           required: built.action.requiredInput.filter(
             (field) => field !== "idempotency_key",
           ),
+          bodyFields: bodyFieldsFromSchema(built.inputSchema),
         })),
       }),
       Object.entries(CURRENCY_NOTES).find(([name]) => name === group.name)?.[1],

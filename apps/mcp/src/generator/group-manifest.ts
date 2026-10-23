@@ -157,6 +157,21 @@ export function mergeGroupInputSchema(
   });
 }
 
+const MAX_BODY_FIELDS = 12;
+
+/** Top-level body field names, required first, so the caller knows the shape. */
+export function bodyFieldsFromSchema(schema: ResolvedJsonSchema): string[] {
+  const body = readObject(readObject(schema, "properties") ?? {}, "body");
+  const props = body ? readObject(body, "properties") : undefined;
+  if (!body || !props) return [];
+  const required = new Set(stringArray(body["required"]));
+  const names = Object.keys(props);
+  return [
+    ...names.filter((name) => required.has(name)).map((name) => `${name} (required)`),
+    ...names.filter((name) => !required.has(name)),
+  ];
+}
+
 export function buildGroupDescription(args: {
   title: string;
   actions: Array<{
@@ -164,6 +179,7 @@ export function buildGroupDescription(args: {
     title: string;
     operationKey: string;
     required: string[];
+    bodyFields?: string[];
   }>;
 }): string {
   const actionLines = args.actions.map((action) => {
@@ -171,7 +187,12 @@ export function buildGroupDescription(args: {
       action.required.length > 0
         ? ` Required: ${action.required.join(", ")}.`
         : " No extra required fields.";
-    return `- \`${action.name}\` — ${action.title} (${action.operationKey}).${req}`;
+    const fields = action.bodyFields ?? [];
+    const body =
+      fields.length > 0
+        ? ` Body: ${fields.slice(0, MAX_BODY_FIELDS).join(", ")}${fields.length > MAX_BODY_FIELDS ? ", …" : ""}.`
+        : "";
+    return `- \`${action.name}\` — ${action.title} (${action.operationKey}).${req}${body}`;
   });
   return [
     `${args.title}. Pass required \`action\` to choose the REST call.`,
