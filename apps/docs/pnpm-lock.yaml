@@ -56,10 +56,10 @@ importers:
         version: 0.1.1(tailwindcss@4.3.3)
       '@vercel/analytics':
         specifier: ^1.6.1
-        version: 1.6.1(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+        version: 1.6.1(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@vercel/speed-insights':
         specifier: ^1.3.1
-        version: 1.3.1(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+        version: 1.3.1(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -71,25 +71,25 @@ importers:
         version: 3.0.0
       fumadocs-core:
         specifier: ~16.8.12
-        version: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+        version: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       fumadocs-docgen:
         specifier: ^3.1.1
-        version: 3.1.1(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(mdast-util-mdx@3.0.0)
+        version: 3.1.1(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(mdast-util-mdx@3.0.0)
       fumadocs-mdx:
         specifier: ^14.3.2
-        version: 14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+        version: 14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       fumadocs-openapi:
         specifier: ^10.10.3
-        version: 10.10.3(6756b3e8e5fdbc6cfb2cfe40406b9336)
+        version: 10.10.3(7654d0fac2e62fce5f4979b751a11c13)
       fumadocs-twoslash:
         specifier: ^3.3.1
-        version: 3.3.1(787a33e68365b797c65f517ec167ffcd)
+        version: 3.3.1(c5650350b818175e3d11315aa75e7e35)
       fumadocs-typescript:
         specifier: ^4.0.14
-        version: 4.0.14(a8236b5871c0fb2f83b0ae34b175a21c)
+        version: 4.0.14(a41d1c2a25bbd140ffed669a22dcec99)
       fumadocs-ui:
         specifier: ~16.8.12
-        version: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
+        version: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
       katex:
         specifier: 0.18.2
         version: 0.18.2
@@ -97,8 +97,8 @@ importers:
         specifier: ^0.542.0
         version: 0.542.0(react@19.3.0)
       next:
-        specifier: 16.3.8
-        version: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: 16.4.1
+        version: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react:
         specifier: ^19.3.0
         version: 19.3.0
@@ -818,60 +818,60 @@ packages:
   '@next/env@16.3.7':
     resolution: {integrity: sha512-/HuhBN1CorqNTmewTIh81yXOQri6B8Ye/c9D7+830XqwVaf8qMnJNrgNxDn6dLtihq8YzBbI6NSAuMKvpr+DvQ==}
 
-  '@next/env@16.3.8':
-    resolution: {integrity: sha512-Al9zqHVV7TJv0eFuOU4U7Lvv74PTih4Ch63sk2xCIpSTkE3udFnaOcnzP2lQVymiL7yS9Cj2iClUXlR3EQ5sEw==}
+  '@next/env@16.4.1':
+    resolution: {integrity: sha512-5sUUrrSvs/2/2LnLoesybMGx12EtPB46fdZ6RhAw0XDGSPxU2LFyQBB7yuEiOFFJPKmBY6+q2jTr1/AMbnp0/g==}
 
   '@next/eslint-plugin-next@16.3.7':
     resolution: {integrity: sha512-ZQwUKBxqKAasarxLHJkkIv0cuG80pJ7TKvCUcFvlKewkuzYkL+Lsxb++DQlcBnY4uT0kOazDye4j1pyDPlDcDQ==}
 
-  '@next/swc-darwin-arm64@16.3.8':
-    resolution: {integrity: sha512-2JPRMh2nmQG5CiL7cXGL9AGwnPWJQ//cTtAUCT+w511QHk79SYz3LGv/pc5X643B/WEO0rvu3Yww0hqwt3kgeA==}
+  '@next/swc-darwin-arm64@16.4.1':
+    resolution: {integrity: sha512-U+hQ5Gj3fpzf4fveTIF3dpUFYhaSW8vHhdAnbiIomzXzg7boreYFgBqprepXFtW4sw+aTttiNmg0gew/iFNhbg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@16.3.8':
-    resolution: {integrity: sha512-GZtCCOBKJ4leVIT/Th0llWKhD1ca92lzbQiS5R5ON9QkoiFnilFsebDae1JU2a3HWoKMEmEZWGs1AGLavVM72Q==}
+  '@next/swc-darwin-x64@16.4.1':
+    resolution: {integrity: sha512-/hqC3V1XLUjhMASf/WridKdO9FXoEgN3HBWmtKbj00MPgnltutfraWJ3bYTpCRIgEIpbjJyOVLpYgAhh/BkdcQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@16.3.8':
-    resolution: {integrity: sha512-O659ygeQYqneJ1fBKMpFxIFqYkYswu8IAS1OCKK/4f3ZgJJm1dRz4fVJZRi/kLLWjnBKnebOePA4WNv+sV1pVA==}
+  '@next/swc-linux-arm64-gnu@16.4.1':
+    resolution: {integrity: sha512-GHzncHbcaS9g95kcvTNtKQW3aCLoR+xc3Jm7qrkpk1R+D2BjMHIPyvQGRPKCdMX95BsH/421jBUK06q9tEwzjw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@next/swc-linux-arm64-musl@16.3.8':
-    resolution: {integrity: sha512-dSjKSyWpzxoO1d3DIZZcP4XJcNaKeLmxQMFOiYl5vuBRMmweIqnAhty8tAmRsvTss779cK1FtYnDMj40e4TQlg==}
+  '@next/swc-linux-arm64-musl@16.4.1':
+    resolution: {integrity: sha512-1SuJyDxW/PR9dHJat/ZRgcYLhuSZ+1psP4DlKb2tKIuXbjygqpLrJWRSq+onZQBv8LcmU67EIrmb6c3XTaJLjw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@next/swc-linux-x64-gnu@16.3.8':
-    resolution: {integrity: sha512-lbqOuz3RPRcv+o9msNsJw5x4+Y1ZwPTs6vmL6DCf7i0fZfvng/F59wyeDwqHIvV0mK//RBy/jJkZ+nCKsSMXjQ==}
+  '@next/swc-linux-x64-gnu@16.4.1':
+    resolution: {integrity: sha512-Istng1hMGp9TGO4lUqeKLd70MPN/OOkucVTP2Nmj+gLkwBgmPqUw8CJYBCC7nbl/B/23bBCcjCI5Hsh6hazC1A==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@next/swc-linux-x64-musl@16.3.8':
-    resolution: {integrity: sha512-+316WswI8ScVgZeUd+1KGaXkHhaYQzCjvH/05TZSpJ8zBizb1a4G7DtO7F12jcBIqMOtsz9ji1t48fmKtzqsGA==}
+  '@next/swc-linux-x64-musl@16.4.1':
+    resolution: {integrity: sha512-aSC9wMNiZRRFVpPkPWBzRwLQxIGm/CiQcXyFF1XNcgodb+uMxdk7aSSGGpDXCbnvZdf4itjHxpOd5h7i7zaiYw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@next/swc-win32-arm64-msvc@16.3.8':
-    resolution: {integrity: sha512-ji0gd4kMYUxO+1fJBIbiBVRCjzG/lloiyCccnlebvb1ZJ5qXCPZqYg4Jl1DrrixnWNMKylzgpmMWx0yNDYXlzw==}
+  '@next/swc-win32-arm64-msvc@16.4.1':
+    resolution: {integrity: sha512-t/myvwFDlypMUjRvbBf8qLPyuaB0iXYYdBtwMt6DM6f+60wtGr4bSYholdPqNeV5VUXZhrpMwfza829kmhS3iA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@16.3.8':
-    resolution: {integrity: sha512-WcTlaKt/TWkh5kUjdJcUmB1XgZ+1c6fz4Y9fDHL73YNSdGaUWjceeWrrlwF0nv19iABYWC4iAq1oX1w4Bn0vfg==}
+  '@next/swc-win32-x64-msvc@16.4.1':
+    resolution: {integrity: sha512-6ICqPo9awCkrtYNPhwkx1uU7rlFWrZRrIboDHS2LU+jv088UBYQtmJ25h6pCp27/+FZjF6BQ4Te4ErugyMeuBg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -3197,8 +3197,8 @@ packages:
       '@types/unist':
         optional: true
 
-  next@16.3.8:
-    resolution: {integrity: sha512-U7QEZaTini6wKrb8A8hqLLqYQyCetegKjCpJOyxk642vWoMoU1x5PyZCJFvgYgiptA8xc5j/9xYlZFO7w9Sjmw==}
+  next@16.4.1:
+    resolution: {integrity: sha512-uc657V62E34fOI6W5NtG9IzwsPcms0Z60grz2MJGtglgD+pTFnNt4Yw2PzaU622tfX4vhrDgLZzicE2YlhI20Q==}
     engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
@@ -4273,7 +4273,7 @@ snapshots:
 
   '@next/env@16.3.7': {}
 
-  '@next/env@16.3.8': {}
+  '@next/env@16.4.1': {}
 
   '@next/eslint-plugin-next@16.3.7(eslint@9.39.5(jiti@2.7.0))':
     dependencies:
@@ -4282,28 +4282,28 @@ snapshots:
     transitivePeerDependencies:
       - eslint
 
-  '@next/swc-darwin-arm64@16.3.8':
+  '@next/swc-darwin-arm64@16.4.1':
     optional: true
 
-  '@next/swc-darwin-x64@16.3.8':
+  '@next/swc-darwin-x64@16.4.1':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@16.3.8':
+  '@next/swc-linux-arm64-gnu@16.4.1':
     optional: true
 
-  '@next/swc-linux-arm64-musl@16.3.8':
+  '@next/swc-linux-arm64-musl@16.4.1':
     optional: true
 
-  '@next/swc-linux-x64-gnu@16.3.8':
+  '@next/swc-linux-x64-gnu@16.4.1':
     optional: true
 
-  '@next/swc-linux-x64-musl@16.3.8':
+  '@next/swc-linux-x64-musl@16.4.1':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@16.3.8':
+  '@next/swc-win32-arm64-msvc@16.4.1':
     optional: true
 
-  '@next/swc-win32-x64-msvc@16.3.8':
+  '@next/swc-win32-x64-msvc@16.4.1':
     optional: true
 
   '@noble/hashes@1.8.0': {}
@@ -5217,14 +5217,14 @@ snapshots:
 
   '@ungap/structured-clone@1.4.0': {}
 
-  '@vercel/analytics@1.6.1(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
+  '@vercel/analytics@1.6.1(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
     optionalDependencies:
-      next: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      next: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
 
-  '@vercel/speed-insights@1.3.1(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
+  '@vercel/speed-insights@1.3.1(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
     optionalDependencies:
-      next: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      next: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
 
   '@yuku-codegen/binding-android-arm64@0.9.5':
@@ -5822,7 +5822,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5):
+  fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5):
     dependencies:
       '@orama/orama': 3.1.18
       estree-util-value-to-estree: 3.5.0
@@ -5852,18 +5852,18 @@ snapshots:
       '@types/react': 19.3.0
       algoliasearch: 5.37.0
       lucide-react: 0.542.0(react@19.3.0)
-      next: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      next: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
       zod: 4.6.5
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-docgen@3.1.1(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(mdast-util-mdx@3.0.0):
+  fumadocs-docgen@3.1.1(@types/estree@1.0.9)(@types/hast@3.0.5)(@types/mdast@4.0.4)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(mdast-util-mdx@3.0.0):
     dependencies:
       estree-util-to-js: 2.0.0
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       npm-to-yarn: 3.2.0
       unified: 11.0.5
       unist-util-visit: 5.1.0
@@ -5877,14 +5877,14 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-mdx: 3.0.0
 
-  fumadocs-mdx@14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
+  fumadocs-mdx@14.3.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
     dependencies:
       '@mdx-js/mdx': 3.1.1
       '@standard-schema/spec': 1.1.0
       chokidar: 5.0.0
       esbuild: 0.28.2
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       js-yaml: 4.3.2
       mdast-util-mdx: 3.0.0
       mdast-util-to-markdown: 2.1.2
@@ -5901,12 +5901,12 @@ snapshots:
       '@types/mdast': 4.0.4
       '@types/mdx': 2.0.14
       '@types/react': 19.3.0
-      next: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      next: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-openapi@10.10.3(6756b3e8e5fdbc6cfb2cfe40406b9336):
+  fumadocs-openapi@10.10.3(7654d0fac2e62fce5f4979b751a11c13):
     dependencies:
       '@fumari/json-schema-ts': 0.0.2(@typescript-eslint/types@8.71.0)
       '@fumari/stf': 1.0.5(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -5915,8 +5915,8 @@ snapshots:
       '@radix-ui/react-select': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       chokidar: 5.0.0
       class-variance-authority: 0.7.1
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
       github-slugger: 2.0.0
       hast-util-to-jsx-runtime: 2.3.6
       js-yaml: 4.3.2
@@ -5934,13 +5934,13 @@ snapshots:
       - '@typescript-eslint/types'
       - supports-color
 
-  fumadocs-twoslash@3.3.1(787a33e68365b797c65f517ec167ffcd):
+  fumadocs-twoslash@3.3.1(c5650350b818175e3d11315aa75e7e35):
     dependencies:
       '@base-ui/react': 1.8.0(@types/react@19.3.0)(date-fns@3.6.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@shikijs/twoslash': 4.4.3(typescript@6.0.3)
       cn: 0.2.6
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
       mdast-util-from-markdown: 2.0.3
       mdast-util-gfm: 3.1.0
       mdast-util-to-hast: 13.2.1
@@ -5956,10 +5956,10 @@ snapshots:
       - date-fns
       - supports-color
 
-  fumadocs-typescript@4.0.14(a8236b5871c0fb2f83b0ae34b175a21c):
+  fumadocs-typescript@4.0.14(a41d1c2a25bbd140ffed669a22dcec99):
     dependencies:
       estree-util-value-to-estree: 3.5.0
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       hast-util-to-estree: 3.1.3
       hast-util-to-jsx-runtime: 2.3.6
       remark: 15.0.1
@@ -5970,11 +5970,11 @@ snapshots:
       unist-util-visit: 5.1.0
     optionalDependencies:
       '@types/react': 19.3.0
-      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
+      fumadocs-ui: 16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-ui@16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3):
+  fumadocs-ui@16.8.12(@tailwindcss/oxide@4.3.3)(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3):
     dependencies:
       '@fumadocs/tailwind': 0.0.5(@tailwindcss/oxide@4.3.3)(tailwindcss@4.3.3)
       '@radix-ui/react-accordion': 1.2.20(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -5988,7 +5988,7 @@ snapshots:
       '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
       '@radix-ui/react-tabs': 1.1.21(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       class-variance-authority: 0.7.1
-      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+      fumadocs-core: 16.8.12(@mdx-js/mdx@3.1.1)(@mixedbread/sdk@0.27.0)(@orama/core@1.2.19)(@oramacloud/client@2.1.4)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(algoliasearch@5.37.0)(lucide-react@0.542.0(react@19.3.0))(next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       lucide-react: 1.48.0(react@19.3.0)
       motion: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       next-themes: 0.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -6003,7 +6003,7 @@ snapshots:
     optionalDependencies:
       '@types/mdx': 2.0.14
       '@types/react': 19.3.0
-      next: 16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      next: 16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
       - '@tailwindcss/oxide'
@@ -6896,9 +6896,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  next@16.3.8(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  next@16.4.1(@opentelemetry/api@1.9.1)(@types/node@24.3.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
-      '@next/env': 16.3.8
+      '@next/env': 16.4.1
       '@swc/helpers': 0.5.23
       baseline-browser-mapping: 2.11.26
       caniuse-lite: 1.0.30001813
@@ -6907,14 +6907,14 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       styled-jsx: 5.1.6(react@19.3.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 16.3.8
-      '@next/swc-darwin-x64': 16.3.8
-      '@next/swc-linux-arm64-gnu': 16.3.8
-      '@next/swc-linux-arm64-musl': 16.3.8
-      '@next/swc-linux-x64-gnu': 16.3.8
-      '@next/swc-linux-x64-musl': 16.3.8
-      '@next/swc-win32-arm64-msvc': 16.3.8
-      '@next/swc-win32-x64-msvc': 16.3.8
+      '@next/swc-darwin-arm64': 16.4.1
+      '@next/swc-darwin-x64': 16.4.1
+      '@next/swc-linux-arm64-gnu': 16.4.1
+      '@next/swc-linux-arm64-musl': 16.4.1
+      '@next/swc-linux-x64-gnu': 16.4.1
+      '@next/swc-linux-x64-musl': 16.4.1
+      '@next/swc-win32-arm64-msvc': 16.4.1
+      '@next/swc-win32-x64-msvc': 16.4.1
       '@opentelemetry/api': 1.9.1
       sharp: 0.35.5(@types/node@24.3.1)
     transitivePeerDependencies:

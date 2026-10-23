@@ -19,6 +19,11 @@ jobs:
           rm -rf apps/nomad
           git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/princemuichkine/nomad.git" apps/nomad
 
+      - name: Checkout packages submodule
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -33,4 +38,5 @@ jobs:
         working-directory: apps/nomad
         run: |
           pnpm install --frozen-lockfile
+          pnpm typecheck
           pnpm test
