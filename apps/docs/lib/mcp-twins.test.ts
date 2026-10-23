@@ -32,10 +32,14 @@ test('maps REST checkout create to lomi_checkout action=create', () => {
   );
 });
 
+test('maps REST card holds to lomi_card_holds', () => {
+  const twin = findMcpTwin('POST', '/charge/card');
+  assert.equal(twin?.tool, 'lomi_card_holds');
+  assert.equal(twin?.action, 'create');
+});
+
 test('does not twin MCP-excluded operations', () => {
-  assert.equal(findMcpTwin('POST', '/charge/card'), undefined);
   assert.equal(findMcpTwin('POST', '/usage/events'), undefined);
-  assert.ok(mcpExcludedOperationKeys().has('POST /charge/card'));
   assert.ok(mcpExcludedOperationKeys().has('POST /usage/events'));
   assert.ok(mcpExcludedOperationKeys().has('POST /support-requests'));
 });

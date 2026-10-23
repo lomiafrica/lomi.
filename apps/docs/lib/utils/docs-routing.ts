@@ -49,6 +49,7 @@ const DOCS_APP_API_ROUTES = [
   '/api/tryit-context',
   '/api/tryit-prefs',
   '/api/support',
+  '/api/ready',
 ] as const;
 
 function isDocsAppApiRoute(pathname: string): boolean {

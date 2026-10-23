@@ -6,6 +6,7 @@ import {
   buildDocsInternalLocalePath,
   docsLocaleFromCookieValue,
   isDocsInternalLocalePath,
+  isDocsMachinePath,
   parseDocsInternalLocalePath,
   parseDocsLang,
 } from './docs-routing';
@@ -33,4 +34,11 @@ test('internal locale paths', () => {
     locale: 'en',
     pathname: '/build/cli',
   });
+});
+
+test('app route handlers skip the locale rewrite, docs pages under /api do not', () => {
+  assert.equal(isDocsMachinePath('/api/ready/supabase'), true);
+  assert.equal(isDocsMachinePath('/api/search'), true);
+  assert.equal(isDocsMachinePath('/api/readiness'), false);
+  assert.equal(isDocsMachinePath('/api/refunds'), false);
 });
