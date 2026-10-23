@@ -47,6 +47,8 @@ export function registerLomiConnectors(
       description: LOMI_CONNECTORS_MCP_DESCRIPTION,
       inputSchema: {
         action: z.enum([
+          "search",
+          "tools",
           "list",
           "catalog",
           "connect",
@@ -55,6 +57,7 @@ export function registerLomiConnectors(
           "authenticate",
           "call",
         ]),
+        query: z.string().optional().describe("App name for search."),
         slug: z.string().optional(),
         name: z.string().optional(),
         url: z.string().optional(),
@@ -78,6 +81,44 @@ export function registerLomiConnectors(
         );
       }
       const baseUrl = getLomiApiBaseUrl();
+      if (input.action === "search") {
+        const query = isString(input.query) ? input.query.trim() : "";
+        if (query.length < 2) {
+          return textResult(
+            "search needs a query of at least two characters.",
+            true,
+          );
+        }
+        const result = await callLomiRest(
+          {
+            method: "get",
+            pathTemplate: "/connectors/catalog",
+            pathParamNames: [],
+            queryParamNames: ["q"],
+            wantsBody: false,
+            inputSchema: {},
+          },
+          { q: query },
+          { baseUrl, apiKey },
+        );
+        return textResult(formatHttpResult(result), result.status >= 400);
+      }
+      if (input.action === "tools") {
+        const name = isString(input.name)
+          ? input.name
+          : isString(input.slug)
+            ? input.slug
+            : "";
+        if (!name) return textResult("tools requires name.", true);
+        const body: JsonObject = { name };
+        if (isString(input.account)) body.account = input.account;
+        const result = await callLomiRest(
+          { ...rest, pathTemplate: "/connectors/tools" },
+          { body },
+          { baseUrl, apiKey },
+        );
+        return textResult(formatHttpResult(result), result.status >= 400);
+      }
       if (input.action === "catalog") {
         const result = await callLomiRest(
           {
