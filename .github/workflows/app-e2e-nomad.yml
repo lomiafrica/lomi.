@@ -1,0 +1,69 @@
+name: lomi · e2e · nomad
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: lomi-e2e-nomad-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  maestro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: apps/nomad
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Clone Nomad
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: |
+          rm -rf apps/nomad
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/princemuichkine/nomad.git" apps/nomad
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/nomad/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Download latest preview APK
+        run: node scripts/eas-download-latest-preview-apk.mjs nomad-preview.apk
+
+      - name: Install Maestro
+        working-directory: .
+        run: |
+          curl -Ls "https://get.maestro.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run Maestro on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb install -r apps/nomad/nomad-preview.apk
+            cd apps/nomad
+            maestro test .maestro/launch.yaml

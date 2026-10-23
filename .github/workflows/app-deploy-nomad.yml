@@ -1,0 +1,126 @@
+name: lomi · deploy · nomad
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options:
+          - preview
+          - store
+        default: preview
+      platform:
+        description: Platform
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+        default: android
+      submit:
+        description: Upload after build (Play internal or TestFlight only)
+        type: boolean
+        default: false
+
+concurrency:
+  group: lomi-deploy-nomad-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  eas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/nomad
+    env:
+      PROFILE: ${{ inputs.profile }}
+      PLATFORM: ${{ inputs.platform }}
+      SUBMIT: ${{ inputs.submit }}
+      EXPO_ASC_KEY_ID: ${{ secrets.EXPO_ASC_KEY_ID }}
+      EXPO_ASC_ISSUER_ID: ${{ secrets.EXPO_ASC_ISSUER_ID }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Clone Nomad
+        working-directory: .
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: |
+          rm -rf apps/nomad
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/princemuichkine/nomad.git" apps/nomad
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/nomad/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Publish preview OTA
+        if: env.PROFILE == 'preview' && env.SUBMIT != 'true'
+        run: |
+          eas update --channel preview --environment preview --non-interactive --message "nomad ${{ github.sha }}"
+          echo "OTA preview: https://expo.dev/accounts/lomiafrica/projects/lomi/updates" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Assert store profile
+        if: env.PROFILE == 'store'
+        run: node scripts/assert-store-env.mjs
+
+      - name: Write store submit secrets
+        if: env.SUBMIT == 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          EXPO_ASC_API_KEY: ${{ secrets.EXPO_ASC_API_KEY }}
+        run: |
+          node scripts/write-store-submit-secrets.mjs
+          node scripts/apply-local-submit-paths.mjs
+
+      - name: Gate store upload
+        run: |
+          if [ "${SUBMIT}" != "true" ]; then
+            exit 0
+          fi
+          if [ "${PROFILE}" != "store" ]; then
+            echo "submit is only allowed with the store profile (Play internal / TestFlight)."
+            exit 1
+          fi
+
+      - name: Queue EAS build
+        if: env.PROFILE != 'preview' || env.SUBMIT == 'true'
+        run: |
+          set -o pipefail
+          extra=()
+          if [ "${SUBMIT}" = "true" ]; then
+            extra+=(--auto-submit-with-profile store)
+          fi
+          platforms=()
+          if [ "${PLATFORM}" = "all" ]; then
+            platforms+=(android ios)
+          else
+            platforms+=("${PLATFORM}")
+          fi
+          failed=0
+          for platform in "${platforms[@]}"; do
+            echo "Queue ${PROFILE} ${platform}"
+            if ! eas build --profile "${PROFILE}" --platform "${platform}" --non-interactive --no-wait --json "${extra[@]}" | tee -a /tmp/eas-build.json; then
+              failed=1
+            fi
+          done
+          echo "Build dashboard: https://expo.dev/accounts/lomiafrica/projects/lomi/builds" >> "$GITHUB_STEP_SUMMARY"
+          exit "${failed}"

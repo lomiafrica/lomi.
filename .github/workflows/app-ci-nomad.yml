@@ -1,0 +1,36 @@
+name: lomi · ci · nomad
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Clone Nomad
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: |
+          rm -rf apps/nomad
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/princemuichkine/nomad.git" apps/nomad
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/nomad/pnpm-lock.yaml
+
+      - name: Test
+        working-directory: apps/nomad
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
