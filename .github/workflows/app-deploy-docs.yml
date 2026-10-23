@@ -105,3 +105,8 @@ jobs:
         env:
           APP: docs
         run: node .github/scripts/publish-production-url.mjs
+      - name: Verify shipped Supabase key
+        env:
+          APP: docs
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node .github/scripts/verify-shipped-supabase-key.mjs

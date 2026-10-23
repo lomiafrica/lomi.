@@ -1,0 +1,23 @@
+name: lomi · check · supabase · key
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shipped-key:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout probe script
+        uses: actions/checkout@v5
+
+      - name: Probe production apps
+        env:
+          APP: all
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node .github/scripts/verify-shipped-supabase-key.mjs

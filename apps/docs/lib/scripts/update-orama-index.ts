@@ -3,7 +3,7 @@
 import * as fs from 'node:fs/promises';
 import { OramaCloud } from '@orama/core';
 import { CloudManager } from '@oramacloud/client';
-import { DataSourceId, isAdmin } from '@/lib/orama/client';
+import { DataSourceId } from '@/lib/orama/client';
 import { type JsonObject } from '@lomi./shared';
 
 const useOramaCoreIndex =
@@ -48,8 +48,10 @@ async function updateWithCloudManager(
 
 export async function updateSearchIndexes(): Promise<void> {
   const apiKey = process.env.ORAMA_PRIVATE_API_KEY;
+  const canIndex =
+    !!apiKey && (useOramaCoreIndex || DataSourceId.length > 0);
 
-  if (!isAdmin) {
+  if (!canIndex) {
     console.log(
       'Orama index update skipped: set ORAMA_PRIVATE_API_KEY and either (ORAMA_PROJECT_ID + ORAMA_DATASOURCE_ID) or NEXT_PUBLIC_ORAMA_ENDPOINT.',
     );

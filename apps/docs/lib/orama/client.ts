@@ -26,15 +26,6 @@ export const DataSourceId =
   process.env.ORAMA_DATASOURCE_ID ??
   (endpoint ? (endpoint.split('/').pop() ?? '') : '');
 
-const hasOramaCoreIndex =
-  !!process.env.ORAMA_PROJECT_ID && !!process.env.ORAMA_DATASOURCE_ID;
-/** Legacy REST indexing: private key + known index id (endpoint optional if id is in env). */
-const hasLegacyCloudManagerIndex = !!DataSourceId;
-
-export const isAdmin =
-  !!process.env.ORAMA_PRIVATE_API_KEY &&
-  (hasOramaCoreIndex || hasLegacyCloudManagerIndex);
-
 type SearchableOrama = Pick<OramaCloud, 'search'>;
 
 export const orama: SearchableOrama = isSearchConfigured

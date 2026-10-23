@@ -36,6 +36,8 @@ on:
         required: true
       VERCEL_PROJECT_ID:
         required: true
+      SLACK_WEBHOOK_URL:
+        required: false
 
 permissions:
   contents: read
@@ -119,3 +121,9 @@ jobs:
         env:
           APP: ${{ inputs.app }}
         run: node .github/scripts/publish-production-url.mjs
+
+      - name: Verify shipped Supabase key
+        env:
+          APP: ${{ inputs.app }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node .github/scripts/verify-shipped-supabase-key.mjs
