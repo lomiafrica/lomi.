@@ -7,7 +7,7 @@
     {
       "name": "lomi_api_keys",
       "title": "API keys",
-      "description": "API keys. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List API keys (GET /api-keys). No extra required fields.\n- `create` — Create API key (POST /api-keys). Required: body. Body: name (required), environment, key_type.\n- `revoke` — Revoke API key (DELETE /api-keys/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "API keys. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List API keys (GET /api-keys). No extra required fields.\n- `create` — Create API key (POST /api-keys). Required: body. Body: name, environment, key_type.\n- `revoke` — Revoke API key (DELETE /api-keys/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "API keys"
       ],
@@ -229,7 +229,7 @@
     {
       "name": "lomi_card_holds",
       "title": "Card holds",
-      "description": "Card holds. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create card charge or hold (POST /charge/card). Required: body, header_Idempotency-Key. Body: amount (required), appearance_billing_address, appearance_border_radius, appearance_theme, application_fee_amount, currency, currency_code, customer_email, customer_id, customer_name, customer_phone, description, ….\n- `get` — Get card hold (GET /charge/card/{id}). Required: id.\n- `increment` — Raise card hold (POST /charge/card/{id}/increment). Required: body, header_Idempotency-Key, id. Body: amount (required).\n- `capture` — Capture card hold (POST /charge/card/{id}/capture). Required: body, header_Idempotency-Key, id. Body: amount.\n- `cancel` — Release card hold (POST /charge/card/{id}/cancel). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Card holds. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create card charge or hold (POST /charge/card). Required: body, header_Idempotency-Key. Body: amount, appearance_billing_address, appearance_border_radius, appearance_theme, application_fee_amount, currency, currency_code, customer_email, customer_id, customer_name, customer_phone, description, ….\n- `get` — Get card hold (GET /charge/card/{id}). Required: id.\n- `increment` — Raise card hold (POST /charge/card/{id}/increment). Required: body, header_Idempotency-Key, id. Body: amount.\n- `capture` — Capture card hold (POST /charge/card/{id}/capture). Required: body, header_Idempotency-Key, id. Body: amount.\n- `cancel` — Release card hold (POST /charge/card/{id}/cancel). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Advanced Direct Charges"
       ],
@@ -393,7 +393,7 @@
     {
       "name": "lomi_checkout",
       "title": "Checkout sessions",
-      "description": "Checkout sessions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List checkout sessions (GET /checkout-sessions). No extra required fields.\n- `get` — Get checkout session (GET /checkout-sessions/{id}). Required: id.\n- `create` — Create checkout session (POST /checkout-sessions). Required: body. Body: amount (required), allow_coupon_code, allow_quantity, application_fee_amount, cancel_url, currency_code, customer_address, customer_city, customer_country, customer_email, customer_id, customer_name, ….\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Checkout sessions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List checkout sessions (GET /checkout-sessions). No extra required fields.\n- `get` — Get checkout session (GET /checkout-sessions/{id}). Required: id.\n- `create` — Create checkout session (POST /checkout-sessions). Required: body. Body: amount, allow_coupon_code, allow_quantity, application_fee_amount, cancel_url, currency_code, customer_address, customer_city, customer_country, customer_email, customer_id, customer_name, ….\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Checkout Sessions"
       ],
@@ -529,7 +529,7 @@
     {
       "name": "lomi_coupons",
       "title": "Coupons",
-      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). Required: body. Body: code (required), discount_type (required), customer_type, description, discount_fixed_amount, discount_percentage, expires_at, is_active, max_quantity_per_use, max_uses, product_ids, scope_type, ….\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n- `delete` — Delete coupon (DELETE /coupons/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Coupons. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List discount coupons (GET /coupons). No extra required fields.\n- `get` — Get discount coupon (GET /coupons/{id}). Required: id.\n- `create` — Create discount coupon (POST /coupons). Required: body. Body: code, discount_type, customer_type, description, discount_fixed_amount, discount_percentage, expires_at, is_active, max_quantity_per_use, max_uses, product_ids, scope_type, ….\n- `performance` — Get coupon performance (GET /coupons/{id}/performance). Required: id.\n- `delete` — Delete coupon (DELETE /coupons/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Coupons"
       ],
@@ -676,7 +676,7 @@
     {
       "name": "lomi_customers",
       "title": "Customers",
-      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `top` — Top customers by spend (GET /customers/top). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body. Body: name (required), address, city, country, email, is_business, metadata, phone_number, postal_code, whatsapp_number.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id. Body: address, city, country, email, is_business, metadata, name, phone_number, postal_code, whatsapp_number.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `block` — Block a customer (POST /customers/{id}/block). Required: id.\n- `unblock` — Unblock a customer (POST /customers/{id}/unblock). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id. Body: flow_after_completion_url, flow_subscription_id, flow_type, return_url.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Customers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List customers (GET /customers). No extra required fields.\n- `top` — Top customers by spend (GET /customers/top). No extra required fields.\n- `get` — Get customer (GET /customers/{id}). Required: id.\n- `create` — Create customer (POST /customers). Required: body. Body: name, address, city, country, email, is_business, metadata, phone_number, postal_code, whatsapp_number.\n- `update` — Update customer (PATCH /customers/{id}). Required: body, id. Body: address, city, country, email, is_business, metadata, name, phone_number, postal_code, whatsapp_number.\n- `delete` — Delete customer (DELETE /customers/{id}). Required: id.\n- `block` — Block a customer (POST /customers/{id}/block). Required: id.\n- `unblock` — Unblock a customer (POST /customers/{id}/unblock). Required: id.\n- `transactions` — List a customer's transactions (GET /customers/{id}/transactions). Required: id.\n- `portal` — Launch customer portal session (POST /customers/{id}/portal). Required: body, id. Body: flow_after_completion_url, flow_subscription_id, flow_type, return_url.\n- `portal_audit` — Get customer portal audit log (GET /customers/{id}/portal-audit). Required: id.\n- `subscriptions` — List a customer's subscriptions (GET /customers/{id}/subscriptions). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Customers"
       ],
@@ -1163,7 +1163,7 @@
     {
       "name": "lomi_exports",
       "title": "Exports",
-      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). Required: body. Body: type (required), filters.\n- `list` — List exports (GET /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Exports. Pass required `action` to choose the REST call.\n\nActions:\n- `create` — Create export (POST /exports). Required: body. Body: type, filters.\n- `list` — List exports (GET /exports). No extra required fields.\n- `get` — Get export (GET /exports/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Exports"
       ],
@@ -1382,7 +1382,7 @@
     {
       "name": "lomi_invoices",
       "title": "Invoices",
-      "description": "Invoices. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List invoices (GET /invoices). No extra required fields.\n- `get` — Get invoice (GET /invoices/{id}). Required: id.\n- `create` — Create invoice (POST /invoices). Required: body. Body: amount (required), currency_code (required), customer_id (required), customer_details, description, due_date, invoice_number, line_items, metadata, origin, payment_details, price_id, ….\n- `update` — Update invoice (PATCH /invoices/{id}). Required: body, id. Body: amount, amount_due, customer_id, description, due_date, line_items, metadata, price_id, product_id, status, subscription_id.\n- `pdf` — Download invoice PDF (GET /invoices/{id}/pdf). Required: id.\n- `checkout_session` — Invoice checkout session (POST /invoices/{id}/checkout-session). Required: id.\n- `finalize` — Finalize invoice (POST /invoices/{id}/finalize). Required: id.\n- `send` — Send invoice (POST /invoices/{id}/send). Required: id.\n- `remind` — Remind invoice (POST /invoices/{id}/remind). Required: id.\n- `void` — Void invoice (POST /invoices/{id}/void). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Invoices. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List invoices (GET /invoices). No extra required fields.\n- `get` — Get invoice (GET /invoices/{id}). Required: id.\n- `create` — Create invoice (POST /invoices). Required: body. Body: amount, currency_code, customer_id, customer_details, description, due_date, invoice_number, line_items, metadata, origin, payment_details, price_id, ….\n- `update` — Update invoice (PATCH /invoices/{id}). Required: body, id. Body: amount, amount_due, customer_id, description, due_date, line_items, metadata, price_id, product_id, status, subscription_id.\n- `pdf` — Download invoice PDF (GET /invoices/{id}/pdf). Required: id.\n- `checkout_session` — Invoice checkout session (POST /invoices/{id}/checkout-session). Required: id.\n- `finalize` — Finalize invoice (POST /invoices/{id}/finalize). Required: id.\n- `send` — Send invoice (POST /invoices/{id}/send). Required: id.\n- `remind` — Remind invoice (POST /invoices/{id}/remind). Required: id.\n- `void` — Void invoice (POST /invoices/{id}/void). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Invoices"
       ],
@@ -1943,7 +1943,7 @@
     {
       "name": "lomi_meters",
       "title": "Meters",
-      "description": "Meters. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List meters (GET /meters). No extra required fields.\n- `get` — Get meter (GET /meters/{id}). Required: id.\n- `create` — Create meter (POST /meters). Required: body. Body: name (required), aggregation, filter, product_id.\n- `update` — Update meter (PATCH /meters/{id}). Required: body, id. Body: aggregation, filter, is_active.\n- `balance` — Get a customer's meter balance (GET /meters/{id}/balances/{customerId}). Required: customerId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Meters. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List meters (GET /meters). No extra required fields.\n- `get` — Get meter (GET /meters/{id}). Required: id.\n- `create` — Create meter (POST /meters). Required: body. Body: name, aggregation, filter, product_id.\n- `update` — Update meter (PATCH /meters/{id}). Required: body, id. Body: aggregation, filter, is_active.\n- `balance` — Get a customer's meter balance (GET /meters/{id}/balances/{customerId}). Required: customerId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Meters"
       ],
@@ -2106,7 +2106,7 @@
     {
       "name": "lomi_network",
       "title": "Network member accounts",
-      "description": "Network member accounts. Pass required `action` to choose the REST call.\n\nActions:\n- `login_link` — Create Network login link (POST /network/accounts/{account}/login_links). Required: account.\n- `account_session` — Create Network account session (POST /network/account-sessions). Required: body. Body: account (required), components.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Network member accounts. Pass required `action` to choose the REST call.\n\nActions:\n- `login_link` — Create Network login link (POST /network/accounts/{account}/login_links). Required: account.\n- `account_session` — Create Network account session (POST /network/account-sessions). Required: body. Body: account, components.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Network accounts"
       ],
@@ -2193,7 +2193,7 @@
     {
       "name": "lomi_organization",
       "title": "Organization",
-      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body. Body: name (required).\n- `update` — Set the support email (PATCH /organizations/{id}). Required: body, id. Body: email (required).\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id. Body: name.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Organization. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List organizations (GET /organizations). No extra required fields.\n- `get` — Get organization (GET /organizations/{id}). Required: id.\n- `metrics` — Get organization metrics (GET /organizations/metrics). No extra required fields.\n- `create` — Create organization (POST /organizations). Required: body. Body: name.\n- `update` — Set the support email (PATCH /organizations/{id}). Required: body, id. Body: email.\n- `use` — Use organization (POST /organizations/{id}/keys). Required: body, id. Body: name.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Organisations"
       ],
@@ -2359,7 +2359,7 @@
     {
       "name": "lomi_payment_links",
       "title": "Payment links",
-      "description": "Payment links. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment links (GET /payment-links). No extra required fields.\n- `get` — Get payment link (GET /payment-links/{id}). Required: id.\n- `create` — Create payment link (POST /payment-links). Required: body. Body: currency_code (required), link_type (required), title (required), allow_coupon_code, allow_quantity, amount, cancel_url, description, expires_at, fields, metadata, price_id, ….\n- `update` — Update payment link (PATCH /payment-links/{id}). Required: body, id. Body: allow_coupon_code, allow_quantity, amount, cancel_url, description, expires_at, is_active, metadata, require_billing_address, require_email, require_name, require_phone, ….\n- `archive` — Archive payment link (DELETE /payment-links/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payment links. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment links (GET /payment-links). No extra required fields.\n- `get` — Get payment link (GET /payment-links/{id}). Required: id.\n- `create` — Create payment link (POST /payment-links). Required: body. Body: currency_code, link_type, title, allow_coupon_code, allow_quantity, amount, cancel_url, description, expires_at, fields, metadata, price_id, ….\n- `update` — Update payment link (PATCH /payment-links/{id}). Required: body, id. Body: allow_coupon_code, allow_quantity, amount, cancel_url, description, expires_at, is_active, metadata, require_billing_address, require_email, require_name, require_phone, ….\n- `archive` — Archive payment link (DELETE /payment-links/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Payment Links"
       ],
@@ -2533,7 +2533,7 @@
     {
       "name": "lomi_payment_requests",
       "title": "Payment requests",
-      "description": "Payment requests. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment requests (GET /payment-requests). No extra required fields.\n- `get` — Get payment request (GET /payment-requests/{id}). Required: id.\n- `create` — Create payment request (POST /payment-requests). Required: body, header_Idempotency-Key. Body: amount (required), currency_code (required), expiry_date (required), channel, customer_id, description, metadata, payment_reference.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payment requests. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payment requests (GET /payment-requests). No extra required fields.\n- `get` — Get payment request (GET /payment-requests/{id}). Required: id.\n- `create` — Create payment request (POST /payment-requests). Required: body, header_Idempotency-Key. Body: amount, currency_code, expiry_date, channel, customer_id, description, metadata, payment_reference.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Payment Requests"
       ],
@@ -2671,7 +2671,7 @@
     {
       "name": "lomi_payout_methods",
       "title": "Payout methods",
-      "description": "Payout methods. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payout methods (GET /payout-methods). No extra required fields.\n- `create` — Add payout method (POST /payout-methods). Required: body. Body: account_name (required), account_number (required), bank_code, bank_name, branch_code, country, is_default, payout_method_type.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Payout methods. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payout methods (GET /payout-methods). No extra required fields.\n- `create` — Add payout method (POST /payout-methods). Required: body. Body: account_name, account_number, bank_code, bank_name, branch_code, country, is_default, payout_method_type.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Payout methods"
       ],
@@ -2751,7 +2751,7 @@
     {
       "name": "lomi_payouts",
       "title": "Payouts",
-      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: body, header_Idempotency-Key. Body: amount (required), currency_code (required), destination (required), rail (required), reason (required), confirmation_token, metadata, payout_method_id, recipient.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nPayout amounts stay in their own currency. Do not add them across currency_code.",
+      "description": "Payouts. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List payouts (GET /payouts). No extra required fields.\n- `get` — Get payout (GET /payouts/{id}). Required: id.\n- `create` — Create payout (POST /payouts). Required: body, header_Idempotency-Key. Body: amount, currency_code, destination, rail, reason, confirmation_token, metadata, payout_method_id, recipient.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nPayout amounts stay in their own currency. Do not add them across currency_code.",
       "tags": [
         "Payouts"
       ],
@@ -2891,7 +2891,7 @@
     {
       "name": "lomi_products",
       "title": "Products",
-      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). Required: body. Body: name (required), prices (required), product_type (required), charge_day, description, display_on_storefront, failed_payment_action, fee_type_ids, first_payment_type, images, is_active, metadata, ….\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: body, id. Body: amount (required), currency_code (required), billing_interval, is_default, maximum_amount, metadata, minimum_amount, pricing_model.\n- `batch_prices` — Batch update prices (POST /products/prices/batch). Required: body. Body: updates (required), idempotency_key.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: body, id. Body: continue_selling_when_out_of_stock, description, display_on_storefront, fee_type_ids, images, inventory_quantity, is_active, metadata, name, sku, track_inventory.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Products. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List products (GET /products). No extra required fields.\n- `get` — Get product (GET /products/{id}). Required: id.\n- `create` — Create product (POST /products). Required: body. Body: name, prices, product_type, charge_day, description, display_on_storefront, failed_payment_action, fee_type_ids, first_payment_type, images, is_active, metadata, ….\n- `add_price` — Add price to product (POST /products/{id}/prices). Required: body, id. Body: amount, currency_code, billing_interval, is_default, maximum_amount, metadata, minimum_amount, pricing_model.\n- `batch_prices` — Batch update prices (POST /products/prices/batch). Required: body. Body: updates, idempotency_key.\n- `set_default_price` — Set default product price (POST /products/{id}/prices/{priceId}/default). Required: id, priceId.\n- `update` — Update product (PATCH /products/{id}). Required: body, id. Body: continue_selling_when_out_of_stock, description, display_on_storefront, fee_type_ids, images, inventory_quantity, is_active, metadata, name, sku, track_inventory.\n- `archive` — Archive product (DELETE /products/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Products"
       ],
@@ -3268,7 +3268,7 @@
     {
       "name": "lomi_refunds",
       "title": "Refunds",
-      "description": "Refunds. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List refunds (GET /refunds). No extra required fields.\n- `get` — Get refund (GET /refunds/{id}). Required: id.\n- `create` — Create refund (POST /refunds). Required: body, header_Idempotency-Key. Body: amount (required), transaction_id (required), confirmation_token, reason, refund_application_fee, refund_type, reverse_transfer, subscription_action.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nRefund amounts stay in their own currency. Do not add them across currency_code.",
+      "description": "Refunds. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List refunds (GET /refunds). No extra required fields.\n- `get` — Get refund (GET /refunds/{id}). Required: id.\n- `create` — Create refund (POST /refunds). Required: body, header_Idempotency-Key. Body: amount, transaction_id, confirmation_token, reason, refund_application_fee, refund_type, reverse_transfer, subscription_action.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nRefund amounts stay in their own currency. Do not add them across currency_code.",
       "tags": [
         "Refunds"
       ],
@@ -3641,7 +3641,7 @@
     {
       "name": "lomi_settlements",
       "title": "Settlements",
-      "description": "Settlements. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List settlement periods (GET /settlements). No extra required fields.\n- `transactions` — List transactions in a settlement (GET /settlements/{id}/transactions). Required: id.\n- `create_instant` — Request an instant settlement (POST /settlements/instant). Required: body, header_Idempotency-Key. Body: amount (required), currency_code (required), mode (required), confirmation_token, payout_id.\n- `get_instant` — Get an instant settlement (GET /settlements/instant/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nSettlement totals stay in their own currency. Do not add settlements across currencies.",
+      "description": "Settlements. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List settlement periods (GET /settlements). No extra required fields.\n- `transactions` — List transactions in a settlement (GET /settlements/{id}/transactions). Required: id.\n- `create_instant` — Request an instant settlement (POST /settlements/instant). Required: body, header_Idempotency-Key. Body: amount, currency_code, mode, confirmation_token, payout_id.\n- `get_instant` — Get an instant settlement (GET /settlements/instant/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.\n\nSettlement totals stay in their own currency. Do not add settlements across currencies.",
       "tags": [
         "Settlements"
       ],
@@ -3801,7 +3801,7 @@
     {
       "name": "lomi_subscriptions",
       "title": "Subscriptions",
-      "description": "Subscriptions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List subscriptions (GET /subscriptions). No extra required fields.\n- `get` — Get subscription (GET /subscriptions/{id}). Required: id.\n- `update` — Update subscription (PATCH /subscriptions/{id}). Required: body, id. Body: end_date, metadata, next_billing_date, start_date, status.\n- `cancel` — Cancel subscription (POST /subscriptions/{id}/cancel). Required: body, id. Body: cancel_at_period_end, cancellation_reason.\n- `resume` — Resume subscription (POST /subscriptions/{id}/resume). Required: id.\n- `change_plan` — Change subscription plan (POST /subscriptions/{id}/change-plan). Required: body, id. Body: price_id (required).\n- `usage` — Get subscription usage (GET /subscriptions/{id}/usage). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Subscriptions. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List subscriptions (GET /subscriptions). No extra required fields.\n- `get` — Get subscription (GET /subscriptions/{id}). Required: id.\n- `update` — Update subscription (PATCH /subscriptions/{id}). Required: body, id. Body: end_date, metadata, next_billing_date, start_date, status.\n- `cancel` — Cancel subscription (POST /subscriptions/{id}/cancel). Required: body, id. Body: cancel_at_period_end, cancellation_reason.\n- `resume` — Resume subscription (POST /subscriptions/{id}/resume). Required: id.\n- `change_plan` — Change subscription plan (POST /subscriptions/{id}/change-plan). Required: body, id. Body: price_id.\n- `usage` — Get subscription usage (GET /subscriptions/{id}/usage). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Subscriptions"
       ],
@@ -4342,7 +4342,7 @@
     {
       "name": "lomi_transfers",
       "title": "Network transfers",
-      "description": "Network transfers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List Network transfers (GET /transfers). No extra required fields.\n- `get` — Get Network transfer (GET /transfers/{id}). Required: id.\n- `create` — Create Network transfer (POST /transfers). Required: body, header_Idempotency-Key. Body: amount (required), currency_code (required), destination (required), confirmation_token, description, metadata, source_transaction_id, transfer_group.\n- `reverse` — Reverse Network transfer (POST /transfers/{id}/reversals). Required: body, header_Idempotency-Key, id. Body: amount, confirmation_token, description, metadata.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Network transfers. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List Network transfers (GET /transfers). No extra required fields.\n- `get` — Get Network transfer (GET /transfers/{id}). Required: id.\n- `create` — Create Network transfer (POST /transfers). Required: body, header_Idempotency-Key. Body: amount, currency_code, destination, confirmation_token, description, metadata, source_transaction_id, transfer_group.\n- `reverse` — Reverse Network transfer (POST /transfers/{id}/reversals). Required: body, header_Idempotency-Key, id. Body: amount, confirmation_token, description, metadata.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Network transfers"
       ],
@@ -4505,7 +4505,7 @@
     {
       "name": "lomi_usage",
       "title": "Usage billing",
-      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). Required: body. Body: feature_key (required), name (required), description.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). Required: body. Body: customer_id (required), product_id (required), metadata, price_id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Usage billing. Pass required `action` to choose the REST call.\n\nActions:\n- `check_entitlement` — Check an entitlement (GET /usage/entitlements). Required: customer_id, feature_key.\n- `set_entitlement` — Set plan entitlement (POST /usage/entitlements). Required: body. Body: feature_key, name, description.\n- `periods` — List usage billing periods (GET /usage/periods). No extra required fields.\n- `revenue` — Get usage billing revenue (GET /usage/revenue). Required: end_date, start_date.\n- `events` — List usage events (GET /usage/events). No extra required fields.\n- `get_event` — Get usage event (GET /usage/events/{id}). Required: id.\n- `create_subscription` — Create usage subscription (POST /usage/subscriptions). Required: body. Body: customer_id, product_id, metadata, price_id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Usage"
       ],
@@ -4736,7 +4736,7 @@
     {
       "name": "lomi_webhooks",
       "title": "Webhooks",
-      "description": "Webhooks. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List webhook endpoints (GET /webhooks). No extra required fields.\n- `get` — Get webhook endpoint (GET /webhooks/{id}). Required: id.\n- `create` — Create webhook endpoint (POST /webhooks). Required: body. Body: events (required), url (required), authorized_events, description, metadata.\n- `update` — Update webhook endpoint (PATCH /webhooks/{id}). Required: body, id. Body: authorized_events, is_active, metadata, url.\n- `delete` — Delete webhook endpoint (DELETE /webhooks/{id}). Required: id.\n- `test` — Send test webhook (POST /webhooks/{id}/test). Required: id.\n- `deliveries` — List webhook deliveries (GET /webhooks/deliveries). Required: webhookId.\n- `delivery` — Get webhook delivery (GET /webhooks/deliveries/{id}). Required: id.\n- `retry` — Retry webhook delivery (POST /webhooks/{id}/deliveries/{deliveryId}/retry). Required: deliveryId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "Webhooks. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List webhook endpoints (GET /webhooks). No extra required fields.\n- `get` — Get webhook endpoint (GET /webhooks/{id}). Required: id.\n- `create` — Create webhook endpoint (POST /webhooks). Required: body. Body: events, url, authorized_events, description, metadata.\n- `update` — Update webhook endpoint (PATCH /webhooks/{id}). Required: body, id. Body: authorized_events, is_active, metadata, url.\n- `delete` — Delete webhook endpoint (DELETE /webhooks/{id}). Required: id.\n- `test` — Send test webhook (POST /webhooks/{id}/test). Required: id.\n- `deliveries` — List webhook deliveries (GET /webhooks/deliveries). Required: webhookId.\n- `delivery` — Get webhook delivery (GET /webhooks/deliveries/{id}). Required: id.\n- `retry` — Retry webhook delivery (POST /webhooks/{id}/deliveries/{deliveryId}/retry). Required: deliveryId, id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "Webhooks"
       ],
@@ -5001,7 +5001,7 @@
     {
       "name": "lomi_whatsapp",
       "title": "WhatsApp",
-      "description": "WhatsApp. Pass required `action` to choose the REST call.\n\nActions:\n- `status` — Get WhatsApp connection (GET /whatsapp). No extra required fields.\n- `update` — Update WhatsApp replies (PATCH /whatsapp). Required: body. Body: inbound_payment_link (required).\n- `connect` — Connect WhatsApp (POST /whatsapp/setup-links). Required: body. Body: connection_type, language.\n- `send_payment_link` — Send a WhatsApp payment link (POST /whatsapp/payment-messages). Required: body. Body: to (required), amount, checkout_session_id, currency_code, title.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "description": "WhatsApp. Pass required `action` to choose the REST call.\n\nActions:\n- `status` — Get WhatsApp connection (GET /whatsapp). No extra required fields.\n- `update` — Update WhatsApp replies (PATCH /whatsapp). Required: body. Body: inbound_payment_link.\n- `connect` — Connect WhatsApp (POST /whatsapp/setup-links). Required: body. Body: connection_type, language.\n- `send_payment_link` — Send a WhatsApp payment link (POST /whatsapp/payment-messages). Required: body. Body: to, amount, checkout_session_id, currency_code, title.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
       "tags": [
         "WhatsApp"
       ],

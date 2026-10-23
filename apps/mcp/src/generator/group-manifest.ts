@@ -159,7 +159,10 @@ export function mergeGroupInputSchema(
 
 const MAX_BODY_FIELDS = 12;
 
-/** Top-level body field names, required first, so the caller knows the shape. */
+/**
+ * Top-level body field names, required first, so the caller knows the shape.
+ * Not tagged as required: agents then stop to ask for a title they could default.
+ */
 export function bodyFieldsFromSchema(schema: ResolvedJsonSchema): string[] {
   const body = readObject(readObject(schema, "properties") ?? {}, "body");
   const props = body ? readObject(body, "properties") : undefined;
@@ -167,7 +170,7 @@ export function bodyFieldsFromSchema(schema: ResolvedJsonSchema): string[] {
   const required = new Set(stringArray(body["required"]));
   const names = Object.keys(props);
   return [
-    ...names.filter((name) => required.has(name)).map((name) => `${name} (required)`),
+    ...names.filter((name) => required.has(name)),
     ...names.filter((name) => !required.has(name)),
   ];
 }
