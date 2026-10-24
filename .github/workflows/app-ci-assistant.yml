@@ -39,7 +39,7 @@ jobs:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
         run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
 
@@ -70,7 +70,7 @@ jobs:
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
@@ -101,7 +101,7 @@ jobs:
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
