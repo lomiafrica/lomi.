@@ -90,7 +90,7 @@ pub async fn run(common: &CommonOptions, args: ListenArgs) -> Result<()> {
         while let Some(pos) = buffer.find("\n\n") {
             let block = buffer.drain(..pos + 2).collect::<String>();
             if let Some(event) = parse_sse_block(&block) {
-                handle_event(&event, args.forward_url.as_deref(), &http).await?;
+                handle_event(&event, args.forward_url.as_deref()).await?;
             }
         }
     }
@@ -111,11 +111,23 @@ fn parse_sse_block(block: &str) -> Option<StreamEvent> {
     None
 }
 
-async fn handle_event(
-    event: &StreamEvent,
-    forward_url: Option<&str>,
-    http: &reqwest::Client,
-) -> Result<()> {
+/// Build the outbound webhook replay. Uses a fresh client so the listen
+/// stream's default `X-API-KEY` is never attached to the merchant URL.
+fn forward_webhook_request(
+    url: &str,
+    headers: &serde_json::Map<String, serde_json::Value>,
+    payload: &serde_json::Value,
+) -> reqwest::RequestBuilder {
+    let mut req = reqwest::Client::new().post(url).json(payload);
+    for (key, value) in headers {
+        if let Some(s) = value.as_str() {
+            req = req.header(key, s);
+        }
+    }
+    req
+}
+
+async fn handle_event(event: &StreamEvent, forward_url: Option<&str>) -> Result<()> {
     match event.event_type.as_str() {
         "ping" => {}
         "connected" => {
@@ -149,13 +161,7 @@ async fn handle_event(
 
             if let Some(url) = forward_url {
                 if let (Some(headers), Some(payload)) = (&event.headers, &event.payload) {
-                    let mut req = http.post(url).json(payload);
-                    for (key, value) in headers {
-                        if let Some(s) = value.as_str() {
-                            req = req.header(key, s);
-                        }
-                    }
-                    match req.send().await {
+                    match forward_webhook_request(url, headers, payload).send().await {
                         Ok(resp) => {
                             println!(
                                 "{} {} {}",
@@ -236,5 +242,30 @@ mod tests {
         assert!(parse_sse_block("event: ping\n\n").is_none());
         assert!(parse_sse_block("data: not-json\n\n").is_none());
         assert!(parse_sse_block("data:\n\n").is_none());
+    }
+
+    #[test]
+    fn forwarded_webhook_omits_cli_api_key_and_keeps_signature() {
+        let mut headers = serde_json::Map::new();
+        headers.insert(
+            "X-Lomi-Signature-V1".to_string(),
+            serde_json::Value::String("t=1,v1=abc".to_string()),
+        );
+        let payload = serde_json::json!({ "id": "evt_1" });
+        let request = forward_webhook_request("https://example.test/webhooks", &headers, &payload)
+            .build()
+            .expect("forward request should build");
+
+        assert!(
+            request.headers().get("x-api-key").is_none(),
+            "CLI API key must not be sent to the forward URL"
+        );
+        assert_eq!(
+            request
+                .headers()
+                .get("x-lomi-signature-v1")
+                .and_then(|value| value.to_str().ok()),
+            Some("t=1,v1=abc")
+        );
     }
 }
