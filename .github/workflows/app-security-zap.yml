@@ -1,0 +1,29 @@
+name: lomi · security · zap baseline
+
+# Passive baseline against the public origins. Weekly, plus a manual run.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - https://api.lomi.africa
+          - https://admin.lomi.africa
+          - https://dashboard.lomi.africa
+    steps:
+      - name: ZAP baseline
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ matrix.target }}
+          # The report is the evidence. Rule noise should not hide a failed scan.
+          fail_action: false
+          allow_issue_writing: false

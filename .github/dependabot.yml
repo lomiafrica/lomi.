@@ -21,6 +21,13 @@ updates:
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+  - package-ecosystem: npm
+    directory: /apps/nomad
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
     labels:
       - dependencies

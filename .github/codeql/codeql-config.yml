@@ -2,6 +2,7 @@ name: lomi. CodeQL
 paths-ignore:
   - apps/plugins/references/**
   - apps/docs/apps/**
+  # Dashboard is a private submodule. Its own repo runs CodeQL on pull requests.
   - apps/dashboard/**
 query-filters:
   - exclude:
