@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always() && !cancelled() && (startsWith(github.ref, format('refs/tags/{0}', inputs.tag-prefix)) || github.event_name == 'workflow_dispatch')
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.plugin }}-lomi
           path: dist
