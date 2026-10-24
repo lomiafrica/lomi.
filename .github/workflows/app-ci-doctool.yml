@@ -17,12 +17,12 @@ jobs:
   build-doctool:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout workspace packages
         env:
           REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
         run: bash .github/scripts/init-submodules.sh packages
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: lomiafrica/doctool
           path: apps/tools/doctool

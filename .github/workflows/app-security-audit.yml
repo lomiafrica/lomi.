@@ -31,9 +31,9 @@ jobs:
       run:
         working-directory: apps/api
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout API submodule
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: lomiafrica/api
           ref: main
@@ -54,9 +54,9 @@ jobs:
       run:
         working-directory: apps/dashboard
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout dashboard submodule
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: lomiafrica/dashboard
           ref: main
@@ -77,9 +77,9 @@ jobs:
       run:
         working-directory: apps/checkout
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout checkout submodule
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: lomiafrica/checkout
           ref: main

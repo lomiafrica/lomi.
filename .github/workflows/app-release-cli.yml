@@ -27,7 +27,7 @@ jobs:
       tag: ${{ steps.meta.outputs.tag }}
       skip: ${{ steps.meta.outputs.skip }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           path: ${{ env.REPO_DIR }}
 
@@ -81,7 +81,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           path: ${{ env.REPO_DIR }}
 
@@ -140,7 +140,7 @@ jobs:
       run:
         working-directory: ${{ env.REPO_DIR }}/apps/cli/npm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           path: ${{ env.REPO_DIR }}
 

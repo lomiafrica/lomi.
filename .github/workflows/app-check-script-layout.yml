@@ -24,6 +24,6 @@ jobs:
   script-layout:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check script layout
         run: node tooling/scripts/check-script-layout.mjs

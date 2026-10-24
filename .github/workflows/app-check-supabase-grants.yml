@@ -27,10 +27,10 @@ jobs:
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
     steps:
       - name: Checkout monorepo (script)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Checkout dashboard (enable_rls.sql)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: lomiafrica/dashboard
           ref: main

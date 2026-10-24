@@ -19,7 +19,7 @@ jobs:
       shared: ${{ steps.changes.outputs.shared }}
       money_core: ${{ steps.changes.outputs.money_core }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: dorny/paths-filter@v3
@@ -77,7 +77,7 @@ jobs:
       run:
         working-directory: ./apps/api
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout private API + dashboard + packages submodules
         working-directory: .
         env:
@@ -117,7 +117,7 @@ jobs:
       run:
         working-directory: ./apps/api
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Refuse any database other than lomi TEST
         working-directory: .
         env:
@@ -168,7 +168,7 @@ jobs:
       run:
         working-directory: ./apps/docs
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout workspace packages
         working-directory: .
         env:
@@ -200,7 +200,7 @@ jobs:
       run:
         working-directory: ./apps/cli
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test -- --test-threads=1
       - run: cargo build --release
@@ -213,7 +213,7 @@ jobs:
       run:
         working-directory: ./apps/admin
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout private admin + packages submodules
         working-directory: .
         env:
@@ -238,7 +238,7 @@ jobs:
       run:
         working-directory: ./apps/checkout
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout checkout + packages submodules
         working-directory: .
         env:
@@ -265,7 +265,7 @@ jobs:
       run:
         working-directory: ./apps/storefront
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout storefront + packages submodules
         working-directory: .
         env:
@@ -292,7 +292,7 @@ jobs:
       run:
         working-directory: ./packages/shared
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Checkout dashboard + packages submodules
         working-directory: .
         env:

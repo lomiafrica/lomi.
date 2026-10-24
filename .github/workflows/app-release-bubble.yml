@@ -13,7 +13,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Initialize Bubble plugin submodule
         run: bash .github/scripts/init-submodules.sh packages apps/plugins/bubble
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/bubble-v') || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Initialize Bubble plugin submodule
         run: bash .github/scripts/init-submodules.sh apps/plugins/bubble

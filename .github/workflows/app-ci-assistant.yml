@@ -32,7 +32,7 @@ jobs:
   assistant-agent:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Init private submodules
         env:
@@ -58,7 +58,7 @@ jobs:
       run:
         working-directory: ./apps/api
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Init private submodules
         working-directory: .
@@ -89,7 +89,7 @@ jobs:
       run:
         working-directory: ./apps/dashboard
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Init private submodules
         working-directory: .
