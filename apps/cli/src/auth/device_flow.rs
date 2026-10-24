@@ -4,8 +4,8 @@ use reqwest::StatusCode;
 use serde::Deserialize;
 use std::time::{Duration, Instant};
 
-use crate::api::{ApiClient, MeResponse};
-use crate::cli::{cli_auth_base, PRODUCTION_API_URL};
+use crate::api::{request_url, ApiClient, MeResponse};
+use crate::cli::PRODUCTION_API_URL;
 use crate::config::{GlobalConfig, ProfileMetadata};
 
 fn auth_client() -> Result<reqwest::Client> {
@@ -42,11 +42,12 @@ pub struct LoginOptions {
 }
 
 pub async fn login(options: LoginOptions) -> Result<String> {
+    let device_auth_url = request_url(&options.api_url, "/cli-auth/device-auth")?;
+    let token_url = request_url(&options.api_url, "/cli-auth/token")?;
     let client = auth_client()?;
 
-    let auth_base = cli_auth_base(&options.api_url);
     let device_auth = client
-        .post(format!("{auth_base}/device-auth"))
+        .post(&device_auth_url)
         .send()
         .await
         .context("Failed to connect to authentication service")?
@@ -119,7 +120,7 @@ pub async fn login(options: LoginOptions) -> Result<String> {
 
         let environment = environment_for_profile(&options.profile);
         let response = client
-            .post(format!("{auth_base}/token"))
+            .post(&token_url)
             .json(&serde_json::json!({
                 "device_code": device_auth.device_code,
                 "environment": environment,
@@ -227,4 +228,48 @@ pub fn api_url_for_profile(profile: &str, override_url: Option<&str>) -> String 
             PRODUCTION_API_URL.to_string()
         }
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn login_builds_https_and_loopback_auth_urls() {
+        assert_eq!(
+            request_url("https://api.lomi.africa/", "/cli-auth/device-auth").unwrap(),
+            "https://api.lomi.africa/cli-auth/device-auth"
+        );
+        assert_eq!(
+            request_url("http://localhost:4242", "/cli-auth/token").unwrap(),
+            "http://localhost:4242/cli-auth/token"
+        );
+        assert_eq!(
+            request_url("https://sandbox.api.lomi.africa", "/cli-auth/revoke").unwrap(),
+            "https://sandbox.api.lomi.africa/cli-auth/revoke"
+        );
+    }
+
+    #[test]
+    fn login_rejects_remote_http_and_userinfo_before_polling() {
+        for url in [
+            "http://api.lomi.africa",
+            "http://localhost@evil.example",
+            "http://evil.example@localhost",
+            "http://user:pass@127.0.0.1",
+        ] {
+            assert!(
+                request_url(url, "/cli-auth/device-auth").is_err(),
+                "device login should reject {url} before polling"
+            );
+            assert!(
+                request_url(url, "/cli-auth/token").is_err(),
+                "token poll should reject {url}"
+            );
+            assert!(
+                request_url(url, "/cli-auth/revoke").is_err(),
+                "revoke should reject {url}"
+            );
+        }
+    }
 }
