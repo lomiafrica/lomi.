@@ -32,7 +32,7 @@ jobs:
       run:
         working-directory: apps/pos
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Checkout pos submodule
         working-directory: .

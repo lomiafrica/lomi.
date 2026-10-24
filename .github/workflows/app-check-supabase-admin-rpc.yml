@@ -24,7 +24,7 @@ jobs:
     env:
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # GitHub runners are IPv4-only; Supabase pooler is flaky (EAUTHQUERY).
       # Direct db.<ref>.supabase.co is IPv6-only — WARP provides IPv6 egress.

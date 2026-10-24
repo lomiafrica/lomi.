@@ -32,7 +32,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.client_payload.sha || inputs.ref || github.sha }}
       - name: Checkout workspace packages
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.client_payload.sha || inputs.ref || github.sha }}
       - name: Checkout workspace packages
