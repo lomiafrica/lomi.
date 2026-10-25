@@ -12,9 +12,6 @@ use crate::config::GlobalConfig;
 pub const PRODUCTION_API_URL: &str = "https://api.lomi.africa";
 pub const SANDBOX_API_URL: &str = "https://sandbox.api.lomi.africa";
 pub const LOCAL_API_URL: &str = "http://localhost:4242";
-pub fn cli_auth_base(api_url: &str) -> String {
-    format!("{}/cli-auth", api_url.trim_end_matches('/'))
-}
 pub const DOCS_URL: &str = "https://docs.lomi.africa";
 pub const DEFAULT_DEV_PORT: u16 = 4242;
 

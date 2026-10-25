@@ -1,8 +1,9 @@
 use anyhow::Result;
 use clap::Args;
 
+use crate::api::request_url;
 use crate::auth::session::resolve_auth;
-use crate::cli::{self, cli_auth_base, CommonOptions};
+use crate::cli::{self, CommonOptions};
 use crate::config::GlobalConfig;
 
 #[derive(Args, Debug)]
@@ -13,12 +14,14 @@ pub async fn run(common: &CommonOptions, _args: LogoutArgs) -> Result<()> {
     cli::banner::print_intro(&format!("Logging out profile [{profile}]"));
 
     if let Ok(Some(auth)) = resolve_auth(common) {
-        let client = reqwest::Client::new();
-        let _ = client
-            .post(format!("{}/revoke", cli_auth_base(&auth.api_url)))
-            .header("X-API-KEY", &auth.cli_token)
-            .send()
-            .await;
+        if let Ok(revoke_url) = request_url(&auth.api_url, "/cli-auth/revoke") {
+            let client = reqwest::Client::new();
+            let _ = client
+                .post(revoke_url)
+                .header("X-API-KEY", &auth.cli_token)
+                .send()
+                .await;
+        }
     }
 
     let mut config = GlobalConfig::load()?;
