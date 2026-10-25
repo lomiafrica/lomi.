@@ -48,8 +48,7 @@ async function updateWithCloudManager(
 
 export async function updateSearchIndexes(): Promise<void> {
   const apiKey = process.env.ORAMA_PRIVATE_API_KEY;
-  const canIndex =
-    !!apiKey && (useOramaCoreIndex || DataSourceId.length > 0);
+  const canIndex = !!apiKey && (useOramaCoreIndex || DataSourceId.length > 0);
 
   if (!canIndex) {
     console.log(

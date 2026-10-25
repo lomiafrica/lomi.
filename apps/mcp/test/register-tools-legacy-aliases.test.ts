@@ -3,8 +3,9 @@ import type { ToolsManifest } from "../src/manifest.js";
 
 describe("registerMerchantTools aliases", () => {
   it("does not register mechanical lomi_post_* / lomi_get_* aliases", async () => {
-    const { McpServer } =
-      await import("@modelcontextprotocol/sdk/server/mcp.js");
+    const { McpServer } = await import(
+      "@modelcontextprotocol/sdk/server/mcp.js"
+    );
     const { registerMerchantTools } = await import("../src/register-tools.js");
 
     const manifest: ToolsManifest = {
