@@ -24,7 +24,8 @@
       "katex": "0.18.2",
       "tar": "^7.5.21",
       "nanoid": "^3.3.18",
-      "mdast-util-to-markdown": "2.1.2"
+      "mdast-util-to-markdown": "2.1.2",
+      "zod": "^4.6.6"
     }
   },
   "scripts": {

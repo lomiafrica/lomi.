@@ -39,18 +39,20 @@
       "esbuild": "^0.28.1",
       "hono": "^4.12.34",
       "vite": "7.3.7",
-      "fast-uri": "^3.1.7",
+      "fast-uri": "^3.1.9",
       "@hono/node-server": "^2.0.12",
       "brace-expansion@^5": "^5.0.9",
       "@isaacs/brace-expansion": "^5.0.1",
       "tar": "^7.5.21",
       "postcss": "^8.5.23",
       "js-yaml": "^4.3.2",
-      "ip-address": "^10.3.1",
+      "ip-address": "^10.7.4",
       "brace-expansion": "^2.1.7",
       "source-map-js": "1.2.2",
       "brace-expansion@^1": "^1.1.18",
-      "nanoid": "^3.3.18"
+      "nanoid": "^3.3.18",
+      "zod": "^4.6.6",
+      "body-parser": "^2.4.0"
     },
     "auditConfig": {
       "ignoreGhsas": [
