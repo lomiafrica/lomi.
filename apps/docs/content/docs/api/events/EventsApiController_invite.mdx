@@ -1,0 +1,32 @@
+---
+title: "Invite a guest"
+description: "Invite a guest"
+full: true
+method: post
+path: /events/{id}/invites
+operationId: EventsApiController_invite
+---
+
+## Overview
+
+Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/{id}/invites`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_invite`
+- **Operation**: `POST /events/{id}/invites`

@@ -1,0 +1,41 @@
+---
+title: "Créer un événement"
+description: "Créer un événement"
+full: true
+method: post
+path: /events
+operationId: EventsApiController_create
+---
+
+## Overview
+
+Publie un événement et renvoie le bureau. Ticketing doit être activé. Envoyez Idempotency-Key.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: evt-1"
+```
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_create`
+- **Operation**: `POST /events`

@@ -1,0 +1,41 @@
+---
+title: "Scan a ticket"
+description: "Scan a ticket"
+full: true
+method: post
+path: /events/{id}/scan
+operationId: EventsApiController_scan
+---
+
+## Overview
+
+Requires Ticketing. The first scan admits the code. A second scan is already used.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/{id}/scan`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/scan" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: evt-1"
+```
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_scan`
+- **Operation**: `POST /events/{id}/scan`

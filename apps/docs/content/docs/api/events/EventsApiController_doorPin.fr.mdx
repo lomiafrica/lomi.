@@ -1,0 +1,32 @@
+---
+title: "Définir le PIN de la porte"
+description: "Définir le PIN de la porte"
+full: true
+method: post
+path: /events/door-pin
+operationId: EventsApiController_doorPin
+---
+
+## Overview
+
+Définit le PIN qui admet les billets sur la page de vérification. Ce n'est pas le PIN de virement et il ne déplace pas d'argent. Ticketing doit être activé. Le téléphone de la porte enregistre ce PIN dans le navigateur.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/door-pin`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_doorPin`
+- **Operation**: `POST /events/door-pin`

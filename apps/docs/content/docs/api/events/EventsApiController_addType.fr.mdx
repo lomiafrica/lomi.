@@ -1,0 +1,32 @@
+---
+title: "Ajouter un type de billet"
+description: "Ajouter un type de billet"
+full: true
+method: post
+path: /events/{id}/types
+operationId: EventsApiController_addType
+---
+
+## Overview
+
+Ajoute un billet ou un pack. seats est le nombre de QR qu'une vente émet. capacity est le nombre de ce type qui peut être vendu. Ticketing doit être activé.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/{id}/types`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_addType`
+- **Operation**: `POST /events/{id}/types`

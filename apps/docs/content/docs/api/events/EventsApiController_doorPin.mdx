@@ -1,0 +1,32 @@
+---
+title: "Set the door PIN"
+description: "Set the door PIN"
+full: true
+method: post
+path: /events/door-pin
+operationId: EventsApiController_doorPin
+---
+
+## Overview
+
+Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Ticketing. The door phone saves this PIN in the browser.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/door-pin`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_doorPin`
+- **Operation**: `POST /events/door-pin`

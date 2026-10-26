@@ -5,216 +5,131 @@ description: 'SDK PHP officiel pour l’API de paiement lomi.'
 
 import { Callout } from '@/components/docs/docs-callout';
 
-SDK PHP officiel pour l’API de paiement lomi. Compatible Laravel, Symfony, WordPress et PHP 8.0+.
+SDK PHP officiel pour l’API de paiement lomi. Compatible avec Laravel, Symfony, WordPress et toute application PHP 8.1 ou plus.
 
 <Callout type="warn">
-  En raison de la structure du dépôt monorepo, le SDK PHP **n’est pas publié sur Packagist**.
-  Installez-le depuis GitHub avec Composer.
+  Le SDK PHP n’est pas sur Packagist. Installez-le depuis GitHub avec Composer.
 </Callout>
 
 ## Installation
 
-Ajoutez à votre `composer.json` :
+Ajoutez ceci à `composer.json` :
 
 ```json
 {
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/lomiafrica/lomi./"
+      "url": "https://github.com/lomiafrica/lomi-php-sdk"
     }
   ],
   "require": {
-    "lomi/lomi-sdk": "dev-main#apps/sdks/php"
+    "lomi/lomi-sdk": "dev-main"
   }
 }
 ```
 
-Puis exécutez :
+Puis lancez :
+
 ```bash
 composer install
 ```
 
-## Démarrage rapide
+## Démarrage
 
 ```php
 <?php
 require_once 'vendor/autoload.php';
 
-use Lomi\Configuration;
-use Lomi\ApiClient;
-use Lomi\Api\CustomersApi;
-
-$config = Configuration::getDefaultConfiguration()
-    ->setApiKey('X-API-KEY', getenv('LOMI_SECRET_KEY'));
-
-// Bac à sable / tests
-// $config->setHost('https://sandbox.api.lomi.africa');
-
-$apiClient = new ApiClient($config);
-```
-
-## Exemples
-
-### Lister les clients
-
-```php
-<?php
-use Lomi\Api\CustomersApi;
-
-$customersApi = new CustomersApi($apiClient);
-$customers = $customersApi->listCustomers();
-
-foreach ($customers->getData() as $customer) {
-    echo $customer->getId() . ': ' . $customer->getName() . "\n";
-}
-```
-
-### Créer un client
-
-```php
-<?php
-use Lomi\Api\CustomersApi;
-use Lomi\Model\CustomersCreate;
-
-$customersApi = new CustomersApi($apiClient);
-
-$customerData = new CustomersCreate([
-    'name' => 'Aminata Touré',
-    'email' => 'aminata@example.com',
-    'phone_number' => '+2210712345678'
+$lomi = new \Lomi\LomiClient(getenv('LOMI_SECRET_KEY'), [
+    'environment' => 'test', // omettre, ou mettre 'live', en production
 ]);
 
-$customer = $customersApi->createCustomer($customerData);
-echo 'Client créé : ' . $customer->getId();
-```
-
-### Créer une session de paiement
-
-```php
-<?php
-use Lomi\Api\CheckoutSessionsApi;
-use Lomi\Model\CheckoutSessionsCreate;
-
-$checkoutApi = new CheckoutSessionsApi($apiClient);
-
-$sessionData = new CheckoutSessionsCreate([
-    'amount' => 5000, // 5,000 F CFA
-    'currency' => 'XOF',
+$session = $lomi->checkoutSessions->create([
+    'amount' => 5000,
+    'currency_code' => 'XOF',
     'success_url' => 'https://yoursite.com/success',
     'cancel_url' => 'https://yoursite.com/cancel',
-    'metadata' => ['order_id' => 'order_123']
+    'metadata' => ['order_id' => 'order_123'],
 ]);
 
-$session = $checkoutApi->createCheckoutSession($sessionData);
-
-// Rediriger le client vers le tunnel
-header('Location: ' . $session->getUrl());
+header('Location: ' . $session['checkout_url']);
 exit;
 ```
 
-### Lister les transactions
+Les appels renvoient des tableaux. Une requête en échec lève `\Lomi\LomiException`, avec le code HTTP et le corps de la réponse.
 
 ```php
 <?php
-use Lomi\Api\TransactionsApi;
-
-$transactionsApi = new TransactionsApi($apiClient);
-$transactions = $transactionsApi->listTransactions();
-
-foreach ($transactions->getData() as $tx) {
-    echo sprintf(
-        "%s: %d %s - %s\n",
-        $tx->getId(),
-        $tx->getAmount(),
-        $tx->getCurrency(),
-        $tx->getStatus()
-    );
-}
-```
-
-### Créer un lien de paiement
-
-```php
-<?php
-use Lomi\Api\PaymentLinksApi;
-use Lomi\Model\PaymentLinksCreate;
-
-$paymentLinksApi = new PaymentLinksApi($apiClient);
-
-$linkData = new PaymentLinksCreate([
-    'amount' => 10000,
-    'currency' => 'XOF',
-    'description' => 'Abonnement Premium',
-    'reusable' => true
-]);
-
-$link = $paymentLinksApi->createPaymentLink($linkData);
-echo 'Partagez ce lien : ' . $link->getUrl();
-```
-
-## Gestion des erreurs
-
-```php
-<?php
-use Lomi\Api\CustomersApi;
-use Lomi\ApiException;
-
-$customersApi = new CustomersApi($apiClient);
+use Lomi\LomiException;
 
 try {
-    $customer = $customersApi->retrieveCustomer('invalid_id');
-} catch (ApiException $e) {
-    echo 'Erreur API : ' . $e->getCode() . "\n";
-    echo 'Message : ' . $e->getMessage() . "\n";
-    echo 'Réponse : ' . $e->getResponseBody() . "\n";
+    $customer = $lomi->customers->create([
+        'name' => 'Aminata Touré',
+        'email' => 'aminata@example.com',
+        'phone_number' => '+221771234567',
+    ]);
+    echo $customer['id'];
+} catch (LomiException $e) {
+    echo $e->getCode() . ' ' . $e->getMessage();
 }
 ```
 
-## Intégration Laravel
+Utilisez `currency_code`. L’API refuse `currency` sur une session de checkout.
 
-### Service Provider
+## Webhooks
+
+Le champ du payload est `event`, pas `type`. Vérifiez l’en-tête historique `X-Lomi-Signature` (HMAC-SHA256 du corps brut). Castez un en-tête absent en chaîne avant `hash_equals`. Ignorez un événement de plus de 300 secondes via `X-Lomi-Timestamp` (chaîne ISO-8601). Ignorez un `id` d’événement déjà traité. Avant de livrer, relisez la transaction et ne continuez que si `transaction_status` vaut `completed`.
 
 ```php
 <?php
-// app/Providers/LomiServiceProvider.php
+$payload = file_get_contents('php://input');
+$signature = (string) ($_SERVER['HTTP_X_LOMI_SIGNATURE'] ?? '');
+$timestamp = (string) ($_SERVER['HTTP_X_LOMI_TIMESTAMP'] ?? '');
+$secret = getenv('LOMI_WEBHOOK_SECRET');
 
-namespace App\Providers;
+$expected = hash_hmac('sha256', $payload, $secret);
+if ($signature === '' || !hash_equals($expected, $signature)) {
+    http_response_code(400);
+    exit;
+}
 
-use Illuminate\Support\ServiceProvider;
-use Lomi\Configuration;
-use Lomi\ApiClient;
+if ($timestamp === '' || abs(time() - strtotime($timestamp)) > 300) {
+    http_response_code(400);
+    exit;
+}
 
-class LomiServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->singleton(ApiClient::class, function () {
-            $config = Configuration::getDefaultConfiguration()
-                ->setApiKey('X-API-KEY', config('services.lomi.api_key'));
+$event = json_decode($payload, true);
+$eventId = (string) ($event['id'] ?? '');
+// Enregistrez $eventId et sortez si vous l’avez déjà traité.
 
-            return new ApiClient($config);
-        });
+if (($event['event'] ?? '') === 'PAYMENT_SUCCEEDED') {
+    $transactionId = $event['data']['id'] ?? '';
+    $transaction = $lomi->transactions->get($transactionId);
+    if (($transaction['transaction_status'] ?? '') === 'completed') {
+        // Livrez la commande une seule fois.
     }
 }
+
+http_response_code(200);
+echo json_encode(['received' => true]);
 ```
 
-### Config
+`\Lomi\WebhookVerify::verify($payload, $signature, $secret)` vérifie cette même signature du corps.
+
+## Laravel
+
+Placez la route dans `routes/api.php` pour que les middlewares `web` et CSRF ne s’exécutent pas.
 
 ```php
 <?php
-// config/services.php
+// routes/api.php
 
-return [
-    // ...
-    'lomi' => [
-        'api_key' => env('LOMI_SECRET_KEY'),
-        'webhook_secret' => env('LOMI_WEBHOOK_SECRET'),
-    ],
-];
+use App\Http\Controllers\LomiWebhookController;
+use Illuminate\Support\Facades\Route;
+
+Route::post('/webhook/lomi', [LomiWebhookController::class, 'handle']);
 ```
-
-### Webhook Controller
 
 ```php
 <?php
@@ -223,28 +138,35 @@ return [
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Lomi\LomiClient;
 
 class LomiWebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        $signature = $request->header('x-lomi-signature');
-        $secret = config('services.lomi.webhook_secret');
         $payload = $request->getContent();
+        $signature = (string) $request->header('x-lomi-signature', '');
+        $timestamp = (string) $request->header('x-lomi-timestamp', '');
+        $secret = (string) config('services.lomi.webhook_secret');
 
-        $expectedSignature = hash_hmac('sha256', $payload, $secret);
-
-        if (!hash_equals($expectedSignature, $signature)) {
+        $expected = hash_hmac('sha256', $payload, $secret);
+        if ($signature === '' || !hash_equals($expected, $signature)) {
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 
-        $event = $request->all();
+        if ($timestamp === '' || abs(time() - strtotime($timestamp)) > 300) {
+            return response()->json(['error' => 'Événement trop ancien'], 400);
+        }
 
-        switch ($event['type']) {
-            case 'PAYMENT_SUCCEEDED':
-                // Traiter le paiement
-                break;
+        $event = $request->json()->all();
+        if (($event['event'] ?? '') !== 'PAYMENT_SUCCEEDED') {
+            return response()->json(['received' => true]);
+        }
 
+        $lomi = new LomiClient((string) config('services.lomi.api_key'));
+        $transaction = $lomi->transactions->get((string) ($event['data']['id'] ?? ''));
+        if (($transaction['transaction_status'] ?? '') === 'completed') {
+            // Livrez une fois, avec $event['id'] comme clé.
         }
 
         return response()->json(['received' => true]);
@@ -252,24 +174,10 @@ class LomiWebhookController extends Controller
 }
 ```
 
-### Routes
+## WordPress
 
 ```php
 <?php
-// routes/web.php
-
-use App\Http\Controllers\LomiWebhookController;
-
-Route::post('/webhook/lomi', [LomiWebhookController::class, 'handle'])
-    ->withoutMiddleware(['web', 'csrf']);
-```
-
-## Intégration WordPress
-
-```php
-<?php
-// Dans le functions.php de votre thème ou extension
-
 add_action('rest_api_init', function () {
     register_rest_route('lomi/v1', '/webhook', [
         'methods' => 'POST',
@@ -279,46 +187,45 @@ add_action('rest_api_init', function () {
 });
 
 function handle_lomi_webhook(WP_REST_Request $request) {
-    $signature = $request->get_header('x-lomi-signature');
-    $secret = get_option('lomi_webhook_secret');
     $payload = $request->get_body();
+    $signature = (string) $request->get_header('x-lomi-signature');
+    $timestamp = (string) $request->get_header('x-lomi-timestamp');
+    $secret = (string) get_option('lomi_webhook_secret');
 
     $expected = hash_hmac('sha256', $payload, $secret);
-
-    if (!hash_equals($expected, $signature)) {
+    if ($signature === '' || !hash_equals($expected, $signature)) {
         return new WP_Error('invalid_signature', 'Invalid signature', ['status' => 400]);
     }
 
-    $event = $request->get_json_params();
+    if ($timestamp === '' || abs(time() - strtotime($timestamp)) > 300) {
+        return new WP_Error('stale_event', 'Événement trop ancien', ['status' => 400]);
+    }
 
-    if ($event['type'] === 'PAYMENT_SUCCEEDED') {
-        // Traiter le paiement
+    $event = $request->get_json_params();
+    if (($event['event'] ?? '') === 'PAYMENT_SUCCEEDED') {
+        // Relisez la transaction et ne livrez que si transaction_status vaut completed.
     }
 
     return ['received' => true];
 }
 ```
 
-## API disponibles
+## Client
 
-| Classe API             | Méthodes                                                                                                                      |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `CustomersApi`        | `listCustomers`, `createCustomer`, `retrieveCustomer`, `updateCustomer`, `deleteCustomer`                                    |
-| `CheckoutSessionsApi` | `listCheckoutSessions`, `createCheckoutSession`, `retrieveCheckoutSession`, `updateCheckoutSession`, `deleteCheckoutSession` |
-| `TransactionsApi`     | `listTransactions`, `retrieveTransaction`                                                                                    |
-| `PaymentLinksApi`     | `listPaymentLinks`, `createPaymentLink`, `retrievePaymentLink`, `updatePaymentLink`, `deletePaymentLink`                     |
-| `ProductsApi`         | `listProducts`, `createProduct`, `retrieveProduct`, `updateProduct`, `deleteProduct`                                         |
-| `SubscriptionsApi`    | `listSubscriptions`, `createSubscription`, `retrieveSubscription`, `updateSubscription`, `deleteSubscription`                |
-| `RefundsApi`          | `listRefunds`, `createRefund`, `retrieveRefund`                                                                              |
-| `PayoutsApi`          | `listPayouts`, `createPayout`, `retrievePayout`                                                                              |
-| `ChargesApi`           | `createWaveCharge`, `createMtnCharge`, `createCardCharge`, `getCardCharge`, `cancelCardCharge`                                |
-| `PaymentRequestsApi`  | `listPaymentRequests`, `createPaymentRequest`, `retrievePaymentRequest`                                                      |
-| `DiscountCouponsApi`  | `listDiscountCoupons`, `createDiscountCoupon`, `retrieveDiscountCoupon`, `updateDiscountCoupon`, `deleteDiscountCoupon`      |
-| `WebhookDeliveryLogsApi`| `listWebhookDeliveryLogs`, `retrieveWebhookDeliveryLog`                                                                    |
-| `WebhooksApi`         | `listWebhooks`, `createWebhook`, `retrieveWebhook`, `updateWebhook`, `deleteWebhook`                                         |
+Construisez `\Lomi\LomiClient`. Ces propriétés couvrent l’API marchand. Chaque méthode renvoie un tableau.
+
+| Propriété | Exemples |
+| --- | --- |
+| `checkoutSessions` | `create`, `get`, `list` |
+| `customers` | `create`, `get`, `list` |
+| `transactions` | `get`, `list` |
+| `paymentLinks` | `create`, `get`, `list` |
+| `products` | `create`, `get`, `list` |
+| `refunds` | `create`, `get`, `list` |
+| `webhooks` | `create`, `get`, `list` |
 
 ## Besoin d’aide ?
 
-- [Référence API](/api): documentation complète
-- [Issues GitHub](https://github.com/lomiafrica/lomi./issues): anomalies
-- [Discord](https://discord.gg/yb4FnBmh): communauté
+- [Référence API](/api)
+- [Gérer les webhooks](/build/reliability/handling-webhooks)
+- [Comment vérifier un paiement ?](/build/reliability/verify-payments)

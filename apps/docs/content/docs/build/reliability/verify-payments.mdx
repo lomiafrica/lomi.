@@ -27,7 +27,7 @@ After the customer pays:
 
 1. Store your internal `order_id` in checkout session `metadata` when you create the session.
 2. On `success_url`, show a “processing” state, not “paid”-until your backend confirms.
-3. When you receive `transaction.completed` (or your configured event type), match `metadata.order_id` and fulfill.
+3. When you receive `PAYMENT_SUCCEEDED`, match `metadata.order_id` and fulfill only after `GET /transactions/{id}` shows `transaction_status` of `completed`.
 
 See [Payment and payout lifecycle](/build/reliability/payment-lifecycle) for status meanings and [Handling webhooks](/build/reliability/handling-webhooks) for signature verification.
 

@@ -1,0 +1,41 @@
+---
+title: "Publier un événement"
+description: "Publier un événement"
+full: true
+method: post
+path: /events/{id}/publish
+operationId: EventsApiController_publish
+---
+
+## Overview
+
+Ticketing doit être activé. Omettez published ou envoyez true pour publier. Envoyez false pour retirer la page.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /events/{id}/publish`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/publish" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: evt-1"
+```
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_publish`
+- **Operation**: `POST /events/{id}/publish`

@@ -11,6 +11,7 @@
     "---Accept payments---",
     "checkout-sessions",
     "payment-links",
+    "events",
     "whatsapp",
     "payment-requests",
     "invoices",

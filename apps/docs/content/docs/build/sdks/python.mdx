@@ -250,7 +250,7 @@ def lomi_webhook(request):
 
     event = json.loads(request.body)
 
-    if event["type"] == "PAYMENT_SUCCEEDED":
+    if event["event"] == "PAYMENT_SUCCEEDED":
         # Handle successful payment
         transaction = event["data"]
         print(f"Payment received: {transaction['gross_amount']}")
@@ -281,7 +281,7 @@ def webhook():
 
     event = request.json
 
-    if event["type"] == "PAYMENT_SUCCEEDED":
+    if event["event"] == "PAYMENT_SUCCEEDED":
         # Handle payment
         pass
 

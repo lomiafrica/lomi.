@@ -369,6 +369,20 @@
         "login_link": "POST /network/accounts/{account}/login_links",
         "account_session": "POST /network/account-sessions"
       }
+    },
+    {
+      "name": "lomi_events",
+      "title": "Events",
+      "actions": {
+        "list": "GET /events",
+        "get": "GET /events/{id}",
+        "create": "POST /events",
+        "publish": "POST /events/{id}/publish",
+        "scan": "POST /events/{id}/scan",
+        "door_pin": "POST /events/door-pin",
+        "add_type": "POST /events/{id}/types",
+        "invite": "POST /events/{id}/invites"
+      }
     }
   ],
   "provisioningGroups": [

@@ -1,0 +1,13 @@
+{
+  "title": "Événements",
+  "pages": [
+    "EventsApiController_create",
+    "EventsApiController_list",
+    "EventsApiController_get",
+    "EventsApiController_publish",
+    "EventsApiController_scan",
+    "EventsApiController_doorPin",
+    "EventsApiController_addType",
+    "EventsApiController_invite"
+  ]
+}

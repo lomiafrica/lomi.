@@ -586,5 +586,37 @@
   "POST /whatsapp/payment-messages": {
     "title": "Send a WhatsApp payment link",
     "description": "Send a pay.lomi.africa link to a customer on the connected WhatsApp number. Pass to in E.164 and amount in minor units (5000 XOF is 5000, 10.00 USD is 1000), or checkout_session_id for a checkout you already created. This uses an approved template, so the customer does not need to have written first. Send idempotency_key."
+  },
+  "GET /events": {
+    "title": "List events",
+    "description": "Each row is an event desk: sold, remaining, scanned, and recent buyers."
+  },
+  "GET /events/{id}": {
+    "title": "Get an event desk",
+    "description": "Sold, remaining, scanned, and the last buyers for one event."
+  },
+  "POST /events": {
+    "title": "Create an event",
+    "description": "Publishes an event on the hosted slug and returns the desk. Requires Ticketing. Send Idempotency-Key."
+  },
+  "POST /events/{id}/publish": {
+    "title": "Publish or unpublish an event",
+    "description": "Requires Ticketing. Omit published or send true to publish. Send published false to take the page down."
+  },
+  "POST /events/{id}/scan": {
+    "title": "Scan a ticket",
+    "description": "Requires Ticketing. The first scan admits the code. A second scan is already used."
+  },
+  "POST /events/door-pin": {
+    "title": "Set the door PIN",
+    "description": "Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Ticketing. The door phone saves this PIN in the browser."
+  },
+  "POST /events/{id}/types": {
+    "title": "Add a ticket type",
+    "description": "Adds a named ticket or pack. seats is how many QR codes one sale issues. capacity is how many of that type can be sold. Requires Ticketing."
+  },
+  "POST /events/{id}/invites": {
+    "title": "Invite a guest",
+    "description": "Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20."
   }
 }

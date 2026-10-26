@@ -1,0 +1,39 @@
+---
+title: "List events"
+description: "List events"
+full: true
+method: get
+path: /events
+operationId: EventsApiController_list
+---
+
+## Overview
+
+Each row is an event desk: sold, remaining, scanned, and recent buyers.
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header. Use a test key against `https://sandbox.api.lomi.africa` and a live key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`GET /events`
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `200` | Success |
+| `403` | Ticketing is off |
+
+## Example
+
+```bash
+curl -sS -X GET "https://sandbox.api.lomi.africa/events" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY"
+```
+
+## OpenAPI
+
+- **operationId**: `EventsApiController_list`
+- **Operation**: `GET /events`

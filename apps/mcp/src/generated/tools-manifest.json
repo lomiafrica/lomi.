@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 33,
+  "toolCount": 34,
   "tools": [
     {
       "name": "lomi_api_keys",
@@ -1152,6 +1152,223 @@
           "description": "Attach written evidence to a card dispute. Confirm facts with the merchant before submitting.",
           "tags": [
             "Litiges"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_events",
+      "title": "Events",
+      "description": "Events. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List events (GET /events). No extra required fields.\n- `get` — Get an event desk (GET /events/{id}). Required: id.\n- `create` — Create an event (POST /events). Required: body, header_Idempotency-Key. Body: capacity, price_amount, title, currency, starts_at, ticket_name, venue.\n- `publish` — Publish or unpublish an event (POST /events/{id}/publish). Required: body, id. Body: published.\n- `scan` — Scan a ticket (POST /events/{id}/scan). Required: body, id. Body: code.\n- `door_pin` — Set the door PIN (POST /events/door-pin). Required: body. Body: pin.\n- `add_type` — Add a ticket type (POST /events/{id}/types). Required: body, id. Body: capacity, name, price_amount, currency, seats.\n- `invite` — Invite a guest (POST /events/{id}/invites). Required: body, id. Body: email, name, count.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Events"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "publish",
+              "scan",
+              "door_pin",
+              "add_type",
+              "invite"
+            ],
+            "description": "Which REST operation to run. One of: list, get, create, publish, scan, door_pin, add_type, invite."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON request body. Required for write actions that send a body; shape depends on action."
+          },
+          "header_Idempotency-Key": {
+            "type": "string",
+            "description": "Idempotency key for safe retries."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "type": "string",
+            "description": "Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": false,
+      "alwaysLoad": false,
+      "searchHint": "add_type create door door_pin events get invite invites list pin post publish scan types",
+      "actions": {
+        "list": {
+          "operationKey": "GET /events",
+          "method": "get",
+          "pathTemplate": "/events",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_list",
+          "write": false,
+          "wantsBody": false,
+          "title": "List events",
+          "description": "Each row is an event desk: sold, remaining, scanned, and recent buyers.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": []
+        },
+        "get": {
+          "operationKey": "GET /events/{id}",
+          "method": "get",
+          "pathTemplate": "/events/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_get",
+          "write": false,
+          "wantsBody": false,
+          "title": "Get an event desk",
+          "description": "Sold, remaining, scanned, and the last buyers for one event.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "id"
+          ]
+        },
+        "create": {
+          "operationKey": "POST /events",
+          "method": "post",
+          "pathTemplate": "/events",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_create",
+          "write": true,
+          "wantsBody": true,
+          "title": "Create an event",
+          "description": "Publishes an event on the hosted slug and returns the desk. Requires Ticketing. Send Idempotency-Key.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "body",
+            "header_Idempotency-Key"
+          ]
+        },
+        "publish": {
+          "operationKey": "POST /events/{id}/publish",
+          "method": "post",
+          "pathTemplate": "/events/{id}/publish",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_publish",
+          "write": true,
+          "wantsBody": true,
+          "title": "Publish or unpublish an event",
+          "description": "Requires Ticketing. Omit published or send true to publish. Send published false to take the page down.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
+        },
+        "scan": {
+          "operationKey": "POST /events/{id}/scan",
+          "method": "post",
+          "pathTemplate": "/events/{id}/scan",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_scan",
+          "write": true,
+          "wantsBody": true,
+          "title": "Scan a ticket",
+          "description": "Requires Ticketing. The first scan admits the code. A second scan is already used.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
+        },
+        "door_pin": {
+          "operationKey": "POST /events/door-pin",
+          "method": "post",
+          "pathTemplate": "/events/door-pin",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_doorPin",
+          "write": true,
+          "wantsBody": true,
+          "title": "Set the door PIN",
+          "description": "Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Ticketing. The door phone saves this PIN in the browser.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "body"
+          ]
+        },
+        "add_type": {
+          "operationKey": "POST /events/{id}/types",
+          "method": "post",
+          "pathTemplate": "/events/{id}/types",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_addType",
+          "write": true,
+          "wantsBody": true,
+          "title": "Add a ticket type",
+          "description": "Adds a named ticket or pack. seats is how many QR codes one sale issues. capacity is how many of that type can be sold. Requires Ticketing.",
+          "tags": [
+            "Events"
+          ],
+          "requiredInput": [
+            "body",
+            "id"
+          ]
+        },
+        "invite": {
+          "operationKey": "POST /events/{id}/invites",
+          "method": "post",
+          "pathTemplate": "/events/{id}/invites",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "EventsApiController_invite",
+          "write": true,
+          "wantsBody": true,
+          "title": "Invite a guest",
+          "description": "Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20.",
+          "tags": [
+            "Events"
           ],
           "requiredInput": [
             "body",

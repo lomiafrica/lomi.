@@ -27,7 +27,7 @@ Après le paiement du client :
 
 1. Stockez votre `order_id` interne dans les `metadata` de la session checkout à la création.
 2. Sur `success_url`, affichez un état « traitement en cours »-pas « payé »-jusqu’à confirmation backend.
-3. À réception de `transaction.completed` (ou de votre type d’événement), faites correspondre `metadata.order_id` puis livrez.
+3. À réception de `PAYMENT_SUCCEEDED`, faites correspondre `metadata.order_id` et ne livrez qu’après un `GET /transactions/{id}` dont `transaction_status` vaut `completed`.
 
 Voir [Cycle de vie des paiements](/build/reliability/payment-lifecycle) et [Gestion des webhooks](/build/reliability/handling-webhooks).
 
