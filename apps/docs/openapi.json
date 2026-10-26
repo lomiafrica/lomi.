@@ -13293,7 +13293,9 @@
           "amount": {
             "type": "number",
             "example": 1000,
-            "description": "Amount in XOF (minimum 100)"
+            "description": "Amount in XOF, from 100 up to 5,000,000 inclusive.",
+            "minimum": 1,
+            "maximum": 5000000
           },
           "currency": {
             "type": "string",

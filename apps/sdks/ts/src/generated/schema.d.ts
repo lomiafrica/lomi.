@@ -4403,7 +4403,7 @@ export interface components {
              */
             transfer_group?: string;
             /**
-             * @description Amount in XOF (minimum 100)
+             * @description Amount in XOF, from 100 up to 5,000,000 inclusive.
              * @example 1000
              */
             amount: number;

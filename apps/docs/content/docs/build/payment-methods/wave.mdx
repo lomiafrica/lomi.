@@ -19,10 +19,12 @@ Wave is in **Côte d'Ivoire**. Most teams should use [hosted checkout](/build/ac
 | Settlement | Test: often when the charge is created. Live: after the customer approves in Wave, then `available_at` |
 | Direct vs hosted | Hosted and `POST /charge/wave` |
 | Refund | Completed Wave transactions |
-| Min / max | - |
+| Min / max | Up to 5 000 000 F CFA, and 5 000 000 is accepted |
 | Currency | `XOF` |
 
 Same columns as [Payment channels](/build/payment-channels#channel-capabilities).
+
+Wave collects at most 5 000 000 F CFA, and a charge of exactly 5 000 000 goes through. Hosted prices in EUR or USD are converted to F CFA before that check. Above the ceiling, hosted checkout leaves Wave unselectable and the customer pays by card. `POST /charge/wave` uses the same ceiling and returns 400 when the amount is higher.
 
 ## Hosted checkout (recommended)
 

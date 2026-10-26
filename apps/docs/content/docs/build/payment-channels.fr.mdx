@@ -20,7 +20,7 @@ Mêmes colonnes sur chaque page rail. Une cellule vide (`-`) signifie que nous n
 
 | Canal | Approbation | Règlement | Direct vs hébergé | Remboursement | Min / max | Guide |
 | --- | --- | --- | --- | --- | --- | --- |
-| Wave | Redirection ou URL de lancement (`wave_launch_url` / `checkout_url`) | Test : souvent à la création. Live : après approbation dans Wave, puis `available_at` | Hébergé et `POST /charge/wave` | Transactions Wave `completed` | - | [Wave](/build/payment-methods/wave) |
+| Wave | Redirection ou URL de lancement (`wave_launch_url` / `checkout_url`) | Test : souvent à la création. Live : après approbation dans Wave, puis `available_at` | Hébergé et `POST /charge/wave` | Transactions Wave `completed` | Jusqu'à 5 000 000 F CFA, inclus | [Wave](/build/payment-methods/wave) |
 | MTN | Push / PIN sur le téléphone (`next_action: await_webhook`) | Test : souvent `completed` immédiat. Live : reste `PENDING` jusqu’à approbation, puis `available_at` | Hébergé et `POST /charge/mtn` | Transactions MTN `completed` (remboursements live asynchrones) | - | [MTN](/build/payment-methods/mtn-momo) |
 | π-SPI | Le payeur scanne un QR ou confirme une demande vers son alias | Après confirmation de la banque, puis `available_at` | Checkout hébergé, demandes XOF et `POST /charge/spi` | Pas listé sur `POST /refunds` | - | [π-SPI](/build/payment-methods/spi) |
 | Cartes | 3DS hébergé si l’émetteur l’exige | Après `completed` ; certains réglages carte retardent `available_at` | Hébergé, liens de paiement, et `POST /charge/card` avec lomi. Elements | Transactions carte `completed` | 1 000 F CFA / 0,50 EUR/USD | [Cartes](/build/payment-methods/cards) |
@@ -77,7 +77,7 @@ Passez `countryCode` (ISO 3166-1 alpha-2) sur les charges MTN directes hors CI. 
 
 ## Wave
 
-Wave est en **Côte d'Ivoire**. Les charges directes exigent **XOF**. Le client paie dans l’app Wave via `wave_launch_url` ou `checkout_url` dans la réponse.
+Wave est en **Côte d'Ivoire**. Les charges directes exigent **XOF**. Le client paie dans l’app Wave via `wave_launch_url` ou `checkout_url` dans la réponse. Wave accepte jusqu'à 5 000 000 F CFA, ce montant compris.
 
 En **test**, le ledger peut créditer immédiatement. En **live**, attendez les webhooks ou `GET /transactions/{id}` avant de livrer.
 

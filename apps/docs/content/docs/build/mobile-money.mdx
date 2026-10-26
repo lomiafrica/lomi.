@@ -53,7 +53,7 @@ Each recipe ends the same way: wait for the webhook, then `GET /transactions/{id
 
 ### 1. Hosted Wave
 
-1. Create a checkout session with `currency_code: "XOF"`.
+1. Create a checkout session with `currency_code: "XOF"`. Wave accepts up to 5 000 000 F CFA, including that amount.
 2. Redirect the customer to `checkout_url`.
 3. The customer selects Wave and approves in the Wave app.
 4. Handle `PAYMENT_SUCCEEDED` / `PAYMENT_FAILED`, then `GET /transactions/{id}` before fulfilling.
