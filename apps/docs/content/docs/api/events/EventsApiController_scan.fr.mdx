@@ -19,6 +19,20 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `POST /events/{id}/scan`
 
+## Requête
+
+### Paramètres de chemin
+
+| Nom | Requis | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | `string` | Identifiant de l'événement |
+
+### Corps
+
+| Champ | Requis | Type | Description |
+| --- | --- | --- | --- |
+| `code` | Oui | `string` | Code du billet |
+
 ## Responses
 
 | Status | Description |
@@ -26,13 +40,18 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 | `200` | Success |
 | `403` | Ticketing is off |
 
+## Erreurs
+
+**403** : Ticketing est désactivé. **401** : clé manquante ou invalide. **404** : cet événement n'est pas dans l'organisation. **429** : trop de requêtes.
+
 ## Example
 
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/scan" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: evt-1"
+  -H "Idempotency-Key: evt-1" \
+  -d '{"code":"ticket-code"}'
 ```
 
 ## OpenAPI

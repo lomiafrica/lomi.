@@ -19,6 +19,22 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `POST /events`
 
+## Request
+
+Send `Idempotency-Key`. A retry with the same key does not create a second event.
+
+### Request body
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `title` | Yes | `string` | - |
+| `price_amount` | Yes | `integer` | - |
+| `capacity` | Yes | `integer` | - |
+| `starts_at` | No | `string` | - |
+| `venue` | No | `string` | - |
+| `ticket_name` | No | `string` | - |
+| `currency` | No | `string` | - |
+
 ## Responses
 
 | Status | Description |
@@ -26,13 +42,18 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 | `200` | Success |
 | `403` | Ticketing is off |
 
+## Errors
+
+**403** means Ticketing is off. **401** means the API key is missing or invalid. **429** means too many requests.
+
 ## Example
 
 ```bash
 curl -sS -X POST "https://sandbox.api.lomi.africa/events" \
   -H "X-API-KEY: $LOMI_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: evt-1"
+  -H "Idempotency-Key: evt-1" \
+  -d '{"title":"Night market","price_amount":5000,"capacity":200}'
 ```
 
 ## OpenAPI

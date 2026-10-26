@@ -19,12 +19,28 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `GET /events/{id}`
 
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | `string` | Event id |
+
+### Query parameters
+
+No query parameters.
+
 ## Responses
 
 | Status | Description |
 | --- | --- |
 | `200` | Success |
 | `403` | Ticketing is off |
+
+## Errors
+
+**403** means Ticketing is off. **401** means the API key is missing or invalid. **404** means this event is not in the organization. **429** means too many requests.
 
 ## Example
 

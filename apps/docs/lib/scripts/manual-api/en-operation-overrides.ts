@@ -1150,4 +1150,74 @@ export const EN_OPERATION_COPY = {
     related:
       '[Create login link](/api/network/NetworkAccountsController_createLoginLink) · [lomi. Network guide](/build/platform/network#embedded-components)',
   },
+  EventsApiController_list: {
+    summary: 'List events',
+    body: 'Each row is an event desk: sold, remaining, scanned, and recent buyers.',
+    whenToUse: 'Use to show every event desk for the organization.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related:
+      '[Get an event desk](/api/events/EventsApiController_get) · [Create an event](/api/events/EventsApiController_create)',
+  },
+  EventsApiController_create: {
+    summary: 'Create an event',
+    body: 'Publishes an event and returns the desk. Requires Ticketing and Idempotency-Key.',
+    requestBodyIntro:
+      'title, price_amount, and capacity are required. starts_at, venue, ticket_name, and currency are optional.',
+    whenToUse:
+      'Use when a merchant publishes a new event with a default ticket.',
+    caveats:
+      'Send Idempotency-Key. A retry with the same key does not create a second event. Returns 403 when Ticketing is off.',
+    related:
+      '[List events](/api/events/EventsApiController_list) · [Publish an event](/api/events/EventsApiController_publish)',
+  },
+  EventsApiController_get: {
+    summary: 'Get an event desk',
+    body: 'Sold, remaining, scanned, and the last buyers for one event.',
+    whenToUse: 'Use to open one event desk.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related:
+      '[List events](/api/events/EventsApiController_list) · [Scan a ticket](/api/events/EventsApiController_scan)',
+  },
+  EventsApiController_publish: {
+    summary: 'Publish an event',
+    body: 'Requires Ticketing. Omit published or send true to publish. Send published false to take the page down.',
+    whenToUse: 'Use to publish an event page or take it down.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related: '[Create an event](/api/events/EventsApiController_create)',
+  },
+  EventsApiController_scan: {
+    summary: 'Scan a ticket',
+    body: 'Requires Ticketing. The first scan admits the code. A second scan is already used.',
+    requestBodyIntro: 'code is the ticket code.',
+    whenToUse: 'Use at the door when a ticket QR is scanned.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related:
+      '[Set the door PIN](/api/events/EventsApiController_doorPin) · [Get an event desk](/api/events/EventsApiController_get)',
+  },
+  EventsApiController_doorPin: {
+    summary: 'Set the door PIN',
+    body: 'Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Ticketing. The door phone saves this PIN in the browser.',
+    requestBodyIntro: 'pin is the door PIN.',
+    whenToUse: 'Use when the merchant sets the PIN for the door phone.',
+    caveats: 'This PIN does not move money. Returns 403 when Ticketing is off.',
+    related: '[Scan a ticket](/api/events/EventsApiController_scan)',
+  },
+  EventsApiController_addType: {
+    summary: 'Add a ticket type',
+    body: 'Adds a named ticket or pack. seats is how many QR codes one sale issues. capacity is how many of that type can be sold. Requires Ticketing.',
+    requestBodyIntro:
+      'name, price_amount, and capacity are required. currency and seats are optional.',
+    whenToUse: 'Use to add another ticket or pack on an existing event.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related: '[Create an event](/api/events/EventsApiController_create)',
+  },
+  EventsApiController_invite: {
+    summary: 'Invite a guest',
+    body: 'Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20.',
+    requestBodyIntro:
+      'name and email are required. count is optional, from 1 to 20.',
+    whenToUse: 'Use to send complimentary tickets to a guest.',
+    caveats: 'Returns 403 when Ticketing is off.',
+    related: '[Add a ticket type](/api/events/EventsApiController_addType)',
+  },
 };

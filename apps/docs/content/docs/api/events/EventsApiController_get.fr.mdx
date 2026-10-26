@@ -19,12 +19,28 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `GET /events/{id}`
 
+## Requête
+
+### Paramètres de chemin
+
+| Nom | Requis | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | `string` | Identifiant de l'événement |
+
+### Paramètres de requête
+
+Aucun paramètre de requête.
+
 ## Responses
 
 | Status | Description |
 | --- | --- |
 | `200` | Success |
 | `403` | Ticketing is off |
+
+## Erreurs
+
+**403** : Ticketing est désactivé. **401** : clé manquante ou invalide. **404** : cet événement n'est pas dans l'organisation. **429** : trop de requêtes.
 
 ## Example
 

@@ -19,12 +19,33 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `POST /events/door-pin`
 
+## Requête
+
+### Corps
+
+| Champ | Requis | Type | Description |
+| --- | --- | --- | --- |
+| `pin` | Oui | `string` | PIN de la porte pour la page de vérification |
+
 ## Responses
 
 | Status | Description |
 | --- | --- |
 | `200` | Success |
 | `403` | Ticketing is off |
+
+## Erreurs
+
+**403** : Ticketing est désactivé. **401** : clé manquante ou invalide. **429** : trop de requêtes.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/door-pin" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"pin":"1234"}'
+```
 
 ## OpenAPI
 

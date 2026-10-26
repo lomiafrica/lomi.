@@ -19,12 +19,45 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `POST /events/{id}/types`
 
+## Request
+
+### Path parameters
+
+| Name | Required | Schema | Description |
+| --- | --- | --- | --- |
+| `id` | Yes | `string` | Event id |
+
+### Request body
+
+`seats` is how many QR codes one sale issues. `capacity` is how many of that type can be sold.
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| `name` | Yes | `string` | - |
+| `price_amount` | Yes | `integer` | - |
+| `capacity` | Yes | `integer` | - |
+| `currency` | No | `string` | - |
+| `seats` | No | `integer` | - |
+
 ## Responses
 
 | Status | Description |
 | --- | --- |
 | `200` | Success |
 | `403` | Ticketing is off |
+
+## Errors
+
+**403** means Ticketing is off. **401** means the API key is missing or invalid. **404** means this event is not in the organization. **429** means too many requests.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/types" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"General","price_amount":5000,"capacity":100}'
+```
 
 ## OpenAPI
 

@@ -19,12 +19,32 @@ Merchant routes require an API key in the `X-API-KEY` header. Use a test key aga
 
 `POST /events/{id}/publish`
 
+## Requête
+
+### Paramètres de chemin
+
+| Nom | Requis | Schéma | Description |
+| --- | --- | --- | --- |
+| `id` | Oui | `string` | Identifiant de l'événement |
+
+### Corps
+
+Omettez le corps, ou envoyez `published: true`, pour publier. Envoyez `published: false` pour retirer la page.
+
+| Champ | Requis | Type | Description |
+| --- | --- | --- | --- |
+| `published` | Non | `boolean` | - |
+
 ## Responses
 
 | Status | Description |
 | --- | --- |
 | `200` | Success |
 | `403` | Ticketing is off |
+
+## Erreurs
+
+**403** : Ticketing est désactivé. **401** : clé manquante ou invalide. **404** : cet événement n'est pas dans l'organisation. **429** : trop de requêtes.
 
 ## Example
 
