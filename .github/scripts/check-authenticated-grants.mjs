@@ -61,6 +61,15 @@ function resolveEnableRlsPath() {
 const GRANT_RE =
   /GRANT\s+((?:SELECT|INSERT|UPDATE|DELETE)(?:\s*,\s*(?:SELECT|INSERT|UPDATE|DELETE))*)\s+ON\s+(?:TABLE\s+)?(?:public\.)?([a-zA-Z0-9_]+)\s+TO\s+authenticated\b/gi;
 
+// Secret hashes stay off authenticated SELECT. pin_code_hash is the payout PIN.
+// ticketing_door_pin_hash is the door PIN. A missing SELECT on either is intended.
+const NON_SELECTABLE_COLUMNS = ["pin_code_hash", "ticketing_door_pin_hash"];
+
+function selectableColumn(alias) {
+  const list = NON_SELECTABLE_COLUMNS.map((name) => `'${name}'`).join(", ");
+  return `${alias}.column_name NOT IN (${list})`;
+}
+
 function parseExpectedGrants(sql) {
   /** @type {Map<string, Set<string>>} */
   const byTable = new Map();
@@ -110,13 +119,13 @@ actual AS (
   SELECT cols.table_name, 'SELECT'
   FROM information_schema.columns cols
   WHERE cols.table_schema = 'public'
-    AND cols.column_name <> 'pin_code_hash'
+    AND ${selectableColumn("cols")}
     AND NOT EXISTS (
       SELECT 1
       FROM information_schema.columns missing
       WHERE missing.table_schema = 'public'
         AND missing.table_name = cols.table_name
-        AND missing.column_name <> 'pin_code_hash'
+        AND ${selectableColumn("missing")}
         AND NOT EXISTS (
           SELECT 1
           FROM information_schema.column_privileges granted
@@ -174,13 +183,13 @@ actual AS (
   SELECT cols.table_name, 'SELECT'
   FROM information_schema.columns cols
   WHERE cols.table_schema = 'public'
-    AND cols.column_name <> 'pin_code_hash'
+    AND ${selectableColumn("cols")}
     AND NOT EXISTS (
       SELECT 1
       FROM information_schema.columns missing
       WHERE missing.table_schema = 'public'
         AND missing.table_name = cols.table_name
-        AND missing.column_name <> 'pin_code_hash'
+        AND ${selectableColumn("missing")}
         AND NOT EXISTS (
           SELECT 1
           FROM information_schema.column_privileges granted

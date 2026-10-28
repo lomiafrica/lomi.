@@ -83,6 +83,14 @@ jobs:
       - name: Merchant assistant unit tests
         run: pnpm test -- src/merchant-assistant
 
+      - name: Computer and Chromium unit tests
+        working-directory: .
+        run: |
+          node --experimental-strip-types --test \
+            apps/api/computer/src/jobs.test.ts \
+            apps/api/computer/src/shared.test.ts \
+            apps/api/chromium/src/worker.test.ts
+
   assistant-dashboard:
     runs-on: ubuntu-latest
     defaults:

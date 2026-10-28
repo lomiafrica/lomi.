@@ -1,0 +1,23 @@
+name: lomi · watch · api
+
+on:
+  schedule:
+    # Fastest GitHub schedule. A hung API still accepts TLS, so this hits /health.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout probe script
+        uses: actions/checkout@v5
+
+      - name: Probe API HTTP and alert Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node .github/scripts/watch-api-health.mjs
