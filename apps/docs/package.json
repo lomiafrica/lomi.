@@ -29,7 +29,7 @@
     }
   },
   "scripts": {
-    "build": "pnpm build:pre && NODE_OPTIONS='--max-old-space-size=8192' next build && pnpm build:post",
+    "build": "pnpm build:pre && NODE_OPTIONS='--max-old-space-size=5120' next build && pnpm build:post",
     "build:pre": "pnpm exec tsx ./lib/scripts/pre-build.ts",
     "build:pre:sync": "DOCS_SYNC_OPENAPI=1 pnpm exec tsx ./lib/scripts/pre-build.ts",
     "build:post": "pnpm exec tsx ./lib/scripts/post-build.ts",

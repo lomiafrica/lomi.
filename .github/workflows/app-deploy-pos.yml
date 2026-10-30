@@ -1,15 +1,7 @@
 name: lomi · deploy · pos
 
+# POS is on standby. Nomad is the phone app. This workflow does not run on push.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/pos"
-      - "apps/pos/**"
-      - "packages/shared/**"
-      - "packages/queries/**"
-      - "tooling/scripts/install-app-with-packages.mjs"
-      - ".github/workflows/app-deploy-pos.yml"
   workflow_dispatch:
     inputs:
       profile:
