@@ -4444,6 +4444,329 @@
         ]
       }
     },
+    "/events": {
+      "post": {
+        "description": "Publishes a booking and returns the desk. A start time and one seat is an appointment. More seats is a ticket. Requires Booking. Send Idempotency-Key.",
+        "operationId": "EventsApiController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required unique key for this write. Replays return the original response.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create an event",
+        "tags": [
+          "Events"
+        ]
+      },
+      "get": {
+        "description": "Each row is an event desk: sold, remaining, scanned, and recent buyers.",
+        "operationId": "EventsApiController_list",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List events",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/door-pin": {
+      "post": {
+        "description": "Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Booking. The door phone saves this PIN in the browser.",
+        "operationId": "EventsApiController_doorPin",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoorPinDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Set the door PIN",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "description": "Sold, remaining, scanned, and the last buyers for one event.",
+        "operationId": "EventsApiController_get",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Get an event desk",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}/types": {
+      "post": {
+        "description": "Adds a named ticket or pack. seats is how many QR codes one sale issues. capacity is how many of that type can be sold. Requires Booking.",
+        "operationId": "EventsApiController_addType",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTicketTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Add a ticket type",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}/invites": {
+      "post": {
+        "description": "Emails tickets with no charge. The guest is saved as a customer. Requires Booking. count is 1 to 20.",
+        "operationId": "EventsApiController_invite",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteGuestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Invite a guest",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}/publish": {
+      "post": {
+        "description": "Requires Booking. Omit published or send true to publish. Send published false to take the page down.",
+        "operationId": "EventsApiController_publish",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Publish or unpublish an event",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}/scan": {
+      "post": {
+        "description": "Requires Booking. The first scan admits the code. A second scan is already used.",
+        "operationId": "EventsApiController_scan",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Scan a ticket",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
     "/payment-links": {
       "post": {
         "description": "Crée un lien de paiement partageable : produit (lien produit) ou montant fixe (lien instantané). Les liens produit référencent un produit et un prix optionnel ; les liens instantanés ont un montant fixe.",
@@ -8969,479 +9292,6 @@
           "Paramètres"
         ]
       }
-    },
-    "/events": {
-      "get": {
-        "summary": "List events",
-        "description": "Each row is an event desk: sold, remaining, scanned, and recent buyers.",
-        "operationId": "EventsApiController_list",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      },
-      "post": {
-        "summary": "Create an event",
-        "description": "Publishes an event and returns the desk. Requires Ticketing. Send Idempotency-Key.",
-        "operationId": "EventsApiController_create",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          },
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": true,
-            "description": "Idempotency key for safe retries.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "title",
-                  "price_amount",
-                  "capacity"
-                ],
-                "properties": {
-                  "title": {
-                    "type": "string"
-                  },
-                  "starts_at": {
-                    "type": "string"
-                  },
-                  "venue": {
-                    "type": "string"
-                  },
-                  "ticket_name": {
-                    "type": "string"
-                  },
-                  "price_amount": {
-                    "type": "integer"
-                  },
-                  "currency": {
-                    "type": "string"
-                  },
-                  "capacity": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/{id}": {
-      "get": {
-        "summary": "Get an event desk",
-        "description": "Sold, remaining, scanned, and the last buyers for one event.",
-        "operationId": "EventsApiController_get",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/{id}/publish": {
-      "post": {
-        "summary": "Publish an event",
-        "description": "Requires Ticketing. Send published false to take the page down.",
-        "operationId": "EventsApiController_publish",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "published": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/{id}/scan": {
-      "post": {
-        "summary": "Scan a ticket",
-        "description": "Requires Ticketing. The first scan admits the code. A second scan is already used.",
-        "operationId": "EventsApiController_scan",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "code"
-                ],
-                "properties": {
-                  "code": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/door-pin": {
-      "post": {
-        "summary": "Set the door PIN",
-        "description": "Sets the PIN that admits tickets on the verify page. It is not the payout PIN and it does not move money. Requires Ticketing. The door phone saves this PIN in the browser.",
-        "operationId": "EventsApiController_doorPin",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "pin"
-                ],
-                "properties": {
-                  "pin": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/{id}/types": {
-      "post": {
-        "summary": "Add a ticket type",
-        "description": "Adds a named ticket or pack. seats is how many QR codes one sale issues. capacity is how many of that type can be sold. Requires Ticketing.",
-        "operationId": "EventsApiController_addType",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "price_amount",
-                  "capacity"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "price_amount": {
-                    "type": "integer"
-                  },
-                  "currency": {
-                    "type": "string"
-                  },
-                  "capacity": {
-                    "type": "integer"
-                  },
-                  "seats": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
-    },
-    "/events/{id}/invites": {
-      "post": {
-        "summary": "Invite a guest",
-        "description": "Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20.",
-        "operationId": "EventsApiController_invite",
-        "tags": [
-          "Events"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Lomi-Version",
-            "in": "header",
-            "required": false,
-            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
-            "schema": {
-              "type": "string",
-              "example": "1.2.0"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "email"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "count": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Ticketing is off"
-          }
-        },
-        "security": [
-          {
-            "api-key": []
-          }
-        ]
-      }
     }
   },
   "info": {
@@ -12356,6 +12206,151 @@
           "updated_at"
         ]
       },
+      "CreateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "Launch night"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start time. A start time with capacity 1 is an appointment. More seats is a ticketed event."
+          },
+          "venue": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "Abidjan"
+          },
+          "ticket_name": {
+            "type": "string",
+            "maxLength": 80,
+            "example": "General"
+          },
+          "price_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 5000,
+            "description": "Price per sale in the smallest currency unit. 0 is free."
+          },
+          "currency": {
+            "type": "string",
+            "example": "XOF"
+          },
+          "capacity": {
+            "type": "number",
+            "minimum": 1,
+            "example": 100,
+            "description": "How many tickets can be sold."
+          }
+        },
+        "required": [
+          "title",
+          "price_amount",
+          "capacity"
+        ]
+      },
+      "DoorPinDto": {
+        "type": "object",
+        "properties": {
+          "pin": {
+            "type": "string",
+            "pattern": "^\\d{4,6}$",
+            "description": "4 to 6 digits for the verify page. Not the payout PIN."
+          }
+        },
+        "required": [
+          "pin"
+        ]
+      },
+      "AddTicketTypeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "example": "VIP"
+          },
+          "price_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 15000,
+            "description": "Price per sale in the smallest currency unit. 0 is free."
+          },
+          "currency": {
+            "type": "string",
+            "example": "XOF"
+          },
+          "capacity": {
+            "type": "number",
+            "minimum": 1,
+            "example": 20,
+            "description": "How many of this type can be sold."
+          },
+          "seats": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "QR codes issued per sale. Use more than 1 for a pack."
+          }
+        },
+        "required": [
+          "name",
+          "price_amount",
+          "capacity"
+        ]
+      },
+      "InviteGuestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "example": "jane@example.com"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "Free tickets to email."
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
+      },
+      "PublishEventDto": {
+        "type": "object",
+        "properties": {
+          "published": {
+            "type": "boolean",
+            "description": "Omit or send true to publish. Send false to unpublish."
+          }
+        }
+      },
+      "ScanEventDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Admission code from the ticket QR."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
       "PaymentLinkResponseDto": {
         "type": "object",
         "properties": {
@@ -13293,9 +13288,9 @@
           "amount": {
             "type": "number",
             "example": 1000,
-            "description": "Amount in XOF, from 100 up to 5,000,000 inclusive.",
             "minimum": 1,
-            "maximum": 5000000
+            "maximum": 5000000,
+            "description": "Amount in XOF, from 100 up to 5,000,000 inclusive."
           },
           "currency": {
             "type": "string",
