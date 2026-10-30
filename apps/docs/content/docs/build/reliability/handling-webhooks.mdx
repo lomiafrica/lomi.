@@ -132,7 +132,7 @@ function verifySignature(
 
 <h2 id="webhook-signing-vs-authorization">Signing secret vs Authorization headers (avoid 401 failures)</h2>
 
-Managing webhooks uses your **merchant API key** (`X-API-Key`), but **lomi. does not send that key (or `Authorization: Bearer …`) when delivering events to your URL.**
+Managing webhooks uses your **merchant API key** (`X-API-Key`), but **lomi. does not send that key (or `Authorization: Bearer …`) when delivering events to your URL.** [`lomi listen`](/build/cli/listen) follows the same rule: forwards use a fresh HTTP client and never attach the CLI API key.
 
 For **outbound** webhook HTTP requests, expect only:
 

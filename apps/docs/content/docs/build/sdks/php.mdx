@@ -115,7 +115,7 @@ http_response_code(200);
 echo json_encode(['received' => true]);
 ```
 
-`\Lomi\WebhookVerify::verify($payload, $signature, $secret)` checks that same body signature.
+`\Lomi\WebhookVerify::verify($payload, $signature, $secret)` checks that same body signature. It also accepts a `sha256=` prefix on the header and rejects an empty signature or secret.
 
 ## Laravel
 

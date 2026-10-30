@@ -54,7 +54,7 @@ lomi webhooks list
 lomi webhooks test <webhook-id>
 ```
 
-Events appear in the terminal and are forwarded to your local URL with production headers (`X-Lomi-Signature`, `X-Lomi-Event`).
+Events appear in the terminal and are forwarded to your local URL with the stream’s webhook headers (`X-Lomi-Signature`, `X-Lomi-Event`). The forward uses a **fresh HTTP client**: it does **not** attach your CLI API key (`X-API-KEY`). Your handler should verify the signing secret, not an API key. See [Handling webhooks](/build/reliability/handling-webhooks).
 
 </Steps>
 

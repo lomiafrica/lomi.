@@ -54,7 +54,7 @@ lomi webhooks list
 lomi webhooks test <webhook-id>
 ```
 
-Les événements apparaissent dans le terminal et sont transférés vers votre URL locale avec les en-têtes production (`X-Lomi-Signature`, `X-Lomi-Event`).
+Les événements apparaissent dans le terminal et sont transférés vers votre URL locale avec les en-têtes webhook du flux (`X-Lomi-Signature`, `X-Lomi-Event`). Le transfert utilise un **nouveau client HTTP** : il n’ajoute **pas** votre clé API CLI (`X-API-KEY`). Votre handler doit vérifier le secret de signature, pas une clé API. Voir [Gérer les webhooks](/build/reliability/handling-webhooks).
 
 </Steps>
 

@@ -190,7 +190,8 @@ Utilisez `https://sandbox.api.lomi.africa` pour des données sandbox.
 
 ## Outils
 
-- Les outils marchands sont des **outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`, `lomi_invoices` avec `action=pdf`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés.
+- Les outils marchands sont des **outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`, `lomi_invoices` avec `action=pdf`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés. Les descriptions des actions d’écriture listent les champs JSON du corps (requis d’abord, puis optionnels). Elles ne marquent pas quels champs du corps sont obligatoires.
+- **`lomi_events`**: bureau de réservation (`list`, `get`, `create`, `publish`, `scan`, `door_pin`, `add_type`, `invite`). Booking doit être connecté, sinon les écritures renvoient 403. `create` exige `header_Idempotency-Key`. Voir [Réservations d’événements](/build/accept/events).
 - **`lomi_search_tools`**: recherche dans le catalogue d’outils quand le client charge les outils à la demande.
 - **`lomi_register_agent`**: émet une clé de provisioning sandbox (session invitée ou authentifiée).
 - **`lomi_support`**: déposer une plainte. Session invitée : `action=file` avec `email` et `message`. Avec une clé marchande : ticket Paramètres → Assistance (`list` / `get` / `close`). `action=status` renvoie la page de statut et `/ready`. Clé marchande uniquement : `action=export` (bundle RGPD de l’org courante) et `action=delete_account` (aperçu + `confirmation_token`).

@@ -132,7 +132,7 @@ function verifySignature(
 
 <h2 id="webhook-signing-vs-authorization">Secret de signature et en-tête Authorization (éviter les 401)</h2>
 
-La gestion des webhooks dans l’API utilise votre **clé API marchande** (`X-API-Key`), mais **lomi. n’envoie pas cette clé** (ni `Authorization: Bearer …`) **lors de la livraison des événements vers votre URL.**
+La gestion des webhooks dans l’API utilise votre **clé API marchande** (`X-API-Key`), mais **lomi. n’envoie pas cette clé** (ni `Authorization: Bearer …`) **lors de la livraison des événements vers votre URL.** [`lomi listen`](/build/cli/listen) suit la même règle : le transfert utilise un nouveau client HTTP et n’attache jamais la clé API du CLI.
 
 Pour les requêtes **sortantes** (lomi. → votre serveur), attendez-vous surtout à :
 

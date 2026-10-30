@@ -1,0 +1,133 @@
+---
+title: 'Event bookings'
+description: 'Create ticketed events or appointments, publish a desk, invite guests, and scan admission codes.'
+---
+
+The Events API is a booking desk: create an event, sell or invite tickets, then scan an admission code at the door. Writes require **Booking** to be connected on the organization. Until it is, the API returns **403** with `Turn on Booking to use the desk.`
+
+A start time with `capacity: 1` is an appointment. Higher capacity is a ticketed event.
+
+## Workflow
+
+| Step | Call | Notes |
+| --- | --- | --- |
+| Create | `POST /events` | Requires `Idempotency-Key`. Returns the desk. |
+| Add types | `POST /events/{id}/types` | Optional. Extra ticket or pack. |
+| Publish | `POST /events/{id}/publish` | Omit `published` or send `true`. Send `false` to take the page down. |
+| Invite | `POST /events/{id}/invites` | Emails tickets with no charge. Guest is saved as a customer. |
+| Desk | `GET /events` / `GET /events/{id}` | Sold, remaining, scanned, recent buyers. |
+| Scan | `POST /events/{id}/scan` | First scan admits. A second scan is already used. |
+| Door PIN | `POST /events/door-pin` | 4–6 digits for the verify page. Not the payout PIN. |
+
+## Create an event
+
+`title`, `price_amount`, and `capacity` are required. Currency defaults to **XOF**. `price_amount` may be `0` for a free event.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: evt-night-market-1" \
+  -d '{
+    "title": "Night market",
+    "price_amount": 5000,
+    "capacity": 200,
+    "currency": "XOF",
+    "venue": "Plateau",
+    "starts_at": "2026-11-14T19:00:00.000Z"
+  }'
+```
+
+Constraints:
+
+| Field | Rule |
+| --- | --- |
+| `title` | Required, max 200 characters |
+| `price_amount` | Integer, ≥ 0 (minor units) |
+| `capacity` | Integer, ≥ 1 |
+| `venue` | Optional, max 200 characters |
+| `ticket_name` | Optional, max 80 characters |
+| `currency` | Optional, defaults to `XOF` |
+| `starts_at` | Optional ISO timestamp |
+
+A retry with the same `Idempotency-Key` and body returns the first desk. Other event writes do not require that header.
+
+## Ticket types
+
+Add a named ticket or pack after create. `seats` is how many QR codes one sale issues (1–20, default 1). `capacity` is how many of that type can be sold.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/types" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"General","price_amount":5000,"capacity":100,"seats":1}'
+```
+
+## Invite guests
+
+Emails tickets with no charge. `count` is 1–20 (default 1). The guest is saved as a customer.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/invites" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Awa","email":"awa@example.com","count":2}'
+```
+
+## Scan at the door
+
+Admission codes look like `ADM_` plus 14 characters from `2-9A-HJKMNP-TV-Z` (no `I`, `L`, `O`, `U`). Send that code, or a string up to 32 characters that contains it. A full verify URL is usually too long for `POST /events/{id}/scan`.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/evt_EXAMPLE/scan" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"code":"ADM_2A3B4C5D6E7F8G"}'
+```
+
+| Result | Meaning |
+| --- | --- |
+| First scan | Admits the code |
+| Second scan | Already used |
+| `Unknown ticket` | Code does not match `ADM_…` |
+| `Ticket is not for this event` | Code belongs to another event on this organization |
+
+## Door PIN
+
+`POST /events/door-pin` sets the PIN that admits tickets on the hosted verify page. It is **not** the payout PIN and it does not move money. The door phone stores the PIN in the browser. The API stores a hash and returns `{ "door_pin": "set" }`.
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/events/door-pin" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"pin":"2468"}'
+```
+
+The PIN must be **4 to 6 digits**. A wrong shape returns `The door PIN is 4 to 6 digits.`
+
+## MCP
+
+Hosted and stdio MCP expose the same desk as **`lomi_events`**. Pass `action` (`list`, `get`, `create`, `publish`, `scan`, `door_pin`, `add_type`, `invite`). Write-action descriptions list the body fields. `create` still needs `header_Idempotency-Key`. See [MCP](/build/mcp).
+
+## Related API
+
+- [Create an event](/api/events/EventsApiController_create)
+- [List events](/api/events/EventsApiController_list)
+- [Get an event desk](/api/events/EventsApiController_get)
+- [Publish an event](/api/events/EventsApiController_publish)
+- [Add a ticket type](/api/events/EventsApiController_addType)
+- [Invite a guest](/api/events/EventsApiController_invite)
+- [Scan a ticket](/api/events/EventsApiController_scan)
+- [Set the door PIN](/api/events/EventsApiController_doorPin)
+
+<DocsNextSteps>
+  <DocsNextStep href="/build/accept/checkout" hint="Paid ticket checkout">
+    Hosted checkout
+  </DocsNextStep>
+  <DocsNextStep href="/build/reliability/handling-webhooks" hint="Confirm the payment">
+    Handling webhooks
+  </DocsNextStep>
+  <DocsNextStep href="/api/events/EventsApiController_create" hint="Exact request">
+    Events API
+  </DocsNextStep>
+</DocsNextSteps>
