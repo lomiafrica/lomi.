@@ -96,4 +96,15 @@ describe("merchant completeness manifest", () => {
     expect(mcpFamilyDuplicateTools()).toEqual([]);
     expect(mcpToolsMissingFamily(names)).toEqual([]);
   });
+
+  it("lists write-action body fields without required tags", () => {
+    const org = manifest.tools.find((tool) => tool.name === "lomi_organization");
+    expect(org?.description).toContain("Body: name.");
+    expect(org?.description).not.toMatch(/Body:[^\n]*\(required\)/);
+
+    const products = manifest.tools.find((tool) => tool.name === "lomi_products");
+    expect(products?.description).toMatch(/Body: name,/);
+    expect(products?.description).toMatch(/, …\./);
+  });
 });
+
