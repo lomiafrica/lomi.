@@ -1,0 +1,68 @@
+name: lomi · ci · nomad bench
+
+on:
+  schedule:
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: core or full
+        default: full
+        type: string
+      reps:
+        description: repetitions
+        default: "3"
+        type: string
+      budget:
+        description: USD cap
+        default: "15"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  nomad-bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Init private submodules
+        env:
+          REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh packages apps/api apps/dashboard
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+
+      - name: Install API dependencies
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
+
+      - name: Nomad bench
+        working-directory: apps/api
+        env:
+          ASSISTANT_E2E_EMAIL: ${{ secrets.ASSISTANT_E2E_EMAIL }}
+          ASSISTANT_E2E_PASSWORD: ${{ secrets.ASSISTANT_E2E_PASSWORD }}
+          ASSISTANT_E2E_ORG: ${{ secrets.ASSISTANT_BENCH_ORG }}
+          ASSISTANT_E2E_API_URL: ${{ secrets.ASSISTANT_E2E_API_URL }}
+          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          ASSISTANT_E2E_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            pnpm synthetics:nomad-bench -- --tier=core --budget-usd=2 --arm=baseline
+          else
+            pnpm synthetics:nomad-bench -- --tier=${{ inputs.tier }} --reps=${{ inputs.reps }} --budget-usd=${{ inputs.budget }}
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nomad-bench
+          path: apps/api/test/synthetics/nomad-bench/last-run.jsonl

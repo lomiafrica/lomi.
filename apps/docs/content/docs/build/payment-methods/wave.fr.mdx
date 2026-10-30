@@ -19,10 +19,12 @@ Wave est en **Côte d'Ivoire**. Préférez [checkout hébergé](/build/accept/ch
 | Règlement | Test : souvent à la création. Live : après approbation dans Wave, puis `available_at` |
 | Direct vs hébergé | Hébergé et `POST /charge/wave` |
 | Remboursement | Transactions Wave `completed` |
-| Min / max | - |
+| Min / max | Jusqu'à 5 000 000 F CFA, et 5 000 000 est accepté |
 | Devise | `XOF` |
 
 Mêmes colonnes que [Canaux de paiement](/build/payment-channels#channel-capabilities).
+
+Wave encaisse au plus 5 000 000 F CFA, et un montant de 5 000 000 exactement passe. Un prix en EUR ou en USD est converti en F CFA avant cette vérification. Au-dessus, le checkout hébergé laisse Wave non sélectionnable et le client paie par carte. `POST /charge/wave` a le même plafond et renvoie 400 si le montant est plus élevé.
 
 ## Checkout hébergé (recommandé)
 

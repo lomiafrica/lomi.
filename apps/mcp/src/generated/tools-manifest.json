@@ -1196,7 +1196,7 @@
           },
           "header_Idempotency-Key": {
             "type": "string",
-            "description": "Idempotency key for safe retries."
+            "description": "Required unique key for this write. Replays return the original response."
           },
           "header_Lomi-Version": {
             "type": "string",
@@ -1205,7 +1205,7 @@
           },
           "id": {
             "type": "string",
-            "description": "Id"
+            "description": "Path parameter \"id\" for `/events/{id}`."
           },
           "idempotency_key": {
             "type": "string",

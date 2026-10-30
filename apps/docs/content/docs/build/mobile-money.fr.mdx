@@ -53,7 +53,7 @@ Chaque recette se termine de la même façon : attendre le webhook, puis `GET /t
 
 ### 1. Wave hébergé
 
-1. Créez une session checkout avec `currency_code: "XOF"`.
+1. Créez une session checkout avec `currency_code: "XOF"`. Wave accepte jusqu'à 5 000 000 F CFA, ce montant compris.
 2. Redirigez le client vers `checkout_url`.
 3. Le client choisit Wave et approuve dans l’app Wave.
 4. Traitez `PAYMENT_SUCCEEDED` / `PAYMENT_FAILED`, puis `GET /transactions/{id}` avant de livrer.
