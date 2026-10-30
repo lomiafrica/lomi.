@@ -19,16 +19,16 @@ Retirez depuis le solde qui correspond à la banque. Une banque au Bénin, au Bu
 
 Vous recevez le montant saisi. Les frais sont en plus, et ils sortent du même solde.
 
-Les frais correspondent au coût d'envoi de ce retrait, puis au plus élevé entre 25 % au-dessus de ce coût et 0,5 % du montant. Ils sont calculés quand vous saisissez le montant. Ce n'est pas un prix fixe de votre offre.
+Les frais ont deux parties : le coût du virement, plus 0,5 % pour lomi. Le coût du virement est ce que l'envoi coûte vraiment : le change vers la devise de la banque et les frais du réseau bancaire. lomi. ajoute 0,5 % du montant, rien d'autre. Les frais sont calculés quand vous saisissez le montant, et ce sont exactement ces frais que vous payez.
 
-Un virement local vers l'une de ces banques d'Afrique de l'Ouest est en F CFA. Le réseau n'ajoute pas de frais de paiement sur ce virement local. Le coût est le change des euros vers le F CFA, environ 1 %. Sur 100 000 F CFA, les frais sont d'environ 1 250 F CFA. Vous recevez toujours 100 000 F CFA. Le solde baisse d'environ 101 250 F CFA.
+Un virement local vers l'une de ces banques d'Afrique de l'Ouest est en F CFA. Le réseau ne prend rien sur ce virement local, donc le coût du virement est le change vers le F CFA, environ 1,3 %. Sur 100 000 F CFA, cela fait environ 1 300 F CFA de coût du virement plus 500 F CFA pour lomi., soit environ 1 800 F CFA de frais. Vous recevez toujours 100 000 F CFA. Le solde baisse d'environ 101 800 F CFA.
+
+Un retrait en euros vers une banque de la zone euro, ou en dollars vers une banque américaine, n'a ni change ni frais de réseau, donc les frais sont de 0,5 %. Une banque que les réseaux locaux n'atteignent pas reçoit un virement international : le coût du virement est le frais de 15 USD, plus le change si la devise change.
 
 L'argent arrive en 1 à 5 jours ouvrés. Ce n'est pas instantané.
 
-Un compte en euros dans la zone euro peut partir en Instantané. Ces frais sont de 1 % du montant, avec un minimum de 1 EUR, et l'argent arrive en général en quelques minutes, y compris le week-end et les jours fériés. Le virement standard sur le même compte prend 1 à 5 jours ouvrés.
-
 Wave en Côte d'Ivoire est un autre retrait, pas ces frais bancaires. Un numéro Wave déjà enregistré est à 1 %. Un numéro que vous venez d'ajouter reste à un taux plus élevé pendant 48 heures, puis passe à 1 %.
 
-Les mêmes chiffres sont sur l'écran de retrait : ce que vous recevez, les frais, et le total pris sur le solde. Confirmez seulement une fois que ces frais sont affichés. Si les frais ne peuvent pas être calculés, l'écran l'indique et la confirmation reste bloquée jusqu'à leur affichage.
+L'écran de retrait affiche ce que vous recevez, le coût du virement, les frais lomi. et le total pris sur le solde. Confirmez seulement une fois les frais affichés. Si les frais ne peuvent pas être calculés, l'écran l'indique et la confirmation reste bloquée jusqu'à leur affichage.
 
-Par l'API, le premier appel `POST /payouts` sans `confirmation_token` renvoie `fee_amount` et `total_deduction` pour un virement bancaire. Le virement confirmé avec le jeton est calculé de la même façon, au taux de ce moment.
+Par l'API, le premier appel `POST /payouts` sans `confirmation_token` renvoie `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount` et `total_deduction` pour un virement bancaire. Le virement confirmé avec le jeton est calculé de la même façon, au taux de ce moment, et prend exactement ce total sur le solde.

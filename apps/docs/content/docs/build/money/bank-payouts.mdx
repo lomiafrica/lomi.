@@ -19,16 +19,16 @@ Withdraw from the balance that matches the bank. A bank in Benin, Burkina Faso, 
 
 You receive the amount you enter. The fee is extra, and it comes out of the same balance.
 
-The fee is the cost of sending that payout, then the higher of 25% above that cost or 0.5% of the amount. It is calculated when you type the amount. It is not a fixed price on your plan.
+The fee is two parts: the transfer cost, plus 0.5% for lomi. The transfer cost is what the payout really costs to send: the exchange into the bank's currency and the bank network fee. lomi. adds 0.5% of the amount and nothing else. The fee is calculated when you type the amount, and that exact fee is what you pay.
 
-A local payout to one of those West African banks is in F CFA. The network does not add a payment fee on that local transfer. The cost is the exchange from euros into F CFA, about 1%. On 100,000 F CFA the fee is about 1,250 F CFA. You still receive 100,000 F CFA. The balance goes down by about 101,250 F CFA.
+A local payout to one of those West African banks is in F CFA. The network fee on that local transfer is zero, so the transfer cost is the exchange into F CFA, about 1.3%. On 100,000 F CFA that is about 1,300 F CFA of transfer cost plus 500 F CFA for lomi., so a fee of about 1,800 F CFA. You still receive 100,000 F CFA. The balance goes down by about 101,800 F CFA.
+
+A euro payout to a eurozone bank, or a dollar payout to a US bank, has no exchange and no network fee, so the fee is 0.5%. A bank the local networks do not reach is sent by international wire: the transfer cost is the 15 USD wire fee, plus the exchange if the currency changes.
 
 It arrives in 1 to 5 business days. It is not instant.
 
-A euro account in the eurozone can be sent as Instant. That fee is 1% of the amount, with a minimum of 1 EUR, and it usually arrives in minutes, including weekends and holidays. Standard on that same account takes 1 to 5 business days.
-
 Wave in Côte d'Ivoire is a separate payout, not this bank fee. A saved Wave number is 1%. A number you just added stays on a higher rate for 48 hours, then drops to 1%.
 
-The same numbers are on the payout screen: you receive, the fee, and the total taken from the balance. Confirm only after that fee is on screen. If the fee cannot be calculated, the screen says so and you cannot confirm until it loads.
+The payout screen shows what you receive, the transfer cost, the lomi. fee, and the total taken from the balance. Confirm only after the fee is on screen. If the fee cannot be calculated, the screen says so and you cannot confirm until it loads.
 
-Through the API, the first `POST /payouts` call without `confirmation_token` returns `fee_amount` and `total_deduction` for a bank payout. The payout you confirm with the token is priced the same way, at the rate of that moment.
+Through the API, the first `POST /payouts` call without `confirmation_token` returns `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount`, and `total_deduction` for a bank payout. The payout you confirm with the token is priced the same way, at the rate of that moment, and takes exactly that total from the balance.
