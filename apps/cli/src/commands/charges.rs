@@ -133,8 +133,8 @@ fn print_charge(common: &CommonOptions, title: &str, body: &Value) -> Result<()>
     if let Some(amount) = data.get("amount_capturable") {
         println!("  {}: {amount}", "amount_capturable".bold());
     }
-    if let Some(notice) = client_secret_text_notice(data) {
-        println!("  {}: {notice}", "client_secret".bold());
+    if has_client_secret(data) {
+        println!("  {}: {CLIENT_SECRET_TEXT_NOTICE}", "client_secret".bold());
         println!("Card numbers never go through the CLI.");
     }
     Ok(())
@@ -143,10 +143,8 @@ fn print_charge(common: &CommonOptions, title: &str, body: &Value) -> Result<()>
 const CLIENT_SECRET_TEXT_NOTICE: &str =
     "present. Re-run with --json to copy it, then confirm the card in lomi. Elements.";
 
-fn client_secret_text_notice(data: &Value) -> Option<&'static str> {
-    data.get("client_secret")
-        .and_then(Value::as_str)
-        .map(|_| CLIENT_SECRET_TEXT_NOTICE)
+fn has_client_secret(data: &Value) -> bool {
+    data.get("client_secret").is_some_and(Value::is_string)
 }
 
 async fn hold(common: &CommonOptions, args: ChargesHoldArgs) -> Result<()> {
@@ -242,10 +240,10 @@ mod tests {
             "status": "requires_capture",
             "client_secret": secret
         });
-        let notice = client_secret_text_notice(&data).unwrap();
-        assert!(!notice.contains(secret));
-        assert!(notice.contains("present"));
-        assert!(client_secret_text_notice(&json!({ "id": "pi_1" })).is_none());
+        assert!(has_client_secret(&data));
+        assert!(!CLIENT_SECRET_TEXT_NOTICE.contains(secret));
+        assert!(CLIENT_SECRET_TEXT_NOTICE.contains("present"));
+        assert!(!has_client_secret(&json!({ "id": "pi_1" })));
     }
 
     #[test]
