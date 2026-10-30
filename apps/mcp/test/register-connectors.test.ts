@@ -18,18 +18,25 @@ type ConnectorInput = {
   slug?: string;
 };
 
+type ConnectorToolConfig = {
+  title?: string;
+  description?: string;
+  inputSchema?: object;
+};
+
 function captureConnectorHandler(getApiKey: () => string | null) {
   let handler: ((input: ConnectorInput) => Promise<TextResult>) | undefined;
   const server = {
     registerTool: (
       _name: string,
-      _meta: unknown,
+      _meta: ConnectorToolConfig,
       fn: (input: ConnectorInput) => Promise<TextResult>,
     ) => {
       handler = fn;
     },
   };
-  registerLomiConnectors(server as unknown as McpServer, { getApiKey });
+  // SAFETY: the test double only implements registerTool, which is all this helper calls.
+  registerLomiConnectors(server as McpServer, { getApiKey });
   if (!handler) {
     throw new Error("lomi_connectors handler was not registered");
   }
@@ -79,4 +86,3 @@ describe("lomi_connectors search and tools validation", () => {
     expect(result.content[0]?.text).toContain("merchant key");
   });
 });
-
