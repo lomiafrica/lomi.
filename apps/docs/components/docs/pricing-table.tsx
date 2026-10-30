@@ -8,6 +8,7 @@ import {
   FIXED_FEES_CARD_INTL,
   FIXED_FEES_XOF,
   formatFee,
+  localBankPayoutFeeLabel,
   type PricingTier,
 } from '@lomi./shared';
 import {
@@ -128,12 +129,6 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                 ['POS (Mobile Money)', FIXED_FEES_XOF.posMobileMoney],
                 [
                   locale === 'fr'
-                    ? 'Payout banque locale (UEMOA)'
-                    : 'Local bank payout (UEMOA)',
-                  FIXED_FEES_XOF.localBankPayout,
-                ],
-                [
-                  locale === 'fr'
                     ? 'Payout banque internationale'
                     : 'International bank payout',
                   FIXED_FEES_XOF.internationalBankPayout,
@@ -164,6 +159,14 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                 <td>{xof(parts)}</td>
               </tr>
             ))}
+            <tr>
+              <td>
+                {locale === 'fr'
+                  ? 'Payout banque locale (UEMOA)'
+                  : 'Local bank payout (UEMOA)'}
+              </td>
+              <td>{localBankPayoutFeeLabel(locale)}</td>
+            </tr>
             <tr>
               <td>
                 {locale === 'fr'
@@ -360,7 +363,7 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                   ? 'Virement local (UEMOA)'
                   : 'Local bank transfer (UEMOA)'}
               </td>
-              <td>{xof(FIXED_FEES_XOF.localBankPayout)}</td>
+              <td>{localBankPayoutFeeLabel(locale)}</td>
             </tr>
             <tr>
               <td>

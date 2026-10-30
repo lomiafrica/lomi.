@@ -23,10 +23,12 @@ Les frais correspondent au coût d'envoi de ce retrait, puis au plus élevé ent
 
 Un virement local vers l'une de ces banques d'Afrique de l'Ouest est en F CFA. Le réseau n'ajoute pas de frais de paiement sur ce virement local. Le coût est le change des euros vers le F CFA, environ 1 %. Sur 100 000 F CFA, les frais sont d'environ 1 250 F CFA. Vous recevez toujours 100 000 F CFA. Le solde baisse d'environ 101 250 F CFA.
 
-L'argent arrive en général en 2 à 3 jours ouvrés. Ce n'est pas instantané. Le Sénégal, le Burkina Faso et la Guinée-Bissau peuvent prendre plus longtemps le temps que le paiement soit vérifié.
+L'argent arrive en 1 à 5 jours ouvrés. Ce n'est pas instantané.
 
-Un compte en euros dans la zone euro peut partir en Instantané. Ces frais sont de 1 % du montant, avec un minimum de 1 EUR, et l'argent arrive en général en quelques minutes, y compris le week-end et les jours fériés. Le virement standard sur le même compte prend quelques jours ouvrés.
+Un compte en euros dans la zone euro peut partir en Instantané. Ces frais sont de 1 % du montant, avec un minimum de 1 EUR, et l'argent arrive en général en quelques minutes, y compris le week-end et les jours fériés. Le virement standard sur le même compte prend 1 à 5 jours ouvrés.
 
 Wave en Côte d'Ivoire est un autre retrait, pas ces frais bancaires. Un numéro Wave déjà enregistré est à 1 %. Un numéro que vous venez d'ajouter reste à un taux plus élevé pendant 48 heures, puis passe à 1 %.
 
-Les mêmes chiffres sont sur l'écran de retrait : ce que vous recevez, les frais, et le total pris sur le solde. Confirmez seulement une fois que ces frais sont affichés.
+Les mêmes chiffres sont sur l'écran de retrait : ce que vous recevez, les frais, et le total pris sur le solde. Confirmez seulement une fois que ces frais sont affichés. Si les frais ne peuvent pas être calculés, l'écran l'indique et la confirmation reste bloquée jusqu'à leur affichage.
+
+Par l'API, le premier appel `POST /payouts` sans `confirmation_token` renvoie `fee_amount` et `total_deduction` pour un virement bancaire. Le virement confirmé avec le jeton est calculé de la même façon, au taux de ce moment.
