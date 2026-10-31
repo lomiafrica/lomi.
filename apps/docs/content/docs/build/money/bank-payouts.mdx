@@ -17,11 +17,11 @@ Withdraw from the balance that matches the bank. A bank in Benin, Burkina Faso, 
 
 ## What you pay
 
-You receive the amount you enter. The fee is extra, and it comes out of the same balance.
+The amount you enter is what leaves your balance. The fee comes out of that amount, and your bank receives the rest.
 
-The fee is two parts: the transfer cost, plus the lomi. share. The transfer cost is what the payout really costs to send: the exchange into the bank's currency and the bank network fee. The lomi. share is 0.5% of the amount plus 500 F CFA (1 EUR or 1 USD on euro and dollar payouts), and nothing else. The fee is calculated when you type the amount, and that exact fee is what you pay.
+The fee is two parts: the transfer cost, plus the lomi. share. The transfer cost is what the payout really costs to send: the exchange into the bank's currency and the bank network fee. The lomi. share is 0.5% of the amount the bank receives plus 500 F CFA (1 EUR or 1 USD on euro and dollar payouts), and nothing else. The fee is calculated when you type the amount, and that exact fee is what you pay.
 
-A local payout to one of those West African banks is in F CFA. The network fee on that local transfer is zero, so the transfer cost is the exchange into F CFA, about 1.3%. On 100,000 F CFA that is about 1,300 F CFA of transfer cost plus 1,000 F CFA for lomi., so a fee of about 2,300 F CFA. You still receive 100,000 F CFA. The balance goes down by about 102,300 F CFA.
+A local payout to one of those West African banks is in F CFA. The network fee on that local transfer is zero, so the transfer cost is the exchange into F CFA, about 1.3%. On a 100,000 F CFA withdrawal the fee is about 2,300 F CFA (about 1,300 of transfer cost and about 1,000 for lomi.). Your bank receives about 97,700 F CFA. The balance goes down by 100,000 F CFA.
 
 A euro payout to a eurozone bank, or a dollar payout to a US bank, has no exchange and no network fee, so the fee is only the lomi. share. A bank the local networks do not reach is sent by international wire: the transfer cost is the 15 USD wire fee, plus the exchange if the currency changes.
 
@@ -31,4 +31,4 @@ Wave in Côte d'Ivoire is a separate payout, not this bank fee. A saved Wave num
 
 The payout screen shows what you receive, the transfer cost, the lomi. fee, and the total taken from the balance. Confirm only after the fee is on screen. If the fee cannot be calculated, the screen says so and you cannot confirm until it loads.
 
-Through the API, the first `POST /payouts` call without `confirmation_token` returns `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount`, and `total_deduction` for a bank payout. The payout you confirm with the token is priced the same way, at the rate of that moment, and takes exactly that total from the balance.
+Through the API, the amount you send is what leaves the balance. The first `POST /payouts` call without `confirmation_token` returns `transfer_amount` (what the bank receives), `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount`, and `total_deduction`. `total_deduction` is that debit. The payout you confirm with the token is priced the same way, at the rate of that moment.

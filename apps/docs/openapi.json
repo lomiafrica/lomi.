@@ -5343,7 +5343,7 @@
     },
     "/payouts": {
       "post": {
-        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary). Avec l'en-tête Lomi-Account et la capacité payout.request, un virement self sort du solde du compte membre vers son compte bancaire ou mobile money enregistré. Le premier appel sans confirmation_token renvoie un aperçu ; pour un virement bancaire, il inclut transfer_cost_amount (change et frais réseau), lomi_fee_amount (part lomi., 0,5 % + 500 F CFA par défaut), leur somme fee_amount et total_deduction, au taux du moment. Le virement débite exactement ce total. Le second appel avec ce jeton exécute le virement.",
+        "description": "Virement vers votre compte enregistré (self) ou vers un tiers sur mobile money / SPI (beneficiary). Avec l'en-tête Lomi-Account et la capacité payout.request, un virement self sort du solde du compte membre vers son compte bancaire ou mobile money enregistré. Le premier appel sans confirmation_token renvoie un aperçu ; pour un virement bancaire, le montant demandé est celui qui quitte le solde et la banque reçoit ce montant moins les frais. L'aperçu inclut transfer_amount (ce que la banque reçoit), transfer_cost_amount (change et frais réseau), lomi_fee_amount (part lomi., 0,5 % + 500 F CFA par défaut), leur somme fee_amount et total_deduction. total_deduction est ce débit, jamais le montant plus les frais. Le second appel avec ce jeton exécute le virement.",
         "operationId": "PayoutsUnifiedController_create",
         "parameters": [
           {
