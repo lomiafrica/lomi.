@@ -256,29 +256,6 @@
       "risk": "medium"
     },
     {
-      "id": "pos",
-      "path": "apps/pos",
-      "kind": "app",
-      "manager": "pnpm",
-      "workspace": false,
-      "submodule": true,
-      "required": true,
-      "capabilities": [
-        "install",
-        "dev",
-        "start",
-        "lint",
-        "format",
-        "knip",
-        "typecheck",
-        "test",
-        "types:generate"
-      ],
-      "owner": "mobile",
-      "risk": "medium",
-      "notes": "dev is the Expo bundler. start is an Expo-compatible alias. Monorepo CI runs lint, knip, tsc, and Jest."
-    },
-    {
       "id": "cli",
       "path": "apps/cli",
       "kind": "cli",
@@ -431,18 +408,6 @@
       "submodule": true,
       "required": false,
       "capabilities": ["install", "typecheck"],
-      "owner": "tools",
-      "risk": "ops"
-    },
-    {
-      "id": "xrpl",
-      "path": "apps/tools/xrpl",
-      "kind": "tool",
-      "manager": "pnpm",
-      "workspace": false,
-      "submodule": true,
-      "required": false,
-      "capabilities": ["install", "typecheck", "test"],
       "owner": "tools",
       "risk": "ops"
     },

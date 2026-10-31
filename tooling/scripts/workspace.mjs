@@ -44,9 +44,7 @@ const SKIP_FORMAT_WALK = new Set([
 
 const SKIP_FORMAT_REL = new Set([
   "apps/dashboard/apps",
-  "apps/pos/modules",
   "apps/plugins/references",
-  "apps/pos",
 ]);
 
 const PRETTIER_SOURCE_GLOB = "**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,css}";
