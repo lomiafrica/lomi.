@@ -88,7 +88,7 @@ jobs:
         run: node .github/scripts/cancel-superseded-vercel-deployments.mjs
       - name: Deploy to Vercel
         continue-on-error: true
-        uses: amondnet/vercel-action@v42.2.0
+        uses: amondnet/vercel-action@v42.3.0
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
