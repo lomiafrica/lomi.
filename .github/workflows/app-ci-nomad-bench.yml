@@ -61,7 +61,7 @@ jobs:
             pnpm synthetics:nomad-bench -- --tier=${{ inputs.tier }} --reps=${{ inputs.reps }} --budget-usd=${{ inputs.budget }}
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: nomad-bench

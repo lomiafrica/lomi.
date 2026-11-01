@@ -43,7 +43,7 @@ jobs:
           zip -r "${GITHUB_WORKSPACE}/dist/${{ inputs.artifact }}" ${{ inputs.zip-source }} \
             -x "*.git*" -x "dev/*" -x ".DS_Store"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.plugin }}-lomi
           path: dist/${{ inputs.artifact }}
