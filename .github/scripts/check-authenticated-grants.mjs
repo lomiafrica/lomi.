@@ -233,6 +233,66 @@ WHERE NOT EXISTS (
 `.trim();
 }
 
+// service_role is the API's Data API role and must reach every public table.
+// Losing it broke Wave withdrawals (13 Oct 2026) and bank payout quotes
+// (3 Nov 2026). Tables that restrict it on purpose are listed here with the
+// privileges they keep.
+const SERVICE_ROLE_PRIVILEGES = ["SELECT", "INSERT", "UPDATE", "DELETE"];
+const SERVICE_ROLE_RESTRICTED = {
+  admin_support_sessions: ["SELECT", "INSERT"],
+};
+
+function buildServiceRoleAuditSql({ json }) {
+  const privs = SERVICE_ROLE_PRIVILEGES.map((p) => `('${p}')`).join(", ");
+  const restricted =
+    Object.entries(SERVICE_ROLE_RESTRICTED)
+      .flatMap(([table, kept]) => kept.map((p) => `('${table}', '${p}')`))
+      .join(", ") || "(NULL::text, NULL::text)";
+  const restrictedTables =
+    Object.keys(SERVICE_ROLE_RESTRICTED)
+      .map((table) => `'${table}'`)
+      .join(", ") || "NULL";
+  const missing = `
+WITH privs(privilege_type) AS (VALUES ${privs}),
+restricted(table_name, privilege_type) AS (VALUES ${restricted}),
+expected AS (
+  SELECT c.oid, c.relname AS table_name, p.privilege_type
+  FROM pg_catalog.pg_class c
+  JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+  CROSS JOIN privs p
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p', 'v', 'm')
+    AND (
+      c.relname NOT IN (${restrictedTables})
+      OR (c.relname, p.privilege_type) IN (SELECT * FROM restricted)
+    )
+),
+missing AS (
+  SELECT table_name, privilege_type AS missing_privilege
+  FROM expected
+  WHERE NOT has_table_privilege('service_role', oid, privilege_type)
+  UNION ALL
+  SELECT '(default privileges for new tables)', p.privilege_type
+  FROM privs p
+  WHERE NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_default_acl d, aclexplode(d.defaclacl) a
+    WHERE d.defaclnamespace = 'public'::regnamespace
+      AND d.defaclrole = 'postgres'::regrole
+      AND d.defaclobjtype = 'r'
+      AND a.grantee = 'service_role'::regrole
+      AND a.privilege_type = p.privilege_type
+  )
+)`.trim();
+  if (json) {
+    return `${missing}
+SELECT COALESCE(json_agg(row_to_json(m) ORDER BY m.table_name, m.missing_privilege), '[]'::json)
+FROM missing m;`;
+  }
+  return `${missing}
+SELECT table_name, missing_privilege FROM missing ORDER BY 1, 2;`;
+}
+
 function parseJsonRows(out) {
   const trimmed = out.trim();
   if (!trimmed) return [];
@@ -298,6 +358,8 @@ function main() {
     console.log(auditSql);
     console.log("\n-- tables named in GRANTs but not present in the database --");
     console.log(buildAbsentTablesSql(expected));
+    console.log("\n-- service_role grants missing on public tables --");
+    console.log(buildServiceRoleAuditSql({ json: false }));
     return;
   }
 
@@ -348,24 +410,16 @@ function main() {
 
   const presentCount = expected.size - absentNames.length;
 
-  // service_role on the money tables is the grant set whose loss broke
-  // Wave withdrawals on 13 Oct 2026. The authenticated audit above cannot
-  // see it, so audit those tables for service_role too.
-  const serviceRoleExpected = new Map([
-    ["payouts", new Set(["SELECT", "INSERT", "UPDATE"])],
-    ["beneficiary_payouts", new Set(["SELECT", "INSERT", "UPDATE"])],
-    ["accounts", new Set(["SELECT", "UPDATE"])],
-  ]);
   let serviceRows;
   try {
     if (databaseUrl) {
       serviceRows = runPsqlQuery(
-        buildPsqlJsonAuditSql(serviceRoleExpected, "service_role"),
+        buildServiceRoleAuditSql({ json: true }),
         databaseUrl,
       );
     } else {
       serviceRows = runLinkedQuery(
-        buildAuditSql(serviceRoleExpected, "service_role"),
+        buildServiceRoleAuditSql({ json: false }),
         dashboardRoot,
       );
     }
@@ -378,7 +432,7 @@ function main() {
 
   if (rows.length === 0 && serviceMissing.length === 0) {
     console.log(
-      `OK: authenticated grants match ${presentCount} present tables from ${path.basename(enableRlsPath)}; service_role money-table grants present`,
+      `OK: authenticated grants match ${presentCount} present tables from ${path.basename(enableRlsPath)}; service_role reaches every public table`,
     );
     process.exit(0);
   }
@@ -393,7 +447,7 @@ function main() {
   }
   if (serviceMissing.length > 0) {
     console.error(
-      `FAIL: ${serviceMissing.length} missing service_role grant(s) on money tables:`,
+      `FAIL: ${serviceMissing.length} missing service_role grant(s) on public tables:`,
     );
     for (const row of serviceMissing) {
       console.error(`  - ${row.table_name}.${row.missing_privilege}`);
