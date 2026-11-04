@@ -120,7 +120,7 @@ export function registerLomiPrompts(
               `2. ${uploadDocument}, upload identity (and RCCM/address docs if registered business)`,
               `3. ${extractOnboarding}, extract fields from documents or website`,
               `4. ${completeOnboarding}, complete onboarding and submit KYC`,
-              `5. ${getProvisioningStatus}, poll KYC / verification status`,
+              `5. ${getProvisioningStatus}, follow next_step until the identity check finishes`,
               `6. (optional) ${getProvisioningApiKeys}, re-fetch lomi_sk_test_* keys`,
               "",
               "After step 4 the session automatically adopts the returned lomi_sk_test_* secret key, so you can call merchant tools right away in the same session:",

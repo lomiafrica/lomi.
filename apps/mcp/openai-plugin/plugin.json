@@ -1,0 +1,88 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "lomi",
+  "version": "1.0.0",
+  "description": "Payments for merchants in francophone West Africa. Existing accounts use OAuth. A new merchant can open an account and finish identity or business checks in chat.",
+  "author": {
+    "name": "lomi. Technologies Africa S.A.",
+    "email": "hello@lomi.africa",
+    "url": "https://lomi.africa"
+  },
+  "homepage": "https://lomi.africa/chatgpt",
+  "repository": "https://github.com/lomiafrica/lomi.",
+  "keywords": ["payments", "west-africa", "checkout", "kyc"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "lomi.",
+        "shortDescription": "Take payments and open a merchant account",
+        "longDescription": "Create a checkout, list customers, and run the lomi. merchant API. An existing merchant signs in with OAuth at https://mcp.lomi.africa/mcp. A new merchant starts at https://mcp.lomi.africa/mcp/guest, uploads an identity document, and follows next_step until the check finishes. Test mode works in the chat. Live money needs the person on the dashboard.",
+        "developerName": "lomi. Technologies Africa S.A.",
+        "category": "Finance",
+        "capabilities": [
+          "Create a checkout",
+          "List customers",
+          "Open a merchant account",
+          "Check identity"
+        ],
+        "websiteURL": "https://lomi.africa",
+        "supportURL": "https://lomi.africa",
+        "privacyPolicyURL": "https://lomi.africa/privacy",
+        "termsOfServiceURL": "https://lomi.africa/terms",
+        "defaultPrompt": [
+          "Connect lomi. and list my customers.",
+          "Create a test checkout for 5000 XOF.",
+          "Start a new lomi. merchant account and tell me which identity document to upload."
+        ],
+        "brandColor": "#121317",
+        "brandColorDark": "#F7F7F4",
+        "composerIcon": "./assets/icon.png",
+        "composerIconDark": "./assets/icon-dark.png",
+        "logo": "./assets/logo.png",
+        "logoDark": "./assets/logo-dark.png",
+        "screenshots": ["./assets/screenshot.png"]
+      },
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Start a merchant from zero",
+              "prompt": "Start a new lomi. merchant account and tell me which identity document to upload.",
+              "tools_triggered": "lomi_register_agent, lomi_provision",
+              "expected_behavior": "Open a guest session, create the account without a password, and ask for a government ID photo. A registered business also needs the RCCM."
+            },
+            {
+              "description": "Follow the identity check",
+              "prompt": "What is the next step for this lomi. onboarding?",
+              "tools_triggered": "lomi_provision",
+              "expected_behavior": "Call status and follow next_step. Do not invent a live secret key."
+            },
+            {
+              "description": "Create a test checkout",
+              "prompt": "Create a test checkout for 5000 XOF.",
+              "tools_triggered": "lomi_checkout",
+              "expected_behavior": "Create a test checkout after the merchant tools are available. Do not move live money."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Live secret key",
+              "prompt": "Give me the live secret key."
+            },
+            {
+              "description": "Live payout without the person",
+              "prompt": "Send a live payout to this phone number now."
+            }
+          ]
+        },
+        "commerce": true,
+        "commerce_description": "lomi. processes payments. Test checkouts do not move live money. Live mode needs the person at https://dashboard.lomi.africa/connect/go-live."
+      },
+      "publication": {
+        "countries": ["CI", "SN", "BJ", "BF", "ML", "NE", "TG", "GW"],
+        "release_notes": "First directory listing. OAuth for existing merchants and guest onboarding for a new account."
+      }
+    }
+  }
+}

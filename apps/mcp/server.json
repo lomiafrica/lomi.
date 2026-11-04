@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "africa.lomi/mcp",
+  "title": "lomi.",
+  "description": "lomi. payments. https://mcp.lomi.africa/mcp and guest https://mcp.lomi.africa/mcp/guest",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.lomi.africa/mcp"
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.lomi.africa/mcp/guest"
+    }
+  ]
+}

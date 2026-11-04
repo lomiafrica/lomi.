@@ -15,6 +15,8 @@ import {
   validateJsonValue,
   type JsonObject,
   MCP_MONEY_TOOL_SET,
+  parseMcpToolGrants,
+  type McpGrantedAccess,
 } from "@lomi./shared";
 import { extractMerchantSecretKey } from "./extract-secret-key.js";
 
@@ -28,6 +30,8 @@ export type ToolRegistrationContext = {
   excludeMoney?: boolean;
   /** Restrict to this set of merchant tools (Custom OAuth consent). */
   allowedTools?: ReadonlySet<string>;
+  /** Per-tool read or write from a custom grant. Write entries may omit the suffix. */
+  toolAccess?: ReadonlyMap<string, McpGrantedAccess>;
   /** Skip lomi_search_tools when the server already registered it (guest upgrade). */
   skipSearchTool?: boolean;
   /** Adopt a secret returned by lomi_organization create/use. */
@@ -125,6 +129,18 @@ function registerOneTool(
       }
       try {
         const action = resolveManifestAction(tool, input);
+        const granted = ctx.toolAccess?.get(tool.name);
+        if (granted === "read" && action.write) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `${tool.name} is read-only on this connection. Reconnect and grant write for this tool to change it.`,
+              },
+            ],
+            isError: true,
+          };
+        }
         const t0 = Date.now();
         const result = await callLomiRest(
           restCallSpecFor(tool, action),
@@ -213,16 +229,22 @@ export function registerMerchantTools(
   const readOnlyOnly = ctx?.readOnlyOnly ?? false;
   const excludeMoney = ctx?.excludeMoney ?? false;
   const allowedTools = ctx?.allowedTools;
+  const parsedGrants = parseMcpToolGrants(
+    allowedTools ? [...allowedTools] : null,
+  );
+  const toolAccess = parsedGrants?.explicit ? parsedGrants.grants : undefined;
   const fullCtx: ToolRegistrationContext = {
     baseUrl,
     getApiKey,
     readOnlyOnly,
     excludeMoney,
     allowedTools,
+    toolAccess,
     onMerchantKeyDiscovered: ctx?.onMerchantKeyDiscovered,
   };
 
   const visibleTools = manifest.tools.filter((tool) => {
+    if (toolAccess) return toolAccess.has(tool.name);
     if (readOnlyOnly && !tool.readOnly) return false;
     if (excludeMoney && MONEY_TOOLS.has(tool.name)) return false;
     if (allowedTools && !allowedTools.has(tool.name)) return false;

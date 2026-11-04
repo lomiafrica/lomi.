@@ -8,6 +8,7 @@ export type InstructionMode = "stdio" | "http";
 export function buildServerInstructions(
   mode: InstructionMode,
   guest = false,
+  extras?: { dualEnvironment?: boolean },
 ): string {
   const baseUrl = getLomiApiBaseUrl();
   const lines = [
@@ -51,6 +52,9 @@ export function buildServerInstructions(
     "- To collect money, prefer checkout-sessions / payment-links. Card deposits are lomi_card_holds: action=create with hold true, the customer confirms in lomi. Elements with client_secret, then action=get until status is requires_capture. action=increment raises the total (new total, not the increase). action=capture takes some or all (omit amount for the full hold). action=cancel releases the hold. Card numbers never hit these tools. Wave, MTN, and Switch charges stay off MCP.",
     "- Resources: lomi://docs/recipes, lomi://docs/finance, lomi://docs/authentication, lomi://docs/idempotency, lomi://docs/pagination, lomi://docs/webhooks, lomi://docs/money, lomi://docs/errors, lomi://tools/index.",
     "- Money moves (payouts, refunds, instant settlement) return a confirmation_token preview first. Resend with that token to execute. merchant.write cannot move money; reconnect with merchant.money.",
+    extras?.dualEnvironment
+      ? "- This connection includes live and test. Calls use live until lomi_environment sets environment to test or back to live."
+      : "",
     "- Tool results use { ok, status, body } JSON; errors include an error object when ok is false, plus next_steps when a recovery action is known.",
   ].filter(Boolean);
 

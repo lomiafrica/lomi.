@@ -13,7 +13,7 @@
   },
   "GET /provisioning/merchants/{merchantId}/onboarding/status": {
     "title": "Get onboarding status",
-    "description": "Return the merchant's onboarding progress plus KYC, verification state, and human_claimed. While human_claimed is false the response re-issues claim_url: send it to the human. Poll this to see what remains before calling onboarding/complete or request_live."
+    "description": "Return onboarding progress, KYC, verification, human_claimed, and next_step. Follow next_step. It says to send claim_url, upload the identity photo (and the RCCM for a registered business), wait for the identity check, ask for a new document after a rejection, use test merchant tools, or send the person to the dashboard for live mode. Live secret keys are never returned."
   },
   "POST /provisioning/merchants/{merchantId}/live-activation/request": {
     "title": "Request live mode activation",

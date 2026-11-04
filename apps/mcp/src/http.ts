@@ -128,10 +128,26 @@ async function resolveProvisioningKeyFromRequest(
   return introspected.provisioning_key;
 }
 
+type MerchantConnectionKeys = {
+  live?: string;
+  test?: string;
+};
+
+function readConnectionKeys(
+  value: MerchantConnectionKeys | undefined,
+): MerchantConnectionKeys | null {
+  if (!value) return null;
+  const live = isString(value.live) ? value.live : undefined;
+  const test = isString(value.test) ? value.test : undefined;
+  if (!live && !test) return null;
+  return { live, test };
+}
+
 async function resolveMerchantGrantFromRequest(req: Request): Promise<{
   connectionKey: string;
   accessLevel: MerchantAccessLevel;
   allowedTools: string[] | null;
+  connectionKeys: { live?: string; test?: string } | null;
 } | null> {
   const headerMerchantKey = extractSessionMerchantApiKey(req);
   if (headerMerchantKey) {
@@ -139,6 +155,7 @@ async function resolveMerchantGrantFromRequest(req: Request): Promise<{
       connectionKey: headerMerchantKey,
       accessLevel: "full",
       allowedTools: null,
+      connectionKeys: null,
     };
   }
 
@@ -163,6 +180,7 @@ async function resolveMerchantGrantFromRequest(req: Request): Promise<{
     connectionKey: introspected.connection_key,
     accessLevel,
     allowedTools: allowedTools && allowedTools.length > 0 ? allowedTools : null,
+    connectionKeys: readConnectionKeys(introspected.connection_keys),
   };
 }
 
@@ -893,6 +911,11 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             merchantAccessLevel: merchantGrant?.accessLevel ?? "full",
             merchantAllowedTools: merchantGrant?.allowedTools ?? null,
           };
+          const merchantEnvironments = {
+            live: merchantGrant?.connectionKeys?.live,
+            test: merchantGrant?.connectionKeys?.test,
+            active: merchantGrant?.connectionKeys?.live ? "live" : "test",
+          };
 
           const transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
@@ -919,12 +942,26 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             guest,
             merchantAccessLevel: sessionState.merchantAccessLevel,
             merchantAllowedTools: sessionState.merchantAllowedTools,
-            getApiKey: () =>
-              resolveMerchantKey(
+            merchantEnvironment:
+              merchantEnvironments.live && merchantEnvironments.test
+                ? merchantEnvironments
+                : undefined,
+            getApiKey: () => {
+              const sessionKey = resolveMerchantKey(
                 registry,
                 sessionState.sessionId ?? undefined,
                 sessionState.merchantApiKey,
-              ),
+              );
+              const { live, test } = merchantEnvironments;
+              if (!live && !test) return sessionKey;
+              if (sessionKey && sessionKey !== live && sessionKey !== test) {
+                return sessionKey;
+              }
+              if (merchantEnvironments.active === "test") {
+                return test ?? live ?? sessionKey;
+              }
+              return live ?? test ?? sessionKey;
+            },
             getProvisioningKey: () =>
               resolveProvisioningKey(
                 registry,

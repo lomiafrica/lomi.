@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   MCP_KNOWN_TOOLS,
+  MCP_READ_ONLY_TOOLS,
+  MCP_WRITE_ONLY_TOOLS,
   mcpFamilyDuplicateTools,
   mcpToolsMissingFamily,
   validateJsonValue,
@@ -167,6 +169,46 @@ describe("registerMerchantTools read-only filter", () => {
 
     expect(registered).toEqual(["lomi_customers"]);
   });
+
+  it("registers a read grant even when the tool also has writes", async () => {
+    const { McpServer } = await import(
+      "@modelcontextprotocol/sdk/server/mcp.js"
+    );
+    const { registerMerchantTools } = await import("../src/register-tools.js");
+    const manifest: ToolsManifest = {
+      manifestVersion: 1,
+      apiVersion: "test",
+      apiTitle: "test",
+      toolCount: 2,
+      tools: [
+        groupedTool("lomi_customers", false),
+        groupedTool("lomi_payouts", false),
+      ],
+    };
+    const registered: string[] = [];
+    const server = new McpServer({ name: "lomi-test", version: "0.0.0" });
+    const original = server.registerTool.bind(server);
+    // SAFETY: The wrapper keeps McpServer.registerTool's parameters and only records the name.
+    server.registerTool = ((
+      name: string,
+      ...rest: Parameters<typeof original> extends [string, ...infer R]
+        ? R
+        : never
+    ) => {
+      registered.push(name);
+      return original(name, ...rest);
+    }) as typeof server.registerTool;
+
+    registerMerchantTools(server, manifest, {
+      getApiKey: () => "lomi_sk_test_example",
+      excludeMoney: true,
+      readOnlyOnly: true,
+      skipSearchTool: true,
+      allowedTools: new Set(["lomi_customers:read", "lomi_payouts:read"]),
+    });
+
+    expect(registered.sort()).toEqual(["lomi_customers", "lomi_payouts"]);
+  });
 });
 
 describe("MCP tool family catalog", () => {
@@ -176,5 +218,18 @@ describe("MCP tool family catalog", () => {
     expect(mcpFamilyDuplicateTools()).toEqual([]);
     expect(mcpToolsMissingFamily(names)).toEqual([]);
     expect([...names].sort()).toEqual([...MCP_KNOWN_TOOLS].sort());
+  });
+
+  it("matches read-only and write-only tools to their manifest actions", () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const readOnly: string[] = [];
+    const writeOnly: string[] = [];
+    for (const tool of manifest.tools) {
+      const actions = Object.values(tool.actions);
+      if (actions.every((action) => !action.write)) readOnly.push(tool.name);
+      if (actions.every((action) => action.write)) writeOnly.push(tool.name);
+    }
+    expect(readOnly.sort()).toEqual([...MCP_READ_ONLY_TOOLS].sort());
+    expect(writeOnly.sort()).toEqual([...MCP_WRITE_ONLY_TOOLS].sort());
   });
 });

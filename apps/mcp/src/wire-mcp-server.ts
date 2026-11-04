@@ -29,6 +29,10 @@ import { registerLomiCalendar } from "./register-calendar.js";
 import { registerLomiChannels } from "./register-channels.js";
 import { registerLomiMail } from "./register-mail.js";
 import { registerLomiSms } from "./register-sms.js";
+import {
+  registerLomiEnvironment,
+  type MerchantEnvironmentState,
+} from "./register-environment.js";
 import { mcpLog } from "./mcp-request-context.js";
 import { validateJsonValue } from "@lomi./shared";
 
@@ -43,6 +47,8 @@ export type WireMcpServerOptions = {
   merchantAccessLevel?: "read" | "write" | "full";
   /** Custom OAuth consent tool allowlist. Null/undefined keeps the full catalog. */
   merchantAllowedTools?: readonly string[] | null;
+  /** Set when this connection was granted both live and test keys. */
+  merchantEnvironment?: MerchantEnvironmentState;
   /**
    * Invoked when a provisioning tool returns a usable merchant secret key.
    * Implementations should adopt it as the session's merchant credential so
@@ -74,6 +80,7 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
     getPartnerKey = getOptionalPartnerKey,
     merchantAccessLevel = "full",
     merchantAllowedTools = null,
+    merchantEnvironment,
     onMerchantKeyDiscovered,
     onProvisioningKeyDiscovered,
     guest = false,
@@ -87,13 +94,20 @@ export function wireMcpServer(options: WireMcpServerOptions): McpServer {
       websiteUrl: "https://lomi.africa",
     },
     {
-      instructions: buildServerInstructions(mode, guest),
+      instructions: buildServerInstructions(mode, guest, {
+        dualEnvironment: Boolean(
+          merchantEnvironment?.live && merchantEnvironment.test,
+        ),
+      }),
     },
   );
   registerLomiRegisterAgent(server, { onProvisioningKeyDiscovered });
   registerLomiSupport(server, { getApiKey });
   const allowExtra = (name: string) =>
     merchantAllowedTools == null || merchantAllowedTools.includes(name);
+  if (!guest && merchantEnvironment?.live && merchantEnvironment.test) {
+    registerLomiEnvironment(server, merchantEnvironment);
+  }
   if (!guest && merchantAccessLevel !== "read") {
     if (allowExtra("lomi_domains")) registerLomiDomains(server, { getApiKey });
     if (allowExtra("lomi_connectors")) {
