@@ -55,7 +55,7 @@ jobs:
           fi
           node apps/plugins/scripts/test_bubble_json.mjs
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4

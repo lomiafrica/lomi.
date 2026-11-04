@@ -21,7 +21,7 @@ jobs:
       - name: Run plugin parity checks
         run: apps/plugins/scripts/verify-lomi-plugins.sh
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4

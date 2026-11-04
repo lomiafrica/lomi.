@@ -51,7 +51,7 @@ jobs:
           dispatch-sha: ${{ github.event.client_payload.sha }}
           with-umbrella: "true"
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4

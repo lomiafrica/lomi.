@@ -60,7 +60,7 @@ jobs:
           TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
         run: bash .github/scripts/init-submodules.sh packages
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
 

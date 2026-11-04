@@ -39,7 +39,7 @@ jobs:
           ref: main
           token: ${{ secrets.REPO_CHECKOUT_PAT }}
           path: apps/api
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4
@@ -62,7 +62,7 @@ jobs:
           ref: main
           token: ${{ secrets.REPO_CHECKOUT_PAT }}
           path: apps/dashboard
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4
@@ -85,7 +85,7 @@ jobs:
           ref: main
           token: ${{ secrets.REPO_CHECKOUT_PAT }}
           path: apps/checkout
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
       - uses: actions/setup-node@v4

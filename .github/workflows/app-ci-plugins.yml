@@ -24,7 +24,7 @@ jobs:
       - name: Initialize plugin submodules
         run: bash .github/scripts/init-submodules.sh apps/plugins/woo apps/plugins/prestashop apps/plugins/magento
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
 

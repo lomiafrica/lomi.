@@ -28,7 +28,7 @@ jobs:
           rm -rf apps/nomad
           git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/lomiafrica/nomad.git" apps/nomad
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9
 
