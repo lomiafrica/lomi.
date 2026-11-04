@@ -24,5 +24,8 @@ node_modules/
 # Local alias of apps/pos (`lomiafrica/jumbo` redirects there). Do not gitlink.
 /apps/jumbo/
 
-# Nomad is its own repo. Do not gitlink it from this umbrella.
+# Own repos checked out inside the umbrella. Do not gitlink them.
 /apps/nomad/
+/apps/tools/exof/
+/apps/tools/link/
+/context/

@@ -36,7 +36,7 @@ function verifyLomiWebhook(rawBody: string, signatureV1: string, secret: string)
 
 ## Local development
 
-**Recommended:** `lomi listen http://localhost:3000/webhooks`: receives real sandbox webhooks via cloud relay (no ngrok).
+**Recommended:** `lomi listen http://localhost:3000/webhooks`: receives real sandbox webhooks via cloud relay (no ngrok). Forwards the signed payload and webhook headers only — never `X-API-KEY`.
 
 **Alternative:** `lomi dev`: local HTTP receiver on port 4242.
 

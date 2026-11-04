@@ -47,7 +47,7 @@ If an AI agent onboarded your business via the Partner API or MCP:
 1. Build and test with `lomi_sk_test_*` immediately after onboarding completes.
 2. When ready for real payments, the agent calls `POST /provisioning/merchants/{id}/live-activation/request` and shares the **merchant approval link** with you.
 3. Open `/connect/go-live` on the dashboard, review the request, and approve go-live yourself.
-4. **Starter businesses**: KYC is reviewed automatically (AI-assisted, capped at 650,000 XOF gross live volume before full KYB).
+4. **Starter businesses**: KYC is reviewed automatically (AI-assisted). Sales are not capped, but live payouts are capped at 650,000 XOF in total until full KYB.
 5. **Registered businesses**: a platform admin reviews your business in `admin.lomi.africa` → Provisioning → Go-live.
 6. After approval, retrieve your **live secret key** on the go-live page. Your agent never receives live credentials via the provisioning API.
 

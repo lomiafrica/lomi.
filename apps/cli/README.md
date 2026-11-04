@@ -51,7 +51,7 @@ lomi checkout create --amount 10000 --currency XOF \
 | `status` | Verify login and API connectivity |
 | `init` | Initialize project with SDK, examples, and `.env` |
 | `quickstart` | Golden-path checks and next steps |
-| `listen` | Cloud webhook relay (sandbox-first); does not print the signing secret |
+| `listen` | Cloud webhook relay (sandbox-first); does not print the signing secret or attach the CLI API key on forwards |
 | `trigger <event>` | Emit synthetic sandbox webhook event (`--list` for the catalog) |
 | `probe` | Integration health checks |
 | `webhooks list` / `webhooks test` / `webhooks resend` | Manage, test, and replay webhook deliveries |
@@ -88,7 +88,7 @@ lomi init --profile sandbox
 
 Global config: `~/.config/lomi/config.json` (Linux) or `~/Library/Application Support/lomi/config.json` (macOS).
 
-API requests require `https` except when the host is `localhost`, `127.0.0.1`, or `[::1]`. Copy `LOMI_WEBHOOK_SECRET` from the dashboard; `lomi listen` does not print it.
+API requests require `https` except when the host is `localhost`, `127.0.0.1`, or `[::1]`. Copy `LOMI_WEBHOOK_SECRET` from the dashboard; `lomi listen` does not print it. When you pass a forward URL, the CLI posts the signed payload and webhook headers only — it does not send `X-API-KEY` to that URL.
 
 ## Headless / CI
 

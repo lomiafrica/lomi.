@@ -53,7 +53,7 @@ Use `https://sandbox.api.lomi.africa` for sandbox.
 
 Clients that support deferred loading can call **`lomi_search_tools`** with a keyword query.
 
-Merchant tools are **resource tools** named `lomi_<resource>` with a required `action` (for example `lomi_customers` with `action=list`). There are no mechanical `lomi_post_*` / `lomi_get_*` aliases.
+Merchant tools are **resource tools** named `lomi_<resource>` with a required `action` (for example `lomi_customers` with `action=list`). There are no mechanical `lomi_post_*` / `lomi_get_*` aliases. Write-action descriptions list body fields; they do not tag which of those fields are required. The booking desk is **`lomi_events`**.
 
 Network Operators pass `header_Lomi-Account` (`acct_...`) on tools whose REST routes accept `Lomi-Account`. See [docs.lomi.africa/build/mcp](https://docs.lomi.africa/build/mcp).
 

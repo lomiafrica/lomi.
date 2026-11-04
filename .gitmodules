@@ -21,9 +21,6 @@
 [submodule "apps/website"]
 	path = apps/website
 	url = https://github.com/lomiafrica/website.git
-[submodule "apps/pos"]
-	path = apps/pos
-	url = https://github.com/lomiafrica/pos.git
 [submodule "apps/customers"]
 	path = apps/customers
 	url = https://github.com/lomiafrica/customers.git
@@ -87,11 +84,11 @@
 	path = apps/tools/arc
 	url = https://github.com/lomiafrica/arc.git
 	branch = main
-[submodule "apps/tools/xrpl"]
-	path = apps/tools/xrpl
-	url = https://github.com/lomiafrica/xrpl.git
-	branch = main
 [submodule "packages"]
 	path = packages
 	url = https://github.com/lomiafrica/packages.git
+	branch = main
+[submodule "apps/tools/cosigner"]
+	path = apps/tools/cosigner
+	url = https://github.com/lomiafrica/cosigner.git
 	branch = main

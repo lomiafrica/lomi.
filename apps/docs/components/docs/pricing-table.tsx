@@ -3,6 +3,7 @@
 import {
   ADD_ON_INTERNATIONAL_CARDS_PERCENT,
   ADD_ON_SUBSCRIPTION_PERCENT,
+  bankPayoutFeeLabel,
   CHARGEBACK_INTL_FIXED,
   DYNAMIC_FEES_XOF,
   FIXED_FEES_CARD_INTL,
@@ -128,18 +129,6 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                 ['POS (Mobile Money)', FIXED_FEES_XOF.posMobileMoney],
                 [
                   locale === 'fr'
-                    ? 'Payout banque locale (UEMOA)'
-                    : 'Local bank payout (UEMOA)',
-                  FIXED_FEES_XOF.localBankPayout,
-                ],
-                [
-                  locale === 'fr'
-                    ? 'Payout banque internationale'
-                    : 'International bank payout',
-                  FIXED_FEES_XOF.internationalBankPayout,
-                ],
-                [
-                  locale === 'fr'
                     ? 'Payout banque bénéficiaire'
                     : 'Beneficiary bank payout',
                   FIXED_FEES_XOF.beneficiaryBankPayout,
@@ -164,6 +153,14 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
                 <td>{xof(parts)}</td>
               </tr>
             ))}
+            <tr>
+              <td>
+                {locale === 'fr'
+                  ? 'Payout banque (UEMOA et international)'
+                  : 'Bank payout (UEMOA and international)'}
+              </td>
+              <td>{bankPayoutFeeLabel(locale)}</td>
+            </tr>
             <tr>
               <td>
                 {locale === 'fr'
@@ -349,18 +346,10 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
             <tr>
               <td>
                 {locale === 'fr'
-                  ? 'Virement international'
-                  : 'International bank transfer'}
+                  ? 'Virement bancaire (UEMOA et international)'
+                  : 'Bank transfer (UEMOA and international)'}
               </td>
-              <td>{xof(FIXED_FEES_XOF.internationalBankPayout)}</td>
-            </tr>
-            <tr>
-              <td>
-                {locale === 'fr'
-                  ? 'Virement local (UEMOA)'
-                  : 'Local bank transfer (UEMOA)'}
-              </td>
-              <td>{xof(FIXED_FEES_XOF.localBankPayout)}</td>
+              <td>{bankPayoutFeeLabel(locale)}</td>
             </tr>
             <tr>
               <td>

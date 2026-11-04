@@ -179,6 +179,89 @@ describe("createHttpApplication", () => {
       headers: { "mcp-session-id": "does-not-exist" },
     });
     expect(res.status).toBe(404);
+    const body = await readResponseJson(res);
+    expect(body).toMatchObject({
+      jsonrpc: "2.0",
+      error: { code: -32000, message: "Unknown MCP session" },
+      id: null,
+    });
+    expect(res.headers.get("access-control-allow-origin")).toBe("*");
+  });
+
+  it("DELETE /mcp with an unknown session id returns JSON-RPC 404", async () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const res = await fetch(`http://127.0.0.1:${ctx.port}/mcp`, {
+      method: "DELETE",
+      headers: { "mcp-session-id": "does-not-exist" },
+    });
+    expect(res.status).toBe(404);
+    const body = await readResponseJson(res);
+    expect(body).toMatchObject({
+      jsonrpc: "2.0",
+      error: { code: -32000, message: "Unknown MCP session" },
+      id: null,
+    });
+  });
+
+  it("strips trailing slashes so /health/ and /mcp/guest/ still resolve", async () => {
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+
+    const health = await fetch(`http://127.0.0.1:${ctx.port}/health/`);
+    expect(health.status).toBe(200);
+    expect(await health.json()).toMatchObject({
+      ok: true,
+      service: "lomi-mcp",
+    });
+
+    const guest = await fetch(`http://127.0.0.1:${ctx.port}/mcp/guest/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json, text/event-stream",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "initialize",
+        id: 1,
+        params: {
+          protocolVersion: "2024-11-05",
+          capabilities: {},
+          clientInfo: { name: "slash-test", version: "0" },
+        },
+      }),
+    });
+    expect(guest.status).toBe(200);
+    expect(guest.headers.get("mcp-session-id")).toBeTruthy();
+  });
+
+  it("redirects ungated HTML browsers away from /mcp when transport is gated", async () => {
+    process.env.LOMI_MCP_BEARER_TOKEN = "secret-gate";
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+
+    const browser = await fetch(`http://127.0.0.1:${ctx.port}/mcp`, {
+      headers: { Accept: "text/html" },
+      redirect: "manual",
+    });
+    expect(browser.status).toBe(302);
+    expect(browser.headers.get("location")).toBe("/");
+
+    const keyed = await fetch(`http://127.0.0.1:${ctx.port}/mcp`, {
+      headers: {
+        Accept: "text/html",
+        "x-lomi-api-key": "lomi_sk_test_1234567890abcd",
+      },
+      redirect: "manual",
+    });
+    expect(keyed.status).toBe(400);
   });
 
   it("GET /ready returns 503 in production without transport bearer", async () => {

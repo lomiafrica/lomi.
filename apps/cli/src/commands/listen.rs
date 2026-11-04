@@ -136,8 +136,8 @@ async fn handle_event(event: &StreamEvent, forward_url: Option<&str>) -> Result<
             if let Some(org_id) = &event.organization_id {
                 println!("{} {}", "Organization:".bright_black(), org_id.cyan());
             }
-            if let Some(notice) = webhook_secret_notice(event.webhook_secret.as_deref()) {
-                println!("{} {}", "○".bright_black(), notice);
+            if has_webhook_secret(event.webhook_secret.as_deref()) {
+                println!("{} {}", "○".bright_black(), WEBHOOK_SECRET_NOTICE);
             }
             cli::output::divider();
         }
@@ -196,10 +196,8 @@ fn live_listen_blocked(environment: &str, allow_production: bool) -> bool {
 const WEBHOOK_SECRET_NOTICE: &str =
     "Webhook secret received. Store it as LOMI_WEBHOOK_SECRET (value not printed).";
 
-fn webhook_secret_notice(secret: Option<&str>) -> Option<&'static str> {
-    secret
-        .filter(|value| !value.is_empty())
-        .map(|_| WEBHOOK_SECRET_NOTICE)
+fn has_webhook_secret(secret: Option<&str>) -> bool {
+    matches!(secret, Some(value) if !value.is_empty())
 }
 
 #[cfg(test)]
@@ -221,11 +219,11 @@ mod tests {
     #[test]
     fn connected_notice_does_not_include_the_secret() {
         let secret = "whsec_should_never_print";
-        let notice = webhook_secret_notice(Some(secret)).unwrap();
-        assert!(!notice.contains(secret));
-        assert!(notice.contains("LOMI_WEBHOOK_SECRET"));
-        assert!(webhook_secret_notice(None).is_none());
-        assert!(webhook_secret_notice(Some("")).is_none());
+        assert!(has_webhook_secret(Some(secret)));
+        assert!(!WEBHOOK_SECRET_NOTICE.contains(secret));
+        assert!(WEBHOOK_SECRET_NOTICE.contains("LOMI_WEBHOOK_SECRET"));
+        assert!(!has_webhook_secret(None));
+        assert!(!has_webhook_secret(Some("")));
     }
 
     #[test]
