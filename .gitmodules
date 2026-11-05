@@ -92,3 +92,7 @@
 	path = apps/tools/cosigner
 	url = https://github.com/lomiafrica/cosigner.git
 	branch = main
+[submodule "apps/crm"]
+	path = apps/crm
+	url = https://github.com/lomiafrica/crm.git
+	branch = main
