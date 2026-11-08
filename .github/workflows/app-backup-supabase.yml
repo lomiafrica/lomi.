@@ -175,8 +175,19 @@ jobs:
           stderr_file="$(mktemp)"
           trap 'rm -f "$stderr_file"' EXIT
 
-          if PGCONNECT_TIMEOUT=20 psql "$BACKUP_DB_URL" -v ON_ERROR_STOP=1 -tAc "SELECT 1" >/dev/null 2>"$stderr_file"; then
-            echo "Database connection OK."
+          connected=0
+          for attempt in 1 2 3; do
+            if PGCONNECT_TIMEOUT=20 psql "$BACKUP_DB_URL" -v ON_ERROR_STOP=1 -tAc "SELECT 1" >/dev/null 2>"$stderr_file"; then
+              echo "Database connection OK."
+              connected=1
+              break
+            fi
+            echo "Database preflight attempt ${attempt} failed."
+            if [ "$attempt" -lt 3 ]; then
+              sleep 20
+            fi
+          done
+          if [ "$connected" -eq 1 ]; then
             exit 0
           fi
 
