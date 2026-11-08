@@ -20,9 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Download CodeQL
+        id: codeql-tools
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/download-codeql.sh
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
+          tools: ${{ steps.codeql-tools.outputs.tools }}
           languages: javascript-typescript
           queries: security-and-quality
           config-file: .github/codeql/codeql-config.yml
@@ -43,9 +50,16 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      - name: Download CodeQL
+        id: codeql-tools
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/download-codeql.sh
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
+          tools: ${{ steps.codeql-tools.outputs.tools }}
           languages: rust
           queries: security-and-quality
           config-file: .github/codeql/codeql-config.yml
