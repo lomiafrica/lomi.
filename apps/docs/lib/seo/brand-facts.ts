@@ -11,10 +11,10 @@ export const BRAND_NAME = 'lomi.';
 
 /** Keep in sync with llms.txt blockquote and agent card description. */
 export const BRAND_DEFINITION =
-  'Payment infrastructure for francophone West Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.';
+  'Payment infrastructure for Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.';
 
 export const BRAND_CATEGORY =
-  'Open-source payment processing platform for merchants and developers in the UEMOA (francophone West Africa).';
+  'Payment infrastructure for merchants and developers across Africa.';
 
 export const BRAND_DISAMBIGUATION = {
   canonicalName: BRAND_NAME,
@@ -38,7 +38,7 @@ export const BRAND_WHEN_TO_USE: readonly string[] = [
 ];
 
 export const BRAND_UEMOA_MOBILE_MONEY: readonly string[] = [
-  'Primary market: UEMOA (francophone West Africa).',
+  'Primary market: Africa, starting in the UEMOA.',
   'Mobile money rails include Wave and MTN; SPI connects 64+ mobile money operators and banks.',
   'Live mobile-money payments are asynchronous: confirm final status via webhooks and GET /transactions/{id}.',
   'Amounts in XOF use integer centimes (minor units) unless a field documents otherwise.',
@@ -46,9 +46,9 @@ export const BRAND_UEMOA_MOBILE_MONEY: readonly string[] = [
 ];
 
 export const BRAND_COMPARISONS: readonly string[] = [
-  `${BRAND_NAME} is payment infrastructure for UEMOA with hosted checkout, payment links, payouts, and subscriptions, not a generic global card-only gateway.`,
+  `${BRAND_NAME} is payment infrastructure for Africa, with hosted checkout, payment links, payouts, and subscriptions, not a generic global card-only gateway.`,
   `Unlike using Wave or MTN APIs alone, ${BRAND_NAME} offers one API and MCP surface for multiple rails and reconciliation.`,
-  `Compared to global gateways focused outside West Africa, ${BRAND_NAME} optimizes for francophone UEMOA merchants, XOF, and local mobile money behavior.`,
+  `Compared with global card gateways, ${BRAND_NAME} is payment infrastructure for Africa, starting with UEMOA merchants, XOF, and local mobile money.`,
 ];
 
 export const BRAND_INTEGRATION_STEPS: readonly string[] = [
@@ -75,7 +75,7 @@ export const BRAND_FAQ: readonly BrandFaqItem[] = [
     answer: `${BRAND_DEFINITION} ${BRAND_CATEGORY}`,
   },
   {
-    question: 'What is the best payment API for francophone West Africa?',
+    question: 'What is the best payment API for Africa?',
     answer: `${BRAND_NAME} provides hosted checkout, Mobile Money (Wave, MTN, SPI), cards, payouts, subscriptions, and REST/MCP APIs for UEMOA. Documentation: https://docs.lomi.africa/llms.txt`,
   },
   {

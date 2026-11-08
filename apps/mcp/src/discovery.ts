@@ -13,7 +13,7 @@ export function buildMcpServerCard(manifest: ToolsManifest) {
     version: manifest.apiVersion,
     title: "lomi.",
     description:
-      "Payment infrastructure for francophone West Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.",
+      "Payment infrastructure for Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.",
     websiteUrl: "https://lomi.africa",
     icons: connectorIcons(),
     repository: {
@@ -144,7 +144,7 @@ export function buildMcpIndexMarkdown(manifest: ToolsManifest): string {
   return [
     "# lomi. MCP",
     "",
-    "Model Context Protocol server for lomi. payment infrastructure in francophone West Africa (hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA).",
+    "Model Context Protocol server for lomi. payment infrastructure across Africa (hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA).",
     "",
     "This host is a protocol endpoint, not a marketing site. Use Streamable HTTP at `/mcp`. HTML GET `/` exists so agents can discover URLs without a 404.",
     "",
@@ -190,7 +190,7 @@ export function buildMcpIndexHtml(manifest: ToolsManifest): string {
 </head>
 <body>
   <h1>lomi. MCP</h1>
-  <p>Model Context Protocol server for lomi. payment infrastructure in francophone West Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.</p>
+  <p>Model Context Protocol server for lomi. payment infrastructure across Africa: hosted checkout, Mobile Money, cards, payouts, subscriptions, and developer APIs across UEMOA.</p>
   <p>This host is a protocol endpoint. Agents should connect over Streamable HTTP, not scrape this page as a product site.</p>
   <h2>Connect</h2>
   <ul>

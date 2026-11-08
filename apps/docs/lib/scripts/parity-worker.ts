@@ -139,7 +139,7 @@ async function checkLiveProbe(errors: string[]): Promise<void> {
         if (status !== 200) {
           throw new Error(`docs llms.txt HTTP ${status}`);
         }
-        if (!body.includes('francophone West Africa')) {
+        if (!body.includes('Payment infrastructure for Africa')) {
           throw new Error('docs llms.txt missing brand definition');
         }
         if (!body.includes('build/mcp')) {

@@ -187,7 +187,7 @@ export function buildDocsAiCatalog(origin = getDocsSiteOrigin()) {
         mediaType: MCP_MEDIA_TYPE,
         url: urls.mcpServerCard,
         representativeQueries: [
-          'Accept Wave and MTN payments in francophone West Africa',
+          'Accept mobile money and card payments across Africa',
           'Create a lomi. hosted checkout session',
           'Connect the lomi. MCP server to an AI agent',
         ],

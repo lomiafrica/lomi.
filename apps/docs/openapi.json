@@ -9296,7 +9296,7 @@
   },
   "info": {
     "title": "API lomi.",
-    "description": "Payment processing API for francophone West African businesses. Routes stay unversioned; OpenAPI info.version is the schema release. Send optional Lomi-Version to pin a known schema. Compatibility is additive: existing fields are not removed without a major info.version bump.",
+    "description": "Payment processing API for businesses across Africa. Routes stay unversioned; OpenAPI info.version is the schema release. Send optional Lomi-Version to pin a known schema. Compatibility is additive: existing fields are not removed without a major info.version bump.",
     "version": "1.2.0",
     "contact": {
       "name": "lomi.",

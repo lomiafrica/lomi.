@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "lomi",
   "version": "1.0.0",
-  "description": "Payments for merchants in francophone West Africa. Existing accounts use OAuth. A new merchant can open an account and finish identity or business checks in chat.",
+  "description": "Payments for merchants across Africa. Existing accounts use OAuth. A new merchant can open an account and finish identity or business checks in chat.",
   "author": {
     "name": "lomi. Technologies Africa S.A.",
     "email": "hello@lomi.africa",
