@@ -28,6 +28,5 @@ for attempt in 1 2 3 4 5; do
 done
 
 test "$ok" = 1
-tar --zstd -x -f "${dest}/${asset}" -C "$dest"
-test -x "${dest}/codeql/codeql"
-echo "tools=${dest}/codeql" >> "$GITHUB_OUTPUT"
+# The CodeQL action extracts the archive itself and only accepts a .tar.zst path.
+echo "tools=${dest}/${asset}" >> "$GITHUB_OUTPUT"
