@@ -13,24 +13,24 @@ Indiquez le pays de la banque, le nom du titulaire et le numéro de compte. Un c
 
 Le compte est enregistré désactivé. Vous ne pouvez pas retirer vers lui tant qu'il n'est pas confirmé. Un compte de la zone euro, du Royaume-Uni ou du Vietnam est vérifié auprès de la banque : un numéro qui n'existe pas, ou un nom qui n'est pas celui de l'entreprise, est refusé. Les banques d'Afrique de l'Ouest ne publient pas cette vérification, donc un nom différent est quand même enregistré. L'équipe reçoit un email pour accepter ou refuser. Un numéro que la banque dit inexistant est refusé.
 
-Retirez depuis le solde qui correspond à la banque. Une banque au Bénin, au Burkina Faso, en Côte d'Ivoire, en Guinée-Bissau, au Mali, au Niger, au Sénégal ou au Togo paie en F CFA. Une banque de la zone euro paie en euros. Une banque américaine paie en dollars. Convertissez d'abord si les soldes diffèrent.
+Une banque au Bénin, au Burkina Faso, en Côte d'Ivoire, en Guinée-Bissau, au Mali, au Niger, au Sénégal ou au Togo est payée en F CFA. Une banque de la zone euro est payée en euros. Une banque américaine est payée en dollars. Vous pouvez retirer du XOF, de l'USD ou de l'EUR. Si ce solde n'est pas la devise de la banque, le virement convertit au taux de conversion affiché dans Réglages → Frais, en général 1 %. Vous n'avez pas à convertir d'abord dans une étape séparée.
 
 ## Ce que vous payez
 
-Le montant saisi est celui qui quitte le solde. Les frais en sont déduits, et votre banque reçoit le reste. Un solde de 300 000 F CFA peut retirer 300 000 F CFA. Les frais s'affichent en dessous, et la banque reçoit 300 000 moins ces frais. Le retrait n'est pas refusé à cause des frais.
+Le montant saisi est celui qui quitte ce solde. Les frais en sont déduits, et votre banque reçoit le reste dans sa devise. Un solde de 300 000 F CFA peut retirer 300 000 F CFA. Les frais s'affichent en dessous, et la banque reçoit 300 000 moins ces frais. Le retrait n'est pas refusé à cause des frais.
 
-Les frais ont deux parties : le coût du virement, plus la part lomi. Le coût du virement est ce que l'envoi coûte vraiment : le change vers la devise de la banque et les frais du réseau bancaire. La part lomi. dépend de ce que la banque reçoit. Sous 50 000 F CFA, elle est offerte. À partir de 50 000 F CFA, elle est de 0,5 %. À partir de 100 000 F CFA, elle est de 0,5 % plus 500 F CFA. Les retraits en euros et en dollars suivent les mêmes paliers : offert sous 100, 0,5 % à partir de 100, et 0,5 % plus 1 à partir de 200. Les frais sont calculés quand vous saisissez le montant, et ce sont exactement ces frais que vous payez.
+Un virement bancaire facture aujourd'hui uniquement le **coût du virement** : le change vers la devise de la banque et les frais du réseau bancaire. La part lomi. n'est pas ajoutée. Les frais sont calculés quand vous saisissez le montant, et ce sont exactement ces frais que vous payez.
 
-Un virement local vers l'une de ces banques d'Afrique de l'Ouest est en F CFA. Le réseau ne prend rien sur ce virement local, donc le coût du virement est le change vers le F CFA, environ 1,3 %. Sur un retrait de 40 000 F CFA, la part lomi. est offerte : vous ne payez que ce change. Sur un retrait de 100 000 F CFA, la part lomi. est de 0,5 % plus 500 F CFA, environ 1 000, et le change est d'environ 1 300, donc les frais sont d'environ 2 300 F CFA. Votre banque reçoit environ 97 700 F CFA. Le solde baisse de 100 000 F CFA.
+Un virement local vers l'une de ces banques d'Afrique de l'Ouest est en F CFA. Le réseau ne prend rien sur ce virement local. Si vous détenez déjà des F CFA, il n'y a pas de change sur cet envoi. Si vous retirez des dollars ou des euros vers cette banque, le taux de conversion ci-dessus est le frais.
 
-Un retrait en euros vers une banque de la zone euro, ou en dollars vers une banque américaine, n'a ni change ni frais de réseau, donc les frais se limitent à la part lomi. Une banque que les réseaux locaux n'atteignent pas reçoit un virement international : le coût du virement est le frais de 15 USD, plus le change si la devise change.
+Un retrait en euros vers une banque de la zone euro, ou en dollars vers une banque américaine, n'a ni change ni frais de réseau quand vous retirez cette même devise, donc il n'y a rien de plus à payer. Une banque que les réseaux locaux n'atteignent pas reçoit un virement international : le coût du virement est le frais de 15 USD, plus le change si la devise change.
 
 L'argent arrive en 1 à 5 jours ouvrés. Ce n'est pas instantané.
 
-Chaque virement bancaire conserve le coût du virement, la part lomi. et le cours du change de cet envoi. Ce sont ces chiffres qui servent à vérifier cette page quand le coût change.
+Chaque virement bancaire conserve le coût du virement, la part lomi. (actuellement 0) et le cours du change de cet envoi. Ce sont ces chiffres qui servent à vérifier cette page quand le coût change.
 
 Wave en Côte d'Ivoire est un autre retrait, pas ces frais bancaires. Un numéro Wave déjà enregistré est à 1 %. Un numéro que vous venez d'ajouter reste à un taux plus élevé pendant 48 heures, puis passe à 1 %.
 
 L'écran de retrait affiche ce que vous recevez, le coût du virement, les frais lomi. et le total pris sur le solde. Confirmez seulement une fois les frais affichés. Si les frais ne peuvent pas être calculés, l'écran l'indique et la confirmation reste bloquée jusqu'à leur affichage.
 
-Par l'API, le montant envoyé est celui qui quitte le solde. Le premier appel `POST /payouts` sans `confirmation_token` renvoie `transfer_amount` (ce que la banque reçoit), `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount` et `total_deduction`. `total_deduction` est ce débit. Le virement confirmé avec le jeton est calculé de la même façon, au taux de ce moment.
+Par l'API, envoyez `currency_code` en `XOF`, `USD` ou `EUR`. Si ce n'est pas la devise de la banque, le virement convertit au taux de conversion, puis paie la banque dans sa devise. Le montant envoyé est celui qui quitte ce solde. Le premier appel `POST /payouts` sans `confirmation_token` renvoie `transfer_amount` (ce que la banque reçoit), `transfer_cost_amount`, `lomi_fee_amount`, `fee_amount` et `total_deduction`. `total_deduction` est ce débit. Le virement confirmé avec le jeton est calculé de la même façon, au taux de ce moment.
