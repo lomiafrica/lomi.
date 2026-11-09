@@ -96,3 +96,7 @@
 	path = apps/crm
 	url = https://github.com/lomiafrica/crm.git
 	branch = main
+[submodule "apps/tools/interledger"]
+	path = apps/tools/interledger
+	url = https://github.com/lomiafrica/interledger.git
+	branch = main
