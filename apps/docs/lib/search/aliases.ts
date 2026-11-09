@@ -7,7 +7,7 @@ export const DOCS_SEARCH_ALIASES = {
     'getting started',
     'introduction',
     'uemoa',
-    'west africa',
+    'africa',
     'docs home',
     'documentation',
     'welcome',

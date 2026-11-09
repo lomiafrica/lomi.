@@ -1,6 +1,6 @@
 # lomi.
 
-> Francophone West Africa's payment platform: Mobile Money (Wave, MTN, SPI), cards (Visa, Mastercard, Apple Pay, Google Pay), bank transfers across eight UEMOA markets. Use this file as a **map**: then read the linked pages for schemas and examples.
+> Payment platform for Africa: Mobile Money (Wave, MTN, SPI), cards (Visa, Mastercard, Apple Pay, Google Pay), bank transfers across eight UEMOA markets. Use this file as a **map**: then read the linked pages for schemas and examples.
 
 ## How to use this briefing
 

@@ -57,7 +57,7 @@ else
     cat > "${OUT_LLMS}" <<'EOF'
 # lomi.
 
-> Francophone West Africa's payment platform. Refresh this file with: ./scripts/generate/generate-rules.sh
+> Payment platform for Africa. Refresh this file with: ./scripts/generate/generate-rules.sh
 
 - Documentation: https://docs.lomi.africa
 - Sandbox API: https://sandbox.api.lomi.africa
