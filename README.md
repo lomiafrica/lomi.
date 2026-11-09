@@ -24,7 +24,7 @@
   <a href="https://twitter.com/intent/follow?screen_name=lomiafrica">
     <img src="https://img.shields.io/twitter/follow/lomiafrica.svg?label=Follow%20@lomiafrica" alt="Follow @lomiafrica" />
   </a>
-  <a href="https://www.linkedin.com/company/lomiafri">
+  <a href="https://www.linkedin.com/company/lomiafrica">
     <img src="https://img.shields.io/badge/LinkedIn-lomiafrica-blue?style=flat&logo=linkedin" alt="LinkedIn" />
   </a>
   <a href="https://join.slack.com/t/lomi-a/shared_invite/zt-3hezykfvo-eW1jX6IkXAqht875Y1wUOw">
