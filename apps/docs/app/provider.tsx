@@ -72,9 +72,6 @@ function RootProviderWithLanguage({ children }: { children: ReactNode }) {
         storageKey: 'lomi-theme',
         defaultTheme: 'light',
         disableTransitionOnChange: false,
-        // React 19 / Next 16: next-themes injects <script> in the tree.
-        // application/json silences the dev warning without breaking theme toggling.
-        scriptProps: { type: 'application/json' },
       }}
       i18n={{
         locale: currentLanguage,

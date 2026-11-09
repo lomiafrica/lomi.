@@ -143,14 +143,12 @@
 }
 
 .dark {
-  /* --background: hsl(240 7.7% 7.1%); */
-  --background: hsl(0 0% 10.1961%);
+  /* Lifted canvas #121416. Elevated card #1e2024. */
+  --background: #121416;
   --foreground: hsl(210 40% 98%);
-  /* --card: hsl(240 9.1% 6.5%); */
-  /* --card: hsl(240 5.9% 10%); */
-  --card: hsl(0 0% 11.4%);
+  --card: #1e2024;
   --card-foreground: hsl(210 40% 98%);
-  --popover: hsl(240 7.7% 7.1%);
+  --popover: #1e2024;
   --popover-foreground: hsl(210 40% 98%);
   --primary: hsl(210 40% 98%);
   --primary-foreground: hsl(222.2 47.4% 11.2%);
@@ -1422,7 +1420,45 @@ html.dark .docs-turnstile-mount {
   font-family: var(--font-main);
   font-size: var(--docs-text-size);
   line-height: var(--docs-text-line-height);
-  color: var(--color-fd-muted-foreground);
+  /* #525252 on the page gray clears 4.5:1. The shared muted token does not. */
+  color: #525252;
+}
+
+.dark .docs-page-description {
+  color: #d4d4d8;
+}
+
+.docs-page-pager .text-xs {
+  color: #525252;
+}
+
+.dark .docs-page-pager .text-xs {
+  color: #d4d4d8;
+}
+
+/* Previous page title sits in the mobile header at opacity 0 until a
+   navigation animation. It never becomes visible on first paint. */
+#nd-docs-layout header span.opacity-0 {
+  display: none;
+}
+
+/* Code blocks only scroll sideways. A 5px vertical overflow was a scrollbar. */
+figure .fd-scroll-container {
+  overflow-y: hidden;
+}
+
+/* Step numbers in the table of contents collide when headings sit close. */
+#nd-toc a {
+  padding-block: 0.45rem;
+}
+
+.prose table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.prose :is(th, td) {
+  overflow-wrap: anywhere;
 }
 
 .docs-page-actions {
