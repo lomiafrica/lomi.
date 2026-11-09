@@ -53,7 +53,7 @@ const STRINGS: TranslationsByLanguage = {
     'footer.company_disclaimer':
       '<p>This documentation describes the lomi. merchant API and related products.</p>\n\n<p>Integration behavior can change; use the generated OpenAPI reference and your dashboard for authoritative details.</p>',
     'components.business_outreach.message':
-      'Building payments for West Africa? Book a short call with the team.',
+      'Building payments for Africa? Book a short call with the team.',
     'components.business_outreach.reach_out': 'Schedule a call',
     'components.business_outreach.dismiss': 'Dismiss',
     'docs.shell.openNav': 'Open navigation',
@@ -194,7 +194,7 @@ const STRINGS: TranslationsByLanguage = {
     'footer.company_disclaimer':
       "<p>Cette documentation décrit l'API marchande lomi. et les produits associés.</p>\n\n<p>Le comportement d'intégration peut évoluer ; consultez l'OpenAPI générée et votre tableau de bord pour les détails de référence.</p>",
     'components.business_outreach.message':
-      'Vous construisez des paiements en Afrique de l’Ouest ? Prenez un court rendez-vous avec l’équipe.',
+      'Vous construisez des paiements en Afrique ? Prenez un court rendez-vous avec l’équipe.',
     'components.business_outreach.reach_out': 'Planifier un appel',
     'components.business_outreach.dismiss': 'Fermer',
     'docs.shell.openNav': 'Ouvrir la navigation',

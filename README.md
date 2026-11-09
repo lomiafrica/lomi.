@@ -1,7 +1,7 @@
 <p align="center">
 	<img src="apps/docs/public/company/monorepo-icon.webp" width="200" height="112" alt="lomi. icon">
 <p align="center">
-    Helping West African ventures sell online
+    Helping African ventures sell online
   </p>
 </p>
 
@@ -37,7 +37,7 @@
 
 ## About lomi.
 
-lomi. is **payment infrastructure** for merchants and their customers across West Africa and beyond. We publish integrator tooling (API, SDKs, CLI, plugins) as open source. Production payment processing is not self-hostable today. Merchants use [dashboard.lomi.africa](https://dashboard.lomi.africa).
+lomi. is **payment infrastructure** for merchants and their customers across Africa. We publish integrator tooling (API, SDKs, CLI, plugins) as open source. Production payment processing is not self-hostable today. Merchants use [dashboard.lomi.africa](https://dashboard.lomi.africa).
 
 Our platform simplifies product, services, usage, and subscription billing while ensuring the highest levels of security, reliability, and compliance.
 

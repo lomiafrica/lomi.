@@ -12,7 +12,7 @@ const docsOrigin = getDocsSiteOrigin();
 
 const title = 'lomi.';
 const descriptionFr =
-  "Suite d'API pour le traitement des paiements en ligne et le commerce en Afrique de l'Ouest francophone. Encaissez, versez et automatisez vos flux financiers.";
+  "Suite d'API pour le traitement des paiements en ligne et le commerce en Afrique. Encaissez, versez et automatisez vos flux financiers.";
 
 export function generateMetadata(): Metadata {
   return {
@@ -24,7 +24,7 @@ export function generateMetadata(): Metadata {
     keywords: [
       'payment processing',
       'online payments',
-      'West Africa',
+      'Africa',
       'bank transfers',
       'mobile money',
       'credit card payments',
