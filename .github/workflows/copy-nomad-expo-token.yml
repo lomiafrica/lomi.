@@ -1,0 +1,21 @@
+name: copy nomad expo token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Share the Expo token with Nomad
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EXPO_TOKEN}" ] || [ -z "${GH_TOKEN}" ]; then
+            echo "EXPO_TOKEN or REPO_CHECKOUT_PAT is missing on lomiafrica/lomi."
+            exit 1
+          fi
+          printf '%s' "$EXPO_TOKEN" | gh secret set EXPO_TOKEN --repo lomiafrica/nomad
+          echo "Expo token is set on lomiafrica/nomad"

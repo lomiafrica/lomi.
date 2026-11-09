@@ -16,11 +16,20 @@ COPY apps/sdks/scripts ./apps/sdks/scripts
 COPY apps/mcp/package.json apps/mcp/pnpm-lock.yaml ./apps/mcp/
 COPY apps/mcp/scripts/build/clone-packages-shared.sh /tmp/clone-packages-shared.sh
 
-# Railway's Metal builder only accepts --mount=type=cache. Read the deploy
-# key from ARG via the script so the value never appears in this RUN line.
+# Railway's Metal builder only accepts --mount=type=cache. The script reads
+# these from the environment so the values never appear on the RUN line.
+# They are cleared before later layers run.
 ARG LOMI_PACKAGES_SSH_KEY
+ARG LOMI_PACKAGES_PAT
+ARG REPO_CHECKOUT_PAT
+ENV LOMI_PACKAGES_SSH_KEY=$LOMI_PACKAGES_SSH_KEY \
+    LOMI_PACKAGES_PAT=$LOMI_PACKAGES_PAT \
+    REPO_CHECKOUT_PAT=$REPO_CHECKOUT_PAT
 RUN sh /tmp/clone-packages-shared.sh \
     && rm -f /tmp/clone-packages-shared.sh
+ENV LOMI_PACKAGES_SSH_KEY= \
+    LOMI_PACKAGES_PAT= \
+    REPO_CHECKOUT_PAT=
 
 RUN corepack enable \
     && corepack prepare pnpm@9.15.9 --activate
