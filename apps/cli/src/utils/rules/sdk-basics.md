@@ -33,7 +33,7 @@ export const lomi = new LomiSDK({
 
 ## Currencies
 
-Supported: **XOF**, **USD**, **EUR**.
+Supported: **XOF**, **USD**, **EUR**. Amounts are integers in the smallest unit of `currency_code`. `1100` USD is 11.00. `1100` XOF is 1,100 francs. XOF has no cents.
 
 ## Docs
 

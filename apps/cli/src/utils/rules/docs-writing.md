@@ -22,7 +22,7 @@ Condensed rules for AI assistants authoring or editing **docs.lomi.africa** cont
 
 ## Integration truths (state in guides)
 
-- **Amounts**: XOF uses **centimes** (integer minor units) unless a page documents otherwise.
+- **Amounts**: public amounts are integers in the smallest unit of `currency_code`. `1100` USD or EUR is 11.00. `1100` XOF is 1,100 francs. XOF has no cents.
 - **Keys**: `lomi_sk_test_…` / `lomi_sk_live_…`; environment follows the **key**, not hostname alone.
 - **Mobile money (live)**: async, verify with webhooks + `GET /transactions/{id}` before fulfilling.
 - **Never trust client-only success**: server-side verification required.

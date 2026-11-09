@@ -55,6 +55,8 @@ Clients that support deferred loading can call **`lomi_search_tools`** with a ke
 
 Merchant tools are **resource tools** named `lomi_<resource>` with a required `action` (for example `lomi_customers` with `action=list`). There are no mechanical `lomi_post_*` / `lomi_get_*` aliases. Write-action descriptions list body fields; they do not tag which of those fields are required. The booking desk is **`lomi_events`**.
 
+OAuth connections that granted both live and test register **`lomi_environment`**. Calls use live until you pass `environment` as `test` or `live`. Omit it to see which is active. A pasted `LOMI_SECRET_KEY` stays on that key.
+
 Network Operators pass `header_Lomi-Account` (`acct_...`) on tools whose REST routes accept `Lomi-Account`. See [docs.lomi.africa/build/mcp](https://docs.lomi.africa/build/mcp).
 
 MCP **resources** (`lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`) and **prompts** (`provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`) ship with the server.

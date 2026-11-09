@@ -126,7 +126,9 @@ L’argent live exige encore `lomi_provision action=request_live` et l’approba
 | **Production** | `https://api.lomi.africa` | Clés secrètes live du tableau de bord |
 | **Sandbox** | `https://sandbox.api.lomi.africa` | Clés secrètes sandbox du tableau de bord |
 
-En HTTP MCP, les appels utilisent l’environnement API associé à votre `LOMI_SECRET_KEY`.
+En HTTP MCP avec une clé secrète collée, les appels utilisent l’environnement API associé à cette `LOMI_SECRET_KEY`.
+
+Les connexions OAuth qui ont accordé **live et test** enregistrent **`lomi_environment`**. Les appels restent en live jusqu’à ce que vous passiez `environment` à `test` ou de nouveau à `live`. Omettez `environment` pour voir l’environnement actif et si les deux clés ont été accordées. Une connexion avec une seule clé n’enregistre pas cet outil.
 
 ## Clients
 
@@ -191,15 +193,15 @@ Utilisez `https://sandbox.api.lomi.africa` pour des données sandbox.
 ## Outils
 
 - Les outils marchands sont des **outils ressource** nommés `lomi_<resource>` avec un `action` obligatoire (par exemple `lomi_customers` avec `action=list`, `lomi_invoices` avec `action=pdf`). Les alias mécaniques `lomi_post_*` / `lomi_get_*` ne sont pas enregistrés. Les descriptions des actions d’écriture listent les champs JSON du corps (requis d’abord, puis optionnels). Elles ne marquent pas quels champs du corps sont obligatoires.
+- **`lomi_environment`**: enregistré seulement si OAuth a accordé live et test. Omettez `environment` pour voir `{ environment, live, test }`. Passez `live` ou `test` pour changer de session. Par défaut : live. Absent pour une clé API collée, une session invitée, ou un accord avec un seul environnement.
 - **`lomi_events`**: bureau de réservation (`list`, `get`, `create`, `publish`, `scan`, `door_pin`, `add_type`, `invite`). Booking doit être connecté, sinon les écritures renvoient 403. `create` exige `header_Idempotency-Key`. Voir [Réservations d’événements](/build/accept/events).
 - **`lomi_search_tools`**: recherche dans le catalogue d’outils quand le client charge les outils à la demande.
 - **`lomi_register_agent`**: émet une clé de provisioning sandbox (session invitée ou authentifiée).
 - **`lomi_support`**: déposer une plainte. Session invitée : `action=file` avec `email` et `message`. Avec une clé marchande : ticket Paramètres → Assistance (`list` / `get` / `close`). `action=status` renvoie la page de statut et `/ready`. Clé marchande uniquement : `action=export` (bundle RGPD de l’org courante) et `action=delete_account` (aperçu + `confirmation_token`).
 - **`lomi_organization`**: `create` et `use` émettent un secret pour un espace nouveau ou existant et l’adoptent sur la session. L’invité reste sur `lomi_provision`.
 - **`lomi_team`** / **`lomi_settings`**: membres et invitations ; réglages checkout et vitrine (pas les sessions de paiement).
-- **`lomi_logs`**: `type` est obligatoire (`api_request`, `api_error`, `webhook_delivery`, `activity`). Debug webhooks : `lomi_webhooks` deliveries/retry ou `lomi_logs type=webhook_delivery`. Marchand uniquement : `export` (bundle GDPR de l’org courante) et `delete_account` (aperçu + `confirmation_token`).
-- **`lomi_organization`**: `create` / `use` émettent un secret et basculent la session MCP. L’invité reste sur `lomi_provision`.
-- **`lomi_team`** et **`lomi_settings`**: invitations/rôles et réglages checkout/vitrine. `lomi_logs` exige `type`. Les livraisons webhook sont aussi sur `lomi_webhooks`.
+- **`lomi_logs`**: `type` est obligatoire (`api_request`, `api_error`, `webhook_delivery`, `activity`). Debug webhooks : `lomi_webhooks` deliveries/retry ou `lomi_logs type=webhook_delivery`.
+- Outils d’applications connectées avec une clé marchande qui n’est pas en lecture seule : **`lomi_mail`**, **`lomi_calendar`**, **`lomi_sms`**, **`lomi_domains`**, **`lomi_connectors`**, plus les outils de canal (`lomi_sheets`, `lomi_drive`, `lomi_telegram`, et les autres). Les écritures demandent encore une confirmation. Voir [Applications connectées](/build/mcp/connectors).
 - Provisioning : `lomi_provision` et `lomi_partners` (même schéma `action`).
 - **Ressources**: `lomi://docs/getting-started`, `lomi://docs/authentication`, `lomi://docs/idempotency`, `lomi://docs/pagination`, `lomi://docs/webhooks`, `lomi://docs/money`, `lomi://docs/recipes`, `lomi://docs/finance`, `lomi://docs/errors`, `lomi://tools/index`.
 - **Prompts**: `provision_merchant_from_zero`, `onboard_merchant`, `debug_failed_payment`, `setup_webhook`, `setup_network_operator`, `month_end_close`.
