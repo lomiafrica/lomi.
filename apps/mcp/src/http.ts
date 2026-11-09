@@ -54,6 +54,7 @@ import {
   sessionFingerprintMatches,
 } from "./session-credential.js";
 import { mcpLog, mcpRequestAls } from "./mcp-request-context.js";
+import type { MerchantEnvironmentState } from "./register-environment.js";
 import { wireMcpServer } from "./wire-mcp-server.js";
 import {
   buildGuestProtectedResourceMetadata,
@@ -911,7 +912,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
             merchantAccessLevel: merchantGrant?.accessLevel ?? "full",
             merchantAllowedTools: merchantGrant?.allowedTools ?? null,
           };
-          const merchantEnvironments = {
+          const merchantEnvironments: MerchantEnvironmentState = {
             live: merchantGrant?.connectionKeys?.live,
             test: merchantGrant?.connectionKeys?.test,
             active: merchantGrant?.connectionKeys?.live ? "live" : "test",
