@@ -12,7 +12,7 @@ Use the endpoint pages for the exact request and response contract. Use this pag
 | Field | Meaning |
 | --- | --- |
 | `id`, `*_id` | Stable identifier for an object. Store it in your system when you need to reconcile or fetch the object later. |
-| `amount`, `gross_amount`, `net_amount`, `fee_amount` | Integer amount in the smallest currency unit. For `XOF`, `5000` means 5,000 XOF. |
+| `amount`, `gross_amount`, `net_amount`, `fee_amount` | Integer in the smallest unit of `currency_code`. `1100` USD is 11.00 dollars. `1100` EUR is 11.00 euros. `1100` XOF is 1,100 francs. XOF has no cents. |
 | `currency_code` | ISO currency code such as `XOF`, `USD`, or `EUR`. |
 | `metadata` | Your own key-value data. Use it for internal order IDs, user IDs, or reconciliation hints. |
 | `environment` | `test` or `live`. Never mix objects from both environments in the same reconciliation flow. |

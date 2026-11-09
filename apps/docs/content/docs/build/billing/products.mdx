@@ -18,6 +18,7 @@ Create a product with one or more prices. At least one price is required.
 
 - `name`, `product_type` (`one_time`, `recurring`, `usage_based`), and a `prices` array are required.
 - Each price needs `amount` and `currency_code`. Recurring products also need `billing_interval` on the price.
+- `amount` is an integer in the smallest unit of `currency_code`. `1100` with `USD` or `EUR` is 11.00. `1100` with `XOF` is 1,100 francs. XOF has no cents.
 - Recurring-only fields: `trial_enabled`, `trial_period_days`, `failed_payment_action`, `charge_day`, `first_payment_type`: see the API page.
 - Usage packs: `amount` on the price is what the customer pays. `included_units` is how many units that payment buys. `usage_unit` is the unit label. lomi. sums `quantity` on one meter. Leave `billing_interval` empty. See [Usage billing](/build/billing/usage-billing).
 

@@ -45,7 +45,7 @@ Page ends use the built-in previous / next footer only. Do not add a custom next
 
 ## Integration truths (repeat in guides)
 
-- Amounts in **XOF** use **centimes** (integer minor units) unless a specific API field documents otherwise.
+- Public amounts are integers in the smallest unit. `1100` USD or EUR is 11.00. `1100` XOF is 1,100 francs. XOF has no cents. Say so whenever an example could be read either way.
 - **API key determines environment**: `lomi_sk_test_…` vs `lomi_sk_live_…`; wrong key against an environment returns **401**.
 - **Live mobile money is asynchronous**: confirm with webhooks and `GET /transactions/{id}` before fulfilling orders.
 - **Never trust client-only success**: see [Verify payments](/build/reliability/verify-payments).

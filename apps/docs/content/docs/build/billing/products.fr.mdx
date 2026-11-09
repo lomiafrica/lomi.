@@ -18,6 +18,7 @@ Crée un produit avec un ou plusieurs tarifs. Au moins un tarif est obligatoire.
 
 - `name`, `product_type` (`one_time`, `recurring`, `usage_based`) et un tableau `prices` sont obligatoires.
 - Chaque tarif exige `amount` et `currency_code`. Pour un produit récurrent, ajoutez `billing_interval` sur le tarif.
+- `amount` est un entier dans la plus petite unité de `currency_code`. `1100` en `USD` ou `EUR` vaut 11,00. `1100` en `XOF` vaut 1 100 francs. Le franc CFA n'a pas de centimes.
 - Champs réservés au récurrent : `trial_enabled`, `trial_period_days`, `failed_payment_action`, `charge_day`, `first_payment_type`: voir la page API.
 - Packs d’usage : `amount` sur le tarif est ce que le client paie. `included_units` est le nombre d’unités que ce paiement achète. `usage_unit` est le libellé de l’unité. lomi. additionne `quantity` sur un compteur. Laissez `billing_interval` vide. Voir [Facturation à l’usage](/build/billing/usage-billing).
 

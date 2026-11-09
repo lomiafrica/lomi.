@@ -12,7 +12,7 @@ Les pages d’endpoint restent la source de vérité pour les requêtes et répo
 | Champ | Signification |
 | --- | --- |
 | `id`, `*_id` | Identifiant stable d’un objet. Stockez-le si vous devez retrouver ou réconcilier l’objet plus tard. |
-| `amount`, `gross_amount`, `net_amount`, `fee_amount` | Montant entier dans la plus petite unité monétaire. Pour `XOF`, `5000` signifie 5 000 XOF. |
+| `amount`, `gross_amount`, `net_amount`, `fee_amount` | Entier dans la plus petite unité de `currency_code`. `1100` USD vaut 11,00 dollars. `1100` EUR vaut 11,00 euros. `1100` XOF vaut 1 100 francs. Le franc CFA n'a pas de centimes. |
 | `currency_code` | Code devise ISO comme `XOF`, `USD` ou `EUR`. |
 | `metadata` | Vos propres paires clé-valeur, par exemple un identifiant de commande ou d’utilisateur. |
 | `environment` | `test` ou `live`. Ne mélangez pas les objets des deux environnements dans un même flux de réconciliation. |
