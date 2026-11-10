@@ -54,7 +54,11 @@ import {
   sessionFingerprintMatches,
 } from "./session-credential.js";
 import { mcpLog, mcpRequestAls } from "./mcp-request-context.js";
-import type { MerchantEnvironmentState } from "./register-environment.js";
+import {
+  readMerchantConnectionKeys,
+  selectMerchantApiKey,
+  type MerchantEnvironmentState,
+} from "./register-environment.js";
 import { wireMcpServer } from "./wire-mcp-server.js";
 import {
   buildGuestProtectedResourceMetadata,
@@ -129,21 +133,6 @@ async function resolveProvisioningKeyFromRequest(
   return introspected.provisioning_key;
 }
 
-type MerchantConnectionKeys = {
-  live?: string;
-  test?: string;
-};
-
-function readConnectionKeys(
-  value: MerchantConnectionKeys | undefined,
-): MerchantConnectionKeys | null {
-  if (!value) return null;
-  const live = isString(value.live) ? value.live : undefined;
-  const test = isString(value.test) ? value.test : undefined;
-  if (!live && !test) return null;
-  return { live, test };
-}
-
 async function resolveMerchantGrantFromRequest(req: Request): Promise<{
   connectionKey: string;
   accessLevel: MerchantAccessLevel;
@@ -181,7 +170,7 @@ async function resolveMerchantGrantFromRequest(req: Request): Promise<{
     connectionKey: introspected.connection_key,
     accessLevel,
     allowedTools: allowedTools && allowedTools.length > 0 ? allowedTools : null,
-    connectionKeys: readConnectionKeys(introspected.connection_keys),
+    connectionKeys: readMerchantConnectionKeys(introspected.connection_keys),
   };
 }
 
@@ -953,15 +942,7 @@ export function createHttpApplication(manifest: ToolsManifest): Express {
                 sessionState.sessionId ?? undefined,
                 sessionState.merchantApiKey,
               );
-              const { live, test } = merchantEnvironments;
-              if (!live && !test) return sessionKey;
-              if (sessionKey && sessionKey !== live && sessionKey !== test) {
-                return sessionKey;
-              }
-              if (merchantEnvironments.active === "test") {
-                return test ?? live ?? sessionKey;
-              }
-              return live ?? test ?? sessionKey;
+              return selectMerchantApiKey(merchantEnvironments, sessionKey);
             },
             getProvisioningKey: () =>
               resolveProvisioningKey(

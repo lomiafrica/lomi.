@@ -671,6 +671,213 @@ describe("createHttpApplication", () => {
     expect(listed).not.toContain("lomi_checkout");
   });
 
+  it("OAuth live+test registers lomi_environment and switches the outbound merchant key", async () => {
+    process.env.INTERNAL_API_KEY = "test-internal-key";
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    process.env.LOMI_API_URL = "https://api.lomi.africa";
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    delete process.env.LOMI_SECRET_KEY;
+    delete process.env.X_API_KEY;
+    const liveKey = "lomi_sk_live_dual_env_aaaaaaaa";
+    const testKey = "lomi_sk_test_dual_env_bbbbbbbb";
+    const seenKeys: string[] = [];
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (input, init) => {
+        const url = String(input);
+        if (url.includes("/oauth/introspect/mcp")) {
+          return new Response(
+            JSON.stringify({
+              active: true,
+              grant_type: "merchant",
+              connection_key: liveKey,
+              connection_keys: { live: liveKey, test: testKey },
+              access_level: "full",
+              scope: "merchant.money",
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        const rawHeaders = init?.headers;
+        let auth = "";
+        if (rawHeaders instanceof Headers) {
+          auth =
+            rawHeaders.get("X-API-KEY") ?? rawHeaders.get("x-api-key") ?? "";
+        } else if (isJsonObject(rawHeaders)) {
+          auth =
+            readString(rawHeaders, "X-API-KEY") ??
+            readString(rawHeaders, "x-api-key") ??
+            readString(rawHeaders, "X-Api-Key") ??
+            "";
+        }
+        if (url.includes("/customers")) {
+          seenKeys.push(auth);
+          return new Response(JSON.stringify({ data: [] }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        return realFetch(input, init);
+      });
+
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+      Authorization: "Bearer lomi_oat_dual_env_session_token",
+    };
+
+    const initRes = await fetch(base, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "initialize",
+        id: 1,
+        params: {
+          protocolVersion: "2024-11-05",
+          capabilities: {},
+          clientInfo: { name: "dual-env-test", version: "0" },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get("mcp-session-id");
+    expect(sessionId).toBeTruthy();
+    await initRes.text();
+
+    const sessionHeaders = { ...headers, "mcp-session-id": sessionId! };
+    const listRes = await fetch(base, {
+      method: "POST",
+      headers: sessionHeaders,
+      body: JSON.stringify({ jsonrpc: "2.0", method: "tools/list", id: 2 }),
+    });
+    expect(listRes.status).toBe(200);
+    const listed = jsonRpcTools(parseSseJsonRpc(await listRes.text())).map(
+      (tool) => String(tool.name),
+    );
+    expect(listed).toContain("lomi_environment");
+
+    const callCustomers = async (id: number) => {
+      const res = await fetch(base, {
+        method: "POST",
+        headers: sessionHeaders,
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "tools/call",
+          id,
+          params: { name: "lomi_customers", arguments: { action: "list" } },
+        }),
+      });
+      expect(res.status).toBe(200);
+      const envelope = parseSseJsonRpc(await res.text());
+      expect(envelope.result && jsonRpcResult(envelope).isError).not.toBe(true);
+    };
+
+    await callCustomers(3);
+    expect(seenKeys.at(-1)).toBe(liveKey);
+
+    const switchRes = await fetch(base, {
+      method: "POST",
+      headers: sessionHeaders,
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "tools/call",
+        id: 4,
+        params: {
+          name: "lomi_environment",
+          arguments: { environment: "test" },
+        },
+      }),
+    });
+    expect(switchRes.status).toBe(200);
+    const switched = parseSseJsonRpc(await switchRes.text());
+    const switchResult = jsonRpcResult(switched);
+    expect(switchResult.isError).not.toBe(true);
+    const switchContent = switchResult.content;
+    expect(isJsonArray(switchContent)).toBe(true);
+    const switchText =
+      isJsonArray(switchContent) && isJsonObject(switchContent[0])
+        ? switchContent[0].text
+        : null;
+    expect(String(switchText)).toContain('"environment":"test"');
+
+    await callCustomers(5);
+    expect(seenKeys.at(-1)).toBe(testKey);
+    fetchMock.mockRestore();
+  });
+
+  it("does not register lomi_environment for a single-key OAuth grant", async () => {
+    process.env.INTERNAL_API_KEY = "test-internal-key";
+    process.env.LOMI_MCP_RESOURCE_URL = "https://mcp.lomi.africa/mcp";
+    delete process.env.LOMI_MCP_BEARER_TOKEN;
+    delete process.env.LOMI_SECRET_KEY;
+    delete process.env.X_API_KEY;
+    const realFetch = globalThis.fetch.bind(globalThis);
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (input, init) => {
+        const url = String(input);
+        if (url.includes("/oauth/introspect/mcp")) {
+          return new Response(
+            JSON.stringify({
+              active: true,
+              grant_type: "merchant",
+              connection_key: "lomi_sk_test_single_env_cccccccc",
+              connection_keys: { test: "lomi_sk_test_single_env_cccccccc" },
+              access_level: "full",
+              scope: "merchant.money",
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        return realFetch(input, init);
+      });
+
+    const manifest = parseManifest(validateJsonValue(manifestJson));
+    const app = createHttpApplication(manifest);
+    const ctx = await listen(app);
+    server = ctx.server;
+    const base = `http://127.0.0.1:${ctx.port}/mcp`;
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+      Authorization: "Bearer lomi_oat_single_env_session_token",
+    };
+    const initRes = await fetch(base, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "initialize",
+        id: 1,
+        params: {
+          protocolVersion: "2024-11-05",
+          capabilities: {},
+          clientInfo: { name: "single-env-test", version: "0" },
+        },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    const sessionId = initRes.headers.get("mcp-session-id");
+    await initRes.text();
+    const listRes = await fetch(base, {
+      method: "POST",
+      headers: { ...headers, "mcp-session-id": sessionId! },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "tools/list", id: 2 }),
+    });
+    const listed = jsonRpcTools(parseSseJsonRpc(await listRes.text())).map(
+      (tool) => String(tool.name),
+    );
+    fetchMock.mockRestore();
+    expect(listed).not.toContain("lomi_environment");
+  });
+
   it("rate limits MCP routes when LOMI_MCP_RATE_LIMIT_RPM is low", async () => {
     process.env.LOMI_MCP_RATE_LIMIT_RPM = "2";
     const manifest = parseManifest(validateJsonValue(manifestJson));
