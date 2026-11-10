@@ -780,8 +780,7 @@ impl Bridge {
         {
             Ok(Ok(ctx)) => {
                 log::info!(
-                    "call {id}: core session {} loaded in {:.2}s ({} history turns, {} tools)",
-                    ctx.session_id,
+                    "call {id}: core session loaded in {:.2}s ({} history turns, {} tools)",
                     started.elapsed().as_secs_f32(),
                     ctx.history.len(),
                     ctx.functions.len()
