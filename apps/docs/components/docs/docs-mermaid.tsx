@@ -9,14 +9,20 @@ import {
   type ReactNode,
 } from 'react';
 import { useTheme } from 'fumadocs-ui/provider/base';
+import { isString } from '@lomi./shared';
 
 const MERMAID_START =
   /^(?:stateDiagram(?:-v2)?|flowchart|graph|sequenceDiagram|classDiagram|erDiagram|journey|gantt|pie|mindmap|timeline|gitGraph|quadrantChart|xychart-beta|block-beta|sankey-beta|requirementDiagram|C4Context|C4Container)\b/;
 
+function isMermaidText(node: ReactNode): node is string | number {
+  return isString(node) || typeof node === 'number';
+}
+
 function textOf(node: ReactNode): string {
-  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (isMermaidText(node)) return String(node);
   if (Array.isArray(node)) return node.map(textOf).join('');
   if (!isValidElement(node)) return '';
+  // SAFETY: isValidElement proved this is an element; textOf reads only props.children.
   const props = node.props as { children?: ReactNode };
   return textOf(props.children);
 }
@@ -27,8 +33,9 @@ function linesOf(node: ReactNode): string[] {
     const text = textOf(node);
     return text ? [text] : [];
   }
+  // SAFETY: isValidElement proved this is an element; line nodes carry className and children.
   const props = node.props as { className?: string; children?: ReactNode };
-  const className = typeof props.className === 'string' ? props.className : '';
+  const className = isString(props.className) ? props.className : '';
   if (className.split(/\s+/).includes('line')) return [textOf(props.children)];
   return linesOf(props.children);
 }
