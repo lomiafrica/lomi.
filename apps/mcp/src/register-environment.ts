@@ -1,13 +1,51 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import type { McpConnectionEnvironment } from "@lomi./shared";
+import {
+  isString,
+  type McpConnectionEnvironment,
+} from "@lomi./shared";
 
-export type MerchantEnvironmentState = {
+export type MerchantConnectionKeys = {
   live?: string;
   test?: string;
+};
+
+export type MerchantEnvironmentState = MerchantConnectionKeys & {
   active: McpConnectionEnvironment;
 };
+
+export function readMerchantConnectionKeys(
+  value: MerchantConnectionKeys | undefined,
+): MerchantConnectionKeys | null {
+  if (!value) return null;
+  const live = isString(value.live) ? value.live : undefined;
+  const test = isString(value.test) ? value.test : undefined;
+  if (!live && !test) return null;
+  return { live, test };
+}
+
+export function selectMerchantApiKey(
+  state: MerchantEnvironmentState,
+  sessionKey: string | null,
+): string | null {
+  const { live, test } = state;
+  if (!live && !test) return sessionKey;
+  if (sessionKey && sessionKey !== live && sessionKey !== test) {
+    return sessionKey;
+  }
+  switch (state.active) {
+    case "test":
+      return test ?? live ?? sessionKey;
+    case "live":
+      return live ?? test ?? sessionKey;
+    default: {
+      const _exhaustive: never = state.active;
+      void _exhaustive;
+      return live ?? test ?? sessionKey;
+    }
+  }
+}
 
 export function registerLomiEnvironment(
   server: McpServer,
