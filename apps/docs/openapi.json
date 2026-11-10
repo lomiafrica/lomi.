@@ -5292,7 +5292,7 @@
     },
     "/whatsapp/payment-messages": {
       "post": {
-        "description": "Sends a payment link to a customer on the connected WhatsApp number. Uses an approved template, so the customer does not need to have written first. Pass amount in minor units, or checkout_session_id for a checkout you already created. The pay button in an open chat is sent by lomi. when the customer messages the number.",
+        "description": "Sends a payment link to a customer on the connected WhatsApp number. Uses an approved template, so the customer does not need to have written first. Pass the amount the customer pays (10000 is 10000 in XOF, USD, and EUR), or checkout_session_id for a checkout you already created. The pay button in an open chat is sent by lomi. when the customer messages the number.",
         "operationId": "WhatsAppMerchantController_sendPaymentMessage",
         "parameters": [
           {
@@ -11323,7 +11323,7 @@
           "amount": {
             "type": "number",
             "example": 7500,
-            "description": "New amount in the currency minor units"
+            "description": "What the customer pays. 10000 is 10000 in XOF, USD, and EUR. Do not convert to cents."
           },
           "currency_code": {
             "type": "string",
@@ -12589,7 +12589,7 @@
           },
           "amount": {
             "type": "number",
-            "description": "Amount in minor units when creating a new checkout. 5000 XOF is 5000. 10.00 USD is 1000. Omit when checkout_session_id is set."
+            "description": "What the customer pays when creating a new checkout. 5000 XOF is 5000. 10.00 USD is 10. Do not convert to cents. Omit when checkout_session_id is set."
           },
           "currency_code": {
             "type": "string",
