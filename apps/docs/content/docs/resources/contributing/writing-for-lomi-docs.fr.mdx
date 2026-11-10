@@ -52,7 +52,7 @@ La fin de page utilise seulement le pied précédent / suivant intégré. N’aj
 
 ## Vérités d'intégration (à répéter dans les guides)
 
-- Les montants publics sont des entiers dans la plus petite unité. `1100` USD ou EUR vaut 11,00. `1100` XOF vaut 1 100 francs. Le franc CFA n'a pas de centimes. Précisez-le dès qu'un exemple peut se lire des deux façons.
+- Un montant est la somme dans cette devise. `10000` vaut 10 000 USD, 10 000 EUR et 10 000 XOF. USD et EUR acceptent deux décimales, par exemple `11.99`. Le XOF est un entier. N'invitez pas à convertir en centimes.
 - **L'environnement suit la clé API**: `lomi_sk_test_…` vs `lomi_sk_live_…` ; une mauvaise clé contre un environnement renvoie **401**.
 - Le **mobile money live est asynchrone**: confirmez avec les webhooks et `GET /transactions/{id}` avant de livrer les commandes.
 - **Ne jamais faire confiance au seul succès côté client**: voir [Vérifier les paiements](/build/reliability/verify-payments).

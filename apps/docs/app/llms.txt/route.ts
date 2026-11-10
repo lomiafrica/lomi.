@@ -74,7 +74,7 @@ export async function GET() {
   lines.push('## Integration quickstart');
   lines.push('');
   lines.push(
-    '- **Amounts (XOF):** integer **centimes** (minor units) unless a field documents otherwise.',
+    '- **Amounts:** `10000` is 10,000 XOF, 10,000 USD, and 10,000 EUR. Do not convert to cents. XOF is a whole number. USD and EUR may use two decimal places.',
   );
   lines.push(
     '- **Keys:** `lomi_sk_test_…` / `lomi_sk_live_…`, the **API key selects sandbox vs live**, not the hostname alone.',

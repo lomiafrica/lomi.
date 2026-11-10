@@ -30,7 +30,7 @@ Use TypeScript for type safety and clarity.
 ```typescript filename="TypeScript Example"
 // Good: Clear interface and types
 interface PaymentRequest {
-  amount: number; // Smallest unit. 1100 USD = 11.00. 1100 XOF = 1100 francs.
+  amount: number; // The money in currency_code. 10000 USD = 10000. 11.99 EUR = 11.99. 10000 XOF = 10000 francs.
   currency: string; // ISO 4217 currency code (e.g., 'XOF')
   providerCode: string; // Unique identifier for the payment provider
 }

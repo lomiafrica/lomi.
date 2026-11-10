@@ -23,6 +23,10 @@ import {
 } from '@/components/docs/docs-support-form';
 import { DocsTierCallout } from '@/components/docs/docs-tier-callout';
 import { DocsNextStep, DocsNextSteps } from '@/components/docs/docs-next-steps';
+import {
+  DocsStartColumn,
+  DocsStartHere,
+} from '@/components/docs/docs-start-here';
 import { PricingTable } from '@/components/docs/pricing-table';
 import { TaskSurfaces } from '@/components/docs/task-surfaces';
 import { DocsHighlightedPre } from '@/components/docs/docs-highlighted-pre';
@@ -63,6 +67,8 @@ export function getMDXComponents(components?: MDXComponents) {
     DocsTierCallout,
     DocsNextSteps,
     DocsNextStep,
+    DocsStartHere,
+    DocsStartColumn,
     PricingTable,
     TaskSurfaces,
     ...components,

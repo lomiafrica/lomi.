@@ -202,7 +202,7 @@ POST https://api.lomi.africa/charge/card
 
 | Paramètre        | Type   | Obligatoire | Description                      |
 | ---------------- | ------ | -------- | -------------------------------- |
-| `amount`         | number | Oui      | Montant dans la plus petite unité monétaire |
+| `amount`         | number | Oui      | Ce que le client paie. 10000 vaut 10000 en XOF, USD et EUR. |
 | `currency_code`  | string | Non      | Code devise (XOF, EUR, USD). Valeur par défaut : `XOF` |
 | `currency`       | string | Non      | Alias rétrocompatible de `currency_code` |
 | `customer_email` | string | Non       | Adresse e-mail du client         |

@@ -516,7 +516,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Create checkout session",
-          "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount and currency_code (XOF, EUR, or USD) or a product, then share the returned link. Amount is minor units: 1000.00 EUR is 100000. Completed EUR or USD checkouts still count in customer spend once paid; report that with lomi_customers action top, which converts them.",
+          "description": "Create a hosted checkout session and get a URL to send the customer for payment. Preferred way for an agent to collect money: set amount and currency_code (XOF, EUR, or USD) or a product, then share the returned link. Amount is what the customer pays: 10000 EUR is 10000, and 11.99 USD is 11.99. Do not convert to cents. Completed EUR or USD checkouts still count in customer spend once paid; report that with lomi_customers action top, which converts them.",
           "tags": [
             "Checkout Sessions"
           ],
@@ -5327,7 +5327,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Send a WhatsApp payment link",
-          "description": "Send a pay.lomi.africa link to a customer on the connected WhatsApp number. Pass to in E.164 and amount in minor units (5000 XOF is 5000, 10.00 USD is 1000), or checkout_session_id for a checkout you already created. This uses an approved template, so the customer does not need to have written first. Send idempotency_key.",
+          "description": "Send a pay.lomi.africa link to a customer on the connected WhatsApp number. Pass to in E.164 and the amount the customer pays (5000 XOF is 5000, 10.00 USD is 10), or checkout_session_id for a checkout you already created. This uses an approved template, so the customer does not need to have written first. Send idempotency_key.",
           "tags": [
             "WhatsApp"
           ],

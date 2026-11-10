@@ -85,7 +85,7 @@ const response = await fetch('https://api.lomi.africa/charge/card', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    amount: 10000, // Amount in smallest currency unit (e.g., 10000 XOF)
+    amount: 10000, // 10000 XOF. The same number is 10000 EUR or 10000 USD. Do not convert to cents.
     currency_code: 'XOF',
     customer_email: 'customer@example.com',
     customer_name: 'Ada Lovelace',
@@ -204,7 +204,7 @@ POST https://api.lomi.africa/charge/card
 
 | Parameter        | Type   | Required | Description                      |
 | ---------------- | ------ | -------- | -------------------------------- |
-| `amount`         | number | Yes      | Amount in smallest currency unit |
+| `amount`         | number | Yes      | What the customer pays. 10000 is 10000 in XOF, USD, and EUR. |
 | `currency_code`  | string | No       | Currency code (XOF, EUR, USD). Defaults to `XOF` |
 | `currency`       | string | No       | Backward-compatible alias of `currency_code` |
 | `customer_email` | string | No       | Customer's email address         |

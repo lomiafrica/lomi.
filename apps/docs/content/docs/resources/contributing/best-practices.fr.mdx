@@ -30,7 +30,7 @@ TypeScript pour la sûreté de types.
 ```typescript filename="TypeScript Example"
 // Bon : interface et types explicites
 interface PaymentRequest {
-  amount: number; // Plus petite unité. 1100 USD = 11,00. 1100 XOF = 1100 francs.
+  amount: number; // La somme dans currency_code. 10000 USD = 10000. 11.99 EUR = 11.99. 10000 XOF = 10000 francs.
   currency: string; // Code devise ISO 4217 (p. ex. 'XOF')
   providerCode: string; // Identifiant unique du prestataire de paiement
 }

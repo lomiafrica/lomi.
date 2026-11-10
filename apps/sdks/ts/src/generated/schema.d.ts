@@ -3482,7 +3482,7 @@ export interface components {
             /** @description Product UUID or public id; updates the default active price */
             product_id?: string;
             /**
-             * @description New amount in the currency minor units
+             * @description What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. Do not convert to cents.
              * @example 7500
              */
             amount: number;
@@ -4516,7 +4516,7 @@ export interface components {
         };
         CreateSwitchChargeDto: {
             /**
-             * @description Amount in minor units (XOF francs)
+             * @description Amount in XOF francs. 5000 is 5000 francs.
              * @example 10000
              */
             amount: number;

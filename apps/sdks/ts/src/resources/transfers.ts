@@ -66,7 +66,7 @@ export interface MoneyConfirmationRequired {
 }
 
 export interface CreateTransferParams {
-  /** Amount in `currency_code` minor units (XOF has no decimals). */
+  /** Amount in `currency_code`. 10000 is 10000 for XOF, USD, and EUR. */
   amount: number;
   currency_code: string;
   /** Member Account (`acct_…`) with the `transfer.receive` capability. */

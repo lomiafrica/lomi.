@@ -41,7 +41,7 @@ export const BRAND_UEMOA_MOBILE_MONEY: readonly string[] = [
   'Primary market: Africa, starting in the UEMOA.',
   'Mobile money rails include Wave and MTN; SPI connects 64+ mobile money operators and banks.',
   'Live mobile-money payments are asynchronous: confirm final status via webhooks and GET /transactions/{id}.',
-  'Amounts in XOF use integer centimes (minor units) unless a field documents otherwise.',
+  'An amount is the money in that currency. 10000 is 10000 XOF, 10000 USD, and 10000 EUR. XOF is a whole number.',
   'API keys: lomi_sk_test_* (sandbox) and lomi_sk_live_* (live); the key selects environment, not the hostname alone.',
 ];
 
@@ -65,7 +65,7 @@ export const BRAND_NUMERIC_FACTS: readonly string[] = [
   `Live API: ${API_LIVE_ORIGIN}`,
   `MCP server: ${MCP_ORIGIN}/mcp`,
   'Auth header: X-API-KEY with lomi_sk_test_* or lomi_sk_live_*',
-  'XOF amounts: integer centimes (minor units)',
+  'Amounts: 10000 is 10000 XOF, USD, and EUR. Do not convert to cents.',
   'Marketing site: https://lomi.africa',
 ];
 
@@ -90,7 +90,7 @@ export const BRAND_FAQ: readonly BrandFaqItem[] = [
   {
     question: 'lomi API amounts in XOF',
     answer:
-      'Send integer centimes (minor units) for XOF unless a field documents otherwise.',
+      'Send the amount the customer pays. 10000 is 10000 XOF, 10000 USD, and 10000 EUR. Do not convert to cents.',
   },
   {
     question: 'Payment API documentation for Mobile Money in UEMOA',
