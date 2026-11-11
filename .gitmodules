@@ -64,10 +64,6 @@
 	path = apps/api
 	url = https://github.com/lomiafrica/api.git
 	branch = main
-[submodule "apps/tools/anti-slop"]
-	path = apps/tools/anti-slop
-	url = https://github.com/lomiafrica/anti-slop.git
-	branch = main
 [submodule "apps/tools/agent-plugin"]
 	path = apps/tools/agent-plugin
 	url = https://github.com/lomiafrica/agent-plugin.git
@@ -91,4 +87,8 @@
 [submodule "apps/tools/interledger"]
 	path = apps/tools/interledger
 	url = https://github.com/lomiafrica/interledger.git
+	branch = main
+[submodule "apps/tools/anti-slop"]
+	path = apps/tools/anti-slop
+	url = https://github.com/dmmulroy/anti-slop.git
 	branch = main
