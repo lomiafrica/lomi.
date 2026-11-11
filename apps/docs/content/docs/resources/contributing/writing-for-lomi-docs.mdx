@@ -72,13 +72,7 @@ When you change payment status semantics in `apps/api`, update [Payment and payo
 Before merging docs changes:
 
 ```bash
-cd apps/docs && pnpm lint && pnpm docs:drift
-```
-
-From the monorepo root:
-
-```bash
-lomi docs check
+cd apps/docs && pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
 <DocsNextSteps>

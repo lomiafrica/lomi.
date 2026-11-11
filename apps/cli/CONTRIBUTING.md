@@ -22,15 +22,15 @@ Topic rules (checkout, webhooks, etc.) are bundled in the binary. Refresh from O
 ./scripts/generate-rules.sh
 ```
 
-## Docs drift checks
+## Docs checks
 
-From the monorepo root:
+From `apps/docs`:
 
 ```bash
-lomi docs check
+pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
-Runs `pnpm lint` and `pnpm docs:drift` in `apps/docs`. See [Writing for lomi. docs](https://docs.lomi.africa/resources/contributing/writing-for-lomi-docs).
+See [Writing for lomi. docs](https://docs.lomi.africa/resources/contributing/writing-for-lomi-docs).
 
 ## Publishing a release
 

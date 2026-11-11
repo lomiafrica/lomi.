@@ -109,4 +109,4 @@ Agents can onboard **new merchants** (0→1) via MCP provisioning tools or the `
 
 **How do I reconcile payments?** Start from [Transactions](https://docs.lomi.africa/api/transactions) and tie provider references to your internal order IDs using metadata on creates.
 
-**How do I write or update docs?** See [Writing the docs](https://docs.lomi.africa/resources/contributing/writing-for-lomi-docs) and run `lomi docs check` from the monorepo.
+**How do I write or update docs?** See [Writing the docs](https://docs.lomi.africa/resources/contributing/writing-for-lomi-docs) and run `pnpm lint`, `pnpm docs:drift`, and `pnpm screenshots:verify` in `apps/docs`.

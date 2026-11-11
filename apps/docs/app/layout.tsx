@@ -48,7 +48,7 @@ export function generateMetadata(): Metadata {
       'commerce électronique',
       'passerelle de paiement',
       'solution de paiement',
-      "Afrique",
+      'Afrique',
       'paiements africains',
       'plateforme de paiement',
       'intégration de paiement',

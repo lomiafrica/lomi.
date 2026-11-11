@@ -401,14 +401,10 @@ lomi install-rules --help
 
 ## Maintainers
 
-The `lomi docs` command is hidden from default `--help`. It is for **lomi. contributors** working on documentation in the monorepo, not for merchant integrators.
-
-### `lomi docs check`
-
-Run docs lint and OpenAPI drift checks from the monorepo root:
+Docs checks are not a CLI command. From `apps/docs`:
 
 ```bash
-lomi docs check
+pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
-Equivalent to `cd apps/docs && pnpm lint && pnpm docs:drift`. See [Writing for lomi. docs](/resources/contributing/writing-for-lomi-docs).
+See [Writing for lomi. docs](/resources/contributing/writing-for-lomi-docs).

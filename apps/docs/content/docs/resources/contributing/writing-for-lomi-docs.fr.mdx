@@ -79,13 +79,7 @@ Quand vous changez la sémantique des statuts de paiement dans `apps/api`, mette
 Avant de merger des changements docs :
 
 ```bash
-cd apps/docs && pnpm lint && pnpm docs:drift
-```
-
-Depuis la racine du monorepo :
-
-```bash
-lomi docs check
+cd apps/docs && pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
 <DocsNextSteps>

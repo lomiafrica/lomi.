@@ -401,14 +401,10 @@ lomi install-rules --help
 
 ## Mainteneurs
 
-La commande `lomi docs` est masquée dans l’aide par défaut. Elle s’adresse aux **contributeurs lomi.** qui travaillent sur la documentation dans le monorepo, pas aux intégrateurs marchands.
-
-### `lomi docs check`
-
-Lance le lint docs et les contrôles de dérive OpenAPI depuis la racine du monorepo :
+Les contrôles docs ne sont pas une commande CLI. Depuis `apps/docs` :
 
 ```bash
-lomi docs check
+pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
-Équivalent à `cd apps/docs && pnpm lint && pnpm docs:drift`. Voir [Rédiger pour la doc lomi.](/resources/contributing/writing-for-lomi-docs).
+Voir [Rédiger pour la doc lomi.](/resources/contributing/writing-for-lomi-docs).

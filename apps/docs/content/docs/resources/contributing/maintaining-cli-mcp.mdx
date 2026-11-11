@@ -25,38 +25,9 @@ Maintainer docs: [`apps/cli/CONTRIBUTING.md`](https://github.com/lomiafrica/lomi
 | --- | --- |
 | Local dev | `cd apps/cli && cargo build && cargo test` |
 | Local API URL | `http://localhost:3000` is allowed. Remote URLs must be `https`. |
-| Docs drift | `lomi docs check` or `dt check` (from monorepo root) |
-| Docs scan / graph | `lomi docs scan`, `lomi docs graph` (delegates to `apps/tools/doctool`) |
-| Docs i18n | `lomi docs sync-i18n`, `lomi docs translate-i18n` |
-| Docs improve / diff | `lomi docs improve`, `lomi docs diff` |
+| Docs checks | `cd apps/docs && pnpm lint && pnpm docs:drift && pnpm screenshots:verify` |
 | Agent rules | `./apps/cli/scripts/generate/generate-rules.sh` |
 | Release | Tag `cli-v*`, see CONTRIBUTING.md |
-
-## doctool (`dt`)
-
-Documentation tooling CLI (CORE-38). **Standalone repo:** [github.com/lomiafrica/doctool](https://github.com/lomiafrica/doctool), checked out as a submodule at `apps/tools/doctool`.
-
-Initialize for local dev:
-
-```bash
-git submodule update --init apps/tools/doctool
-cd apps/tools/doctool && cargo build
-```
-
-Maintainer docs: [`apps/tools/doctool/CONTRIBUTING.md`](https://github.com/lomiafrica/doctool/blob/main/CONTRIBUTING.md)
-
-| Task | Command / location |
-| --- | --- |
-| Local dev | `cd apps/tools/doctool && cargo build && cargo test` |
-| Index monorepo | `dt scan --root .` → `.doctool/index.json` |
-| Drift report | `dt drift --root .` |
-| Knowledge graph | `dt graph --root .` |
-| Scaffold REST MDX | `dt scaffold --root .` |
-| i18n sync (deterministic) | `dt sync-i18n --check` |
-| i18n translate (LLM) | `dt translate-i18n --dry-run` (set `DOCTOOL_LLM_API_KEY` or `DOCTOOL_LLM_MOCK=1`) |
-| Improve MDX | `dt improve --path build/usage-billing.mdx --stdout` |
-| Diff proposed MDX | `dt diff --path build/usage-billing.mdx --proposed .doctool/out/...` |
-| CI | `.github/workflows/app-ci-doctool.yml` |
 
 ## MCP (`apps/mcp`)
 

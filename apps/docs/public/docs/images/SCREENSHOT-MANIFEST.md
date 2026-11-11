@@ -2,7 +2,7 @@
 
 You need **34 files** (17 screens × light + dark). Drop them in this folder; docs pages pick them up automatically, **no MDX edits** if filenames match.
 
-**CI:** `dt check` (monorepo root) runs `pnpm lint`, `pnpm docs:drift`, and `pnpm screenshots:verify` in `apps/docs`.
+**CI:** the docs job runs `pnpm lint`, `pnpm docs:drift`, and `pnpm screenshots:verify` in `apps/docs`.
 
 ```
 apps/docs/public/docs/images/

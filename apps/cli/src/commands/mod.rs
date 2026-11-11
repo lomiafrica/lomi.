@@ -6,7 +6,6 @@ pub mod completions;
 pub mod customers;
 pub mod dev;
 pub mod disputes;
-pub mod docs_cmd;
 pub mod exports;
 pub mod home;
 pub mod init;

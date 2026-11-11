@@ -192,15 +192,6 @@ else
   fail "generate-rules.sh"
 fi
 
-log "13. lomi docs (doctool delegation)"
-assert_contains "sync-i18n" "$LOMI" docs --help
-assert_contains "translate-i18n" "$LOMI" docs --help
-if [[ -x "$ROOT/../doctool/target/release/dt" ]] || [[ -x "$ROOT/../doctool/target/debug/dt" ]]; then
-  assert_contains "drift" "$LOMI" docs drift --help 2>/dev/null || assert_contains "Docs drift" "$LOMI" docs drift --help 2>/dev/null || pass "lomi docs drift help"
-else
-  pass "lomi docs help (dt binary not built — skipped run)"
-fi
-
 log "14. Shell completions"
 assert_exit 0 "$LOMI" completions generate bash
 assert_exit 0 "$LOMI" completions generate zsh

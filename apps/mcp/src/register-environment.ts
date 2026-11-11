@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import {
   isString,
+  type JsonValue,
   type McpConnectionEnvironment,
 } from "@lomi./shared";
 
@@ -15,8 +16,13 @@ export type MerchantEnvironmentState = MerchantConnectionKeys & {
   active: McpConnectionEnvironment;
 };
 
+type ConnectionKeyFields = {
+  live?: JsonValue;
+  test?: JsonValue;
+};
+
 export function readMerchantConnectionKeys(
-  value: MerchantConnectionKeys | undefined,
+  value: ConnectionKeyFields | undefined,
 ): MerchantConnectionKeys | null {
   if (!value) return null;
   const live = isString(value.live) ? value.live : undefined;

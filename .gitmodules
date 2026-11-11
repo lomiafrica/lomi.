@@ -24,10 +24,6 @@
 [submodule "apps/customers"]
 	path = apps/customers
 	url = https://github.com/lomiafrica/customers.git
-[submodule "apps/tools/doctool"]
-	path = apps/tools/doctool
-	url = https://github.com/lomiafrica/doctool.git
-	branch = main
 [submodule "apps/sdks/pi-spi-sdk"]
 	path = apps/sdks/pi-spi-sdk
 	url = https://github.com/lomiafrica/pi-spi-sdk.git
@@ -59,10 +55,6 @@
 [submodule "apps/tools/stellar"]
 	path = apps/tools/stellar
 	url = https://github.com/lomiafrica/stellar.git
-	branch = main
-[submodule "apps/tools/geolook"]
-	path = apps/tools/geolook
-	url = https://github.com/lomiafrica/geolook.git
 	branch = main
 [submodule "apps/tools/payterm"]
 	path = apps/tools/payterm

@@ -13,16 +13,13 @@ Merchant-facing zips served at `/downloads/*`: linked from docs, **not** from Gi
 
 ### Verify before opening a docs PR
 
-From the monorepo root (requires [doctool](https://github.com/lomiafrica/doctool) built under `apps/tools/doctool`):
+From `apps/docs`:
 
 ```bash
-cd apps/tools/doctool && cargo build --release -p doctool-cli
-cd ../../..
-./apps/tools/doctool/target/release/dt check --root .
-./apps/tools/doctool/target/release/dt sync-i18n --check --root .
+pnpm lint && pnpm docs:drift && pnpm screenshots:verify
 ```
 
-Or in `apps/docs` only: `pnpm screenshots:verify` (WebP dimensions) and `pnpm lint`.
+`screenshots:verify` checks that each docs WebP is 1280×720.
 
 ```bash
 cd apps/plugins/woo

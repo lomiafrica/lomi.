@@ -190,6 +190,7 @@ jobs:
         run: node tooling/scripts/install-app-with-packages.mjs apps/mcp
       - run: pnpm lint
       - run: pnpm docs:drift
+      - run: pnpm screenshots:verify
       - run: pnpm build
 
   build-cli:

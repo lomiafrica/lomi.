@@ -1,6 +1,4 @@
-# lomi. docs style guide (v1.1 input)
-
-> Draft for future `dt improve` prompts. Not consumed by Phase 1 `sync-i18n` tooling.
+# lomi. docs style guide
 
 ## Voice and tone
 
@@ -48,6 +46,4 @@ When drafting or reviewing, compare against:
 
 ## CI and tooling
 
-- `dt check`: lint + TypeScript drift.
-- `dt drift`: Rust drift categories + optional TS script.
-- `dt sync-i18n --check`: locale gap, stale EN segments (lock file), structure mismatch, orphan FR pages.
+From `apps/docs`: `pnpm lint`, `pnpm docs:drift`, and `pnpm screenshots:verify`. `docs:drift` checks English/French page pairing.

@@ -40,4 +40,4 @@ New pages under `start/`, `build/guides/`, `build/payment-methods/` need `.mdx` 
 
 ## Maintenance
 
-After OpenAPI changes: `CONFIRM_BOOTSTRAP=1 pnpm run api:regenerate-rest-reference` in `apps/docs`. Run `pnpm docs:drift` and `lomi docs check` before merging doc PRs.
+After OpenAPI changes: `CONFIRM_BOOTSTRAP=1 pnpm run api:regenerate-rest-reference` in `apps/docs`. Run `pnpm lint`, `pnpm docs:drift`, and `pnpm screenshots:verify` in `apps/docs` before merging doc PRs.

@@ -2,7 +2,7 @@
 
 /**
  * French guidance blocks for REST `.fr.mdx` pages (whenToUse, caveats, related).
- * Keeps EN/FR heading structure aligned for doctool `sync-i18n --check`.
+ * Keeps EN/FR heading structure aligned for `pnpm docs:drift`.
  */
 export type FrOperationGuidance = {
   summary?: string;

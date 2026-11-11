@@ -412,18 +412,6 @@
       "risk": "ops"
     },
     {
-      "id": "doctool",
-      "path": "apps/tools/doctool",
-      "kind": "tool",
-      "manager": "cargo",
-      "workspace": false,
-      "submodule": true,
-      "required": false,
-      "capabilities": ["install", "lint", "format", "typecheck", "test"],
-      "owner": "tools",
-      "risk": "low"
-    },
-    {
       "id": "anti-slop",
       "path": "apps/tools/anti-slop",
       "kind": "tool",

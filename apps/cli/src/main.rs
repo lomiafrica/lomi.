@@ -3,7 +3,6 @@ mod auth;
 mod cli;
 mod commands;
 mod config;
-mod monorepo;
 mod rules;
 mod webhook;
 
@@ -85,7 +84,6 @@ async fn dispatch(command: cli::app::Commands, common: &cli::CommonOptions) -> a
         Commands::InstallRules(args) => commands::install_rules::run(common, args).await,
         Commands::Update(args) => commands::update::run(common, args).await,
         Commands::Upgrade(args) => commands::upgrade::run(common, args).await,
-        Commands::Docs(args) => commands::docs_cmd::run(common, args).await,
         Commands::ListProfiles(args) => commands::list_profiles::run(common, args).await,
         Commands::Switch(args) => commands::switch::run(common, args).await,
         Commands::Completions(args) => commands::completions::run(common, args),

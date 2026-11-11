@@ -1,6 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { describe, expect, it } from "vitest";
 
+import {
+  isJsonObject,
+  readBoolean,
+  readString,
+  validateJsonValue,
+} from "@lomi./shared";
+
 import { buildServerInstructions } from "../src/server-instructions.js";
 import {
   readMerchantConnectionKeys,
@@ -14,6 +21,12 @@ import type { ToolsManifest } from "../src/manifest.js";
 type TextResult = {
   content: Array<{ type: "text"; text: string }>;
   isError?: boolean;
+};
+
+type EnvironmentPayload = {
+  environment: string;
+  live: boolean;
+  test: boolean;
 };
 
 type EnvironmentInput = {
@@ -56,16 +69,23 @@ function environmentPayload(result: TextResult): {
 } {
   const raw = result.content[0]?.text;
   if (!raw) throw new Error("missing environment payload");
-  return JSON.parse(raw) as {
-    environment: string;
-    live: boolean;
-    test: boolean;
-  };
+  const parsed = validateJsonValue(JSON.parse(raw));
+  if (!isJsonObject(parsed)) {
+    throw new Error("environment payload was not an object");
+  }
+  const environment = readString(parsed, "environment");
+  const live = readBoolean(parsed, "live");
+  const test = readBoolean(parsed, "test");
+  if (!environment || live === undefined || test === undefined) {
+    throw new Error("environment payload was incomplete");
+  }
+  return { environment, live, test };
 }
 
 function captureRegisteredToolNames(run: () => void): string[] {
   const names: string[] = [];
   const original = McpServer.prototype.registerTool;
+  // SAFETY: the wrapper accepts the same arguments as registerTool and forwards them.
   McpServer.prototype.registerTool = function (
     this: McpServer,
     name: string,
@@ -98,8 +118,8 @@ describe("readMerchantConnectionKeys", () => {
     expect(readMerchantConnectionKeys({})).toBeNull();
     expect(
       readMerchantConnectionKeys({
-        live: 1 as unknown as string,
-        test: null as unknown as string,
+        live: 1,
+        test: null,
       }),
     ).toBeNull();
     expect(readMerchantConnectionKeys({ live: LIVE_KEY })).toEqual({
