@@ -81,11 +81,11 @@ jobs:
             exit 1
           fi
 
+      - name: Checkout
+        uses: actions/checkout@v5
+
       - name: Install backup tools
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y rclone
+        run: bash .github/scripts/apt-with-retry.sh rclone
 
       - name: Copy Supabase Storage buckets to object storage
         env:

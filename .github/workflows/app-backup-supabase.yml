@@ -98,34 +98,7 @@ jobs:
         uses: ./.github/actions/setup-ipv6-warp
 
       - name: Install backup tools
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y age jq curl gnupg lsb-release
-
-          # Install the PostgreSQL 17 client. pg_dump/pg_dumpall must be >= the server
-          # major version (Supabase runs Postgres 17), which is newer than Ubuntu's default.
-          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-            | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
-          echo "deb [signed-by=/etc/apt/trusted.gpg.d/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
-            | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
-
-          # The ubuntu-latest runner ships a running PostgreSQL 16 cluster, so the
-          # pg_dump/pg_dumpall on PATH are the postgresql-common "pg_wrapper" shim, which
-          # resolves to the default local cluster's version (16) even after client 17 is
-          # installed. That caused "server version mismatch: server 17.x, pg_dumpall 16.x".
-          # Put the v17 binaries at the front of PATH (for all later steps) so the real
-          # v17 tools are used and the wrapper is bypassed.
-          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
-
-          pg_dumpall_bin="/usr/lib/postgresql/17/bin/pg_dumpall"
-          "$pg_dumpall_bin" --version
-          case "$("$pg_dumpall_bin" --version)" in
-            *" 17."*) echo "pg_dumpall 17 confirmed." ;;
-            *) echo "::error::Expected pg_dumpall 17 at ${pg_dumpall_bin}."; exit 1 ;;
-          esac
+        run: bash .github/scripts/install-postgres-client-17.sh
 
       # Derive the direct (IPv6) connection from SUPABASE_DB_URL. If the secret still
       # points at the shared pooler, rewrite it to the direct host; otherwise use it

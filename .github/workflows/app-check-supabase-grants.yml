@@ -11,20 +11,32 @@ on:
       - "apps/dashboard"
       - "apps/dashboard/**"
       - ".github/scripts/check-authenticated-grants.mjs"
+      - ".github/scripts/apt-with-retry.sh"
+      - ".github/actions/setup-ipv6-warp/**"
       - ".github/workflows/app-check-supabase-grants.yml"
   pull_request:
     paths:
       - "apps/dashboard"
       - "apps/dashboard/**"
       - ".github/scripts/check-authenticated-grants.mjs"
+      - ".github/scripts/apt-with-retry.sh"
+      - ".github/actions/setup-ipv6-warp/**"
       - ".github/workflows/app-check-supabase-grants.yml"
 
 jobs:
   grants-check:
+    name: grants-check (${{ matrix.target }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [prod, test]
     env:
-      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      TARGET: ${{ matrix.target }}
+      # A missing test secret must not fall through to the production URL.
+      SUPABASE_DB_URL: ${{ matrix.target == 'prod' && secrets.SUPABASE_DB_URL || secrets.SUPABASE_DB_TEST_URL }}
+      EXPECTED_PROJECT_REF: ${{ matrix.target == 'prod' && secrets.SUPABASE_PROD_PROJECT_REF || secrets.SUPABASE_TEST_PROJECT_REF }}
     steps:
       - name: Checkout monorepo (script)
         uses: actions/checkout@v5
@@ -43,10 +55,7 @@ jobs:
         uses: ./.github/actions/setup-ipv6-warp
 
       - name: Install psql client
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
+        run: bash .github/scripts/apt-with-retry.sh postgresql-client
 
       - name: Resolve direct database URL
         run: |
@@ -78,6 +87,18 @@ jobs:
             *)
               db_url="$url"
               echo "::notice::Using SUPABASE_DB_URL host ${host} as-is."
+              ;;
+          esac
+
+          if [ -z "${EXPECTED_PROJECT_REF:-}" ]; then
+            echo "::error::Project ref secret is not set for the ${TARGET} grants check."
+            exit 2
+          fi
+          case "$db_url" in
+            *"$EXPECTED_PROJECT_REF"*) ;;
+            *)
+              echo "::error::${TARGET} database URL does not contain its project ref. Refusing to check the wrong database."
+              exit 2
               ;;
           esac
 
@@ -113,4 +134,4 @@ jobs:
           fi
           curl -sS -X POST "$SLACK_WEBHOOK_URL" \
             -H 'Content-Type: application/json' \
-            -d "{\"text\":\"Supabase authenticated GRANT drift detected on ${GITHUB_REPOSITORY} (${GITHUB_REF_NAME}). Merchants may see 403 / 42501 permission denied. See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+            -d "{\"text\":\"Supabase authenticated GRANT drift on ${TARGET} (${GITHUB_REPOSITORY}, ${GITHUB_REF_NAME}). Merchants may see 403 / 42501 permission denied. See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"

@@ -73,18 +73,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install restore tools
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y age jq curl gnupg lsb-release
-          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-            | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
-          echo "deb [signed-by=/etc/apt/trusted.gpg.d/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
-            | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
-          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
-          /usr/lib/postgresql/17/bin/psql --version
+        run: bash .github/scripts/install-postgres-client-17.sh
 
       - name: Download and verify backup
         id: download

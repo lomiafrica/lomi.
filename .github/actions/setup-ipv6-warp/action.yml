@@ -3,11 +3,74 @@ description: Cloudflare WARP IPv6 egress for direct Supabase db.<ref>.supabase.c
 runs:
   using: composite
   steps:
-    - name: Set up IPv6 egress (Cloudflare WARP)
-      uses: fscarmen/warp-on-actions@v1.4
-      with:
-        stack: ipv6
-        mode: wireguard
+    - name: Install WireGuard
+      shell: bash
+      run: bash "$GITHUB_WORKSPACE/.github/scripts/apt-with-retry.sh" wireguard-tools iproute2
+
+    # Route only IPv6 through WARP. Do not set DNS= in the tunnel: that replaces
+    # the runner resolver, drops Azure DNS, and has disconnected the job from
+    # GitHub ("hosted runner lost communication") mid-backup.
+    - name: Bring up IPv6 WARP
+      shell: bash
+      run: |
+        set -euo pipefail
+        if ip link show warp >/dev/null 2>&1; then
+          sudo wg-quick down warp || true
+        fi
+
+        # Pinned published WARP peer from fscarmen/warp-on-actions. Fetched here
+        # so this repo does not store the key. A fresh registration per job is
+        # rate-limited from GitHub's IP ranges.
+        peer_src="https://raw.githubusercontent.com/fscarmen/warp-on-actions/37ce1997e075435a827991dabcce1d080c1fe512/action.yml"
+        peer_file="$(mktemp)"
+        fetched=0
+        for attempt in 1 2 3 4 5; do
+          if curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors "$peer_src" -o "$peer_file"; then
+            fetched=1
+            break
+          fi
+          echo "WARP peer download failed (attempt ${attempt})."
+          sleep $((attempt * 3))
+        done
+        if [ "$fetched" -ne 1 ]; then
+          echo "::error::Could not download the published WARP peer."
+          exit 1
+        fi
+        private_key="$(sed -n 's/^[[:space:]]*PrivateKey = //p' "$peer_file" | head -1 | tr -d '"')"
+        public_key="$(sed -n 's/^[[:space:]]*PublicKey = //p' "$peer_file" | head -1 | tr -d '"')"
+        rm -f "$peer_file"
+        if [ -z "$private_key" ] || [ -z "$public_key" ]; then
+          echo "::error::Published WARP peer did not include a key pair."
+          exit 1
+        fi
+        echo "::add-mask::$private_key"
+
+        lan="$(ip route get 192.168.193.10 2>/dev/null | grep -oP 'src \K\S+' || true)"
+        sudo mkdir -p /etc/wireguard
+        {
+          echo "[Interface]"
+          echo "PrivateKey = ${private_key}"
+          echo "Address = 172.16.0.2/32"
+          echo "Address = fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128"
+          echo "MTU = 1280"
+          if [ -n "$lan" ]; then
+            echo "PostUp = ip -4 rule add from ${lan} lookup main"
+            echo "PostDown = ip -4 rule delete from ${lan} lookup main"
+          fi
+          echo
+          echo "[Peer]"
+          echo "PublicKey = ${public_key}"
+          echo "AllowedIPs = ::/0"
+          echo "Endpoint = engage.cloudflareclient.com:2408"
+        } | sudo tee /etc/wireguard/warp.conf >/dev/null
+
+        sudo wg-quick up warp
+
+        if ! curl -4 -fsS -m 15 -o /dev/null https://github.com; then
+          echo "::error::IPv4 to GitHub failed after WARP came up. Refusing to continue so the runner is not cut off."
+          sudo wg-quick down warp || true
+          exit 1
+        fi
 
     - name: Verify IPv6 connectivity
       shell: bash

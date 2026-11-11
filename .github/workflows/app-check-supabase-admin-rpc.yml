@@ -10,19 +10,30 @@ on:
     paths:
       - "apps/dashboard/supabase/migrations/**"
       - ".github/scripts/check-anon-admin-rpc-execute.mjs"
+      - ".github/scripts/apt-with-retry.sh"
+      - ".github/actions/setup-ipv6-warp/**"
       - ".github/workflows/app-check-supabase-admin-rpc.yml"
   pull_request:
     paths:
       - "apps/dashboard/supabase/migrations/**"
       - ".github/scripts/check-anon-admin-rpc-execute.mjs"
+      - ".github/scripts/apt-with-retry.sh"
+      - ".github/actions/setup-ipv6-warp/**"
       - ".github/workflows/app-check-supabase-admin-rpc.yml"
 
 jobs:
   admin-rpc-check:
+    name: admin-rpc-check (${{ matrix.target }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [prod, test]
     env:
-      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      TARGET: ${{ matrix.target }}
+      SUPABASE_DB_URL: ${{ matrix.target == 'prod' && secrets.SUPABASE_DB_URL || secrets.SUPABASE_DB_TEST_URL }}
+      EXPECTED_PROJECT_REF: ${{ matrix.target == 'prod' && secrets.SUPABASE_PROD_PROJECT_REF || secrets.SUPABASE_TEST_PROJECT_REF }}
     steps:
       - uses: actions/checkout@v5
 
@@ -32,10 +43,7 @@ jobs:
         uses: ./.github/actions/setup-ipv6-warp
 
       - name: Install PostgreSQL client
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
+        run: bash .github/scripts/apt-with-retry.sh postgresql-client
 
       - name: Resolve direct database URL
         run: |
@@ -70,6 +78,18 @@ jobs:
               ;;
           esac
 
+          if [ -z "${EXPECTED_PROJECT_REF:-}" ]; then
+            echo "::error::Project ref secret is not set for the ${TARGET} admin RPC check."
+            exit 2
+          fi
+          case "$db_url" in
+            *"$EXPECTED_PROJECT_REF"*) ;;
+            *)
+              echo "::error::${TARGET} database URL does not contain its project ref. Refusing to check the wrong database."
+              exit 2
+              ;;
+          esac
+
           echo "::add-mask::$pass"
           echo "::add-mask::$db_url"
           printf 'SUPABASE_DB_URL=%s\n' "$db_url" >> "$GITHUB_ENV"
@@ -96,4 +116,4 @@ jobs:
           fi
           curl -sS -X POST "$SLACK_WEBHOOK_URL" \
             -H 'Content-Type: application/json' \
-            -d "{\"text\":\"Supabase admin RPC EXECUTE drift on ${GITHUB_REPOSITORY} (${GITHUB_REF_NAME}). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+            -d "{\"text\":\"Supabase admin RPC EXECUTE drift on ${TARGET} (${GITHUB_REPOSITORY}, ${GITHUB_REF_NAME}). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
