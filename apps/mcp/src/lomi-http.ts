@@ -96,12 +96,9 @@ export async function callLomiRest(
   },
 ): Promise<LomiHttpResult> {
   const { baseUrl, apiKey, authHeaderName = "X-API-KEY" } = options;
-  type LomiRequestHeaders = { [header: string]: string };
-  const headers: LomiRequestHeaders = {
-    Accept: "application/json",
-  };
+  const headers = new Headers({ Accept: "application/json" });
   if (apiKey) {
-    headers[authHeaderName] = apiKey;
+    headers.set(authHeaderName, apiKey);
   }
 
   let path = spec.pathTemplate;
@@ -124,12 +121,12 @@ export async function callLomiRest(
     const v = args[key];
     if (v === undefined || v === null) continue;
     const headerName = key.slice("header_".length);
-    headers[headerName] = String(v);
+    headers.set(headerName, String(v));
   }
 
   const idem = args.idempotency_key;
   if (isString(idem) && idem.length > 0) {
-    headers["Idempotency-Key"] = idem;
+    headers.set("Idempotency-Key", idem);
   }
 
   let body: string | undefined;
@@ -138,7 +135,7 @@ export async function callLomiRest(
     if (payload === undefined) {
       throw new Error('Missing required "body" object for this operation.');
     }
-    headers["Content-Type"] = "application/json";
+    headers.set("Content-Type", "application/json");
     body = JSON.stringify(payload);
   }
 

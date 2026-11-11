@@ -62,11 +62,7 @@ function captureEnvironmentHandler(state: MerchantEnvironmentState) {
   return handler;
 }
 
-function environmentPayload(result: TextResult): {
-  environment: string;
-  live: boolean;
-  test: boolean;
-} {
+function environmentPayload(result: TextResult): EnvironmentPayload {
   const raw = result.content[0]?.text;
   if (!raw) throw new Error("missing environment payload");
   const parsed = validateJsonValue(JSON.parse(raw));

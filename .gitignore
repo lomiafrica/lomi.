@@ -28,6 +28,9 @@ node_modules/
 /apps/pos/
 /apps/tools/xrpl/
 
+# Upstream GeoLook checkout used by `pnpm geolook`. Not a lomi. repo.
+/apps/tools/geolook/
+
 # Own repos checked out inside the umbrella. Do not gitlink them.
 /apps/nomad/
 /apps/tools/exof/
