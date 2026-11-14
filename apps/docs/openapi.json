@@ -13669,7 +13669,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "Amount to charge in the original currency"
+            "description": "What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. Do not convert to cents."
           },
           "currency_code": {
             "type": "string",

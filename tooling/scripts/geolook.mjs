@@ -11,11 +11,9 @@ const dest = path.join(root, "apps/tools/geolook");
 const repo = "https://github.com/aigclink/geolook.git";
 
 if (!existsSync(path.join(dest, "scripts/geo.py"))) {
-  const clone = spawnSync(
-    "git",
-    ["clone", "--depth", "1", repo, dest],
-    { stdio: "inherit" },
-  );
+  const clone = spawnSync("git", ["clone", "--depth", "1", repo, dest], {
+    stdio: "inherit",
+  });
   if (clone.status !== 0) process.exit(clone.status ?? 1);
 } else {
   const pull = spawnSync("git", ["-C", dest, "pull", "--ff-only"], {
