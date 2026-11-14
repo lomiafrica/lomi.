@@ -10862,11 +10862,13 @@
           },
           "amount": {
             "type": "number",
-            "example": 5000
+            "example": 2000,
+            "description": "Amount refunded to the customer, in the transaction currency."
           },
           "refunded_amount": {
             "type": "number",
-            "example": 5000
+            "example": 2000,
+            "description": "Same figure as amount. The stored transaction total is not this field."
           },
           "fee_amount": {
             "type": "number",
@@ -11323,7 +11325,7 @@
           "amount": {
             "type": "number",
             "example": 7500,
-            "description": "What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. Do not convert to cents."
+            "description": "What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. USD and EUR may use two decimal places. Do not convert to cents."
           },
           "currency_code": {
             "type": "string",
@@ -11408,7 +11410,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. USD and EUR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -11617,7 +11619,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "What the customer pays. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. 10000 is 10000 XOF, 10000 USD, or 10000 EUR. USD and EUR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -12503,7 +12505,8 @@
             "type": "string"
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "What the customer pays. 10000 is 10000 in XOF, USD, and EUR. USD and EUR may use two decimal places. Do not convert to cents."
           },
           "is_active": {
             "type": "boolean"
@@ -13881,7 +13884,7 @@
           "amount": {
             "type": "number",
             "example": 25000,
-            "description": "Amount to take, in the same currency as the hold. Omit to capture the full hold. The rest is released."
+            "description": "Amount to take, in the same currency as the hold. 10 USD is 10. Omit to capture the full hold. The rest is released."
           }
         }
       },
@@ -13891,7 +13894,7 @@
           "amount": {
             "type": "number",
             "example": 150000,
-            "description": "New total to block, in the same currency as the hold. Must be higher than the current block."
+            "description": "New total to block, in the same currency as the hold. 10 USD is 10. Must be higher than the current block."
           }
         },
         "required": [
