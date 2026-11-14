@@ -65,7 +65,7 @@ export const BRAND_NUMERIC_FACTS: readonly string[] = [
   `Live API: ${API_LIVE_ORIGIN}`,
   `MCP server: ${MCP_ORIGIN}/mcp`,
   'Auth header: X-API-KEY with lomi_sk_test_* or lomi_sk_live_*',
-  'Amounts: 10000 is 10000 XOF, USD, and EUR. Do not convert to cents.',
+  'Amounts: 10000 is 10000 XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, and ZAR. Do not convert to cents.',
   'Marketing site: https://lomi.africa',
 ];
 

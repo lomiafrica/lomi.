@@ -41,7 +41,7 @@ pub struct CheckoutCreateArgs {
     #[arg(long)]
     pub price_id: Option<String>,
 
-    /// Currency code (e.g. XOF, USD, EUR)
+    /// Currency code (e.g. XOF, USD, EUR, GBP, CAD)
     #[arg(long)]
     pub currency: Option<String>,
 
@@ -198,7 +198,7 @@ fn resolve_interactive(args: &CheckoutCreateArgs) -> Result<CheckoutFields> {
     } else {
         cli::prompts::select(
             "Select currency:",
-            vec!["XOF".to_string(), "USD".to_string(), "EUR".to_string()],
+            vec!["XOF".to_string(), "USD".to_string(), "EUR".to_string(), "XAF".to_string(), "GHS".to_string(), "KES".to_string(), "MAD".to_string(), "ZAR".to_string(), "GBP".to_string(), "CAD".to_string()],
             "XOF".to_string(),
         )?
     };

@@ -19,7 +19,7 @@ export const PRICING_TIER_ORDER: readonly PricingTier[] = [
 ];
 
 export function feeLabel(
-  parts: { percent: number; fixed: number; currency: 'XOF' | 'USD' | 'EUR' },
+  parts: { percent: number; fixed: number; currency: 'XOF' | 'USD' | 'EUR' | 'XAF' | 'GHS' | 'KES' | 'MAD' | 'ZAR' | 'GBP' | 'CAD' },
   locale: 'en' | 'fr' = 'en',
 ): string {
   return formatFee(parts, locale);

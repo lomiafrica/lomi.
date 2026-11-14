@@ -72,6 +72,6 @@ cd apps/plugins
 
 - **401 on API**: wrong key for environment; use test key with test mode / Development keys in Bubble.
 - **Webhook not firing**: URL mismatch, wrong signing secret, or missing `PAYMENT_SUCCEEDED` subscription.
-- **Currency errors**: shop currency must be XOF, USD, or EUR.
+- **Currency errors**: shop currency must be XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR.
 
 Docs hub: [E-commerce extensions](https://docs.lomi.africa/build/ecommerce-extensions)

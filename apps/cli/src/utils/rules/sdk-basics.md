@@ -33,7 +33,7 @@ export const lomi = new LomiSDK({
 
 ## Currencies
 
-Supported: **XOF**, **USD**, **EUR**. An amount is the money in that currency. `10000` is 10,000 XOF, 10,000 USD, and 10,000 EUR. USD and EUR may use two decimal places, such as `11.99`. XOF is a whole number. Do not convert to cents.
+Supported: **XOF**, **USD**, **EUR**, **GBP**, **CAD**, **XAF**, **GHS**, **KES**, **MAD**, **ZAR**. An amount is the money in that currency. `10000` is 10,000 XOF, 10,000 USD, and 10,000 EUR. USD, EUR, GBP, CAD, GHS, KES, MAD, and ZAR may use two decimal places, such as `11.99`. XOF and XAF are whole numbers. Do not convert to cents.
 
 ## Docs
 

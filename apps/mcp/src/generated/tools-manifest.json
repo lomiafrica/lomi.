@@ -137,10 +137,17 @@
             "enum": [
               "XOF",
               "USD",
-              "EUR"
+              "EUR",
+              "XAF",
+              "GHS",
+              "KES",
+              "MAD",
+              "ZAR",
+              "GBP",
+              "CAD"
             ],
             "type": "string",
-            "description": "Filtrer par code devise (XOF, USD, EUR)"
+            "description": "Filtrer par code devise (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
           },
           "header_Lomi-Account": {
             "type": "string",
@@ -156,10 +163,17 @@
             "enum": [
               "XOF",
               "USD",
-              "EUR"
+              "EUR",
+              "XAF",
+              "GHS",
+              "KES",
+              "MAD",
+              "ZAR",
+              "GBP",
+              "CAD"
             ],
             "type": "string",
-            "description": "Devise cible pour la conversion (XOF, USD, EUR)"
+            "description": "Devise cible pour la conversion (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
           }
         }
       },
@@ -2052,7 +2066,14 @@
             "enum": [
               "XOF",
               "USD",
-              "EUR"
+              "EUR",
+              "XAF",
+              "GHS",
+              "KES",
+              "MAD",
+              "ZAR",
+              "GBP",
+              "CAD"
             ],
             "type": "string",
             "description": "Currency Code"
@@ -3984,7 +4005,7 @@
           "write": true,
           "wantsBody": true,
           "title": "Request an instant settlement",
-          "description": "Nitro: record a rail fee on an existing payout, or unlock held card funds (advance) up to the org cap. Fee is 2%, minimum 500 XOF / 1 EUR / 1 USD. Requires Idempotency-Key. Advance is on by default for KYB-approved organizations.",
+          "description": "Nitro: record a rail fee on an existing payout, or unlock held card funds (advance) up to the org cap. Fee is 1%, minimum 500 XOF / 1 EUR / 1 USD. Requires Idempotency-Key. Advance is on by default for KYB-approved organizations.",
           "tags": [
             "Settlements"
           ],

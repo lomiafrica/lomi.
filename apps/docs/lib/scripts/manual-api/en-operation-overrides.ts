@@ -665,7 +665,7 @@ export const EN_OPERATION_COPY = {
     body: 'Returns account balance for a merchant in the requested currency.',
     whenToUse:
       'Use when a merchant ID is the scope key for wallet or treasury displays.',
-    caveats: 'Requires `currency_code` (XOF, USD, or EUR).',
+    caveats: 'Requires `currency_code` (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR).',
     related: '[Account balances](/api/balances/AccountsController_getBalance)',
   },
   MetersController_create: {

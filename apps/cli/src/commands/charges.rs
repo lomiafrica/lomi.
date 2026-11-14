@@ -40,8 +40,8 @@ pub struct ChargesHoldArgs {
     #[arg(long)]
     pub amount: i64,
 
-    /// Currency code: XOF, USD, or EUR
-    #[arg(long, value_parser = ["XOF", "USD", "EUR"])]
+    /// Currency code: XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR
+    #[arg(long, value_parser = ["XOF", "USD", "EUR", "XAF", "GHS", "KES", "MAD", "ZAR", "GBP", "CAD"])]
     pub currency: String,
 
     /// Existing customer id

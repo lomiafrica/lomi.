@@ -251,7 +251,7 @@ export function buildAgentSkillMarkdown(origin = getDocsSiteOrigin()): string {
     '',
     BRAND_CATEGORY,
     '',
-    '- Collect a one-off payment in XOF, USD, or EUR.',
+    '- Collect a one-off payment in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR.',
     '- Send a customer to hosted checkout instead of building a payment form.',
     '- Confirm Mobile Money asynchronously with webhooks and GET /transactions/{id}.',
     '',

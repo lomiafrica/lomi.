@@ -20,7 +20,7 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 </Callout>
 
 <Callout type="info">
-  You can withdraw XOF, USD, or EUR. The bank is paid in its currency (UEMOA and mobile money in F CFA, eurozone in EUR, US in USD). If those differ, the payout converts at the currency conversion rate in Settings → Fees, typically 1%.
+  You can withdraw XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. The bank is paid in its currency (UEMOA and mobile money in F CFA, eurozone in EUR, the UK in GBP, Canada in CAD, the US in USD). If those differ, the payout converts at the currency conversion rate in Settings → Fees, typically 1%.
 </Callout>
 
 ## Destinations by country
@@ -33,8 +33,10 @@ Use **`POST /payouts`** for all outbound money movement. How a bank payout is pr
 | MTN | Live MTN countries on your account | F CFA |
 | π-SPI / local bank | Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo | F CFA |
 | US bank | United States | USD |
+| UK bank | United Kingdom | GBP |
+| Canada bank | Canada | CAD |
 | Eurozone bank | Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain, Croatia | EUR |
-| Other IBAN | Andorra, Bulgaria, Switzerland, Czechia, Denmark, United Kingdom, Gibraltar, Hungary, Iceland, Liechtenstein, Monaco, Norway, Poland, Romania, Sweden | EUR |
+| Other IBAN | Andorra, Bulgaria, Switzerland, Czechia, Denmark, Gibraltar, Hungary, Iceland, Liechtenstein, Monaco, Norway, Poland, Romania, Sweden | EUR |
 | Other banks | Remaining countries | USD |
 
 ### Someone else (`destination: "beneficiary"`)

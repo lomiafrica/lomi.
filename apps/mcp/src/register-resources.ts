@@ -117,7 +117,7 @@ function buildMoneyDoc(manifest: ToolsManifest): string {
   const link = nameFor(manifest, "POST /payment-links");
   return `# Money, currency, and reconciliation
 
-- **Amounts** are the money in \`currency_code\`. \`10000\` is 10,000 XOF, 10,000 USD, and 10,000 EUR. USD and EUR may use two decimal places, such as \`11.99\`. XOF is a whole number. Do not convert to cents. Cents are applied only when a card or SPI payment is charged.
+- **Amounts** are the money in \`currency_code\`. \`10000\` is 10,000 XOF, 10,000 USD, and 10,000 EUR. Currencies are XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, and ZAR. USD, EUR, GBP, CAD, GHS, KES, MAD, and ZAR may use two decimal places, such as \`11.99\`. XOF and XAF are whole numbers. Do not convert to cents. Cents are applied only when a card or SPI payment is charged.
 - **Before paying out:** check funds with \`${balance}\` (all currencies) or \`${checkBalance}\` (one currency), then call \`${payout}\`. The first payout/refund/instant-settlement call returns a preview with \`confirmation_token\`; send that token on the second call to execute. \`merchant.write\` cannot move money; reconnect with \`merchant.money\`.
 - **Reconciliation:** \`${settlements}\` lists settlement periods; each \`settlement_id\` is \`{currency}:{YYYY-MM-DD}\` (UTC). \`${settlementTx}\` lists the transactions inside one period so you can tie a payout to underlying payments.
 - **Collecting money as an agent:** use \`${checkout}\` (hosted checkout) or \`${link}\` (shareable link) and hand the returned URL to the customer. Direct charge endpoints are intentionally **not** exposed here because they require client-side card collection or an interactive end-user prompt.

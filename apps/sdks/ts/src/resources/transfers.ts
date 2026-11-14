@@ -66,7 +66,7 @@ export interface MoneyConfirmationRequired {
 }
 
 export interface CreateTransferParams {
-  /** Amount in `currency_code`. 10000 is 10000 for XOF, USD, and EUR. */
+  /** Amount in `currency_code`. 10000 is 10000 for XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, and ZAR. */
   amount: number;
   currency_code: string;
   /** Member Account (`acct_…`) with the `transfer.receive` capability. */

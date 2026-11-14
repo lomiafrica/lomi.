@@ -67,8 +67,8 @@ Schéma: `CreateCardChargeDto`
 | Champ | Obligatoire | Type | Description |
 | --- | --- | --- | --- |
 | `amount` | Oui | `number` | Amount to charge in the original currency |
-| `currency_code` | Non | `enum ("XOF", "USD", "EUR")` | Currency code |
-| `currency` | Non | `enum ("XOF", "USD", "EUR")` | Backward-compatible alias for currency_code. Use currency_code in new integrations. |
+| `currency_code` | Non | `enum ("XOF", "USD", "EUR", "XAF", "GHS", "KES", "MAD", "ZAR", "GBP", "CAD")` | Currency code |
+| `currency` | Non | `enum ("XOF", "USD", "EUR", "XAF", "GHS", "KES", "MAD", "ZAR", "GBP", "CAD")` | Backward-compatible alias for currency_code. Use currency_code in new integrations. |
 | `customer_id` | Non | `string` | Internal customer UUID (v4). Alternative: send customer_email + customer_name to create/find a customer. |
 | `customer_email` | Non | `string` | Customer email, required together with customer_name when customer_id is omitted. |
 | `customer_name` | Non | `string` | Customer display name, required together with customer_email when customer_id is omitted. |
