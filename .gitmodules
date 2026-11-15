@@ -90,5 +90,5 @@
 	branch = main
 [submodule "apps/tools/anti-slop"]
 	path = apps/tools/anti-slop
-	url = https://github.com/dmmulroy/anti-slop.git
+	url = https://github.com/lomiafrica/anti-slop.git
 	branch = main
