@@ -10,7 +10,7 @@
             "name": "currency",
             "required": false,
             "in": "query",
-            "description": "Filtrer par code devise (XOF, USD, EUR, XAF, GHS, KES, MAD, ZAR)",
+            "description": "Filtrer par code devise (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)",
             "schema": {
               "enum": [
                 "XOF",
@@ -83,7 +83,7 @@
             "name": "target_currency",
             "required": false,
             "in": "query",
-            "description": "Devise cible pour la conversion (XOF, USD, EUR, XAF, GHS, KES, MAD, ZAR)",
+            "description": "Devise cible pour la conversion (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)",
             "schema": {
               "enum": [
                 "XOF",
@@ -10961,7 +10961,7 @@
           "currency_code": {
             "type": "string",
             "example": "XOF",
-            "description": "Currency of the transfer (XOF, USD, EUR, XAF, GHS, KES, MAD, ZAR). Balances settle in XOF."
+            "description": "Currency of the transfer (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)."
           },
           "destination": {
             "type": "string",
@@ -11381,7 +11381,7 @@
           "amount": {
             "type": "number",
             "example": 7500,
-            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD and EUR may use two decimal places. Do not convert to cents."
+            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD, EUR, GBP, CAD, GHS, KES, MAD, and ZAR may use two decimal places. Do not convert to cents."
           },
           "currency_code": {
             "type": "string",
@@ -11473,7 +11473,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD and EUR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD, EUR, GBP, CAD, GHS, KES, MAD, and ZAR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -11689,7 +11689,7 @@
           "amount": {
             "type": "number",
             "example": 10000,
-            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD and EUR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
+            "description": "What the customer pays. 10000 is 10000 in XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, or ZAR. USD, EUR, GBP, CAD, GHS, KES, MAD, and ZAR may use two decimal places, such as 9.99. Do not convert to cents. For a usage product this is the pack price. For pay_what_you_want: suggested price pre-filled at checkout (defaults to minimum_amount if omitted)."
           },
           "currency_code": {
             "type": "string",
@@ -12742,7 +12742,19 @@
           },
           "currency_code": {
             "type": "string",
-            "example": "XOF"
+            "example": "XOF",
+            "enum": [
+              "XOF",
+              "USD",
+              "EUR",
+              "XAF",
+              "GHS",
+              "KES",
+              "MAD",
+              "ZAR",
+              "GBP",
+              "CAD"
+            ]
           },
           "payout_method_id": {
             "type": "string",
