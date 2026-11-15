@@ -147,7 +147,7 @@
               "CAD"
             ],
             "type": "string",
-            "description": "Filtrer par code devise (XOF, USD, EUR, XAF, GHS, KES, MAD, ZAR)"
+            "description": "Filtrer par code devise (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
           },
           "header_Lomi-Account": {
             "type": "string",
@@ -173,7 +173,7 @@
               "CAD"
             ],
             "type": "string",
-            "description": "Devise cible pour la conversion (XOF, USD, EUR, XAF, GHS, KES, MAD, ZAR)"
+            "description": "Devise cible pour la conversion (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
           }
         }
       },
