@@ -223,7 +223,7 @@ log "4/8 Validating XOF amount handling (whole francs, not minor units)"
 
 search_must_exist "=== 'XOF'" "$PLUGINS_DIR/magento/Gateway/LomiApiClient.php"
 search_must_exist "=== 'XOF'" "$PLUGINS_DIR/prestashop/lomi/lomi.php"
-search_must_exist "'XOF' ===" "$PLUGINS_DIR/woo/includes/class-wc-gateway-lomi.php"
+search_must_exist "'XOF' => 0" "$PLUGINS_DIR/woo/includes/class-wc-gateway-lomi.php"
 if plugin_present "$PLUGINS_DIR/bubble"; then
   search_must_exist "code === 'XOF'" "$PLUGINS_DIR/bubble/lib/lomi-server-helpers.js"
   echo "PASS: XOF special-casing present in Magento, PrestaShop, Woo, and Bubble."
