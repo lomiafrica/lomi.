@@ -41,7 +41,17 @@ export async function PricingTable({ kind }: { kind: PricingTableKind }) {
   const xof = (parts: {
     percent: number;
     fixed: number;
-    currency: 'XOF' | 'USD' | 'EUR' | 'XAF' | 'GHS' | 'KES' | 'MAD' | 'ZAR' | 'GBP' | 'CAD';
+    currency:
+      | 'XOF'
+      | 'USD'
+      | 'EUR'
+      | 'XAF'
+      | 'GHS'
+      | 'KES'
+      | 'MAD'
+      | 'ZAR'
+      | 'GBP'
+      | 'CAD';
   }) => feeLabel(parts, locale);
 
   switch (kind) {

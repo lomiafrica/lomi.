@@ -3,15 +3,11 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { cookies, headers } from 'next/headers';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { SiteJsonLd } from '@/components/seo/site-json-ld';
-import {
-  docsLanguageCookieValue,
-  docsLocaleForRequest,
-} from '@/lib/utils/docs-routing';
+import { parseDocsLang } from '@/lib/utils/docs-routing';
 import type { Language } from '@/lib/i18n/config';
 
 const docsOrigin = getDocsSiteOrigin();
@@ -22,19 +18,24 @@ const descriptionEn =
 const descriptionFr =
   "Suite d'API pour le traitement des paiements en ligne et le commerce en Afrique. Encaissez, versez et automatisez vos flux financiers.";
 
-async function requestDocsLocale(): Promise<Language> {
-  const headerStore = await headers();
-  const stamped = headerStore.get('x-docs-locale');
-  if (stamped === 'en' || stamped === 'fr') return stamped;
-  const cookieStore = await cookies();
-  return docsLocaleForRequest(
-    docsLanguageCookieValue(cookieStore),
-    headerStore.get('accept-language'),
-  );
+/**
+ * Locale comes from the `/l/[lang]` route param (set by the proxy rewrite from
+ * the language cookie or Accept-Language). Reading `headers()` here instead
+ * would opt every docs page out of static generation — the `[[...slug]]` pages
+ * require static output, so this layout must stay request-data-free.
+ */
+async function layoutDocsLocale(
+  params: Promise<{ lang?: string }>,
+): Promise<Language> {
+  return parseDocsLang((await params).lang);
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await requestDocsLocale();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang?: string }>;
+}): Promise<Metadata> {
+  const locale = await layoutDocsLocale(params);
   const description = locale === 'fr' ? descriptionFr : descriptionEn;
   return {
     title: {
@@ -152,10 +153,12 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({
   children,
+  params,
 }: {
   children: ReactNode;
+  params: Promise<{ lang?: string }>;
 }) {
-  const locale = await requestDocsLocale();
+  const locale = await layoutDocsLocale(params);
   return (
     <html lang={locale} className={font.className} suppressHydrationWarning>
       <body className="relative flex min-h-screen flex-col">

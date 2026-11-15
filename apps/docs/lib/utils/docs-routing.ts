@@ -126,7 +126,9 @@ export function docsLocaleFromAcceptLanguage(
 ): Language | null {
   if (!header) return null;
   let best: { locale: Language; q: number; index: number } | null = null;
-  header.split(',').forEach((part, index) => {
+  const parts = header.split(',');
+  for (let index = 0; index < parts.length; index++) {
+    const part = parts[index];
     const [tagRaw, ...params] = part.trim().split(';');
     const tag = tagRaw.trim().toLowerCase();
     const locale: Language | null = tag.startsWith('fr')
@@ -134,7 +136,7 @@ export function docsLocaleFromAcceptLanguage(
       : tag.startsWith('en')
         ? 'en'
         : null;
-    if (!locale) return;
+    if (!locale) continue;
     let q = 1;
     for (const param of params) {
       const [key, value] = param.trim().split('=');
@@ -142,11 +144,11 @@ export function docsLocaleFromAcceptLanguage(
       const parsed = Number(value);
       if (Number.isFinite(parsed)) q = parsed;
     }
-    if (q <= 0) return;
+    if (q <= 0) continue;
     if (!best || q > best.q || (q === best.q && index < best.index)) {
       best = { locale, q, index };
     }
-  });
+  }
   return best?.locale ?? null;
 }
 
