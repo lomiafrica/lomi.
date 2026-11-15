@@ -123,24 +123,6 @@ const config = {
   poweredByHeader: false,
   generateEtags: false,
   turbopack: {},
-  async headers() {
-    return [
-      {
-        // Locale and format are negotiated per request (cookie / Accept-Language /
-        // Accept) under one public URL. The proxy's Vary header is dropped on
-        // rewrite responses, so it must be set here or a CDN could serve one
-        // visitor's language to another.
-        source:
-          '/:path((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|ico|json|txt|xml|woff2?)$).*)',
-        headers: [
-          {
-            key: 'Vary',
-            value: 'Cookie, Accept, Accept-Language',
-          },
-        ],
-      },
-    ];
-  },
   webpack(webpackConfig) {
     webpackConfig.resolve = webpackConfig.resolve ?? {};
     webpackConfig.resolve.extensionAlias = {
