@@ -79,7 +79,18 @@ async fn create_payment_link(common: &CommonOptions, args: PaymentsCreateArgs) -
             .map_err(|_| anyhow::anyhow!("Amount must be a number"))?;
         let currency = cli::prompts::select(
             "Select currency:",
-            vec!["XOF".to_string(), "USD".to_string(), "EUR".to_string(), "XAF".to_string(), "GHS".to_string(), "KES".to_string(), "MAD".to_string(), "ZAR".to_string(), "GBP".to_string(), "CAD".to_string()],
+            vec![
+                "XOF".to_string(),
+                "USD".to_string(),
+                "EUR".to_string(),
+                "XAF".to_string(),
+                "GHS".to_string(),
+                "KES".to_string(),
+                "MAD".to_string(),
+                "ZAR".to_string(),
+                "GBP".to_string(),
+                "CAD".to_string(),
+            ],
             "XOF".to_string(),
         )?;
         (title, amount, currency)
