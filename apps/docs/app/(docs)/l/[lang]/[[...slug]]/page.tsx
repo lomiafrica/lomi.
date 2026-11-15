@@ -329,10 +329,14 @@ export async function generateMetadata({
   };
 
   const canonicalPath = page.url.startsWith('/') ? page.url : `/${page.url}`;
+  const noindex =
+    canonicalPath.includes('Controller_') ||
+    slug.some((part) => part.includes('Controller_'));
 
   return createMetadata({
     title: page.data.title,
     description,
+    robots: noindex ? { index: false, follow: false } : undefined,
     alternates: buildDocsAlternates(canonicalPath),
     openGraph: {
       url: `${origin}${canonicalPath}`,

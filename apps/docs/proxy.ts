@@ -7,7 +7,8 @@ import {
 } from '@/lib/seo/agent-discovery';
 import {
   buildDocsInternalLocalePath,
-  docsLocaleFromRequestCookies,
+  docsLanguageCookieValue,
+  docsLocaleForRequest,
   docsMarkdownAcceptRewritePath,
   isDocsMachinePath,
   parseDocsLocalePath,
@@ -120,11 +121,18 @@ export default function proxy(request: NextRequest) {
     }
   }
 
-  const locale = docsLocaleFromRequestCookies(request.cookies);
+  const locale = docsLocaleForRequest(
+    docsLanguageCookieValue(request.cookies),
+    request.headers.get('accept-language'),
+  );
   const url = request.nextUrl.clone();
   url.pathname = buildDocsInternalLocalePath(locale, pathname);
-  const response = NextResponse.rewrite(url);
-  response.headers.set('Vary', 'Cookie, Accept');
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-docs-locale', locale);
+  const response = NextResponse.rewrite(url, {
+    request: { headers: requestHeaders },
+  });
+  response.headers.set('Vary', 'Cookie, Accept, Accept-Language');
   return withDiscoveryHeaders(request, response);
 }
 

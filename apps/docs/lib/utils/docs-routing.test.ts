@@ -8,18 +8,30 @@ import {
   isDocsInternalLocalePath,
   isDocsMachinePath,
   parseDocsInternalLocalePath,
+  docsLocaleForRequest,
+  docsLocaleFromAcceptLanguage,
   parseDocsLang,
 } from './docs-routing';
 
-test('parseDocsLang defaults to fr', () => {
-  assert.equal(parseDocsLang(undefined), 'fr');
+test('parseDocsLang defaults to en', () => {
+  assert.equal(parseDocsLang(undefined), 'en');
   assert.equal(parseDocsLang('en'), 'en');
-  assert.equal(parseDocsLang('de'), 'fr');
+  assert.equal(parseDocsLang('fr'), 'fr');
+  assert.equal(parseDocsLang('de'), 'en');
 });
 
 test('docsLocaleFromCookieValue', () => {
   assert.equal(docsLocaleFromCookieValue('en'), 'en');
-  assert.equal(docsLocaleFromCookieValue(null), 'fr');
+  assert.equal(docsLocaleFromCookieValue('fr'), 'fr');
+  assert.equal(docsLocaleFromCookieValue(null), 'en');
+});
+
+test('docsLocaleForRequest prefers the cookie, then Accept-Language', () => {
+  assert.equal(docsLocaleForRequest('fr', 'en'), 'fr');
+  assert.equal(docsLocaleForRequest(null, null), 'en');
+  assert.equal(docsLocaleForRequest(undefined, 'fr-FR,fr;q=0.9'), 'fr');
+  assert.equal(docsLocaleForRequest(null, 'en-US,en;q=0.9,fr;q=0.8'), 'en');
+  assert.equal(docsLocaleFromAcceptLanguage('de, zh;q=0.5'), null);
 });
 
 test('internal locale paths', () => {

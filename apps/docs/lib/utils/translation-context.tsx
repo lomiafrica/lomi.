@@ -12,7 +12,7 @@ interface TranslationContextType {
 }
 
 const TranslationContext = createContext<TranslationContextType>({
-  currentLanguage: 'fr',
+  currentLanguage: 'en',
   setLanguage: () => {},
 });
 
@@ -39,7 +39,7 @@ function writeLanguageCookie(lang: Language): void {
 export function TranslationProvider({
   children,
   /** Server-read cookie value so the first client paint matches the server. */
-  initialLanguage = 'fr',
+  initialLanguage = 'en',
 }: {
   children: React.ReactNode;
   initialLanguage?: Language;

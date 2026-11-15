@@ -110,13 +110,56 @@ type ParsedDocsLocalePath = {
 /**
  * Internal App Router prefix used so each locale can be statically generated
  * while public URLs stay unprefixed. Middleware rewrites `/start/overview` to
- * `/l/fr/start/overview` (or `/l/en/...`) from the language cookie. The
- * matcher skips `/l/` so the rewritten request is not redirected in a loop.
+ * `/l/en/start/overview` (or `/l/fr/...`) from the language cookie, then
+ * Accept-Language. The matcher skips `/l/` so the rewritten request is not
+ * redirected in a loop.
  */
 export const DOCS_INTERNAL_LOCALE_PREFIX = '/l';
 
 export function parseDocsLang(value: string | undefined | null): Language {
-  return value === 'en' || value === 'fr' ? value : 'fr';
+  return value === 'en' || value === 'fr' ? value : 'en';
+}
+
+/** Best `en` or `fr` match in an Accept-Language header. Null when neither is listed. */
+export function docsLocaleFromAcceptLanguage(
+  header: string | null | undefined,
+): Language | null {
+  if (!header) return null;
+  let best: { locale: Language; q: number; index: number } | null = null;
+  header.split(',').forEach((part, index) => {
+    const [tagRaw, ...params] = part.trim().split(';');
+    const tag = tagRaw.trim().toLowerCase();
+    const locale: Language | null = tag.startsWith('fr')
+      ? 'fr'
+      : tag.startsWith('en')
+        ? 'en'
+        : null;
+    if (!locale) return;
+    let q = 1;
+    for (const param of params) {
+      const [key, value] = param.trim().split('=');
+      if (key?.toLowerCase() !== 'q') continue;
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) q = parsed;
+    }
+    if (q <= 0) return;
+    if (!best || q > best.q || (q === best.q && index < best.index)) {
+      best = { locale, q, index };
+    }
+  });
+  return best?.locale ?? null;
+}
+
+/**
+ * Cookie wins. With no cookie, French Accept-Language renders French.
+ * Everything else, including a crawler with no language, renders English.
+ */
+export function docsLocaleForRequest(
+  cookieValue: string | undefined | null,
+  acceptLanguage: string | null | undefined,
+): Language {
+  if (cookieValue === 'en' || cookieValue === 'fr') return cookieValue;
+  return docsLocaleFromAcceptLanguage(acceptLanguage) ?? 'en';
 }
 
 export function docsLocaleFromCookieValue(
@@ -156,10 +199,16 @@ export function buildDocsInternalLocalePath(
   return `${DOCS_INTERNAL_LOCALE_PREFIX}/${locale}${path}`;
 }
 
+export function docsLanguageCookieValue(getCookie: {
+  get: (name: string) => { value: string } | undefined;
+}): string | undefined {
+  return getCookie.get(Cookies.Language)?.value;
+}
+
 export function docsLocaleFromRequestCookies(getCookie: {
   get: (name: string) => { value: string } | undefined;
 }): Language {
-  return docsLocaleFromCookieValue(getCookie.get(Cookies.Language)?.value);
+  return docsLocaleFromCookieValue(docsLanguageCookieValue(getCookie));
 }
 
 export function parseDocsLocalePath(pathname: string): ParsedDocsLocalePath {
