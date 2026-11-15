@@ -103,6 +103,7 @@ export default async function Layout({
   const { lang } = await params;
   const locale = parseDocsLang(lang);
   setDocsLocale(locale);
+  const htmlLang = locale === 'fr' ? 'fr' : 'en';
   const requestedTree = source.getPageTree(locale);
   const fallbackLocale: Language = locale === 'fr' ? 'en' : 'fr';
   const treeLocale =
@@ -144,6 +145,13 @@ export default async function Layout({
 
   return (
     <Provider initialLanguage={locale}>
+      {/* The root layout renders <html lang="en"> and cannot see this route
+          param, so correct the document lang at parse time per locale. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(htmlLang)};`,
+        }}
+      />
       <DocsAppLayout
         {...base}
         i18n={false}

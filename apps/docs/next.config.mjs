@@ -131,7 +131,7 @@ const config = {
         // rewrite responses, so it must be set here or a CDN could serve one
         // visitor's language to another.
         source:
-          '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|ico|json|txt|xml|woff2?)$).*)',
+          '/:path((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|ico|json|txt|xml|woff2?)$).*)',
         headers: [
           {
             key: 'Vary',

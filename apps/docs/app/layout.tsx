@@ -7,36 +7,23 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { SiteJsonLd } from '@/components/seo/site-json-ld';
-import { parseDocsLang } from '@/lib/utils/docs-routing';
-import type { Language } from '@/lib/i18n/config';
 
 const docsOrigin = getDocsSiteOrigin();
 
 const title = 'lomi.';
 const descriptionEn =
   'A suite of APIs for online payment processing and commerce in Africa. Collect, pay out, and automate financial workflows.';
-const descriptionFr =
-  "Suite d'API pour le traitement des paiements en ligne et le commerce en Afrique. Encaissez, versez et automatisez vos flux financiers.";
 
 /**
- * Locale comes from the `/l/[lang]` route param (set by the proxy rewrite from
- * the language cookie or Accept-Language). Reading `headers()` here instead
- * would opt every docs page out of static generation — the `[[...slug]]` pages
- * require static output, so this layout must stay request-data-free.
+ * The default description is English: crawlers get the English default, and
+ * per-locale pages override it in their own metadata. Reading `headers()` here
+ * for the locale would opt every docs page out of static generation (the
+ * `[[...slug]]` pages require static output), and layouts only receive params
+ * for their own segment, so `/l/[lang]` is not visible at this level.
  */
-async function layoutDocsLocale(
-  params: Promise<{ lang?: string }>,
-): Promise<Language> {
-  return parseDocsLang((await params).lang);
-}
+const description = descriptionEn;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang?: string }>;
-}): Promise<Metadata> {
-  const locale = await layoutDocsLocale(params);
-  const description = locale === 'fr' ? descriptionFr : descriptionEn;
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: {
       default: title,
@@ -110,8 +97,8 @@ export async function generateMetadata({
       title,
       description,
       siteName: 'lomi.',
-      locale: locale === 'fr' ? 'fr_FR' : 'en_US',
-      alternateLocale: [locale === 'fr' ? 'en_US' : 'fr_FR'],
+      locale: 'en_US',
+      alternateLocale: ['fr_FR'],
       images: [
         {
           url: '/banner.webp',
@@ -151,16 +138,16 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  params,
 }: {
   children: ReactNode;
-  params: Promise<{ lang?: string }>;
 }) {
-  const locale = await layoutDocsLocale(params);
+  // The html lang is corrected per locale at parse time by the [lang] layout —
+  // layouts only receive params for their own segment, so the root layout
+  // cannot see `/l/[lang]` and must stay 'en' in the raw document.
   return (
-    <html lang={locale} className={font.className} suppressHydrationWarning>
+    <html lang="en" className={font.className} suppressHydrationWarning>
       <body className="relative flex min-h-screen flex-col">
         <SiteJsonLd />
         {children}
