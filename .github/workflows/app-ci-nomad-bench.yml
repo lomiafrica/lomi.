@@ -45,6 +45,19 @@ jobs:
       - name: Install API dependencies
         run: node tooling/scripts/install-app-with-packages.mjs apps/api
 
+      - name: Refuse the production database
+        env:
+          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.ASSISTANT_E2E_SUPABASE_URL }}
+          SUPABASE_PROD_PROJECT_REF: ${{ secrets.SUPABASE_PROD_PROJECT_REF }}
+        run: |
+          if [[ -z "$ASSISTANT_E2E_SUPABASE_URL" || -z "$SUPABASE_PROD_PROJECT_REF" ]]; then
+            echo "Bench database target is not configured. Refusing." >&2
+            exit 1
+          fi
+          if [[ "$ASSISTANT_E2E_SUPABASE_URL" == *"$SUPABASE_PROD_PROJECT_REF"* ]]; then
+            echo "Nomad bench was pointed at the production database. Refusing." >&2
+            exit 1
+          fi
       - name: Nomad bench
         working-directory: apps/api
         env:
@@ -52,8 +65,8 @@ jobs:
           ASSISTANT_E2E_PASSWORD: ${{ secrets.ASSISTANT_E2E_PASSWORD }}
           ASSISTANT_E2E_ORG: ${{ secrets.ASSISTANT_BENCH_ORG }}
           ASSISTANT_E2E_API_URL: ${{ secrets.ASSISTANT_E2E_API_URL }}
-          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          ASSISTANT_E2E_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.ASSISTANT_E2E_SUPABASE_URL }}
+          ASSISTANT_E2E_SUPABASE_ANON_KEY: ${{ secrets.ASSISTANT_E2E_SUPABASE_ANON_KEY }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             pnpm synthetics:nomad-bench -- --tier=core --budget-usd=2 --arm=baseline

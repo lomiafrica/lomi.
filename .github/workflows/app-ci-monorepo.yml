@@ -7,6 +7,13 @@ on:
     branches: [main]
 
 jobs:
+  live-db-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Refuse live database access outside backup
+        run: node .github/scripts/assert-ci-avoids-live-db.mjs .github/workflows --allow-db-url .github/workflows/app-backup-supabase.yml
+
   detect-changes:
     runs-on: ubuntu-latest
     outputs:

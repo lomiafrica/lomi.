@@ -1,5 +1,8 @@
 name: lomi · backup · supabase · db
 
+# The only workflow allowed to read the live database. The CI guard
+# rejects secrets.SUPABASE_DB_URL everywhere else.
+
 on:
   workflow_dispatch:
   schedule:

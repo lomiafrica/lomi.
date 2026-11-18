@@ -29,11 +29,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [prod, test]
+        target: [test]
     env:
       TARGET: ${{ matrix.target }}
-      SUPABASE_DB_URL: ${{ matrix.target == 'prod' && secrets.SUPABASE_DB_URL || secrets.SUPABASE_DB_TEST_URL }}
-      EXPECTED_PROJECT_REF: ${{ matrix.target == 'prod' && secrets.SUPABASE_PROD_PROJECT_REF || secrets.SUPABASE_TEST_PROJECT_REF }}
+      # Production is not a target. The live database URL belongs to the backup job only.
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+      EXPECTED_PROJECT_REF: ${{ secrets.SUPABASE_TEST_PROJECT_REF }}
     steps:
       - uses: actions/checkout@v5
 
