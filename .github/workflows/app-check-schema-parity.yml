@@ -1,0 +1,36 @@
+name: lomi · check · schema parity
+
+# Read-only. Compares public tables, views, enums, and function names.
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout the API
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/api
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+      - name: Install API dependencies
+        run: node tooling/scripts/install-app-with-packages.mjs apps/api
+      - name: Compare test and production catalogs
+        working-directory: apps/api
+        env:
+          SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+          SUPABASE_DB_PROD_URL: ${{ secrets.SUPABASE_DB_PROD_URL }}
+        run: node scripts/schema-parity.mjs

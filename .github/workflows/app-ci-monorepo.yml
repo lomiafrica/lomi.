@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Refuse live database access outside backup
-        run: node .github/scripts/assert-ci-avoids-live-db.mjs .github/workflows --allow-db-url .github/workflows/app-backup-supabase.yml
+        run: node .github/scripts/assert-ci-avoids-live-db.mjs .github/workflows --allow-db-url .github/workflows/app-backup-supabase.yml --allow-db-url .github/workflows/app-watch-money.yml
 
   detect-changes:
     runs-on: ubuntu-latest
@@ -162,6 +162,10 @@ jobs:
         run: node tooling/scripts/install-app-with-packages.mjs apps/api
       - name: Money-core migrations contract
         run: pnpm exec jest src/core/__tests__/money-core.contract.spec.ts
+      - name: Refuse the production database
+        env:
+          SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}
+        run: node --experimental-strip-types scripts/refuse-prod-target.ts --database SUPABASE_DB_TEST_URL
       - name: DB integration suite on lomi TEST
         env:
           SUPABASE_DB_TEST_URL: ${{ secrets.SUPABASE_DB_TEST_URL }}

@@ -47,6 +47,12 @@ jobs:
             echo "Assistant CI was pointed at the production database. Refusing." >&2
             exit 1
           fi
+      - name: Refuse a production API host
+        working-directory: apps/api
+        env:
+          ASSISTANT_E2E_API_URL: ${{ secrets.ASSISTANT_E2E_API_URL }}
+          ASSISTANT_E2E_SUPABASE_URL: ${{ secrets.ASSISTANT_E2E_SUPABASE_URL }}
+        run: node --experimental-strip-types scripts/refuse-prod-target.ts --http ASSISTANT_E2E_API_URL --database ASSISTANT_E2E_SUPABASE_URL
       - name: Live assistant HTTP
         working-directory: apps/api
         env:

@@ -1,0 +1,75 @@
+name: lomi · watch · payments and payouts
+
+# Read-only. Prices a live payment and a payout fee, then checks that recent
+# live payments were credited and that payouts are not stuck. It does not
+# create a checkout, a payout, or any other row.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  money:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up IPv6 egress
+        uses: ./.github/actions/setup-ipv6-warp
+
+      - name: Resolve production database URL
+        run: |
+          set -euo pipefail
+          url="$(printf '%s' "$SUPABASE_DB_URL" | tr -d '\r\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+          if [ -z "$url" ]; then
+            echo "::error::SUPABASE_DB_URL is not set"
+            exit 1
+          fi
+          case "$url" in
+            postgres://*|postgresql://*) ;;
+            *)
+              echo "::error::SUPABASE_DB_URL must be a Postgres connection string."
+              exit 1
+              ;;
+          esac
+          rest="${url#*://}"
+          userinfo="${rest%%@*}"
+          hostpath="${rest#*@}"
+          user="${userinfo%%:*}"
+          pass="${userinfo#*:}"
+          hostport="${hostpath%%/*}"
+          dbname="${hostpath#*/}"
+          dbname="${dbname%%\?*}"
+          host="${hostport%%:*}"
+          [ -n "$dbname" ] || dbname="postgres"
+          case "$host" in
+            *.pooler.supabase.com)
+              ref="${user#*.}"
+              resolved="postgresql://postgres:${pass}@db.${ref}.supabase.co:5432/${dbname}"
+              echo "::notice::Pooler host detected; using the direct database host."
+              ;;
+            *)
+              resolved="$url"
+              ;;
+          esac
+          echo "::add-mask::$pass"
+          echo "::add-mask::$resolved"
+          printf 'SUPABASE_DB_URL=%s\n' "$resolved" >> "$GITHUB_ENV"
+
+      - name: Install the database client
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/money"
+          cp .github/scripts/prod-money-watch.mjs .github/scripts/prod-money-watch-rules.mjs "$RUNNER_TEMP/money/"
+          npm install --prefix "$RUNNER_TEMP/money" pg@8.23.0
+
+      - name: Check live payments and payouts
+        run: node "$RUNNER_TEMP/money/prod-money-watch.mjs"

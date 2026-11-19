@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Fail if a workflow can open the live database.
- * The backup workflow is the only allowlisted reader of SUPABASE_DB_URL.
+ * The backup workflow and the read-only payment watch are the allowlisted
+ * readers of SUPABASE_DB_URL.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -77,7 +78,7 @@ for (const file of files) {
 
 if (failures.length > 0) {
   console.error(
-    'CI must not open the live database. Only the backup workflow may use secrets.SUPABASE_DB_URL.',
+    'CI must not open the live database. Only backup and the read-only payment watch may use secrets.SUPABASE_DB_URL.',
   );
   for (const failure of failures) console.error(failure);
   process.exit(1);

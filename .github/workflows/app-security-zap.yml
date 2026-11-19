@@ -1,6 +1,6 @@
 name: lomi · security · zap baseline
 
-# Passive baseline against the public origins. Weekly, plus a manual run.
+# Passive baseline. The API scan uses the test API, never api.lomi.africa.
 on:
   schedule:
     - cron: "0 6 * * 1"
@@ -10,13 +10,12 @@ permissions:
   contents: read
 
 jobs:
-  baseline:
+  sites:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         target:
-          - https://api.lomi.africa
           - https://admin.lomi.africa
           - https://dashboard.lomi.africa
     steps:
@@ -24,6 +23,27 @@ jobs:
         uses: zaproxy/action-baseline@v0.14.0
         with:
           target: ${{ matrix.target }}
-          # The report is the evidence. Rule noise should not hide a failed scan.
+          fail_action: false
+          allow_issue_writing: false
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Checkout the API
+        env:
+          TOKEN: ${{ secrets.REPO_CHECKOUT_PAT }}
+        run: bash .github/scripts/init-submodules.sh apps/api
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Refuse the production database
+        working-directory: apps/api
+        env:
+          TEST_API_URL: ${{ secrets.TEST_API_URL }}
+        run: node --experimental-strip-types scripts/refuse-prod-target.ts --http TEST_API_URL
+      - name: ZAP baseline
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ secrets.TEST_API_URL }}
           fail_action: false
           allow_issue_writing: false
