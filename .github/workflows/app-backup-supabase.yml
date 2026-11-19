@@ -6,9 +6,9 @@ name: lomi · backup · supabase · db
 on:
   workflow_dispatch:
   schedule:
-    # Off-platform encrypted DB copy every 3 hours. This is the disaster-recovery
-    # copy in our own S3; Supabase's own backups/PITR cover lower-RPO needs.
-    - cron: "17 */3 * * *"
+    # Hourly. GitHub often delays or drops a 3-hour cron, which left gaps of
+    # 6 to 11 hours. Upload still skips when the dump matches the last archive.
+    - cron: "17 * * * *"
 
 concurrency:
   group: lomi-backup-supabase-db
