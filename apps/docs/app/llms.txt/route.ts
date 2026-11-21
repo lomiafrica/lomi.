@@ -322,7 +322,7 @@ export async function GET() {
   );
   lines.push('');
   lines.push(
-    '**Human claim link:** `POST /provisioning/accounts` without `password` returns `claim_url` (dashboard `/connect/claim?token=`, 7 days, single use). Send this link to the human; they set their own password and own the account. `GET .../onboarding/status` reports `human_claimed` and re-issues `claim_url` until true. Live approval requires a claimed account.',
+    '**Human claim link:** `POST /provisioning/accounts` without `password` emails the human a claim link (`claim_delivery: email`, dashboard `/connect/claim?token=`, 48 hours, single use); they set their own password and own the account. Claim links are never returned to the agent. `GET .../onboarding/status` reports `human_claimed`. Live approval requires a claimed account.',
   );
   lines.push('');
   lines.push('**Test → live (human-gated):**');

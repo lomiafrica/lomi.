@@ -228,7 +228,7 @@ Les écritures exigent toujours `header_Idempotency-Key` ou `idempotency_key`. L
 
 Les outils de provisioning permettent à un agent de créer un compte marchand, déposer les documents KYC, finaliser l’onboarding et récupérer les clés API **test** avant toute clé secrète marchand. Le MCP expose cela via **`lomi_provision`** avec `action` (`create_account`, `upload_document`, `extract`, `complete`, `status`, `api_keys`, `request_live`, `live_status`).
 
-**Lien de réclamation humain.** `create_account` attend `email`, `full_name`, `terms_accepted_at` et `terms_version`. N’envoyez pas de `password` : la réponse contient alors un `claim_url` (`dashboard.lomi.africa/connect/claim?token=...`, valable 7 jours, usage unique). Transmettez ce lien à l’humain ; il y définit son propre mot de passe et devient propriétaire du compte. `status` renvoie `human_claimed` et réémet `claim_url` tant qu’il vaut `false`. `request_live` renvoie aussi `human_claimed` : l’humain doit réclamer le compte avant d’approuver le mode live.
+**Lien de réclamation humain.** `create_account` attend `email`, `full_name`, `terms_accepted_at` et `terms_version`. N’envoyez pas de `password` : l’humain reçoit un lien de réclamation par e-mail (`claim_delivery: email`, `dashboard.lomi.africa/connect/claim?token=...`, valable 48 heures, usage unique) et y définit son propre mot de passe ; il devient propriétaire du compte. Les liens de réclamation ne sont jamais renvoyés à l’agent. `status` renvoie `human_claimed`. `request_live` renvoie aussi `human_claimed` : l’humain doit réclamer le compte avant d’approuver le mode live.
 
 | Valeur | En-tête / env | Rôle |
 | --- | --- | --- |

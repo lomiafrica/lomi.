@@ -422,7 +422,7 @@
     },
     "/provisioning/accounts": {
       "post": {
-        "description": "Creates a Supabase auth user and merchant record. Requires terms acceptance metadata. Omit password to receive claim_url: send it to the human so they set their own password and own the account; poll status for human_claimed.",
+        "description": "Creates a Supabase auth user and merchant record. Requires terms acceptance metadata. Omit password and the human receives a claim link by email (claim_delivery: email) so they set their own password and own the account; claim links are never returned to the agent. Poll status for human_claimed.",
         "operationId": "ProvisioningController_createAccount",
         "parameters": [
           {
@@ -696,7 +696,7 @@
     },
     "/provisioning/merchants/{merchantId}/live-activation/request": {
       "post": {
-        "description": "Creates a live activation request. The merchant must approve on the dashboard before platform review. If human_claimed is false, send claim_url to the human first. Live secret keys are never returned via provisioning.",
+        "description": "Creates a live activation request. The merchant must approve on the dashboard before platform review. If human_claimed is false, the human receives the claim link by email. Live secret keys are never returned via provisioning.",
         "operationId": "ProvisioningController_requestLiveActivation",
         "parameters": [
           {
@@ -1306,7 +1306,7 @@
             "type": "string",
             "minLength": 8,
             "example": "SecurePass123!",
-            "description": "Omit it: the response then includes claim_url. Send that link to the human so they set their own password and take ownership of the account. Only set a password when the human explicitly gave you one."
+            "description": "Omit it: the human receives a claim link by email so they set their own password and take ownership of the account. Only set a password when the human explicitly gave you one."
           },
           "full_name": {
             "type": "string",

@@ -1,7 +1,7 @@
 {
   "POST /provisioning/accounts": {
     "title": "Create a merchant account",
-    "description": "Create a merchant account for agent-driven onboarding. body: email, full_name, terms_accepted_at (ISO 8601), terms_version, optional preferred_language. Leave password out: the response then includes claim_url. Send this link to the human; they set their own password there and own the account. Poll status for human_claimed. Only pass password if the human explicitly gave you one."
+    "description": "Create a merchant account for agent-driven onboarding. body: email, full_name, terms_accepted_at (ISO 8601), terms_version, optional preferred_language. Leave password out: the human receives a claim link by email (claim_delivery: email) and sets their own password; claim links are never returned to you. Poll status for human_claimed. Only pass password if the human explicitly gave you one."
   },
   "POST /provisioning/merchants/{merchantId}/onboarding/documents": {
     "title": "Upload a KYC document",
@@ -13,10 +13,10 @@
   },
   "GET /provisioning/merchants/{merchantId}/onboarding/status": {
     "title": "Get onboarding status",
-    "description": "Return onboarding progress, KYC, verification, human_claimed, and next_step. Follow next_step. It says to send claim_url, upload the identity photo (and the RCCM for a registered business), wait for the identity check, ask for a new document after a rejection, use test merchant tools, or send the person to the dashboard for live mode. Live secret keys are never returned."
+    "description": "Return onboarding progress, KYC, verification, human_claimed, and next_step. Follow next_step. It covers the emailed claim link, the identity photo upload (and the RCCM for a registered business), the identity check, a new document after a rejection, test merchant tools, and sending the person to the dashboard for live mode. Live secret keys are never returned."
   },
   "POST /provisioning/merchants/{merchantId}/live-activation/request": {
     "title": "Request live mode activation",
-    "description": "Ask to move the merchant from TEST to LIVE. Returns merchant_approval_path (the human approves on the dashboard) and human_claimed. If human_claimed is false, send claim_url to the human first, then merchant_approval_path. Live secret keys are never returned here; the human reads them in the dashboard."
+    "description": "Ask to move the merchant from TEST to LIVE. Returns merchant_approval_path (the human approves on the dashboard) and human_claimed. If human_claimed is false, the human receives the claim link by email first, then approves at merchant_approval_path. Live secret keys are never returned here; the human reads them in the dashboard."
   }
 }

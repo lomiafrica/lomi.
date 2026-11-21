@@ -228,7 +228,7 @@ Writes still need `header_Idempotency-Key` or `idempotency_key`. Live Network re
 
 Provisioning tools let an agent create a merchant account, upload KYC documents, complete onboarding, and retrieve **test** API keys before any merchant secret exists. MCP exposes this as **`lomi_provision`** with `action` (`create_account`, `upload_document`, `extract`, `complete`, `status`, `api_keys`, `request_live`, `live_status`).
 
-**Human claim link.** `create_account` needs `email`, `full_name`, `terms_accepted_at`, and `terms_version`. Leave `password` out: the response includes a `claim_url` (`dashboard.lomi.africa/connect/claim?token=...`, valid 7 days, single use). Send this link to the human; they set their own password there and own the account. `status` reports `human_claimed` and re-issues `claim_url` until it flips to `true`. `request_live` returns `human_claimed` too: the human must claim before approving live mode.
+**Human claim link.** `create_account` needs `email`, `full_name`, `terms_accepted_at`, and `terms_version`. Leave `password` out: the human receives a claim link by email (`claim_delivery: email`, `dashboard.lomi.africa/connect/claim?token=...`, valid 48 hours, single use) and sets their own password; they own the account. Claim links are never returned to the agent. `status` reports `human_claimed`. `request_live` returns `human_claimed` too: the human must claim before approving live mode.
 
 | Value | Header / env | Purpose |
 | --- | --- | --- |
