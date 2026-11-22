@@ -80,19 +80,23 @@ export class RiskService {
       refunds = count ?? 0;
     }
 
-    const { data: disputeRows, error: disputeError } = await this.supabase
-      .from('disputes')
-      .select('dispute_id, status')
-      .eq('organization_id', organizationId)
-      .eq('environment', environment)
-      .gte('created_at', since);
-    if (disputeError) {
-      throw new Error(`disputes read failed: ${disputeError.message}`);
+    // Disputes link to the org through its transactions (no org column).
+    let disputes = 0;
+    let lostDisputes = 0;
+    if (txIds.length > 0) {
+      const { data: disputeRows, error: disputeError } = await this.supabase
+        .from('disputes')
+        .select('dispute_id, status')
+        .in('transaction_id', txIds)
+        .gte('created_at', since);
+      if (disputeError) {
+        throw new Error(`disputes read failed: ${disputeError.message}`);
+      }
+      disputes = disputeRows?.length ?? 0;
+      lostDisputes = (disputeRows ?? []).filter(
+        (d) => d.status === 'lost',
+      ).length;
     }
-    const disputes = disputeRows?.length ?? 0;
-    const lostDisputes = (disputeRows ?? []).filter(
-      (d) => d.status === 'lost',
-    ).length;
 
     const authRate =
       completed + failed > 0 ? (completed / (completed + failed)) * 100 : 100;
@@ -100,11 +104,24 @@ export class RiskService {
     const disputeRate = sales > 0 ? (disputes / sales) * 100 : 0;
     const chargebackRate = sales > 0 ? (lostDisputes / sales) * 100 : 0;
 
+    // Volume floors: rates from tiny samples are noise, not signal. Below the
+    // floor the metric stays ok regardless of its value.
+    const MIN_AUTH_ATTEMPTS = 20;
+    const MIN_RATE_SALES = 10;
+
     const verdicts: Record<string, ThresholdVerdict> = {
-      authRate: AUTH_RATE.evaluate(authRate),
-      refundRate: REFUND_RATE.evaluate(refundRate),
-      disputeRate: DISPUTE_RATE.evaluate(disputeRate),
-      chargebackRate: CHARGEBACK_RATE.evaluate(chargebackRate),
+      authRate:
+        completed + failed >= MIN_AUTH_ATTEMPTS
+          ? AUTH_RATE.evaluate(authRate)
+          : 'ok',
+      refundRate:
+        sales >= MIN_RATE_SALES ? REFUND_RATE.evaluate(refundRate) : 'ok',
+      disputeRate:
+        sales >= MIN_RATE_SALES ? DISPUTE_RATE.evaluate(disputeRate) : 'ok',
+      chargebackRate:
+        sales >= MIN_RATE_SALES
+          ? CHARGEBACK_RATE.evaluate(chargebackRate)
+          : 'ok',
     };
     const overall = overallVerdict(Object.values(verdicts));
 
