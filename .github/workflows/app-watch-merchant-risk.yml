@@ -1,0 +1,51 @@
+name: lomi · watch · merchant risk
+
+# Weekly merchant radar scan. Calls the read-and-alert endpoint on the
+# production API; crossings land in fraud_alerts. It changes nothing about
+# charges or payouts.
+#
+# Required secrets:
+#   LOMI_API_URL      e.g. https://api.lomi.africa
+#   INTERNAL_API_KEY  same value as the API's INTERNAL_API_KEY env
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  merchant-risk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      LOMI_API_URL: ${{ secrets.LOMI_API_URL }}
+      INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
+    steps:
+      - name: Scan live sellers against merchant risk thresholds
+        run: |
+          set -euo pipefail
+          base="$(printf '%s' "$LOMI_API_URL" | tr -d '\r\n' | sed 's:/*$::')"
+          if [ -z "$base" ]; then
+            echo "::error::LOMI_API_URL is not set"
+            exit 1
+          fi
+          if [ -z "${INTERNAL_API_KEY:-}" ]; then
+            echo "::error::INTERNAL_API_KEY is not set"
+            exit 1
+          fi
+          response="$(mktemp)"
+          code="$(curl -sS -o "$response" -w '%{http_code}' \
+            -X POST "$base/internal/radar/merchant-risk-scan" \
+            -H "content-type: application/json" \
+            -H "x-internal-key: $INTERNAL_API_KEY" \
+            -d '{"limit": 200}' \
+            --max-time 900)"
+          cat "$response"
+          echo
+          if [ "$code" != "200" ] && [ "$code" != "201" ]; then
+            echo "::error::merchant risk scan failed with HTTP $code"
+            exit 1
+          fi
