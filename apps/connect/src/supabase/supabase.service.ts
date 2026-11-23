@@ -1,5 +1,5 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Service-role client. This service is the only writer of the acquiring
@@ -14,7 +14,7 @@ export class SupabaseService {
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
     if (!url || !key) {
       throw new ServiceUnavailableException(
-        'connect service is not configured',
+        "connect service is not configured",
       );
     }
     this.client = createClient(url, key, {
@@ -24,13 +24,5 @@ export class SupabaseService {
 
   from(table: string) {
     return this.client.from(table);
-  }
-
-  async rpcJson<T = unknown>(fn: string, args: Record<string, unknown>) {
-    const { data, error } = await this.client.rpc(fn, args);
-    if (error) {
-      throw new Error(`${fn}: ${error.message}`);
-    }
-    return data as T;
   }
 }

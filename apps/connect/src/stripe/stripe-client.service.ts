@@ -2,18 +2,19 @@ import {
   Injectable,
   Logger,
   ServiceUnavailableException,
-} from '@nestjs/common';
-import Stripe from 'stripe';
+} from "@nestjs/common";
+import Stripe from "stripe";
 
-export type ConnectEnvironment = 'live' | 'test';
+export type ConnectEnvironment = "live" | "test";
 
 const STRIPE_API_VERSION =
-  '2025-11-17.clover' as Stripe.StripeConfig['apiVersion'];
+  // SAFETY: pinned Stripe API version string narrowed to the SDK's version union.
+  "2025-11-17.clover" as Stripe.StripeConfig["apiVersion"];
 
 export function normalizeEnvironment(
   value?: string | null,
 ): ConnectEnvironment {
-  return value === 'live' ? 'live' : 'test';
+  return value === "live" ? "live" : "test";
 }
 
 /**
@@ -29,11 +30,11 @@ export function resolveConnectSecretKey(
   const testKey = process.env.STRIPE_CONNECT_SECRET_KEY_TEST?.trim();
   const liveKey = process.env.STRIPE_CONNECT_SECRET_KEY?.trim();
 
-  if (env === 'test') {
+  if (env === "test") {
     if (testKey) {
       return testKey;
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       return undefined;
     }
     return liveKey;
@@ -75,7 +76,7 @@ export class StripeClientService {
         `Platform card credentials are missing for the "${env}" environment on this connect instance.`,
       );
       throw new ServiceUnavailableException(
-        'Card onboarding is temporarily unavailable.',
+        "Card onboarding is temporarily unavailable.",
       );
     }
 
@@ -87,9 +88,11 @@ export class StripeClientService {
   /** Webhook follow-up calls after signature verify (uses event.livemode). */
   getClientForLivemode(livemode: boolean): Stripe | undefined {
     try {
-      return this.getClient(livemode ? 'live' : 'test');
+      return this.getClient(livemode ? "live" : "test");
     } catch {
-      this.logger.warn(`Platform secret not configured for livemode=${livemode}`);
+      this.logger.warn(
+        `Platform secret not configured for livemode=${livemode}`,
+      );
       return undefined;
     }
   }
@@ -100,7 +103,7 @@ export class StripeClientService {
   ): Stripe.Event {
     const secrets = resolveConnectWebhookSecrets();
     if (secrets.length === 0) {
-      throw new Error('No platform webhook secrets configured');
+      throw new Error("No platform webhook secrets configured");
     }
 
     let lastError: unknown;
@@ -114,6 +117,6 @@ export class StripeClientService {
 
     throw lastError instanceof Error
       ? lastError
-      : new Error('Platform webhook signature verification failed');
+      : new Error("Platform webhook signature verification failed");
   }
 }

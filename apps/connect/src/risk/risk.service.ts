@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SupabaseService } from '../supabase/supabase.service';
+import { Injectable, Logger } from "@nestjs/common";
+import { isJsonObject, isString } from "../json";
+import { SupabaseService } from "../supabase/supabase.service";
 import {
   ALL_THRESHOLDS,
   AUTH_RATE,
@@ -9,13 +10,13 @@ import {
   REFUND_RATE,
   type OverallRiskVerdict,
   type ThresholdVerdict,
-} from './thresholds';
+} from "./thresholds";
 
 const WINDOW_DAYS = 90;
 
 export interface MerchantRiskReport {
   organizationId: string;
-  environment: 'live' | 'test';
+  environment: "live" | "test";
   windowDays: number;
   sales: number;
   metrics: {
@@ -24,7 +25,12 @@ export interface MerchantRiskReport {
     disputeRate: number;
     chargebackRate: number;
   };
-  verdicts: Record<string, ThresholdVerdict>;
+  verdicts: {
+    authRate: ThresholdVerdict;
+    refundRate: ThresholdVerdict;
+    disputeRate: ThresholdVerdict;
+    chargebackRate: ThresholdVerdict;
+  };
   overall: OverallRiskVerdict;
   computedAt: string;
 }
@@ -43,37 +49,38 @@ export class RiskService {
 
   async evaluate(
     organizationId: string,
-    environment: 'live' | 'test',
+    environment: "live" | "test",
   ): Promise<MerchantRiskReport> {
     const since = new Date(
       Date.now() - WINDOW_DAYS * 24 * 60 * 60 * 1000,
     ).toISOString();
 
     const { data: txRows, error: txError } = await this.supabase
-      .from('transactions')
-      .select('transaction_id, status')
-      .eq('organization_id', organizationId)
-      .eq('environment', environment)
-      .gte('created_at', since);
+      .from("transactions")
+      .select("transaction_id, status")
+      .eq("organization_id", organizationId)
+      .eq("environment", environment)
+      .gte("created_at", since);
     if (txError) {
       throw new Error(`transactions read failed: ${txError.message}`);
     }
 
     const rows = txRows ?? [];
-    const completed = rows.filter((r) => r.status === 'completed').length;
-    const failed = rows.filter((r) => r.status === 'failed').length;
+    const completed = rows.filter((r) => r.status === "completed").length;
+    const failed = rows.filter((r) => r.status === "failed").length;
     const sales = completed;
 
     const txIds = rows
-      .filter((r) => r.status === 'completed')
-      .map((r) => r.transaction_id as string);
+      .filter((r) => r.status === "completed")
+      .map((r) => r.transaction_id)
+      .filter(isString);
 
     let refunds = 0;
     if (txIds.length > 0) {
       const { count, error } = await this.supabase
-        .from('refunds')
-        .select('refund_id', { count: 'exact', head: true })
-        .in('transaction_id', txIds);
+        .from("refunds")
+        .select("refund_id", { count: "exact", head: true })
+        .in("transaction_id", txIds);
       if (error) {
         throw new Error(`refunds read failed: ${error.message}`);
       }
@@ -85,16 +92,16 @@ export class RiskService {
     let lostDisputes = 0;
     if (txIds.length > 0) {
       const { data: disputeRows, error: disputeError } = await this.supabase
-        .from('disputes')
-        .select('dispute_id, status')
-        .in('transaction_id', txIds)
-        .gte('created_at', since);
+        .from("disputes")
+        .select("dispute_id, status")
+        .in("transaction_id", txIds)
+        .gte("created_at", since);
       if (disputeError) {
         throw new Error(`disputes read failed: ${disputeError.message}`);
       }
       disputes = disputeRows?.length ?? 0;
       lostDisputes = (disputeRows ?? []).filter(
-        (d) => d.status === 'lost',
+        (d) => d.status === "lost",
       ).length;
     }
 
@@ -109,19 +116,19 @@ export class RiskService {
     const MIN_AUTH_ATTEMPTS = 20;
     const MIN_RATE_SALES = 10;
 
-    const verdicts: Record<string, ThresholdVerdict> = {
+    const verdicts = {
       authRate:
         completed + failed >= MIN_AUTH_ATTEMPTS
           ? AUTH_RATE.evaluate(authRate)
-          : 'ok',
+          : "ok",
       refundRate:
-        sales >= MIN_RATE_SALES ? REFUND_RATE.evaluate(refundRate) : 'ok',
+        sales >= MIN_RATE_SALES ? REFUND_RATE.evaluate(refundRate) : "ok",
       disputeRate:
-        sales >= MIN_RATE_SALES ? DISPUTE_RATE.evaluate(disputeRate) : 'ok',
+        sales >= MIN_RATE_SALES ? DISPUTE_RATE.evaluate(disputeRate) : "ok",
       chargebackRate:
         sales >= MIN_RATE_SALES
           ? CHARGEBACK_RATE.evaluate(chargebackRate)
-          : 'ok',
+          : "ok",
     };
     const overall = overallVerdict(Object.values(verdicts));
 
@@ -148,16 +155,17 @@ export class RiskService {
   /** Store the latest evaluation on the acquiring account row, if any. */
   private async persist(report: MerchantRiskReport) {
     const { data: account } = await this.supabase
-      .from('organization_acquiring_accounts')
-      .select('acquiring_account_id, metadata')
-      .eq('organization_id', report.organizationId)
-      .eq('environment', report.environment)
+      .from("organization_acquiring_accounts")
+      .select("acquiring_account_id, metadata")
+      .eq("organization_id", report.organizationId)
+      .eq("environment", report.environment)
       .maybeSingle();
     if (!account) {
       return;
     }
+    const current = isJsonObject(account.metadata) ? account.metadata : {};
     const metadata = {
-      ...((account.metadata ?? {}) as Record<string, unknown>),
+      ...current,
       risk_metrics: {
         metrics: report.metrics,
         verdicts: report.verdicts,
@@ -167,9 +175,9 @@ export class RiskService {
       },
     };
     const { error } = await this.supabase
-      .from('organization_acquiring_accounts')
+      .from("organization_acquiring_accounts")
       .update({ metadata, updated_at: new Date().toISOString() })
-      .eq('acquiring_account_id', account.acquiring_account_id);
+      .eq("acquiring_account_id", account.acquiring_account_id);
     if (error) {
       this.logger.warn(`risk metrics persist failed: ${error.message}`);
     }

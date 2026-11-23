@@ -138,11 +138,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   // The html lang is corrected per locale at parse time by the [lang] layout —
   // layouts only receive params for their own segment, so the root layout
   // cannot see `/l/[lang]` and must stay 'en' in the raw document.

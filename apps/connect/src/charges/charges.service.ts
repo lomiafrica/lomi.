@@ -2,14 +2,15 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import Stripe from 'stripe';
-import { StripeClientService } from '../stripe/stripe-client.service';
-import { SupabaseService } from '../supabase/supabase.service';
+} from "@nestjs/common";
+import Stripe from "stripe";
+import { StripeClientService } from "../stripe/stripe-client.service";
+import { isString } from "../json";
+import { SupabaseService } from "../supabase/supabase.service";
 
 export interface CreateChargeInput {
   organizationId: string;
-  environment: 'live' | 'test';
+  environment: "live" | "test";
   amountCents: number;
   currency: string;
   /** lomi.'s merchant-facing fee in the charge currency's minor units. */
@@ -18,17 +19,17 @@ export interface CreateChargeInput {
   paymentMethodTypes: string[];
   customerEmail?: string;
   lomiCustomerId?: string;
-  captureMethod?: 'automatic' | 'manual';
+  captureMethod?: "automatic" | "manual";
   statementDescriptorSuffix?: string;
   idempotencyKey: string;
 }
 
 export interface RefundChargeInput {
   organizationId: string;
-  environment: 'live' | 'test';
+  environment: "live" | "test";
   paymentIntentId: string;
   amountCents?: number;
-  reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer';
+  reason?: "duplicate" | "fraudulent" | "requested_by_customer";
   idempotencyKey: string;
 }
 
@@ -56,12 +57,12 @@ export class ChargesService {
       amount: input.amountCents,
       currency: input.currency,
       payment_method_types: input.paymentMethodTypes,
-      metadata: { ...input.metadata, acquiring: 'connect' },
+      metadata: { ...input.metadata, acquiring: "connect" },
       transfer_data: { destination: account },
       on_behalf_of: account,
       application_fee_amount: input.applicationFeeAmountCents,
     };
-    if (input.captureMethod && input.captureMethod !== 'automatic') {
+    if (input.captureMethod && input.captureMethod !== "automatic") {
       params.capture_method = input.captureMethod;
     }
     if (input.statementDescriptorSuffix) {
@@ -71,7 +72,7 @@ export class ChargesService {
     const customerId = await this.resolveCustomer(client, input);
     if (customerId) {
       params.customer = customerId;
-      params.setup_future_usage = 'off_session';
+      params.setup_future_usage = "off_session";
     }
 
     const paymentIntent = await client.paymentIntents.create(params, {
@@ -118,25 +119,26 @@ export class ChargesService {
     environment: string,
   ): Promise<string> {
     const { data, error } = await this.supabase
-      .from('organization_acquiring_accounts')
-      .select('stripe_account_id, charges_enabled')
-      .eq('organization_id', organizationId)
-      .eq('environment', environment)
+      .from("organization_acquiring_accounts")
+      .select("stripe_account_id, charges_enabled")
+      .eq("organization_id", organizationId)
+      .eq("environment", environment)
       .maybeSingle();
     if (error) {
       throw new Error(`acquiring account read failed: ${error.message}`);
     }
     if (!data) {
       throw new NotFoundException(
-        'No card account for this organization in this environment.',
+        "No card account for this organization in this environment.",
       );
     }
     if (!data.charges_enabled) {
-      throw new BadRequestException(
-        'Card account is not ready to charge yet.',
-      );
+      throw new BadRequestException("Card account is not ready to charge yet.");
     }
-    return data.stripe_account_id as string;
+    if (!isString(data.stripe_account_id)) {
+      throw new Error("card account id is missing");
+    }
+    return data.stripe_account_id;
   }
 
   /** Customers live on the platform account; keyed by the lomi. customer id. */

@@ -1,5 +1,5 @@
-import { Global, Module } from '@nestjs/common';
-import { StripeClientService } from './stripe-client.service';
+import { Global, Module } from "@nestjs/common";
+import { StripeClientService } from "./stripe-client.service";
 
 @Global()
 @Module({

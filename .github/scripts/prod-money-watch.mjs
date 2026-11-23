@@ -160,6 +160,10 @@ function requireProdUrl() {
   return value;
 }
 
+function isSnapshotObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
 async function readSnapshot(connectionString) {
   const client = new pg.Client({
     connectionString,
@@ -173,7 +177,7 @@ async function readSnapshot(connectionString) {
     const result = await client.query(SNAPSHOT);
     await client.query('COMMIT');
     const snapshot = result.rows[0]?.snapshot;
-    if (!snapshot || typeof snapshot !== 'object') {
+    if (!isSnapshotObject(snapshot)) {
       throw new Error('Production money snapshot was empty.');
     }
     return snapshot;

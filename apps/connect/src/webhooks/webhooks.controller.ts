@@ -6,18 +6,26 @@ import {
   Post,
   RawBodyRequest,
   Req,
-} from '@nestjs/common';
-import type { Request } from 'express';
-import Stripe from 'stripe';
-import { AccountsService } from '../accounts/accounts.service';
-import { StripeClientService } from '../stripe/stripe-client.service';
-import { SupabaseService } from '../supabase/supabase.service';
-import { MonolithForwarderService } from './monolith-forwarder.service';
+} from "@nestjs/common";
+import type { Request } from "express";
+import Stripe from "stripe";
+import { AccountsService } from "../accounts/accounts.service";
+import {
+  caughtMessage,
+  isJsonObject,
+  isString,
+  readString,
+  type JsonObject,
+  type JsonValue,
+} from "../json";
+import { StripeClientService } from "../stripe/stripe-client.service";
+import { SupabaseService } from "../supabase/supabase.service";
+import { MonolithForwarderService } from "./monolith-forwarder.service";
 
 /** Radar for Platforms v2 account signals (Polar watches the same two). */
 const RISK_SIGNAL_EVENT_TYPES = new Set<string>([
-  'v2.signals.account_signal.fraudulent_merchant_ready',
-  'v2.signals.account_signal.fraudulent_website_ready',
+  "v2.signals.account_signal.fraudulent_merchant_ready",
+  "v2.signals.account_signal.fraudulent_website_ready",
 ]);
 
 /**
@@ -25,7 +33,7 @@ const RISK_SIGNAL_EVENT_TYPES = new Set<string>([
  * payment-domain events are forwarded to the monolith; payout events record
  * merchant settlements.
  */
-@Controller('webhooks')
+@Controller("webhooks")
 export class WebhooksController {
   private readonly logger = new Logger(WebhooksController.name);
 
@@ -36,10 +44,10 @@ export class WebhooksController {
     private readonly forwarder: MonolithForwarderService,
   ) {}
 
-  @Post('platform-accounts')
+  @Post("platform-accounts")
   async handle(
     @Req() req: RawBodyRequest<Request>,
-    @Headers('stripe-signature') signature: string,
+    @Headers("stripe-signature") signature: string,
   ) {
     if (!signature || !req.rawBody) {
       throw new BadRequestException();
@@ -49,54 +57,55 @@ export class WebhooksController {
     try {
       event = this.stripe.constructWebhookEvent(req.rawBody, signature);
     } catch (err) {
-      this.logger.warn(
-        `platform webhook signature failed: ${(err as Error).message}`,
-      );
+      // SAFETY: JavaScript catch values are untyped; caughtMessage accepts this union.
+      const message = caughtMessage(err as Error | string | JsonValue);
+      this.logger.warn(`platform webhook signature failed: ${message}`);
       throw new BadRequestException();
     }
 
     switch (event.type) {
-      case 'account.updated': {
+      case "account.updated": {
+        // SAFETY: account.updated payloads are Stripe accounts; the SDK types the event object as a union until the type is narrowed.
         const account = event.data.object as Stripe.Account;
         const orgId = account.metadata?.lomi_organization_id;
         const { data: row } = await this.supabase
-          .from('organization_acquiring_accounts')
-          .select('acquiring_account_id')
-          .eq('stripe_account_id', account.id)
+          .from("organization_acquiring_accounts")
+          .select("acquiring_account_id")
+          .eq("stripe_account_id", account.id)
           .maybeSingle();
         if (row) {
           await this.accounts.syncFromAccount(
-            row.acquiring_account_id as string,
+            requireText(row.acquiring_account_id),
             account,
           );
         } else {
           this.logger.warn(
-            `account.updated for unknown account ${account.id} (org ${orgId ?? 'n/a'})`,
+            `account.updated for unknown account ${account.id} (org ${orgId ?? "n/a"})`,
           );
         }
         break;
       }
-      case 'account.application.deauthorized': {
+      case "account.application.deauthorized": {
         // data.object is the Application; the connected account id rides on
         // event.account for Connect-context events.
         const accountId = event.account;
         if (accountId) {
           await this.supabase
-            .from('organization_acquiring_accounts')
+            .from("organization_acquiring_accounts")
             .update({
-              status: 'disconnected',
+              status: "disconnected",
               charges_enabled: false,
               payouts_enabled: false,
               updated_at: new Date().toISOString(),
             })
-            .eq('stripe_account_id', accountId);
+            .eq("stripe_account_id", accountId);
         }
         break;
       }
-      case 'payout.created':
-      case 'payout.paid':
-      case 'payout.failed':
-      case 'payout.canceled': {
+      case "payout.created":
+      case "payout.paid":
+      case "payout.failed":
+      case "payout.canceled": {
         await this.recordSettlement(event);
         break;
       }
@@ -110,11 +119,11 @@ export class WebhooksController {
         // payment_intent.*, charge.*, review.* and dispute events: the
         // monolith runs the same handlers as the aggregate rail.
         if (
-          event.type.startsWith('payment_intent.') ||
-          event.type.startsWith('charge.') ||
-          event.type.startsWith('review.') ||
-          event.type.startsWith('setup_intent.') ||
-          event.type.startsWith('checkout.')
+          event.type.startsWith("payment_intent.") ||
+          event.type.startsWith("charge.") ||
+          event.type.startsWith("review.") ||
+          event.type.startsWith("setup_intent.") ||
+          event.type.startsWith("checkout.")
         ) {
           await this.forwarder.forward(req.rawBody, event.type);
         }
@@ -126,43 +135,39 @@ export class WebhooksController {
 
   /** Record a Radar for Platforms signal on the account row for ops review. */
   private async recordRiskSignal(event: Stripe.Event) {
-    const payload = event.data.object as unknown as Record<string, unknown>;
-    const accountId =
-      event.account ??
-      (typeof payload['account'] === 'string'
-        ? (payload['account'] as string)
-        : undefined);
+    const payload = eventObject(event);
+    const nestedAccount = readString(payload, "account");
+    const accountId = event.account ?? nestedAccount;
     if (!accountId) {
       return;
     }
     const { data: account } = await this.supabase
-      .from('organization_acquiring_accounts')
-      .select('acquiring_account_id, metadata')
-      .eq('stripe_account_id', accountId)
+      .from("organization_acquiring_accounts")
+      .select("acquiring_account_id, metadata")
+      .eq("stripe_account_id", accountId)
       .maybeSingle();
     if (!account) {
       this.logger.warn(`risk signal for unknown account ${accountId}`);
       return;
     }
-    const current = (account.metadata ?? {}) as Record<string, unknown>;
-    const existing = Array.isArray(current['risk_signals'])
-      ? (current['risk_signals'] as unknown[])
-      : [];
+    const current = metadataObject(account.metadata);
+    const signals = current["risk_signals"];
+    const existing = Array.isArray(signals) ? signals : [];
     const metadata = {
       ...current,
       risk_signals: [
         ...existing.slice(-9),
         {
           type: event.type,
-          signal_type: payload['type'] ?? null,
+          signal_type: payload["type"] ?? null,
           at: new Date().toISOString(),
         },
       ],
     };
     const { error } = await this.supabase
-      .from('organization_acquiring_accounts')
+      .from("organization_acquiring_accounts")
       .update({ metadata, updated_at: new Date().toISOString() })
-      .eq('acquiring_account_id', account.acquiring_account_id);
+      .eq("acquiring_account_id", account.acquiring_account_id);
     if (error) {
       this.logger.error(`risk signal record failed: ${error.message}`);
     }
@@ -171,30 +176,31 @@ export class WebhooksController {
 
   /** Merchant settlements: payouts the provider sends to the merchant bank. */
   private async recordSettlement(event: Stripe.Event) {
+    // SAFETY: payout.* payloads are Stripe payouts; the SDK types the event object as a union until the type is narrowed.
     const payout = event.data.object as Stripe.Payout;
     const accountId = event.account;
     if (!accountId) {
       return;
     }
     const { data: account } = await this.supabase
-      .from('organization_acquiring_accounts')
-      .select('organization_id, environment')
-      .eq('stripe_account_id', accountId)
+      .from("organization_acquiring_accounts")
+      .select("organization_id, environment")
+      .eq("stripe_account_id", accountId)
       .maybeSingle();
     if (!account) {
       this.logger.warn(`payout event for unknown account ${accountId}`);
       return;
     }
     const status =
-      event.type === 'payout.paid'
-        ? 'paid'
-        : event.type === 'payout.failed'
-          ? 'failed'
-          : event.type === 'payout.canceled'
-            ? 'canceled'
-            : 'in_transit';
+      event.type === "payout.paid"
+        ? "paid"
+        : event.type === "payout.failed"
+          ? "failed"
+          : event.type === "payout.canceled"
+            ? "canceled"
+            : "in_transit";
     const { error } = await this.supabase
-      .from('organization_acquiring_settlements')
+      .from("organization_acquiring_settlements")
       .upsert(
         {
           organization_id: account.organization_id,
@@ -208,10 +214,26 @@ export class WebhooksController {
             : null,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'stripe_payout_id' },
+        { onConflict: "stripe_payout_id" },
       );
     if (error) {
       this.logger.error(`settlement upsert failed: ${error.message}`);
     }
   }
+}
+
+function requireText<Value>(value: Value): string {
+  if (!isString(value) || value.length === 0) {
+    throw new Error("expected text");
+  }
+  return value;
+}
+
+function eventObject(event: Stripe.Event): JsonObject {
+  const object = JSON.parse(JSON.stringify(event.data.object));
+  return isJsonObject(object) ? object : {};
+}
+
+function metadataObject<Value>(value: Value): JsonObject {
+  return isJsonObject(value) ? value : {};
 }

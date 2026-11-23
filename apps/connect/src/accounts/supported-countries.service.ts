@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 /**
  * Countries where the platform can open connected accounts for merchants.
@@ -7,29 +7,66 @@ import { Injectable } from '@nestjs/common';
  * SN is present: verify against current provider docs before enabling there.
  */
 const SUPPORTED_ACCOUNT_COUNTRIES = new Set([
-  'AT', 'AU', 'BE', 'BG', 'BR', 'CA', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE',
-  'ES', 'FI', 'FR', 'GB', 'GR', 'HK', 'HR', 'HU', 'IE', 'IT', 'JP', 'LT',
-  'LU', 'LV', 'MT', 'MX', 'NL', 'NO', 'NZ', 'PL', 'PT', 'RO', 'SE', 'SG',
-  'SI', 'SK', 'SN', 'TH', 'US',
+  "AT",
+  "AU",
+  "BE",
+  "BG",
+  "BR",
+  "CA",
+  "CH",
+  "CY",
+  "CZ",
+  "DE",
+  "DK",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GB",
+  "GR",
+  "HK",
+  "HR",
+  "HU",
+  "IE",
+  "IT",
+  "JP",
+  "LT",
+  "LU",
+  "LV",
+  "MT",
+  "MX",
+  "NL",
+  "NO",
+  "NZ",
+  "PL",
+  "PT",
+  "RO",
+  "SE",
+  "SG",
+  "SI",
+  "SK",
+  "SN",
+  "TH",
+  "US",
 ]);
 
 /** Free-text KYB countries that must read as ISO codes. */
-const COUNTRY_ALIASES: Record<string, string> = {
-  FRANCE: 'FR',
-  'UNITED KINGDOM': 'GB',
-  'GREAT BRITAIN': 'GB',
-  'UNITED STATES': 'US',
-  'UNITED STATES OF AMERICA': 'US',
-  USA: 'US',
-  GERMANY: 'DE',
-  SPAIN: 'ES',
-  ITALY: 'IT',
-  BELGIUM: 'BE',
-  NETHERLANDS: 'NL',
-  SWITZERLAND: 'CH',
-  SENEGAL: 'SN',
-  'SOUTH AFRICA': 'ZA',
-};
+const COUNTRY_ALIASES = {
+  FRANCE: "FR",
+  "UNITED KINGDOM": "GB",
+  "GREAT BRITAIN": "GB",
+  "UNITED STATES": "US",
+  "UNITED STATES OF AMERICA": "US",
+  USA: "US",
+  GERMANY: "DE",
+  SPAIN: "ES",
+  ITALY: "IT",
+  BELGIUM: "BE",
+  NETHERLANDS: "NL",
+  SWITZERLAND: "CH",
+  SENEGAL: "SN",
+  "SOUTH AFRICA": "ZA",
+} satisfies Record<string, string>;
 
 @Injectable()
 export class SupportedCountriesService {
@@ -40,8 +77,7 @@ export class SupportedCountriesService {
     }
     const raw = legalCountry.trim();
     const upper = raw.toUpperCase();
-    const iso =
-      raw.length === 2 ? upper : (COUNTRY_ALIASES[upper] ?? null);
+    const iso = raw.length === 2 ? upper : (COUNTRY_ALIASES[upper] ?? null);
     if (!iso) {
       return null;
     }

@@ -4,12 +4,12 @@ import {
   Headers,
   Post,
   UnauthorizedException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ChargesService,
   CreateChargeInput,
   RefundChargeInput,
-} from './charges.service';
+} from "./charges.service";
 
 function assertInternalKey(key: string | undefined) {
   const expected = process.env.CONNECT_INTERNAL_KEY?.trim();
@@ -19,22 +19,22 @@ function assertInternalKey(key: string | undefined) {
 }
 
 /** Internal-only: the monolith creates destination charges through here. */
-@Controller('internal/charges')
+@Controller("internal/charges")
 export class ChargesController {
   constructor(private readonly charges: ChargesService) {}
 
   @Post()
   create(
-    @Headers('x-connect-key') key: string,
+    @Headers("x-connect-key") key: string,
     @Body() body: CreateChargeInput,
   ) {
     assertInternalKey(key);
     return this.charges.createCharge(body);
   }
 
-  @Post('refund')
+  @Post("refund")
   refund(
-    @Headers('x-connect-key') key: string,
+    @Headers("x-connect-key") key: string,
     @Body() body: RefundChargeInput,
   ) {
     assertInternalKey(key);

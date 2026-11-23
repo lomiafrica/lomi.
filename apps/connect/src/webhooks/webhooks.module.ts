@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { AccountsModule } from '../accounts/accounts.module';
-import { MonolithForwarderService } from './monolith-forwarder.service';
-import { WebhooksController } from './webhooks.controller';
+import { Module } from "@nestjs/common";
+import { AccountsModule } from "../accounts/accounts.module";
+import { MonolithForwarderService } from "./monolith-forwarder.service";
+import { WebhooksController } from "./webhooks.controller";
 
 @Module({
   imports: [AccountsModule],

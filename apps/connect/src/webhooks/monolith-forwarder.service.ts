@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from "@nestjs/common";
+import { caughtMessage, type JsonValue } from "../json";
 
 /**
  * Payment-domain events (payment_intent.*, charge.*, dispute) are forwarded
@@ -21,12 +22,12 @@ export class MonolithForwarderService {
     }
     try {
       const res = await fetch(`${baseUrl}/webhooks/connect-events`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'content-type': 'application/json',
-          'x-connect-key': key,
+          "content-type": "application/json",
+          "x-connect-key": key,
         },
-        body: rawBody.toString('utf8'),
+        body: rawBody.toString("utf8"),
       });
       if (!res.ok) {
         this.logger.error(
@@ -34,9 +35,9 @@ export class MonolithForwarderService {
         );
       }
     } catch (err) {
-      this.logger.error(
-        `monolith forward error for ${eventType}: ${(err as Error).message}`,
-      );
+      // SAFETY: JavaScript catch values are untyped; caughtMessage accepts this union.
+      const message = caughtMessage(err as Error | string | JsonValue);
+      this.logger.error(`monolith forward error for ${eventType}: ${message}`);
     }
   }
 }

@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { AccountsController } from './accounts.controller';
-import { AccountsService } from './accounts.service';
-import { SupportedCountriesService } from './supported-countries.service';
+import { Module } from "@nestjs/common";
+import { AccountsController } from "./accounts.controller";
+import { AccountsService } from "./accounts.service";
+import { SupportedCountriesService } from "./supported-countries.service";
 
 @Module({
   controllers: [AccountsController],
