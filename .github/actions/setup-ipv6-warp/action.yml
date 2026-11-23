@@ -18,59 +18,134 @@ runs:
           sudo wg-quick down warp || true
         fi
 
+        write_conf() {
+          local private_key="$1" peer_key="$2" v4_addr="$3" v6_addr="$4" endpoint="$5"
+          local lan
+          lan="$(ip route get 192.168.193.10 2>/dev/null | grep -oP 'src \K\S+' || true)"
+          sudo mkdir -p /etc/wireguard
+          {
+            echo "[Interface]"
+            echo "PrivateKey = ${private_key}"
+            echo "Address = ${v4_addr}"
+            echo "Address = ${v6_addr}"
+            echo "MTU = 1280"
+            if [ -n "$lan" ]; then
+              echo "PostUp = ip -4 rule add from ${lan} lookup main"
+              echo "PostDown = ip -4 rule delete from ${lan} lookup main"
+            fi
+            echo
+            echo "[Peer]"
+            echo "PublicKey = ${peer_key}"
+            echo "AllowedIPs = ::/0"
+            echo "Endpoint = ${endpoint}"
+          } | sudo tee /etc/wireguard/warp.conf >/dev/null
+        }
+
+        check_v4() {
+          if ! curl -4 -fsS -m 15 -o /dev/null https://github.com; then
+            echo "::error::IPv4 to GitHub failed after WARP came up. Refusing to continue so the runner is not cut off."
+            sudo wg-quick down warp || true
+            exit 1
+          fi
+        }
+
+        check_v6() {
+          local attempt
+          for attempt in 1 2 3 4; do
+            if curl -6 -fsS -m 10 https://api64.ipify.org >/dev/null 2>&1; then
+              echo "IPv6 egress is up."
+              return 0
+            fi
+            echo "IPv6 not ready yet (attempt ${attempt}); waiting..."
+            sleep 5
+          done
+          return 1
+        }
+
         # Pinned published WARP peer from fscarmen/warp-on-actions. Fetched here
-        # so this repo does not store the key. A fresh registration per job is
-        # rate-limited from GitHub's IP ranges.
-        peer_src="https://raw.githubusercontent.com/fscarmen/warp-on-actions/37ce1997e075435a827991dabcce1d080c1fe512/action.yml"
-        peer_file="$(mktemp)"
-        fetched=0
-        for attempt in 1 2 3 4 5; do
-          if curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors "$peer_src" -o "$peer_file"; then
-            fetched=1
-            break
+        # so this repo does not store the key. The shared key is occasionally
+        # throttled by Cloudflare, which is why a fresh registration fallback
+        # exists below even though per-job registration is rate-limited from
+        # GitHub's IP ranges.
+        try_published_peer() {
+          local peer_src peer_file fetched attempt private_key public_key
+          peer_src="https://raw.githubusercontent.com/fscarmen/warp-on-actions/37ce1997e075435a827991dabcce1d080c1fe512/action.yml"
+          peer_file="$(mktemp)"
+          fetched=0
+          for attempt in 1 2 3; do
+            if curl -fsSL --retry 3 --retry-delay 2 --retry-all-errors "$peer_src" -o "$peer_file"; then
+              fetched=1
+              break
+            fi
+            echo "WARP peer download failed (attempt ${attempt})."
+            sleep $((attempt * 3))
+          done
+          if [ "$fetched" -ne 1 ]; then
+            echo "::warning::Could not download the published WARP peer."
+            rm -f "$peer_file"
+            return 1
           fi
-          echo "WARP peer download failed (attempt ${attempt})."
-          sleep $((attempt * 3))
-        done
-        if [ "$fetched" -ne 1 ]; then
-          echo "::error::Could not download the published WARP peer."
-          exit 1
-        fi
-        private_key="$(sed -n 's/^[[:space:]]*PrivateKey = //p' "$peer_file" | head -1 | tr -d '"')"
-        public_key="$(sed -n 's/^[[:space:]]*PublicKey = //p' "$peer_file" | head -1 | tr -d '"')"
-        rm -f "$peer_file"
-        if [ -z "$private_key" ] || [ -z "$public_key" ]; then
-          echo "::error::Published WARP peer did not include a key pair."
-          exit 1
-        fi
-        echo "::add-mask::$private_key"
-
-        lan="$(ip route get 192.168.193.10 2>/dev/null | grep -oP 'src \K\S+' || true)"
-        sudo mkdir -p /etc/wireguard
-        {
-          echo "[Interface]"
-          echo "PrivateKey = ${private_key}"
-          echo "Address = 172.16.0.2/32"
-          echo "Address = fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128"
-          echo "MTU = 1280"
-          if [ -n "$lan" ]; then
-            echo "PostUp = ip -4 rule add from ${lan} lookup main"
-            echo "PostDown = ip -4 rule delete from ${lan} lookup main"
+          private_key="$(sed -n 's/^[[:space:]]*PrivateKey = //p' "$peer_file" | head -1 | tr -d '"')"
+          public_key="$(sed -n 's/^[[:space:]]*PublicKey = //p' "$peer_file" | head -1 | tr -d '"')"
+          rm -f "$peer_file"
+          if [ -z "$private_key" ] || [ -z "$public_key" ]; then
+            echo "::warning::Published WARP peer did not include a key pair."
+            return 1
           fi
-          echo
-          echo "[Peer]"
-          echo "PublicKey = ${public_key}"
-          echo "AllowedIPs = ::/0"
-          echo "Endpoint = engage.cloudflareclient.com:2408"
-        } | sudo tee /etc/wireguard/warp.conf >/dev/null
+          echo "::add-mask::$private_key"
+          write_conf "$private_key" "$public_key" \
+            "172.16.0.2/32" "fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128" \
+            "engage.cloudflareclient.com:2408"
+          sudo wg-quick up warp
+          check_v4
+          check_v6
+        }
 
-        sudo wg-quick up warp
+        # Fallback: register a throwaway WARP account for this job and use its
+        # config. Slower and rate-limited at scale, but rescues runs where the
+        # shared published peer is throttled.
+        try_fresh_registration() {
+          local priv pub resp peer_key v4 v6 endpoint
+          echo "Registering a fresh WARP account for this job..."
+          priv="$(wg genkey)"
+          pub="$(printf '%s' "$priv" | wg pubkey)"
+          echo "::add-mask::$priv"
+          if ! resp="$(curl -fsS -m 30 -X POST 'https://api.cloudflareclient.com/v0a2158/reg' \
+            -H 'CF-Client-Version: a-6.30-2158' \
+            -H 'User-Agent: okhttp/3.12.1' \
+            -H 'Content-Type: application/json' \
+            -d "{\"key\":\"${pub}\",\"install_id\":\"\",\"fcm_token\":\"\",\"tos\":\"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\",\"model\":\"PC\",\"serial_number\":\"\",\"locale\":\"en_US\"}")"; then
+            echo "::warning::Fresh WARP registration request failed."
+            return 1
+          fi
+          peer_key="$(printf '%s' "$resp" | jq -r '.result.config.peers[0].public_key // empty')"
+          v4="$(printf '%s' "$resp" | jq -r '.result.config.interface.addresses.ipv4 // empty')"
+          v6="$(printf '%s' "$resp" | jq -r '.result.config.interface.addresses.ipv6 // empty')"
+          endpoint="$(printf '%s' "$resp" | jq -r '.result.config.peers[0].endpoint.host // empty')"
+          if [ -z "$peer_key" ] || [ -z "$v4" ] || [ -z "$v6" ]; then
+            echo "::warning::Fresh WARP registration returned an incomplete config."
+            return 1
+          fi
+          [ -n "$endpoint" ] || endpoint="engage.cloudflareclient.com:2408"
+          write_conf "$priv" "$peer_key" "${v4}/32" "${v6}/128" "$endpoint"
+          sudo wg-quick up warp
+          check_v4
+          check_v6
+        }
 
-        if ! curl -4 -fsS -m 15 -o /dev/null https://github.com; then
-          echo "::error::IPv4 to GitHub failed after WARP came up. Refusing to continue so the runner is not cut off."
-          sudo wg-quick down warp || true
-          exit 1
+        if try_published_peer; then
+          echo "WARP IPv6 egress is up via the published peer."
+          exit 0
         fi
+        echo "::warning::Published WARP peer did not yield IPv6 egress; falling back to a fresh registration."
+        sudo wg-quick down warp 2>/dev/null || true
+        if try_fresh_registration; then
+          echo "WARP IPv6 egress is up via a fresh registration."
+          exit 0
+        fi
+        sudo wg-quick down warp 2>/dev/null || true
+        echo "::error::IPv6 egress is not available after WARP setup (published peer and fresh registration both failed)."
+        exit 2
 
     - name: Verify IPv6 connectivity
       shell: bash
