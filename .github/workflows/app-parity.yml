@@ -27,6 +27,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   parity:
@@ -96,11 +97,19 @@ jobs:
         if: failure() && github.event_name == 'schedule'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          GH_RUN_ID: ${{ github.run_id }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
             echo "SLACK_WEBHOOK_URL not set; skipping notification"
             exit 0
           fi
-          curl -sS -X POST "$SLACK_WEBHOOK_URL" \
-            -H 'Content-type: application/json' \
-            --data "{\"text\":\"Product surface parity worker failed (scheduled). See ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+          FAILED_STEPS=$(gh api "repos/${GH_REPO}/actions/runs/${GH_RUN_ID}/jobs" \
+            --jq '[.jobs[].steps[] | select(.conclusion == "failure") | .name] | join(", ")' \
+            2>/dev/null || true)
+          FAILED_STEPS=${FAILED_STEPS:-unknown}
+          SHORT_SHA=$(printf '%s' "${GITHUB_SHA}" | cut -c1-7)
+          TEXT="Product surface parity failed (scheduled). Failed step: ${FAILED_STEPS}. Branch: ${GITHUB_REF_NAME} @ ${SHORT_SHA}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          jq -n --arg text "$TEXT" '{text: $text}' | curl -sS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-type: application/json' --data @-
