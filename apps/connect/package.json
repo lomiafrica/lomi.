@@ -43,5 +43,10 @@
     "ts-jest": "^29.4.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "minimatch@>=7": "11.0.1"
+    }
   }
 }
