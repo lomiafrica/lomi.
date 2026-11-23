@@ -1,7 +1,12 @@
 /** JSON value contract for untyped provider and database payloads. */
 
 export type JsonValue =
-  string | number | boolean | null | JsonObject | JsonValue[];
+  | string
+  | number
+  | boolean
+  | null
+  | JsonObject
+  | JsonValue[];
 
 export interface JsonObject {
   [key: string]: JsonValue;
