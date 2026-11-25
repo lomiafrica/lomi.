@@ -92,3 +92,19 @@
 	path = apps/tools/anti-slop
 	url = https://github.com/lomiafrica/anti-slop.git
 	branch = main
+[submodule "apps/alize"]
+	path = apps/alize
+	url = https://github.com/lomiafrica/alize.git
+	branch = main
+[submodule "apps/tools/outline"]
+	path = apps/tools/outline
+	url = https://github.com/lomiafrica/outline.git
+	branch = main
+[submodule "apps/nomad"]
+	path = apps/nomad
+	url = https://github.com/lomiafrica/nomad.git
+	branch = develop
+[submodule "apps/tools/plane"]
+	path = apps/tools/plane
+	url = https://github.com/lomiafrica/plane.git
+	branch = main

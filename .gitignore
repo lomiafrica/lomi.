@@ -32,7 +32,6 @@ node_modules/
 /apps/tools/geolook/
 
 # Own repos checked out inside the umbrella. Do not gitlink them.
-/apps/nomad/
 /apps/tools/exof/
 /apps/tools/link/
 /context/
