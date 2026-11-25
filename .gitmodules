@@ -103,7 +103,7 @@
 [submodule "apps/nomad"]
 	path = apps/nomad
 	url = https://github.com/lomiafrica/nomad.git
-	branch = develop
+	branch = main
 [submodule "apps/tools/plane"]
 	path = apps/tools/plane
 	url = https://github.com/lomiafrica/plane.git
