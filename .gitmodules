@@ -108,3 +108,7 @@
 	path = apps/tools/plane
 	url = https://github.com/lomiafrica/plane.git
 	branch = main
+[submodule "apps/core"]
+	path = apps/core
+	url = https://github.com/lomiafrica/core.git
+	branch = main
