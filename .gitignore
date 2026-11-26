@@ -33,4 +33,3 @@ node_modules/
 
 # Own repos checked out inside the umbrella. Do not gitlink them.
 /apps/tools/exof/
-/apps/tools/link/
