@@ -2448,7 +2448,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            default_currency: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            default_currency: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description URL-friendly slug
              * @example acme-inc
@@ -3312,7 +3312,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description Billing interval for recurring products
              * @example month
@@ -3490,7 +3490,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
         };
         BatchUpdatePricesDto: {
             /** @description Prices to update in one request */
@@ -3522,7 +3522,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description Billing interval (required for recurring products)
              * @example month
@@ -3675,7 +3675,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description Billing interval (must match product type)
              * @example month
@@ -4599,13 +4599,13 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description Backward-compatible alias for currency_code. Use currency_code in new integrations.
              * @example XOF
              * @enum {string}
              */
-            currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /**
              * @description Internal customer UUID (v4). Alternative: send customer_email + customer_name to create/find a customer.
              * @example 550e8400-e29b-41d4-a716-446655440000
@@ -4778,7 +4778,7 @@ export interface components {
              * @example XOF
              * @enum {string}
              */
-            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+            currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             /** @example 2026-06-30 */
             due_date?: string;
             /**
@@ -5053,7 +5053,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Filtrer par code devise (XOF, USD, EUR) */
-                currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             };
             header?: {
                 /** @description Optional lomi. Network account id (`acct_...`). When present, the API key acts as the Operator and the request targets the connected Member Account. */
@@ -5081,7 +5081,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Devise cible pour la conversion (XOF, USD, EUR) */
-                target_currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                target_currency?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             };
             header?: {
                 /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
@@ -5494,7 +5494,7 @@ export interface operations {
     MerchantsController_getBalance: {
         parameters: {
             query: {
-                currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
             };
             header?: {
                 /** @description Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. */
@@ -6282,7 +6282,7 @@ export interface operations {
                 "application/json": {
                     amount: number;
                     /** @enum {string} */
-                    currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                    currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
                     description?: string;
                     /** Format: uuid */
                     customer_id?: string;
@@ -7428,7 +7428,7 @@ export interface operations {
                      * @example XOF
                      * @enum {string}
                      */
-                    currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                    currency_code?: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
                     title?: string;
                     description?: string;
                     /** Format: uuid */
@@ -7638,7 +7638,7 @@ export interface operations {
                     link_type: "product" | "instant";
                     title: string;
                     /** @enum {string} */
-                    currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD";
+                    currency_code: "XOF" | "USD" | "EUR" | "XAF" | "GHS" | "KES" | "MAD" | "ZAR" | "GBP" | "CAD" | "NGN" | "BWP" | "GMD" | "LSL" | "MGA" | "MWK" | "NAD" | "RWF" | "ZMW";
                     description?: string;
                     amount?: number;
                     /** Format: uuid */
