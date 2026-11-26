@@ -80,8 +80,8 @@
 	path = apps/tools/cosigner
 	url = https://github.com/lomiafrica/cosigner.git
 	branch = main
-[submodule "apps/crm"]
-	path = apps/crm
+[submodule "apps/tools/crm"]
+	path = apps/tools/crm
 	url = https://github.com/lomiafrica/crm.git
 	branch = main
 [submodule "apps/tools/interledger"]
