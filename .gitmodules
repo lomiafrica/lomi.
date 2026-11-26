@@ -112,3 +112,7 @@
 	path = apps/core
 	url = https://github.com/lomiafrica/core.git
 	branch = main
+[submodule "apps/connect"]
+	path = apps/connect
+	url = https://github.com/lomiafrica/connect.git
+	branch = main
