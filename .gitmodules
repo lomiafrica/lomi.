@@ -84,10 +84,6 @@
 	path = apps/tools/crm
 	url = https://github.com/lomiafrica/crm.git
 	branch = main
-[submodule "apps/tools/interledger"]
-	path = apps/tools/interledger
-	url = https://github.com/lomiafrica/interledger.git
-	branch = main
 [submodule "apps/tools/anti-slop"]
 	path = apps/tools/anti-slop
 	url = https://github.com/lomiafrica/anti-slop.git
@@ -111,8 +107,4 @@
 [submodule "apps/core"]
 	path = apps/core
 	url = https://github.com/lomiafrica/core.git
-	branch = main
-[submodule "apps/tools/link"]
-	path = apps/tools/link
-	url = https://github.com/lomiafrica/link.git
 	branch = main
