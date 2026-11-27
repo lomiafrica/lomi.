@@ -1212,6 +1212,39 @@ export const EN_OPERATION_COPY = {
     caveats: 'Returns 403 when Ticketing is off.',
     related: '[Create an event](/api/events/EventsApiController_create)',
   },
+  TopUpsController_list: {
+    summary: 'List balance top-ups',
+    body: 'Lists balance top-ups for the organization, including bank transfers waiting on a reference and card top-ups in progress.',
+    whenToUse:
+      'Use to show recent top-ups or to find one by status before you cancel it.',
+    related:
+      '[Create a bank top-up](/api/top-ups/TopUpsController_createBank) · [Create a card top-up](/api/top-ups/TopUpsController_createCard)',
+  },
+  TopUpsController_createBank: {
+    summary: 'Create a bank top-up',
+    body: 'Creates a bank-transfer top-up and returns the reference the merchant must put on the wire. The credited amount is the requested amount. The transfer is confirmed when the reference is matched.',
+    whenToUse:
+      'Use when the merchant will send a bank wire to add funds to their balance.',
+    related:
+      '[List balance top-ups](/api/top-ups/TopUpsController_list) · [Cancel a top-up](/api/top-ups/TopUpsController_cancel)',
+  },
+  TopUpsController_createCard: {
+    summary: 'Create a card top-up',
+    body: 'Creates a card top-up and returns a hosted checkout URL. The credited amount is the requested amount. The real card cost is charged on top, never less. The card payment webhook credits the balance when payment succeeds.',
+    whenToUse:
+      'Use when the merchant should pay by card to add funds to their balance.',
+    caveats:
+      'The hosted page charges the card cost on top of the amount that will be credited.',
+    related:
+      '[List balance top-ups](/api/top-ups/TopUpsController_list) · [Create a bank top-up](/api/top-ups/TopUpsController_createBank)',
+  },
+  TopUpsController_cancel: {
+    summary: 'Cancel a top-up',
+    body: 'Cancels a top-up that has not been credited yet. A card checkout that is still open is expired so it cannot be paid after cancellation.',
+    whenToUse: 'Use when the merchant abandons a top-up before it is credited.',
+    caveats: 'A top-up that is already credited cannot be cancelled here.',
+    related: '[List balance top-ups](/api/top-ups/TopUpsController_list)',
+  },
   EventsApiController_invite: {
     summary: 'Invite a guest',
     body: 'Emails tickets with no charge. The guest is saved as a customer. Requires Ticketing. count is 1 to 20.',

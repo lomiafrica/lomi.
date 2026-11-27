@@ -33,6 +33,7 @@ export const REST_API_SIDEBAR_GROUPS = [
     separator: '---Move money---',
     folders: [
       'balances',
+      'top-ups',
       'transactions',
       'refunds',
       'transfers',
