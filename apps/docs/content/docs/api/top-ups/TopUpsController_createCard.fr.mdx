@@ -1,0 +1,82 @@
+---
+title: "Create a card top-up"
+description: "Create a card top-up"
+full: true
+method: post
+path: /top-ups/card
+operationId: TopUpsController_createCard
+---
+
+## Aperçu
+
+Create a card top-up
+
+Create a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The card payment webhook credits the balance on payment success.
+
+
+### Quand l’utiliser
+
+Utilisez cet endpoint quand vous devez exécuter `POST /top-ups/card` (Create a card top-up).
+
+
+## Authentification
+
+Les routes marchandes nécessitent une clé API dans l’en-tête `X-API-KEY` (voir [Vue d’ensemble](/api)). Utilisez une clé **test** avec `https://sandbox.api.lomi.africa` et une clé **live** avec `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /top-ups/card`
+
+URLs de base :
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Requête
+
+### Paramètres d’URL
+
+_Pas d’autre paramètre dans l’URL._
+
+
+### Paramètres de requête
+
+_Aucun paramètre de requête._
+
+
+### En-têtes
+
+| Nom | Emplacement | Obligatoire | Schéma | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | Non | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Corps de la requête
+
+_Pas de corps JSON pour cette opération._
+
+
+## Réponses
+
+| Statut | Description |
+| --- | --- |
+| `201` | Card top-up created. |
+
+## Erreurs
+
+Les erreurs suivent un format JSON standard. **401** : clé manquante ou invalide. **404** : ressource introuvable. **429** : trop de requêtes. Pour les créations, envoyez une clé d’idempotence si votre flux le permet.
+
+## Exemple
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/top-ups/card" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `TopUpsController_createCard`
+- **Operation**: `POST /top-ups/card`
+
+Schémas complets et **Try it** : [référence API](/api).

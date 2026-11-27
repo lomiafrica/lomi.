@@ -1,5 +1,5 @@
 {
-  "title": "WhatsApp",
+  "title": "Whatsapp",
   "pages": [
     "WhatsAppMerchantController_createSetupLink",
     "WhatsAppMerchantController_getStatus",

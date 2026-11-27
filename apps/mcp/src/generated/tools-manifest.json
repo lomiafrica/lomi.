@@ -4538,7 +4538,7 @@
           "write": true,
           "wantsBody": false,
           "title": "Create Top-ups",
-          "description": "Create a card top-up\n\nCreate a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The Stripe webhook credits the balance on payment success.\n\nREST: POST /top-ups/card",
+          "description": "Create a card top-up\n\nCreate a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The card payment webhook credits the balance on payment success.\n\nREST: POST /top-ups/card",
           "tags": [
             "Top-ups"
           ],

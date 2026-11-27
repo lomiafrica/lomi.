@@ -1,0 +1,82 @@
+---
+title: "Create a card top-up"
+description: "Create a card top-up"
+full: true
+method: post
+path: /top-ups/card
+operationId: TopUpsController_createCard
+---
+
+## Overview
+
+Create a card top-up
+
+Create a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The card payment webhook credits the balance on payment success.
+
+
+### When to use this
+
+Use this endpoint when your flow needs `POST /top-ups/card` (Create a card top-up).
+
+
+## Authentication
+
+Merchant routes require an API key in the `X-API-KEY` header (see [Overview](/api)). Use a **test** key against `https://sandbox.api.lomi.africa` and a **live** key against `https://api.lomi.africa`.
+
+## Endpoint
+
+`POST /top-ups/card`
+
+Base URLs:
+
+- `https://sandbox.api.lomi.africa`
+- `https://api.lomi.africa`
+
+## Request
+
+### Path parameters
+
+_No path parameters beyond the URL pattern._
+
+
+### Query parameters
+
+_No query parameters._
+
+
+### Headers
+
+| Name | In | Required | Schema | Description |
+| --- | --- | --- | --- | --- |
+| `Lomi-Version` | header | No | - | Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned. |
+
+### Request body
+
+_No application/json body for this operation._
+
+
+## Responses
+
+| Status | Description |
+| --- | --- |
+| `201` | Card top-up created. |
+
+## Errors
+
+Errors follow the standard JSON error format (status code and machine-readable message). Validate inputs before calling; **401** indicates a missing/invalid key, **404** a missing resource for this organization, **429** rate limiting. For safe retries on create-style calls, send an idempotency key when your flow supports it.
+
+## Example
+
+```bash
+curl -sS -X POST "https://sandbox.api.lomi.africa/top-ups/card" \
+  -H "X-API-KEY: $LOMI_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+## OpenAPI
+
+- **operationId**: `TopUpsController_createCard`
+- **Operation**: `POST /top-ups/card`
+
+Full schemas and **Try it**: [API reference](/api). Machine-readable contract: repo `apps/docs/openapi.json`.
