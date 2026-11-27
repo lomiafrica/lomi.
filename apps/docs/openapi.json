@@ -22,7 +22,16 @@
                 "MAD",
                 "ZAR",
                 "GBP",
-                "CAD"
+                "CAD",
+                "NGN",
+                "BWP",
+                "GMD",
+                "LSL",
+                "MGA",
+                "MWK",
+                "NAD",
+                "RWF",
+                "ZMW"
               ],
               "type": "string"
             }
@@ -95,7 +104,16 @@
                 "MAD",
                 "ZAR",
                 "GBP",
-                "CAD"
+                "CAD",
+                "NGN",
+                "BWP",
+                "GMD",
+                "LSL",
+                "MGA",
+                "MWK",
+                "NAD",
+                "RWF",
+                "ZMW"
               ],
               "type": "string"
             }
@@ -183,6 +201,147 @@
         "summary": "Vérifier le solde disponible",
         "tags": [
           "Balances"
+        ]
+      }
+    },
+    "/top-ups": {
+      "get": {
+        "description": "List balance top-up requests (bank and card channels) for the request organization.",
+        "operationId": "TopUpsController_list",
+        "parameters": [
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top-up rows, newest first."
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "List balance top-ups",
+        "tags": [
+          "Top-ups"
+        ]
+      },
+      "post": {
+        "description": "Create a bank-transfer top-up and return the wire instructions and reference code. The balance is credited when the wire is confirmed.",
+        "operationId": "TopUpsController_createBank",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Top-up created."
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create a bank top-up",
+        "tags": [
+          "Top-ups"
+        ]
+      }
+    },
+    "/top-ups/card": {
+      "post": {
+        "description": "Create a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The Stripe webhook credits the balance on payment success.",
+        "operationId": "TopUpsController_createCard",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Card top-up created."
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Create a card top-up",
+        "tags": [
+          "Top-ups"
+        ]
+      }
+    },
+    "/top-ups/{id}": {
+      "delete": {
+        "operationId": "TopUpsController_cancel",
+        "parameters": [
+          {
+            "name": "Lomi-Version",
+            "in": "header",
+            "required": false,
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned.",
+            "schema": {
+              "type": "string",
+              "example": "1.2.0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top-up cancelled."
+          }
+        },
+        "security": [
+          {
+            "api-key": []
+          }
+        ],
+        "summary": "Cancel a pending top-up",
+        "tags": [
+          "Top-ups"
         ]
       }
     },
@@ -800,7 +959,16 @@
                 "MAD",
                 "ZAR",
                 "GBP",
-                "CAD"
+                "CAD",
+                "NGN",
+                "BWP",
+                "GMD",
+                "LSL",
+                "MGA",
+                "MWK",
+                "NAD",
+                "RWF",
+                "ZMW"
               ],
               "type": "string"
             }
@@ -2170,7 +2338,16 @@
                       "MAD",
                       "ZAR",
                       "GBP",
-                      "CAD"
+                      "CAD",
+                      "NGN",
+                      "BWP",
+                      "GMD",
+                      "LSL",
+                      "MGA",
+                      "MWK",
+                      "NAD",
+                      "RWF",
+                      "ZMW"
                     ]
                   },
                   "description": {
@@ -4139,7 +4316,16 @@
                       "MAD",
                       "ZAR",
                       "GBP",
-                      "CAD"
+                      "CAD",
+                      "NGN",
+                      "BWP",
+                      "GMD",
+                      "LSL",
+                      "MGA",
+                      "MWK",
+                      "NAD",
+                      "RWF",
+                      "ZMW"
                     ],
                     "example": "XOF",
                     "description": "Optional. Falls back to organization default_currency when omitted."
@@ -4852,7 +5038,16 @@
                       "MAD",
                       "ZAR",
                       "GBP",
-                      "CAD"
+                      "CAD",
+                      "NGN",
+                      "BWP",
+                      "GMD",
+                      "LSL",
+                      "MGA",
+                      "MWK",
+                      "NAD",
+                      "RWF",
+                      "ZMW"
                     ]
                   },
                   "description": {
@@ -9600,7 +9795,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ],
             "description": "Default currency"
           },
@@ -11100,7 +11304,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "billing_interval": {
@@ -11396,7 +11609,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           }
         },
@@ -11489,7 +11711,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "billing_interval": {
@@ -11705,7 +11936,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "billing_interval": {
@@ -12683,7 +12923,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "title": {
@@ -12733,7 +12982,8 @@
               "wave",
               "spi",
               "bank",
-              "mtn"
+              "mtn",
+              "stellar"
             ]
           },
           "amount": {
@@ -12753,7 +13003,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "payout_method_id": {
@@ -13784,7 +14043,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "currency": {
@@ -13801,7 +14069,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ]
           },
           "customer_id": {
@@ -14080,7 +14357,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ],
             "default": "XOF"
           },

@@ -109,6 +109,7 @@ const PUBLIC_REST_API_OPERATIONS = [
   'whatsapp',
   'payment-requests',
   'payouts',
+  'top-ups',
   'settlements',
   'products',
   'refunds',

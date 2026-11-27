@@ -383,6 +383,16 @@
         "add_type": "POST /events/{id}/types",
         "invite": "POST /events/{id}/invites"
       }
+    },
+    {
+      "name": "lomi_top_ups",
+      "title": "Balance top-ups",
+      "actions": {
+        "list": "GET /top-ups",
+        "create": "POST /top-ups",
+        "create_card": "POST /top-ups/card",
+        "cancel": "DELETE /top-ups/{id}"
+      }
     }
   ],
   "provisioningGroups": [

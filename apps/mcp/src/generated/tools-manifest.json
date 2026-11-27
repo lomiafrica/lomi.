@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "apiVersion": "1.2.0",
   "apiTitle": "API lomi.",
-  "toolCount": 34,
+  "toolCount": 35,
   "tools": [
     {
       "name": "lomi_api_keys",
@@ -144,7 +144,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ],
             "type": "string",
             "description": "Filtrer par code devise (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
@@ -170,7 +179,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ],
             "type": "string",
             "description": "Devise cible pour la conversion (XOF, USD, EUR, GBP, CAD, XAF, GHS, KES, MAD, ZAR)"
@@ -2073,7 +2091,16 @@
               "MAD",
               "ZAR",
               "GBP",
-              "CAD"
+              "CAD",
+              "NGN",
+              "BWP",
+              "GMD",
+              "LSL",
+              "MGA",
+              "MWK",
+              "NAD",
+              "RWF",
+              "ZMW"
             ],
             "type": "string",
             "description": "Currency Code"
@@ -4409,6 +4436,132 @@
           ],
           "requiredInput": [
             "memberId"
+          ]
+        }
+      }
+    },
+    {
+      "name": "lomi_top_ups",
+      "title": "Balance top-ups",
+      "description": "Balance top-ups. Pass required `action` to choose the REST call.\n\nActions:\n- `list` — List Top-ups (GET /top-ups). No extra required fields.\n- `create` — Create Top-ups (POST /top-ups). No extra required fields.\n- `create_card` — Create Top-ups (POST /top-ups/card). No extra required fields.\n- `cancel` — Delete Top-ups (DELETE /top-ups/{id}). Required: id.\n\nPass idempotency_key on write actions. Omit fields that do not apply to the chosen action.",
+      "tags": [
+        "Top-ups"
+      ],
+      "write": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "create",
+              "create_card",
+              "cancel"
+            ],
+            "description": "Which REST operation to run. One of: list, create, create_card, cancel."
+          },
+          "header_Lomi-Version": {
+            "type": "string",
+            "example": "1.2.0",
+            "description": "Optional schema version pin. Echoes OpenAPI info.version (currently 1.2.0). Routes stay unversioned."
+          },
+          "id": {
+            "type": "string",
+            "description": "Path parameter \"id\" for `/top-ups/{id}`."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional Idempotency-Key header (recommended on writes for safe retries)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Offset"
+          }
+        }
+      },
+      "readOnly": false,
+      "destructive": true,
+      "alwaysLoad": false,
+      "searchHint": "cancel card create create_card delete get list post top ups",
+      "actions": {
+        "list": {
+          "operationKey": "GET /top-ups",
+          "method": "get",
+          "pathTemplate": "/top-ups",
+          "pathParamNames": [],
+          "queryParamNames": [
+            "offset",
+            "limit"
+          ],
+          "operationId": "TopUpsController_list",
+          "write": false,
+          "wantsBody": false,
+          "title": "List Top-ups",
+          "description": "List balance top-ups\n\nList balance top-up requests (bank and card channels) for the request organization.\n\nREST: GET /top-ups",
+          "tags": [
+            "Top-ups"
+          ],
+          "requiredInput": []
+        },
+        "create": {
+          "operationKey": "POST /top-ups",
+          "method": "post",
+          "pathTemplate": "/top-ups",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TopUpsController_createBank",
+          "write": true,
+          "wantsBody": false,
+          "title": "Create Top-ups",
+          "description": "Create a bank top-up\n\nCreate a bank-transfer top-up and return the wire instructions and reference code. The balance is credited when the wire is confirmed.\n\nREST: POST /top-ups",
+          "tags": [
+            "Top-ups"
+          ],
+          "requiredInput": []
+        },
+        "create_card": {
+          "operationKey": "POST /top-ups/card",
+          "method": "post",
+          "pathTemplate": "/top-ups/card",
+          "pathParamNames": [],
+          "queryParamNames": [],
+          "operationId": "TopUpsController_createCard",
+          "write": true,
+          "wantsBody": false,
+          "title": "Create Top-ups",
+          "description": "Create a card top-up\n\nCreate a card top-up and return a hosted checkout URL. The credited amount is the requested amount; the real card cost is charged on top, never less. The Stripe webhook credits the balance on payment success.\n\nREST: POST /top-ups/card",
+          "tags": [
+            "Top-ups"
+          ],
+          "requiredInput": []
+        },
+        "cancel": {
+          "operationKey": "DELETE /top-ups/{id}",
+          "method": "delete",
+          "pathTemplate": "/top-ups/{id}",
+          "pathParamNames": [
+            "id"
+          ],
+          "queryParamNames": [],
+          "operationId": "TopUpsController_cancel",
+          "write": true,
+          "wantsBody": false,
+          "title": "Delete Top-ups",
+          "description": "Cancel a pending top-up\n\nREST: DELETE /top-ups/{id}",
+          "tags": [
+            "Top-ups"
+          ],
+          "requiredInput": [
+            "id"
           ]
         }
       }
