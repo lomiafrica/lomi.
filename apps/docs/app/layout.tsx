@@ -3,8 +3,6 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getDocsSiteOrigin } from '@/lib/utils/metadata';
 import { SiteJsonLd } from '@/components/seo/site-json-ld';
 
@@ -147,8 +145,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="relative flex min-h-screen flex-col">
         <SiteJsonLd />
         {children}
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
