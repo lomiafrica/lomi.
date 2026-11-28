@@ -12,9 +12,8 @@ on:
       - "pnpm-workspace.yaml"
       - "package.json"
       - "tooling/scripts/install-app-with-packages.mjs"
-      - "tooling/vercel/website.json"
+      - ".github/workflows/app-deploy-cloudflare.yml"
       - ".github/workflows/app-deploy-website.yml"
-      - ".github/workflows/app-deploy-vercel.yml"
       - ".github/actions/checkout-app-submodule/**"
   workflow_dispatch:
     inputs:
@@ -75,17 +74,16 @@ jobs:
       github.event.client_payload.target == 'production' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/app-deploy-vercel.yml
+    uses: ./.github/workflows/app-deploy-cloudflare.yml
     with:
       app: website
       repository: lomiafrica/website
       submodule-path: apps/website
       working-directory-mode: umbrella
+      deploy-kind: vinext
+      pnpm-version: "12"
       workflow-ref: ${{ inputs.ref }}
-      vercel-target: production
     secrets:
       REPO_CHECKOUT_PAT: ${{ secrets.REPO_CHECKOUT_PAT }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_WEBSITE }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
