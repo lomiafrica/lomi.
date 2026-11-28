@@ -14,7 +14,6 @@
       "undici": "^5.28.4",
       "lodash": "^4.17.21",
       "postcss": "^8.5.28",
-      "vite": "^7.3.5",
       "yaml": "^2.8.3",
       "sharp": "^0.35.3",
       "fast-uri": "^3.1.7",
@@ -28,7 +27,16 @@
       "zod": "^4.6.6",
       "glob@>=9.0.0 <14.0.2": "14.0.3",
       "minimatch@<11.0.1": "11.0.4"
-    }
+    },
+    "patchedDependencies": {
+      "@vinext/cloudflare@1.5.0": "patches/@vinext__cloudflare@1.5.0.patch",
+      "vinext@1.4.7": "patches/vinext@1.4.7.patch"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd",
+      "sharp"
+    ]
   },
   "scripts": {
     "build": "pnpm build:pre && NODE_OPTIONS='--max-old-space-size=5120' next build && pnpm build:post",
@@ -57,7 +65,11 @@
     "test": "pnpm test:seo && pnpm test:tryit",
     "test:seo": "node --import tsx --test lib/seo/docs-seo.test.mjs",
     "test:tryit": "node --import tsx --test lib/openapi-secure-proxy.allowlist.test.ts lib/openapi/sandbox-document.test.ts lib/openapi/operation-tryit.test.ts lib/tryit/gating.test.ts lib/tryit/handoff-next.test.ts lib/mcp-twins.test.ts lib/utils/docs-routing.test.ts",
-    "screenshots:verify": "pnpm exec tsx ./lib/scripts/verify-docs-screenshots.ts"
+    "screenshots:verify": "pnpm exec tsx ./lib/scripts/verify-docs-screenshots.ts",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build",
+    "start:vinext": "vite preview",
+    "deploy:vinext": "vinext-cloudflare deploy --warm-cache"
   },
   "dependencies": {
     "@lomi./shared": "file:../../packages/shared",
@@ -71,6 +83,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@vercel/analytics": "^1.6.1",
     "@vercel/speed-insights": "^1.3.1",
+    "@vinext/cloudflare": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3-force": "^3.0.0",
@@ -85,9 +98,10 @@
     "lucide-react": "^0.542.0",
     "mermaid": "^11.17.2",
     "next": "16.4.5",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-force-graph-2d": "^1.29.1",
+    "react-server-dom-webpack": "^19.3.1",
     "rehype-katex": "^7.0.1",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
@@ -98,9 +112,11 @@
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
     "unist-util-visit": "^5.1.0",
+    "vinext": "^1.4.7",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-rc.6",
     "@eslint/js": "^9.39.5",
     "@next/env": "^16.3.7",
     "@next/eslint-plugin-next": "^16.3.7",
@@ -113,7 +129,10 @@
     "@types/react-dom": "^19.3.0",
     "@typescript-eslint/eslint-plugin": "^8.71.0",
     "@typescript-eslint/parser": "^8.71.0",
+    "@vitejs/plugin-react": "6.0.1",
+    "@vitejs/plugin-rsc": "^0.5.39",
     "algoliasearch": "5.37.0",
+    "cf": "1.0.0-rc.6",
     "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.5.0",
@@ -125,10 +144,12 @@
     "tailwindcss-animate": "^1.0.7",
     "tinyglobby": "^0.2.17",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "8.3.0"
   },
   "browserslist": [
     "defaults",
     "not IE 11"
-  ]
+  ],
+  "type": "module"
 }

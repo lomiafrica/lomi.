@@ -1,0 +1,52 @@
+diff --git a/dist/cache/static-assets-adapter.runtime.js b/dist/cache/static-assets-adapter.runtime.js
+index 144322f82603a2f77c1d466b2c6c9e2338cf584e..cb9667d5f59e6d8362f21d95d8ca9ff6c6ecd99d 100644
+--- a/dist/cache/static-assets-adapter.runtime.js
++++ b/dist/cache/static-assets-adapter.runtime.js
+@@ -9,6 +9,28 @@ async function cacheAssetId(key) {
+ function isMetadata(value) {
+ 	return value !== null && typeof value === "object" && "kind" in value && (value.kind === "html" || value.kind === "rsc" || value.kind === "route" || value.kind === "pages" || value.kind === "redirect" || value.kind === "not-found") && "lastModified" in value && typeof value.lastModified === "number";
+ }
++// lomi.: fallback for https://github.com/cloudflare/vinext/issues/3672 — rewritten
++// requests key as `<source>?__vinext_rewrite=<encDest>` and never hit the
++// prerendered destination entry; retry with the destination pathname key.
++function rewriteDestinationCacheKey(key) {
++	const marker = "?__vinext_rewrite=";
++	const markerIndex = key.indexOf(marker);
++	if (markerIndex === -1) return null;
++	const prefix = key.slice(0, markerIndex);
++	const pathStart = prefix.indexOf("/");
++	if (pathStart === -1) return null;
++	const rest = key.slice(markerIndex + marker.length);
++	const suffixIndex = rest.indexOf(":");
++	if (suffixIndex === -1) return null;
++	let destination;
++	try {
++		destination = decodeURIComponent(rest.slice(0, suffixIndex));
++	} catch {
++		return null;
++	}
++	if (!destination.startsWith("/")) return null;
++	return prefix.slice(0, pathStart) + destination + rest.slice(suffixIndex);
++}
+ var StaticAssetsCacheAdapter = class {
+ 	assets;
+ 	hasPrerenderedPages = true;
+@@ -41,9 +63,15 @@ var StaticAssetsCacheAdapter = class {
+ 		return this.index = value !== null && typeof value === "object" ? value : null;
+ 	}
+ 	async get(key) {
+-		const id = await cacheAssetId(key);
+-		const metadata = (await this.loadIndex())?.[id];
+-		if (!isMetadata(metadata)) return null;
++		let id = await cacheAssetId(key);
++		let metadata = (await this.loadIndex())?.[id];
++		if (!isMetadata(metadata)) {
++			const destinationKey = rewriteDestinationCacheKey(key);
++			if (destinationKey === null) return null;
++			id = await cacheAssetId(destinationKey);
++			metadata = (await this.loadIndex())?.[id];
++			if (!isMetadata(metadata)) return null;
++		}
+ 		const extension = metadata.kind;
+ 		const bodyResponse = await this.assets.fetch(`https://vinext.invalid${STATIC_ASSET_CACHE_PATH}/${id}.${extension}`);
+ 		if (!bodyResponse.ok) return null;

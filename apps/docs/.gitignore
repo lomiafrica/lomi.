@@ -20,3 +20,5 @@
 .env
 next-env.d.ts
 .env*
+.vinext/
+.cloudflare/

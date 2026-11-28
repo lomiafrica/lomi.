@@ -1,0 +1,23 @@
+diff --git a/dist/routing/file-matcher.js b/dist/routing/file-matcher.js
+index 201c03d7ee1d0f116b1086bee343bd111ff00d1f..e52614af7f8b6cd84356384c7c011d0cc4b9fe5f 100644
+--- a/dist/routing/file-matcher.js
++++ b/dist/routing/file-matcher.js
+@@ -1,6 +1,6 @@
+ import path, { toSlash } from "../deps/.pnpm/pathslash@0.1.0/deps/pathslash/dist/index.js";
+ import { escapeRegExp } from "../utils/regex.js";
+-import { existsSync } from "node:fs";
++import { existsSync, statSync } from "node:fs";
+ import { glob } from "node:fs/promises";
+ // src/routing/file-matcher.ts
+ const DEFAULT_PAGE_EXTENSIONS = [
+@@ -83,7 +83,9 @@ function findFileWithExtensions(basePath, matcher) {
+ function findFileWithExts(dir, name, matcher) {
+ 	for (const ext of matcher.dottedExtensions) {
+ 		const filePath = path.join(dir, name + ext);
+-		if (existsSync(filePath)) return filePath;
++		// lomi.: a directory named e.g. `not-found.md/` (route segment) must not
++		// match as a boundary component file.
++		if (existsSync(filePath) && statSync(filePath).isFile()) return filePath;
+ 	}
+ 	return null;
+ }

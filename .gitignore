@@ -33,3 +33,7 @@ node_modules/
 
 # Own repos checked out inside the umbrella. Do not gitlink them.
 /apps/tools/exof/
+
+# Agent skills installed by `npx skills add` do not belong at the repo root
+.agents/
+skills-lock.json
