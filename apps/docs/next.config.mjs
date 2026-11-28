@@ -192,4 +192,75 @@ const config = {
   },
 };
 
-export default withMDX(config);
+const securityHeaders = [
+  {
+    "source": "/(.*)",
+    "headers": [
+      {
+        "key": "X-Content-Type-Options",
+        "value": "nosniff"
+      },
+      {
+        "key": "X-Frame-Options",
+        "value": "DENY"
+      },
+      {
+        "key": "X-XSS-Protection",
+        "value": "1; mode=block"
+      },
+      {
+        "key": "Referrer-Policy",
+        "value": "origin-when-cross-origin"
+      },
+      {
+        "key": "Strict-Transport-Security",
+        "value": "max-age=31536000; includeSubDomains"
+      },
+      {
+        "key": "Content-Security-Policy",
+        "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: https://*.supabase.co https://*.google.com https://*.googleusercontent.com https://lh3.googleusercontent.com blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com https://*.google.com https://*.googleusercontent.com https://cloud.orama.run https://collections.orama.com https://api.mixpanel.com https://challenges.cloudflare.com; frame-src 'self' https://accounts.google.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+      },
+      {
+        "key": "Cross-Origin-Opener-Policy",
+        "value": "same-origin-allow-popups"
+      }
+    ]
+  },
+  {
+    "source": "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=0, must-revalidate"
+      }
+    ]
+  },
+  {
+    "source": "/sitemap.xml",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/xml"
+      },
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=86400, s-maxage=86400"
+      }
+    ]
+  },
+  {
+    "source": "/robots.txt",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "text/plain"
+      },
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=86400, s-maxage=86400"
+      }
+    ]
+  }
+];
+
+export default withMDX({ ...config, headers: async () => securityHeaders });
